@@ -1,0 +1,40 @@
+﻿@model CreateModel
+
+<link href="~/css/Form.css" rel="stylesheet" />
+
+<div class="myForm">
+    <h4>Create Account</h4>
+    
+
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label asp-for="FirstName">First Name</label>
+            <div><span asp-validation-for="FirstName" class="text-danger"></span></div>
+            <input asp-for="FirstName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName">Last Name</label>
+            <div><span asp-validation-for="LastName" class="text-danger"></span></div>
+            <input asp-for="LastName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <div><span asp-validation-for="Email" class="text-danger"></span></div>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <div><span asp-validation-for="Password" class="text-danger"></span></div>
+            <input type="password" asp-for="Password" class="form-control" />
+        </div>
+        <p>
+            <b>Hey, you!</b> Yeah, you. By clicking create account you are agreeing to
+            take full resposibility for anything that may happen as a result of what
+            information you put on this site. Although great efforts have been taken
+            to secure it, I am only a novice programmer and this site's security should
+            never be full trusted. With that being said, I hope you like what I've made!
+        </p>
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a asp-action="Login" asp-controller="Account" class="btn btn-default">Cancel</a>
+    </form>
+</div>

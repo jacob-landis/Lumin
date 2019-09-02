@@ -1,0 +1,14 @@
+﻿#txtSearchFriends {
+    width: 88%;
+    height: 25px;
+    margin-bottom: 10px;
+    padding-left: 4px;
+}
+
+#btnSearchFriends {
+    width: 10%;
+    height: 25px;
+    padding: 5px;
+    margin-left: -4px;
+    outline: none;
+}

@@ -1,0 +1,29 @@
+﻿.likeIcon {
+    font-size: 18px;
+    padding: 5px;
+    padding-top: 1px;
+    color: gray;
+}
+
+.likeIcon:hover {
+    cursor: pointer;
+    background: lightgray;
+    border-radius: 100px;
+}
+
+.likeCount {
+    cursor: default;
+    display: inline;
+}
+
+.hasLiked {
+    color: cornflowerblue;
+}
+
+.contentPostDate {
+    padding-left: 2%;
+    display: inline;
+    font-size: 9pt;
+    color: rgb(190, 190, 190);
+    font-style: italic;
+}

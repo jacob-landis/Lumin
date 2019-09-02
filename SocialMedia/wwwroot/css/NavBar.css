@@ -1,0 +1,32 @@
+﻿.navLogo {
+    height: 22px;
+    margin-left: 50px;
+    margin-top: -10px;
+}
+
+.navIcon {
+    color: ghostwhite;
+    font-size: 18pt;
+    margin: 12px 15px;
+    outline: none;
+}
+
+.navIcon:hover {
+    cursor: pointer;
+}
+
+#btnCreatePost {
+    display: inline;
+}
+#btnCreatePost:hover {
+    cursor: pointer;
+}
+
+#createPostPlusIcon {
+    margin-right: 0;
+    font-size: 12pt;
+}
+
+#createPostNoteIcon {
+    margin-left: 0;
+}

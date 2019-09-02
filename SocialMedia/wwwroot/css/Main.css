@@ -1,0 +1,99 @@
+﻿.fileInput {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.sqr {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.scrollLocked {
+    overflow: hidden;
+}
+
+.myBtnDefault {
+    background: lightgray;
+    border: none;
+    border-radius: 3px;
+    outline: none;
+    padding: 2px 6px;
+    margin: 3px;
+}
+
+.editBtn {
+    background: rgb(230, 230, 230);
+    display: none;
+}
+
+.editBtn:hover {
+    background: lightgray;
+}
+
+.threeDots {
+    font-size: 60%;
+    padding: 20%;
+    text-align: center;
+    float: right;
+    border: none;
+    font-size: 20px;
+    color: darkgray;
+    background: none;
+    outline: none;
+    border-radius: 100px;
+    height: 30px;
+    width: 30px;
+    display: inline;
+
+    display: inline-block;
+}
+
+.threeDots:hover {
+    background: lightgray;
+    color: gray;
+}
+
+.errorMsg {
+    color: red;
+}
+
+.myTextBtnPair, .myBtnTextPair {
+    display: inline;
+}
+
+.myTextBtnPair {
+    border: solid 1px lightgray;
+    border-radius: 5px 0px 0px 5px;
+    outline: none;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.myBtnTextPair {
+    background: lightgray;
+    border: none;
+    border-radius: 0px 3px 3px 0px;
+    margin-left: 0;
+}
+
+.icon {
+    padding: 10px;
+}
+
+.icon:hover {
+    background-color: lightgray;
+}
+
+.icon-sm {
+    font-size: 50%;
+    margin-right: 5px;
+}
+
+.icon > i {
+    display: inline;
+}

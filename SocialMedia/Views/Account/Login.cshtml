@@ -1,0 +1,118 @@
+﻿@model LoginModel
+
+<link href="~/css/Form.css" rel="stylesheet" />
+
+<div class="myForm">
+    <h1>Welcome to Lumin!</h1>
+    <small>
+        This site uses features unique to Google Chrome. Some features
+        may not be supported by other browsers. It is also advised that
+        you use a desktop, as Lumin has not yet been optimized for
+        mobile devices.
+    </small>
+
+    <br />
+    <br />
+
+    <form asp-action="Login" asp-controller="Account" method="post">
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <div><span asp-validation-for="Email" class="text-danger"></span></div>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <div><span asp-validation-for="Password" class="text-danger"></span></div>
+            <input asp-for="Password" class="form-control" />
+        </div>
+        <button class="btn btn-primary">Log In</button>
+    </form>
+
+    <a class="btn btn-sm btn-default navbar-btn" asp-controller="Account" asp-action="Create">
+        Create Account
+    </a>
+
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <h2>About Lumin</h2>
+    <p>
+        Lumin is a social media platform that I built to demonstrate my programming
+        abilities. My goal was to show that I can organize a semi-large scale 
+        application, use a variety of tools and engineer my own solutions.
+    </p>
+
+    <h3>Notable Features</h3>
+    <ul>
+        <li>Single-page web app (outside of the login and create account pages)</li>
+        <li>Uploading pictures</li>
+        <li>Creating posts</li>
+        <li>Liking posts</li>
+        <li>Commenting on posts</li>
+        <li>Editing post captions, comments, and your bio</li>
+        <li>Deleting content</li>
+        <li>Searching for and adding friends</li>
+        <li>Custom right-click context menus</li>
+        <li>Personal profile modal</li>
+        <li>Fullscreen image viewer</li>
+        <li>Lazy loading for posts, images, and comments</li>
+        <li>Help menu</li>
+        <li>Front-end and back-end validation</li>
+        <li>
+            Most importantly, I took an object oriented approach. To show that the
+            content is dynamic, changes happen in real time. If an image that is
+            used in a post is deleted, the post is also deleted, as well as it's
+            likes and comments, and the likes of those comments. Not only are they
+            deleted from the database, but they are removed from anywhere they
+            appear on the page in real time.
+        </li>
+    </ul>
+
+    <h3>Technologies and Tools</h3>
+    <ul>
+        <li>ASP.Net MVC Core</li>
+        <li>Identity</li>
+        <li>Entity Framework</li>
+        <li>Bootstrap</li>
+        <li>Font Awesome</li>
+        <li>JQuery</li>
+        <li>HTML Sanitizer</li>
+    </ul>
+
+    <h3>Drawbacks</h3>
+    <p>
+        While developing Lumin, I realized that my greatest weakness in programming
+        is following my own conventions. One of the biggest issues with the
+        readability and maintainability of this sites code is the inconsistencies.
+    </p>
+    <p>
+        These are features that are standard to social media that I either did not
+        plan on implementing or scrapped due to time constraints.
+    </p>
+    <ul>
+        <li>Direct messaging</li>
+        <li>Notifications</li>
+        <li>Sharing videos or gifs</li>
+        <li>Privacy options</li>
+        <li>Mobile friendly display</li>
+        <li>Multiple browser support</li>
+    </ul>
+
+    <h3>Author</h3>
+    <img src="~/ImgStatic/AuthorHeadshot.JPG" style="
+        height: 100px;
+        width: 100px;
+        object-fit: cover;
+        border-radius: 100px;
+    " />
+    <h4>Jacob Landis</h4>
+    <i 
+        class="fa fa-linkedin-square" 
+        alt="my linked in" 
+        style="font-size: 30pt;"
+        onclick="window.location.replace('https://www.linkedin.com/in/jacob-landis');"
+    ></i>
+
+</div>

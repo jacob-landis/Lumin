@@ -1,0 +1,299 @@
+﻿@model int
+@* can remove this *@
+
+<script src="~/js/Util/Util.js"></script>
+<script src="~/js/Util/ViewUtil.js"></script>
+<script src="~/js/Util/Behavior.js"></script>
+<script src="~/js/Util/Icons.js"></script>
+
+<script src="~/js/Components/ContentBox.js"></script>
+<script src="~/js/Components/ImageBox.js"></script>
+<script src="~/js/Components/Editor.js"></script>
+
+<script src="~/js/Components/ContentBoxes/PostsBox.js"></script>
+<script src="~/js/Components/ContentBoxes/ProfileImagesBox.js"></script>
+
+<script src="~/js/Modals/Modal.js"></script>
+<script src="~/js/Modals/ContextModal.js"></script>
+<script src="~/js/Modals/CreatePostModal.js"></script>
+<script src="~/js/Modals/UploadImageModal.js"></script>
+<script src="~/js/Modals/FullSizeImageModal.js"></script>
+<script src="~/js/Modals/ProfileModal.js"></script>
+<script src="~/js/Modals/ConfirmModal.js"></script>
+<script src="~/js/Modals/HelpModal.js"></script>
+
+<script src="~/js/Dropdowns/ImageDropdown.js"></script>
+<script src="~/js/Dropdowns/FriendDropdown.js"></script>
+<script src="~/js/Dropdowns/Dropdown.js"></script>
+
+<script src="~/js/TagBuilders/CommentCard.js"></script>
+<script src="~/js/TagBuilders/LikeCard.js"></script>
+<script src="~/js/TagBuilders/PostCard.js"></script>
+<script src="~/js/TagBuilders/ProfileCard.js"></script>
+<script src="~/js/TagBuilders/ImageCard.js"></script>
+<script src="~/js/TagBuilders/ContextOption.js"></script>
+
+<script src="~/js/Main.js"></script>
+<script src="~/js/User.js"></script>
+<script src="~/js/Repo.js"></script>
+<script src="~/js/Ajax.js"></script>
+<script src="~/js/PublicPosts.js"></script>
+
+<script>
+    window.onload = () => Repo.currentProfile(profile => Main.initialize(profile))
+</script>
+
+<link href="~/css/Bundle.css" rel="stylesheet" />
+
+@*-------------------------NAV-MENU---------------------------*@
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="navBar">
+
+    <i id="btnShowFriends" class="fa fa-users navIcon" alt="friends"></i>
+    <i id="btnShowImages" class="fa fa-image navIcon" alt="images"></i>
+    <div id="btnCreatePost">
+        <i id="createPostPlusIcon" class="fa fa-plus navIcon" alt="create post"></i>
+        <i id="createPostNoteIcon" class="fa fa-sticky-note navIcon" alt="create post"></i>
+    </div>
+
+    <a href="/"><img src="~/ImgStatic/LuminLogoSource.png" class="navLogo" /></a>
+
+    <div class="pull-right">
+        <i id="btnOpenUserProfileModal" class="fa fa-user navIcon" alt="my profile"></i>
+        <i id="btnOpenHelpModal" class="fa fa-question navIcon" alt="help"></i>
+        <a class="" asp-controller="Account" asp-action="Logout">
+            <i id="btnOpenUserProfileModal" class="fa fa-sign-out navIcon" alt="sign out"></i>
+        </a>
+    </div>
+</div>
+@*------------------------/NAV-MENU---------------------------*@
+
+<br />
+<br />
+<br />
+
+@*-----------------------------MAIN-BODY--------------------------*@
+<div class="postsSection">
+    <div>
+        @* IMAGE DROPDOWN *@
+        <div id="imageDropdown" class="dropdownBox">
+            <div class="dropdown-content" id="imageDropDownContent">
+
+                <div id="imageDropdownDetails">
+                    <div id="selectImagePrompt"></div>
+                    <input type="file" id="imageModalUploadImage" name="file" class="fileInput">
+                    <label for="imageModalUploadImage" id="btnImageModalUploadImage">
+                        <i id="plusIcon" class="fa fa-plus"></i>
+                        <i id="imageFileIcon" class="fa fa-file-image-o"></i>
+                    </label>
+                </div>
+
+                <div id="selectImages"></div>
+            </div>
+        </div>
+
+        @* FRIEND DROPDOWN *@
+        <div id="friendsDropdown" class="dropdownBox">
+            <div class="dropdown-content" id="friendDropdownContent">
+
+                <input type="text" id="txtSearchFriends" class="myTextBtnPair" />
+
+                <button id="btnSearchFriends" class="myBtnTextPair">
+                    <i id="searchIcon" class="fa fa-search"></i>
+                </button>
+
+                <div id="friends"></div>
+            </div>
+        </div>
+    </div>
+
+    @* POSTS *@
+    <div id="publicPosts"></div>
+    <div></div>
+</div>
+
+@*---------------------------------------------------MODALS----------------------------------------------------*@
+
+<i id="btnCloseModal" class="fa fa-times-circle-o"></i>
+
+@* HELP MODAL *@
+<div id="helpModal" class="modalBox">
+    <div id="helpContent" class="modal-content modal-content-med">
+        <h1>Help</h1>
+
+        <div class="helpSection">
+            <h3>GENERAL</h3>
+            <h4>What can I do on Lumin?</h4>
+            <ul>
+                <li>Find friends</li>
+                <li>Share your photos and thoughts</li>
+                <li>Comment on other posts</li>
+                <li>Like posts and comments</li>
+            </ul>
+            <h4>How do I close these windows??</h4>
+            <p>
+                Click on the background or click on the exit button in the
+                upper-right corner of the screen to close pop-up windows.
+            </p>
+            <h4>How do I remove things?</h4>
+            <p>
+                The <i class="fa fa-ellipsis-v helpIcon" alt="ellipsis"></i> icon
+                on comments and posts that belong to you opens a menu containing 
+                the option to edit and delete. For images, you can right-click on
+                them to reveal those options.
+            </p>
+            <h4>What if I break something?</h4>
+            <p>
+                Don't be surprised. Refresh the page.
+            </p>
+        </div>
+        
+        <div class="helpSection">
+            <h3>FRIENDS</h3>
+            <h4>How do I find friends?</h4>
+            <p>
+                The <i class="fa fa-users helpIcon" alt="users"></i> icon on
+                the navigation bar will display your current friends as well as
+                give you the option to search for more.
+            </p>
+            <h4>How do I view my friends profile?</h4>
+            <p>
+                You can view your friends profile by clicking on their name or profile picture
+            </p>
+            <h4>How do I send a request, accept a request, cancel a request, and unfriend someone?</h4>
+            <p>
+                All of those options can be found by right-clicking on a users name or profile picture.
+            </p>
+        </div>
+
+        
+        <div class="helpSection">
+            <h3>IMAGES</h3>
+            <h4>Where are my images?</h4>
+            <p>
+                Your images can be found under the <i class="fa fa-image" alt="image"></i> 
+                icon on the navigation bar, as well as in the private profile menu.
+            </p>
+            <h4>How do I upload my images to Lumin?</h4>
+            <p>
+                Click on the <i class="fa fa-plus" alt="plus"></i>
+                <i class="fa fa-file-image-o" alt="image file"></i> icon
+                at the top of the image dropdown.
+            </p>
+            <h4>How do I view the full size version of an image?</h4>
+            <p>
+                The image on a post and images in a gallery can be clicked on to show their full size
+                varient.
+            </p>
+        </div>
+
+        <div class="helpSection">
+            <h3>POSTS</h3>
+            <h4>How do I post something?</h4>
+            <p>
+                You can post something by clicking on the
+                <i class="fa fa-plus" alt="plus"></i>
+                <i class="fa fa-sticky-note" alt="post"></i>
+                icon on the navigation bar or by right-clicking on
+                one of your photos and selecting the
+                <i class="fa fa-plus" alt="plus"></i>
+                <i class="fa fa-sticky-note" alt="post"></i>
+                icon.
+            </p>
+        </div>
+
+        <div class="helpSection">
+            <h3>MY PROFILE</h3>
+            <h4>How do I change my bio?</h4>
+            <p>
+                In your private profile menu, when you hover the mouse over your bio, an
+                <i class="fa fa-edit" alt="edit"></i> icon appears.
+            </p>
+            <h4>How do I change my profile picture?</h4>
+            <p>
+                Click on your profile picture in your private profile menu and you will be prompted to
+                select one of your images.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+@* CONFIRM PROMPT *@
+<div id="confirmModal" class="modalBox fixedContent">
+    <div id="confirmContent" class="modal-content modal-content-sm">
+        <h4 id="promptMessage"></h4>
+        <button class="myBtnDefault" id="btnConfirmYes">Yes</button>
+        <button class="myBtnDefault" id="btnConfirmNo">No</button>
+    </div>
+</div>
+
+@* CONTEXT MODAL *@
+<div id="contextModal" class="modalBox">
+    <div id="contextContent"></div>
+</div>
+
+@* FULLSIZE IMAGE MODAL *@
+<div id="fullsizeImageModal" class="modalBox">
+
+    <div class="modal-content" id="fullSizeImageModalContent">
+        <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
+        <div id="fullsizeImageCon"></div>
+        <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>
+    </div>
+
+    <div id="imageCount"></div>
+</div>
+
+@* IMAGE UPLOAD MODAL *@
+<div id="imageUploadModal" class="modalBox">
+    <div class="modal-content modal-content-sm">
+        <div id="stagedUploadCon"></div>
+        <br />
+        <button id="btnConfirmImageUpload" class="myBtnDefault">Upload</button>
+
+        <input type="file" id="uploadImageModalUploadImage" name="file" class="fileInput">
+        <label id="btnSelectDifferentFile" class="myBtnDefault" for="uploadImageModalUploadImage">Select Different Image</label>
+    </div>
+</div>
+
+@* PROFILE MODAL *@
+<div id="profileModal" class="modalBox">
+    <div class="modal-content" id="profileModalContent">
+        <div id="profileSummary">
+
+            <div id="profileModalPictureWrapper"></div>
+
+            <div id="profileDetailSection">
+                <h1 id="profileModalName"></h1>
+
+                <div id="profileBioWrapper"></div>
+            </div>
+
+            <div id="profileImagesWrapper">
+                <div id="profileImages"></div>
+            </div>
+
+            <div id="profileFriends"></div>
+        </div>
+        <div id="profilePosts"></div>
+    </div>
+</div>
+
+@* CREATE POST MODAL *@
+<div id="createPostModal" class="modalBox  fixedContent">
+    <div class="modal-content modal-content-med">
+        <div id="selectedImageCon"></div>
+
+        <br />
+        <button id="btnSelectPostImage" class="myBtnDefault">Select an Image</button>
+        <button id="btnClearPostImage" class="myBtnDefault">Clear Image</button>
+        <div class="form-group" id="captionWrapper">
+            <label>Caption</label>
+            <textarea id="caption" class="form-control"></textarea>
+        </div>
+        <button id="btnSubmit" class="btn btn-primary">Post</button>
+        <button id="btnCancel" class="btn btn-primary">Cancel</button>
+    </div>
+</div>
+
+@*--------------------------------------------------/MODALS----------------------------------------------------*@

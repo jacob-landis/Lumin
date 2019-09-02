@@ -1,0 +1,107 @@
+﻿#profileModalContent {
+    width: 55%;
+}
+
+#closeProfileModal {
+    display: inline-block;
+    float: right;
+    height: 30px;
+    width: 30px;
+    outline: none;
+}
+
+#profileSummary {
+    background-color: rgb(58, 101, 178);
+    display: grid;
+    grid-template-columns: 8fr 8fr 11fr 8fr 1fr;
+    padding: 5px;
+    margin: -21px;
+    margin-bottom: 20px;
+    border-radius: 5px 5px 0px 0px;
+    height: 300px;
+}
+
+/*________ PROFILE PICTURE */
+
+.profile-picture {
+    width: 220px;
+    height: 220px;
+    /*object-fit: cover;*/
+    border-radius: 100%;
+}
+
+#btnChangeProfilePicture {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 30px;
+    margin-top: 10px;
+    margin-right: 30px;
+    outline: none;
+    display: none;
+}
+
+#profileModalPictureWrapper:hover #btnChangeProfilePicture {
+    display: inline;
+}
+
+#btnChangeProfilePicture:hover {
+    cursor: pointer;
+}
+
+/*________ PROFILE BIO */
+
+#profileBio {
+    outline: none;
+    word-break: break-word;
+}
+
+#profileDetailSection:hover > #profileBioWrapper > #btnChangeBio {
+    display: block;
+}
+
+#btnChangeBio {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    outline: none;
+}
+
+#profileBio:focus + #btnChangeBio {
+    display: none;
+}
+
+/*________ PROFILE IMAGES */
+
+#profileImagesWrapper {
+    overflow-y: auto;
+}
+
+/*#profileImages {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}*/
+
+#profileImages:hover {
+    cursor: pointer;
+}
+
+#profileImagesWrapper:hover > #viewAllImagesPrompt {
+    display: inline;
+}
+
+/*________ PROFILE FRIENDS */
+
+#profileFriends .profileCard {
+    display: block;
+}
+
+#profileFriends {
+    padding: 0% 5%;
+}
+
+#profileFriends:hover {
+    cursor: pointer;
+}
