@@ -13292,11 +13292,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jacob\\Desktop\\asp.net-core-mvc-workspace\\SocialMedia - Copy\\SocialMedia\\SocialMedia.csproj",
+      "projectUniqueName": "C:\\Users\\jacob\\Desktop\\Coding\\Lumin\\SocialMedia\\SocialMedia.csproj",
       "projectName": "SocialMedia",
-      "projectPath": "C:\\Users\\jacob\\Desktop\\asp.net-core-mvc-workspace\\SocialMedia - Copy\\SocialMedia\\SocialMedia.csproj",
+      "projectPath": "C:\\Users\\jacob\\Desktop\\Coding\\Lumin\\SocialMedia\\SocialMedia.csproj",
       "packagesPath": "C:\\Users\\jacob\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jacob\\Desktop\\asp.net-core-mvc-workspace\\SocialMedia - Copy\\SocialMedia\\obj\\",
+      "outputPath": "C:\\Users\\jacob\\Desktop\\Coding\\Lumin\\SocialMedia\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

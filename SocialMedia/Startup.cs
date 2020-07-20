@@ -65,8 +65,11 @@ namespace SocialMedia
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //app.UseStatusCodePages();
-            //app.UseDeveloperExceptionPage();
+            // DEVELOPMENT ENV ONLY
+            app.UseStatusCodePages();
+            app.UseDeveloperExceptionPage();
+            // DEVELOPMENT ENV ONLY
+
             app.UseStaticFiles();
             app.UseSession();
             app.UseIdentity();
