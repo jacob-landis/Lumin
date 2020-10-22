@@ -9,13 +9,24 @@ namespace SocialMedia.Models
 {
     public class Friend
     {
+        // PK of this record, not an actual profile.
         public int FriendId { get; set; }
-        public bool Accepted { get; set; }
-        public DateTime DateSent { get; set; }
-        public DateTime DateAccpted { get; set; }
 
-        //Associations
+        // Whether or not the profile that this was to accepted it.
+        public bool Accepted { get; set; }
+
+        // The datetime that this was sent on.
+        public DateTime DateSent { get; set; }
+
+        // The datetime that this was accepted on.
+        public DateTime DateAccpted { get; set; } // XXX typo (accepted)
+
+        // ASSOCIATIONS
+
+        // ProfileID of recipiant.
         public int? ToId { get; set; }
+
+        // ProfileID of sender.
         public int? FromId { get; set; }
     }
 }

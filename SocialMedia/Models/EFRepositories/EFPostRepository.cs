@@ -8,16 +8,19 @@ namespace SocialMedia.Models
     public class EFPostRepository : IPostRepository
     {
         private ApplicationDbContext context;
-        public IEnumerable<Post> Posts => context.Posts;
-
-        public Post ById(int id) => context.Posts.First(p => p.PostId == id);
-        public IEnumerable<Post> ByProfileId(int id) => context.Posts.Where(p => p.ProfileId == id);
-        public int CountByProfileId(int id) => context.Posts.Where(p => p.ProfileId == id).Count();
 
         public EFPostRepository(ApplicationDbContext context)
         {
             this.context = context;
         }
+
+        public IEnumerable<Post> Posts => context.Posts;
+
+        // START SHORTCUTS
+        public Post ById(int id) => context.Posts.First(p => p.PostId == id);
+        public IEnumerable<Post> ByProfileId(int id) => context.Posts.Where(p => p.ProfileId == id);
+        public int CountByProfileId(int id) => context.Posts.Where(p => p.ProfileId == id).Count();
+        // END SHORTCUTS
 
         public int SavePost(Post post)
         {

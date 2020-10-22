@@ -7,21 +7,32 @@ using SocialMedia.Models;
 
 namespace SocialMedia.Controllers
 {
+    /*
+         Redirects user to home page. XXX this could be done in the account controller and wouldn't be too out of place.
+    */
     public class HomeController : Controller
     {
-        private CurrentProfile currentProfile;
         private IProfileRepository profileRepo;
+        private CurrentProfile currentProfile;
 
-        public HomeController(CurrentProfile currentProfile, IProfileRepository profileRepo)
+        public HomeController(IProfileRepository profileRepo, CurrentProfile currentProfile)
         {
-            this.currentProfile = currentProfile;
             this.profileRepo = profileRepo;
+            this.currentProfile = currentProfile;
         }
 
+        /*
+            Returns home page to user.
+        */
         public IActionResult Index()
         {
+            // If someone is logged in, bring them home.
             if (currentProfile.profile == null) return RedirectToAction("Login", "Account");
+
+            // XXX investigate why this needs to be done. The user should have just logged in.
             currentProfile.SetProfile(profileRepo.ById(currentProfile.profile.ProfileId)); // Refreshes current profile
+
+            // Returns home page to user with their ProfileID attached.
             return View(currentProfile.id);
         }
     }

@@ -2,8 +2,11 @@
 
 <link href="~/css/Form.css" rel="stylesheet" />
 
+@* This is the welcome page of the site. *@
 <div class="myForm">
     <h1>Welcome to Lumin!</h1>
+
+    @* Compatibility warning. *@
     <small>
         This site uses features unique to Google Chrome. Some features
         may not be supported by other browsers. It is also advised that
@@ -11,23 +14,30 @@
         mobile devices.
     </small>
 
+    @* Spacing. XXX use padding in CSS file instead of break tags. *@
     <br />
     <br />
 
+    @* Login form. *@
     <form asp-action="Login" asp-controller="Account" method="post">
+
         <div class="form-group">
             <label asp-for="Email"></label>
             <div><span asp-validation-for="Email" class="text-danger"></span></div>
             <input asp-for="Email" class="form-control" />
         </div>
+
         <div class="form-group">
             <label asp-for="Password"></label>
             <div><span asp-validation-for="Password" class="text-danger"></span></div>
             <input asp-for="Password" class="form-control" />
         </div>
+
         <button class="btn btn-primary">Log In</button>
+
     </form>
 
+    @* Btn create account. Takes user to account creation page. *@
     <a class="btn btn-sm btn-default navbar-btn" asp-controller="Account" asp-action="Create">
         Create Account
     </a>
@@ -37,6 +47,7 @@
     <br />
     <br />
 
+    @* Website information. *@
     <h2>About Lumin</h2>
     <p>
         Lumin is a social media platform that I built to demonstrate my programming
@@ -100,6 +111,7 @@
         <li>Multiple browser support</li>
     </ul>
 
+    @* Author information. *@
     <h3>Author</h3>
     <img src="~/ImgStatic/AuthorHeadshot.JPG" style="
         height: 100px;

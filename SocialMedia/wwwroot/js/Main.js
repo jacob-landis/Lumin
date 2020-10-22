@@ -4,7 +4,7 @@
         User.id = profile.profileId;
         User.profilePictureId = profile.profilePicture;
 
-        this.navBar = document.getElementById("navBar");
+        this.navBar = document.getElementById("navBar"); // used to asses height of display port by other classes
         
         Modal.initialize();
         ContextModal.initialize();
@@ -18,6 +18,8 @@
 
         ImageDropdown.initialize();
         FriendDropdown.initialize();
+
+        // ----------------------------- SET UP ON-CLICKS -------------------------
 
         // OPEN HELP MODAL
         document.getElementById('btnOpenHelpModal').onclick =()=> HelpModal.open();

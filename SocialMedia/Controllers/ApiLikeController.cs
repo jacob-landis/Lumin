@@ -8,6 +8,13 @@ using SocialMedia.Models.ViewModels;
 
 namespace SocialMedia.Controllers
 {
+    /*
+        Handles the creation and deletion of like records and serves like data (the count, and whether the user has liked the content).
+        Post likes and comment likes are handled here.
+        PostLike = 0
+        CommentLike = 1
+        XXX use enumeration!
+    */
     [Route("api/[controller]")]
     public class ApiLikeController : Controller
     {
@@ -20,6 +27,10 @@ namespace SocialMedia.Controllers
             this.currentProfile = currentProfile;
         }
 
+        /*
+             Returns the number of likes for a post or comment and wether the user has liked the post or comment.
+             The PostID or CommentID is also attache.
+        */
         [HttpGet("likes/{contentType}/{contentId}")]
         public LikeModel GetCommentLikes(int contentType, int contentId) =>
             new LikeModel
@@ -29,6 +40,9 @@ namespace SocialMedia.Controllers
                 HasLiked = likeRepo.HasLiked(contentType, contentId, currentProfile.id)
             };
 
+        /*
+            Deletes like record by LikeID and Type.   
+        */
         [HttpPost("unlike/{contentType}/{contentId}")]
         public void Unlike(int contentType, int contentId)
         {
@@ -39,16 +53,22 @@ namespace SocialMedia.Controllers
             ));
         }
 
+        /*
+             Creates like record.
+        */
         [HttpPost("like/{contentType}/{contentId}")]
         public void Like(int contentType, int contentId)
         {
+            // XXX Confirm that use has not already liked!!!
             Like like = new Like
             {
-                DateTime = DateTime.UtcNow,
-                ProfileId = currentProfile.id,
-                ContentType = contentType,
-                ContentId = contentId
+                DateTime = DateTime.UtcNow, // Current datetime.
+                ProfileId = currentProfile.id, // Current user's ProfileID
+                ContentType = contentType, // Like type (post, comment)
+                ContentId = contentId // PostID or CommentID
             };
+
+            // Save like record to database.
             likeRepo.SaveLike(like);
         }
     }

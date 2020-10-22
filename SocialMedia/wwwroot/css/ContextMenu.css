@@ -13,6 +13,7 @@
 
 .context-option {
     vertical-align: middle;
+    cursor: pointer;
 }
 
 .context-option > .icon:hover {

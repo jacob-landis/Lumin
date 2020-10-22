@@ -20,18 +20,18 @@
 
 class Modal {
 
-    static modalCons = [];
-    static modals = [];
+    static modalCons = []; // modal container html elements that are currently visible
+    static modals = []; // all modal objs
 
     static initialize() {
 
         this.btnClose = document.getElementById('btnCloseModal');
 
         this.btnClose.onclick =()=> this.closeHighestModal()
-
-        window.addEventListener('click', e => {
+        
+        window.onclick =e=> {
             if (e.target.classList.contains("modalBox")) this.closeHighestModal();
-        });
+        };
     }
 
     static add(modal) {
@@ -43,15 +43,17 @@ class Modal {
     }
 
     static open(modal) {
-        if (modal.isOpen) modal.close();
-        if (modal.onOpen) modal.onOpen();
-        ViewUtil.show(this.btnClose, 'block');
-        ViewUtil.show(modal.modalCon, 'block');
-        modal.isOpen = true;
-        
-        modal.modalCon.style.zIndex = this.modalCons.push(modal.modalCon);
+        if (modal.isOpen) modal.close(); // clear modal so it can be refreshed
+        if (modal.onOpen) modal.onOpen(); // optional service. If it subscribes to it, run it
+        ViewUtil.show(this.btnClose, 'block'); // display close button
+        ViewUtil.show(modal.modalCon, 'block');// display modal html element
+        modal.isOpen = true; // set modal to open
 
-        // every modal, except the context modal, locks main body scrolling when opened
+        // add modal container html elm to modalCons now that it is being displayed, 
+        // and set the zIndex of that elm to the index returned by push function (should be one layer higher than the last one to open)
+        modal.modalCon.style.zIndex = this.modalCons.push(modal.modalCon);
+        
+        // lock main page scrolling (unless this modal is the context or confirm modal)
         if (!(modal.modalCon.id == 'contextModal' || modal.modalCon.id == 'confirmModal')) // XOR
             document.getElementsByTagName("BODY")[0].classList = 'scrollLocked';
     }

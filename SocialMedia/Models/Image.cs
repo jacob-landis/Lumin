@@ -9,10 +9,16 @@ namespace SocialMedia.Models
     public class Image
     {
         public int ImageId { get; set; }
+
+        // File name of image in file system.
         public string Name { get; set; }
+
+        // Datetime that the image was uploaded.
         public DateTime DateTime { get; set; }
 
-        //Associations
+        // ASSOCIATIONS
+
+        // The owner of the image.
         public int? ProfileId { get; set; }
     }
 }

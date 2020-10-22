@@ -9,33 +9,60 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.Models
 {
+    /*
+        Manages current profile storage in session.
+    */
     public class SessionProfile : CurrentProfile
     {
+        /*
+             Prevents endless recursion.
+        */
         [JsonIgnore]
         public ISession Session { get; set; }
 
+        /*
+            Returns copy of itself if it has been instantiated or returns new blank instance.
+        */
         public static CurrentProfile GetCurrentProfile(IServiceProvider services)
         {
-            ISession session = services.GetRequiredService<IHttpContextAccessor>()?
+            // Get handle on this server session.
+            ISession serverSession = services.GetRequiredService<IHttpContextAccessor>()?
                 .HttpContext.Session;
 
-            SessionProfile currentProfile = session?.GetJson<SessionProfile>("Profile") ??
+            // Look in JSON bank of current session for profile field.
+            // If HttpContext.Session was null, create a blank SessionProfile.
+            SessionProfile currentSessionProfile = serverSession?.GetJson<SessionProfile>("Profile") ??
                 new SessionProfile();
 
-            currentProfile.Session = session;
-            return currentProfile;
+            // Sets Session to this server session (default session if new instance).
+            currentSessionProfile.Session = serverSession;
+
+            // Caller only takes base obj (CurrentProfile).
+            return currentSessionProfile;
         }
 
+        /*
+             Update this sessions CurrentProfile as well as it's JSON counterpart.
+        */
         public override void SetProfile(Profile profile)
         {
+            // Update this cs obj (more specifically, it's base).
             base.SetProfile(profile);
-            Session.SetJson("Profile", this);
+
+            // Update the JSON version of this cs obj in the sessions JSON bank.
+            Session.SetJson("Profile", this); 
         }
 
+        /*
+             Clear this sessions CurrentProfile as well as it's JSON counterpart.
+        */
         public override void ClearProfile()
         {
+            // Clear profile from base obj.
             base.ClearProfile();
-            Session.SetJson("Profile", this);
+            
+            // Set index with value of "Profile" in this sessions JSON bank back to defualt.
+            Session.SetJson("Profile", this); 
         }
     }
 }

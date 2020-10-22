@@ -14,30 +14,43 @@ using SocialMedia.Models;
 
 namespace SocialMedia
 {
+    /*
+        Starts and sets up the application.
+        The methods in this class are called at runtime.
+    */
     public class Startup
     {
         IConfigurationRoot Configuration;
 
+        /*
+            Configure path to app settings. 
+        */
         public Startup(IHostingEnvironment env)
         {
             Configuration = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json").Build();
+                .AddJsonFile("appsettings.json")
+                .Build();
         }
 
+        /*
+            Configure services. 
+        */
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add MVC services.
             services.AddMvc();
 
+            // Add Db context service for Application and provide connection string.
             services.AddDbContext<ApplicationDbContext>
-                (options => options.UseSqlServer(
-                    Configuration["Data:Profile:ConnectionString"]
-                ));
-            services.AddDbContext<AppIdentityDbContext>
-                (options => options.UseSqlServer(
-                    Configuration["Data:Identity:ConnectionString"]    
-                ));
+                (options => options.UseSqlServer(Configuration["Data:Profile:ConnectionString"]));
 
+            // Add Db context service for Identity and provide connection string.
+            services.AddDbContext<AppIdentityDbContext>
+                (options => options.UseSqlServer(Configuration["Data:Identity:ConnectionString"]));
+
+            // Add Identity service, configure options, and add EF stores for user storage.
+            // This is another layer of validation.
             services.AddIdentity<IdentityUser, IdentityRole>(
                 opts =>
                 {
@@ -48,6 +61,7 @@ namespace SocialMedia
                 })
                 .AddEntityFrameworkStores<AppIdentityDbContext>();
 
+            // Dependency injection for repositories.
             services.AddTransient<IProfileRepository, EFProfileRepository>();
             services.AddTransient<IPostRepository, EFPostRepository>();
             services.AddTransient<IImageRepository, EFImageRepository>();
@@ -55,17 +69,20 @@ namespace SocialMedia
             services.AddTransient<ICommentRepository, EFCommentRepository>();
             services.AddTransient<ILikeRepository, EFLikeRepository>();
 
+            // This service is used in most controllers to verify the user.
             services.AddScoped<CurrentProfile>(sp => SessionProfile.GetCurrentProfile(sp));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMemoryCache();
             services.AddSession();
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
+        /*
+            Configure environment and HTTP routing pipelines.
+        */
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // DEVELOPMENT ENV ONLY
+            // DEVELOPMENT ENV ONLY XXX put these in env detector.
             app.UseStatusCodePages();
             app.UseDeveloperExceptionPage();
             // DEVELOPMENT ENV ONLY

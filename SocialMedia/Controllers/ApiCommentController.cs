@@ -37,90 +37,105 @@ namespace SocialMedia.Controllers
 
         //-----------------------------------------ROUTING---------------------------------------------//
 
+        // Get comment count by PostId XXX shouldn't this go in ApiPostController??
         [HttpGet("commentcount/{id}")]
         public int CommentCount(int id) => commentRepo.Comments.Where(c => c.PostId == id).Count();
 
+        // Delete comment by CommentId
         [HttpPost("deletecomment/{id}")]
         public void DeleteComment(int id)
         {
-            Comment comment = commentRepo.ById(id);
+            Comment comment = commentRepo.ById(id); // get comment by CommentId
 
-            if(comment.ProfileId == currentProfile.id)
+            if(comment.ProfileId == currentProfile.id) // validate user ownership of comment
             {
-                List<Like> likes = new List<Like>();
+                List<Like> likes = new List<Like>(); // prepare list
+
+                // get likes belonging to this comment 
+                // (type 2 is comment likes)
+                // XXX use enumeration instead of magic numbers for type
                 foreach(Like l in likeRepo.ByTypeAndId(2, id)) { likes.Add(l); }
+
+                // after retrieve operation, delete each retrieved like
                 foreach(Like l in likes) { likeRepo.DeleteLike(l); }
 
+                // delete comment retrieved by CommentId
                 commentRepo.DeleteComment(commentRepo.ById(id));
             }
 
         }
 
+        // replace text value of comment with provided id with text provided in request body
         [HttpPost("updatecomment/{id}")]
         public void UpdateComment([FromBody] StringModel content, int id)
         {
-            Comment comment = commentRepo.ById(id);
+            Comment comment = commentRepo.ById(id); // get comment by CommentId
 
             // content length and comment ownership is verified
-            if (content.str.Length <= 125 && comment.ProfileId == currentProfile.id)
+            if (content.str.Length > 0 && content.str.Length <= 125 && comment.ProfileId == currentProfile.id)
             {
-                comment.Content = Util.Sanitize(content.str);
-                commentRepo.SaveComment(comment);
+                comment.Content = Util.Sanitize(content.str); // replace comment text with sanitized text
+                commentRepo.SaveComment(comment); // override comment in database
             }
         }
 
+        // get list of comments by id, skip, take
         [HttpGet("postcomments/{id}/{commentCount}/{amount}")]
         public List<CommentModel> PostComments(int id, int commentCount, int amount)
         {
-            List<CommentModel> comments = new List<CommentModel>();
-            if (commentCount < commentRepo.CountByPostId(id))
+            List<CommentModel> comments = new List<CommentModel>(); // prepare list
+            if (commentCount < commentRepo.CountByPostId(id)) // if user has not reached end of comments
             {
-                foreach (Comment c in commentRepo.RangeByPostId(id, commentCount, amount))
+                foreach (Comment c in commentRepo.RangeByPostId(id, commentCount, amount)) // get comment results
                 {
-                    comments.Add(GetCommentModel(c.CommentId));
+                    comments.Add(GetCommentModel(c.CommentId)); // prep comment and add to returning list
                 }
             }
-            else return null;
+            else return null; // if user has reached end of comments, return null
 
-            return comments;
+            return comments; // return preped comment results
         }
 
+        // get comment by id
         [HttpGet("{id}")]
         public CommentModel GetComment(int id) => GetCommentModel(id);
         
-        // create comment
+        // create comment from text provided in request body, current datetime, and current user id
         [HttpPost]
         public CommentModel CreateComment([FromBody] Comment comment)
         {
             // content length is verified
-            if (comment.Content.Length <= 125)
+            if (comment.Content.Length > 0 && comment.Content.Length <= 125) // if comment is 1-125 chars long
             {
-                comment.DateTime = DateTime.UtcNow;
-                comment.ProfileId = currentProfile.id;
-                comment.Content = Util.Sanitize(comment.Content);
-                return GetCommentModel(commentRepo.SaveComment(comment));
+                comment.DateTime = DateTime.UtcNow;  // set DateTime of comment to current DateTime of central time
+                comment.ProfileId = currentProfile.id; // set ProfileId of comment to current profile id
+                comment.Content = Util.Sanitize(comment.Content); // set Content of comment to the sanitized content provided
+                return GetCommentModel(commentRepo.SaveComment(comment)); // save comment to database and return a preped version of it
             }
-            else return null;
+            else return null; // if length of comment was invalid, return null
         }
 
         //-----------------------------------------UTIL---------------------------------------------//
 
+        // prep comment to be sent to client
         public CommentModel GetCommentModel(int id)
         {
-            Comment comment = commentRepo.ById(id);
-            if (comment == null) return null;
-            Profile profile = profileRepo.ById(comment.ProfileId);
-            LikeModel likes = new LikeModel
+            Comment comment = commentRepo.ById(id); // get comment by CommentId
+            if (comment == null) return null; // if no comment was found, return null
+            Profile profile = profileRepo.ById(comment.ProfileId); // get handle on owner of comment
+            LikeModel likes = new LikeModel // attach info for likes
             {
-                ContentId = id,
-                Count = likeRepo.CountByContentId(2, id),
-                HasLiked = likeRepo.HasLiked(2, id, currentProfile.id)
+                ContentId = id, // link like data to parent comment by CommentId
+                Count = likeRepo.CountByContentId(2, id), // set like count by CommentId
+                HasLiked = likeRepo.HasLiked(2, id, currentProfile.id) // determine if user has like and assign value
             };
 
-            return new CommentModel
+            return new CommentModel // fill with data from comment and likeModel
             {
                 CommentId = comment.CommentId,
                 Content = comment.Content,
+
+                // attach prepped ProfileModel XXX shouldn't need to enter all this data about the user
                 Profile = Util.GetProfileModel(profile, imageRepo.ById(profile.ProfilePicture), friendRepo.RelationToUser(currentProfile.id, profile.ProfileId)),
                 DateTime = comment.DateTime.ToLocalTime(),
                 Likes = likes,

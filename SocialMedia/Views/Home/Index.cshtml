@@ -1,6 +1,7 @@
 ﻿@model int
-@* can remove this *@
+@* can remove this XXX *@
 
+@* START JS INCLUSION *@
 <script src="~/js/Util/Util.js"></script>
 <script src="~/js/Util/ViewUtil.js"></script>
 <script src="~/js/Util/Behavior.js"></script>
@@ -38,11 +39,15 @@
 <script src="~/js/Repo.js"></script>
 <script src="~/js/Ajax.js"></script>
 <script src="~/js/PublicPosts.js"></script>
+@* END JS INCLUSION *@
 
+@* Initialize JS. *@
 <script>
+    // Set on load listener on window. On load, get the current profile from the host and initialize main JS method with it.
     window.onload = () => Repo.currentProfile(profile => Main.initialize(profile))
 </script>
 
+@* This CSS file includes all other CSS files for home. *@
 <link href="~/css/Bundle.css" rel="stylesheet" />
 
 @*-------------------------NAV-MENU---------------------------*@
@@ -110,12 +115,22 @@
     <div id="publicPosts"></div>
     <div></div>
 </div>
+@*-----------------------------/MAIN-BODY-------------------------*@
 
 @*---------------------------------------------------MODALS----------------------------------------------------*@
+@* 
+    Every modals content is nested inside two divs. Each of which share certain classes, but have unique IDs.
+    The first div is the backdrop for the content.
+    The second div is the border of the content.
+    Together they make a bezel.
+*@
 
+
+@* Btn close modal. Shared by every modal. *@
 <i id="btnCloseModal" class="fa fa-times-circle-o"></i>
 
 @* HELP MODAL *@
+@* Nothing functional exists in the help modal. It explains how to use Lumin. *@
 <div id="helpModal" class="modalBox">
     <div id="helpContent" class="modal-content modal-content-med">
         <h1>Help</h1>
@@ -137,7 +152,7 @@
             <h4>How do I remove things?</h4>
             <p>
                 The <i class="fa fa-ellipsis-v helpIcon" alt="ellipsis"></i> icon
-                on comments and posts that belong to you opens a menu containing 
+                on comments and posts that belong to you opens a menu containing
                 the option to edit and delete. For images, you can right-click on
                 them to reveal those options.
             </p>
@@ -146,7 +161,7 @@
                 Don't be surprised. Refresh the page.
             </p>
         </div>
-        
+
         <div class="helpSection">
             <h3>FRIENDS</h3>
             <h4>How do I find friends?</h4>
@@ -165,12 +180,12 @@
             </p>
         </div>
 
-        
+
         <div class="helpSection">
             <h3>IMAGES</h3>
             <h4>Where are my images?</h4>
             <p>
-                Your images can be found under the <i class="fa fa-image" alt="image"></i> 
+                Your images can be found under the <i class="fa fa-image" alt="image"></i>
                 icon on the navigation bar, as well as in the private profile menu.
             </p>
             <h4>How do I upload my images to Lumin?</h4>
@@ -219,39 +234,62 @@
 </div>
 
 @* CONFIRM PROMPT *@
+@* Prompts the user before an action is followed through with. *@
 <div id="confirmModal" class="modalBox fixedContent">
     <div id="confirmContent" class="modal-content modal-content-sm">
+
+        @* Caller specified msg. *@
         <h4 id="promptMessage"></h4>
+
+        @* Confirm action. *@
         <button class="myBtnDefault" id="btnConfirmYes">Yes</button>
+
+        @* Abort action. *@
         <button class="myBtnDefault" id="btnConfirmNo">No</button>
+
     </div>
 </div>
 
 @* CONTEXT MODAL *@
+@* Cutom R-Click dropdown. Does not follow modal tradition. *@
 <div id="contextModal" class="modalBox">
     <div id="contextContent"></div>
 </div>
 
 @* FULLSIZE IMAGE MODAL *@
+@* Used for viewing images full screen. Collections of images can be navigated through with the left right buttons. *@
 <div id="fullsizeImageModal" class="modalBox">
-
     <div class="modal-content" id="fullSizeImageModalContent">
+
+        @* Btn previous image. *@
         <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
+
+        @* Full size image container. *@
         <div id="fullsizeImageCon"></div>
+
+        @* Btn next image. *@
         <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>
     </div>
 
+    @* XXX Why is this outside of modal content?? *@
     <div id="imageCount"></div>
 </div>
 
 @* IMAGE UPLOAD MODAL *@
 <div id="imageUploadModal" class="modalBox">
     <div class="modal-content modal-content-sm">
+
+        @* Image to be uploaded is displayed here. *@
         <div id="stagedUploadCon"></div>
         <br />
+
+        @* Btn confirm upload. *@
         <button id="btnConfirmImageUpload" class="myBtnDefault">Upload</button>
 
+        @* Invisible file container element. Image file is attched to this. *@
         <input type="file" id="uploadImageModalUploadImage" name="file" class="fileInput">
+
+        @* Btn select different image. XXX consider renaming this id *@
         <label id="btnSelectDifferentFile" class="myBtnDefault" for="uploadImageModalUploadImage">Select Different Image</label>
     </div>
 </div>
@@ -259,40 +297,69 @@
 @* PROFILE MODAL *@
 <div id="profileModal" class="modalBox">
     <div class="modal-content" id="profileModalContent">
+
+        @* Profile header. *@
         <div id="profileSummary">
 
+            @* Profile picture wrapper. *@
             <div id="profileModalPictureWrapper"></div>
 
+            @* Area reserved for text. *@
             <div id="profileDetailSection">
+
+                @* Profile name. *@
                 <h1 id="profileModalName"></h1>
 
+                @* Profile bio. *@
                 <div id="profileBioWrapper"></div>
             </div>
 
+            @* Profile images. *@
             <div id="profileImagesWrapper">
                 <div id="profileImages"></div>
             </div>
 
+            @* Profile friends. *@
             <div id="profileFriends"></div>
+
         </div>
+
+        @* Profile posts. *@
         <div id="profilePosts"></div>
+
     </div>
 </div>
 
 @* CREATE POST MODAL *@
 <div id="createPostModal" class="modalBox  fixedContent">
     <div class="modal-content modal-content-med">
+
+        @* Container for the post image the user selected. *@
         <div id="selectedImageCon"></div>
 
         <br />
+        @* Btn select post image. Opens profile images dropdown for user to select from. *@
         <button id="btnSelectPostImage" class="myBtnDefault">Select an Image</button>
+
+        @* Btn clear post image. The post will no longer contain an image. *@
         <button id="btnClearPostImage" class="myBtnDefault">Clear Image</button>
+
+        @* Caption area. *@
         <div class="form-group" id="captionWrapper">
+
+            @*  Title. *@
             <label>Caption</label>
+
+            @* Caption input. *@
             <textarea id="caption" class="form-control"></textarea>
         </div>
+
+        @* Btn submit. Send to server if the post passed client side validation. *@
         <button id="btnSubmit" class="btn btn-primary">Post</button>
+
+        @* Btn cancle. Clears image and caption and closes modal. *@
         <button id="btnCancel" class="btn btn-primary">Cancel</button>
+
     </div>
 </div>
 

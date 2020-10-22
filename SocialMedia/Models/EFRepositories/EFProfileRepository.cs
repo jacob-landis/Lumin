@@ -12,11 +12,6 @@ namespace SocialMedia.Models
     {
         private ApplicationDbContext context;
         private CurrentProfile currentProfile;
-        public IEnumerable<Profile> Profiles => context.Profiles;
-
-        public Profile ById(int? id) => context.Profiles.First(p => p.ProfileId == id);
-        public IEnumerable<Profile> ExceptCurrentProfile => context.Profiles.Where(p => p.ProfileId != currentProfile.id);
-        public Profile ByPassword(string password) => context.Profiles.First(p => p.Password == password);
 
         public EFProfileRepository(ApplicationDbContext context, CurrentProfile currentProfile)
         {
@@ -24,19 +19,29 @@ namespace SocialMedia.Models
             this.currentProfile = currentProfile;
         }
 
+        public IEnumerable<Profile> Profiles => context.Profiles;
+
+        // START SHORTCUTS
+        public Profile ById(int? id) => context.Profiles.First(p => p.ProfileId == id);
+
+        /*
+            Get list of all profiles excluding the one belonging to the current user.
+        */
+        public IEnumerable<Profile> ExceptCurrentProfile => context.Profiles.Where(p => p.ProfileId != currentProfile.id);
+
+        /*
+            Get profile by Password. 
+        */
+        public Profile ByPassword(string password) => context.Profiles.First(p => p.Password == password);
+        // END SHORTCUTS
+
         public void SaveProfile(Profile profile)
         {
-            if(profile.ProfileId == 0)
-            {
-                context.Profiles.Add(profile);
-            }
-            else
-            {
-                context.Profiles.Update(profile);
-            }
+            if(profile.ProfileId == 0) context.Profiles.Add(profile);
+            else context.Profiles.Update(profile);
+
             context.SaveChanges();
             currentProfile.SetProfile(Profiles.First(p => p.ProfileId == profile.ProfileId));
-            //currentProfile.SetProfile(Profiles.First(p => p.ProfileId == currentProfile.id));
         }
     }
 }
