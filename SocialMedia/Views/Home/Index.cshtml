@@ -51,24 +51,45 @@
 <link href="~/css/Bundle.css" rel="stylesheet" />
 
 @*-------------------------NAV-MENU---------------------------*@
+@* Functionality of navigation menu buttons are defined in Main.js *@
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="navBar">
 
+    @* --------------------LEFT-SIDE---------------------- *@
+
+    @* Btn show friends. Opens or closes friends dropdown. *@
     <i id="btnShowFriends" class="fa fa-users navIcon" alt="friends"></i>
+
+    @* Btn show images. Opens or closes images dropdown. *@
     <i id="btnShowImages" class="fa fa-image navIcon" alt="images"></i>
-    <div id="btnCreatePost">
+    
+    @* Btn creat post. Opens create post modal. *@
+    <div id="btnCreatePost"> @* (compound icon) *@
         <i id="createPostPlusIcon" class="fa fa-plus navIcon" alt="create post"></i>
         <i id="createPostNoteIcon" class="fa fa-sticky-note navIcon" alt="create post"></i>
     </div>
+    @* --------------------/LEFT-SIDE--------------------- *@
 
+    @* CENTER *@
+    @* Refreshes page.  *@
     <a href="/"><img src="~/ImgStatic/LuminLogoSource.png" class="navLogo" /></a>
 
+
+    @* --------------------RIGHT-SIDE--------------------- *@
     <div class="pull-right">
+
+        @* Btn open user profile modal. Opens the profile modal of current profile. *@
         <i id="btnOpenUserProfileModal" class="fa fa-user navIcon" alt="my profile"></i>
+
+        @* Btn open help modal. Opens help modal. *@
         <i id="btnOpenHelpModal" class="fa fa-question navIcon" alt="help"></i>
+
+        @* Logs user out, in turn redirecting them to login page. *@
         <a class="" asp-controller="Account" asp-action="Logout">
             <i id="btnOpenUserProfileModal" class="fa fa-sign-out navIcon" alt="sign out"></i>
         </a>
     </div>
+    @* -------------------/RIGHT-SIDE--------------------- *@
+
 </div>
 @*------------------------/NAV-MENU---------------------------*@
 
@@ -78,20 +99,37 @@
 
 @*-----------------------------MAIN-BODY--------------------------*@
 <div class="postsSection">
+
+    @*-------------------------DROPDOWNS-----------------------*@
+    @* These float above (in terms of layer) and beside the main post feed. *@
+    @*
+        Every dropdowns content is nested inside two divs.
+        The first div is the backdrop for the content and controls the windows position and shape.
+        The second div is the border of the content.
+        Together they make a bezel.
+    *@
     <div>
         @* IMAGE DROPDOWN *@
         <div id="imageDropdown" class="dropdownBox">
             <div class="dropdown-content" id="imageDropDownContent">
-
+                
+                @* Details and funtionality above the images. *@
                 <div id="imageDropdownDetails">
+
+                    @* A slot for a message from caller. (ex. Select image for profile picture.) *@
                     <div id="selectImagePrompt"></div>
-                    <input type="file" id="imageModalUploadImage" name="file" class="fileInput">
+
+                    <input type="file" id="imageModalUploadImage" name="file" class="fileInput"> @* XXX where is this used? *@
+
+                    @* Btn image upload modal. Opens image upload modal. *@
                     <label for="imageModalUploadImage" id="btnImageModalUploadImage">
+                        @* (compound icon) *@
                         <i id="plusIcon" class="fa fa-plus"></i>
                         <i id="imageFileIcon" class="fa fa-file-image-o"></i>
                     </label>
                 </div>
 
+                @* Container for images. *@
                 <div id="selectImages"></div>
             </div>
         </div>
@@ -100,27 +138,34 @@
         <div id="friendsDropdown" class="dropdownBox">
             <div class="dropdown-content" id="friendDropdownContent">
 
+                @* Search bar. *@
                 <input type="text" id="txtSearchFriends" class="myTextBtnPair" />
 
+                @* Btn search. Commences search. *@
                 <button id="btnSearchFriends" class="myBtnTextPair">
                     <i id="searchIcon" class="fa fa-search"></i>
                 </button>
 
+                @* Container for profile cards. *@
                 <div id="friends"></div>
             </div>
         </div>
     </div>
+    @*-------------------------/DROPDOWNS----------------------*@
 
     @* POSTS *@
+    @* Container for main post feed. *@
     <div id="publicPosts"></div>
+
+    @* XXX XXX XXX Test this. Why is it here? *@
     <div></div>
 </div>
 @*-----------------------------/MAIN-BODY-------------------------*@
 
 @*---------------------------------------------------MODALS----------------------------------------------------*@
 @* 
-    Every modals content is nested inside two divs. Each of which share certain classes, but have unique IDs.
-    The first div is the backdrop for the content.
+    Every modals content is nested inside two divs.
+    The first div is the backdrop for the content and controls the windows position and shape.
     The second div is the border of the content.
     Together they make a bezel.
 *@
@@ -130,7 +175,7 @@
 <i id="btnCloseModal" class="fa fa-times-circle-o"></i>
 
 @* HELP MODAL *@
-@* Nothing functional exists in the help modal. It explains how to use Lumin. *@
+@* Nothing functional exists in the help modal. It explains to the user how to use Lumin. *@
 <div id="helpModal" class="modalBox">
     <div id="helpContent" class="modal-content modal-content-med">
         <h1>Help</h1>
@@ -253,6 +298,8 @@
 @* CONTEXT MODAL *@
 @* Cutom R-Click dropdown. Does not follow modal tradition. *@
 <div id="contextModal" class="modalBox">
+
+    @* Container for options. *@
     <div id="contextContent"></div>
 </div>
 
@@ -314,8 +361,10 @@
                 <div id="profileBioWrapper"></div>
             </div>
 
-            @* Profile images. *@
+            @* Profile images wrapper. Constrains width so images wrap into rows. XXX confirm this. *@
             <div id="profileImagesWrapper">
+
+                @* Container for images *@
                 <div id="profileImages"></div>
             </div>
 

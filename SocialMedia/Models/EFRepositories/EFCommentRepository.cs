@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SocialMedia.Models
 {
     /*
-        Agent of dependency injection for database access service. XXX move comments that will be repeated in a general document that describes the common pattern.
+        Implements solution for IRepository to fulfill dependancy for database access service.
     */
     public class EFCommentRepository : ICommentRepository
     {
@@ -26,13 +26,24 @@ namespace SocialMedia.Models
         */
         public IEnumerable<Comment> Comments => context.Comments;
 
-        // All shortcuts could be achived outside of this class with access to Comments property.
+        // Shortcuts could be achived outside of this class with access to context.{type}, but would repeat in places,
+        // so they are consolodated here.
         // START SHORTCUTS
+
+        /*
+            Get a single record of the type that this class is dedicated to by it's ID.
+        */
+        public Comment ById(int? id) => context.Comments.FirstOrDefault(c => c.CommentId == id);
 
         /*
             Get comments belonging to a post by the PostID.
         */
         public IEnumerable<Comment> ByPostId(int? id) => context.Comments.Where(c => c.PostId == id);
+
+        /*
+            Get the count of comments that belong to the post with the provided PostID.
+        */
+        public int CountByPostId(int? id) => context.Comments.Where(c => c.PostId == id).Count();
 
         /*
             Get a range of comments belonging to a post ordered by datetime. 
@@ -44,24 +55,14 @@ namespace SocialMedia.Models
                 .OrderByDescending(c => c.DateTime)
                 .Skip((int)commentCount)
                 .Take((int)amount);
-
-        /*
-            Get the count of comments that belong to the post with the provided PostID.
-        */
-        public int CountByPostId(int? id) => context.Comments.Where(c => c.PostId == id).Count();
-
-        /*
-            Get a single comment by CommentID.
-        */
-        public Comment ById(int? id) => context.Comments.FirstOrDefault(c => c.CommentId == id);
         // END SHORTCUTS
 
         /*
-            Used to create a new record or update an old record, and return the CommentID of the newly created or the updated comment record.
+            Used to create a new record or update an old record, and return the ID of the newly created or the updated record.
         */
         public int SaveComment(Comment comment)
         {
-            // If the CommentID is defualt, create a new record.
+            // If the ID is defualt, create a new record.
             if (comment.CommentId == 0) context.Comments.Add(comment);
 
             // Else, update the record in the database.
@@ -70,12 +71,13 @@ namespace SocialMedia.Models
             // Commit change to the database.
             context.SaveChanges();
 
-            // Return the CommentID to the caller. Most useful when using this method to create a new record.
+            // Return the ID to the caller. 
+            // Return value is most useful when using this method to create a new record.
             return comment.CommentId;
         }
 
         /*
-             Remove comment record from the database.
+             Remove record from the database.
         */
         public void DeleteComment(Comment comment)
         {

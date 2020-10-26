@@ -1,0 +1,36 @@
+﻿This document serves as a guide to the features of this project.
+
+FEATURES
+
+- User
+	- A user is merely the record in the Identity User plugin database.
+	- It is used to get a profile.
+
+- Profile
+	- Holds public information like name, bio, profile picture.
+	- Profile name is two fields: FirstName, and LastName, but is sent to client as one combined name.
+	- The profile password is not really a password at all, but instead a unique link that ties the profile to a user.
+
+- Friends
+	- A friend record acts as a request and an accepted friend.
+	- A relationship is a ProfileID pair (to and from).
+	- A bool type field tracks whether the invitation has been accepted.
+	- Friend status is attached to the profile view model and full profile view model when sent to the client.
+		- Status: me,			 Response: Do nothing.
+		- Status: userRequested, Response: Attach a label that says "Pending".
+		- Status: friend:		 Response: Attach a button labeled "Remove" that sends delete request to server to remove friend.
+		- Status: requestedUser, Response: Attach a button labeled "Accept" that sends an update request to server to accept.
+		- Status: unrelated,	 Response: Attach a button labeled "Add" that sends a post request to server to add make request.
+
+- Lazy Loading
+	- For most tables, there is a shortcut method in the repository class for selecting a range.
+		- The post table is an exception. There is a distinction between public post feed and profile post feed so the method for
+		selecting a range of posts is held in the post controller.
+
+- Cards
+
+- Modals
+
+- Dropdowns
+
+- Sudo-iterative JS objs (ContentBox.contentBoxes)

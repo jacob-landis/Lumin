@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.Models
 {
+    /*
+        Implements solution for IRepository to fulfill dependancy for database access service.
+    */
     public class EFFriendRepository : IFriendRepository
     {
+        // Context service is provided from Startup.
         private ApplicationDbContext context;
 
         public EFFriendRepository(ApplicationDbContext context)
@@ -14,9 +18,18 @@ namespace SocialMedia.Models
             this.context = context;
         }
 
+        /*
+            Provides direct access to table.
+        */
         public IEnumerable<Friend> Friends => context.Friends;
 
+        // Shortcuts could be achived outside of this class with access to context.{type}, but would repeat in places,
+        // so they are consolodated here.
         // START SHORTCUTS
+
+        /*
+            Get a single record of the type that this class is dedicated to by it's ID.
+        */
         public Friend ById(int id) => context.Friends.First(f => f.FriendId == id);
 
         /*
@@ -27,7 +40,6 @@ namespace SocialMedia.Models
                 f.ToId == id && 
                 f.Accepted == accepted
             );
-
 
         /*
             Get friend records that were requested to be friends by the user of the provided ProfileID.
@@ -73,16 +85,30 @@ namespace SocialMedia.Models
         }
         // END SHORTCUTS
 
+        /*
+            Used to create a new record or update an old record.
+        */
         public void SaveFriend(Friend friend)
         {
-            if(friend.FriendId == 0) context.Friends.Add(friend);
+            // If the ID is defualt, create a new record.
+            if (friend.FriendId == 0) context.Friends.Add(friend);
+
+            // Else, update the record in the database.
             else context.Friends.Update(friend);
+
+            // Commit change to the database.
             context.SaveChanges();
         }
 
+        /*
+             Remove record from the database.
+        */
         public void DeleteFriend(Friend friend)
         {
+            // Remove comment record from the database.
             context.Friends.Remove(friend);
+
+            // Commit change to the database.
             context.SaveChanges();
         }
     }
