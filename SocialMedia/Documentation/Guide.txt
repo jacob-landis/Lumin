@@ -22,6 +22,9 @@ FEATURES
 		- Status: requestedUser, Response: Attach a button labeled "Accept" that sends an update request to server to accept.
 		- Status: unrelated,	 Response: Attach a button labeled "Add" that sends a post request to server to add make request.
 
+
+PATTERNS
+
 - Lazy Loading
 	- For most tables, there is a shortcut method in the repository class for selecting a range.
 		- The post table is an exception. There is a distinction between public post feed and profile post feed so the method for
@@ -34,3 +37,4 @@ FEATURES
 - Dropdowns
 
 - Sudo-iterative JS objs (ContentBox.contentBoxes)
+- Sudo-inheritance in JS objs (Dropdown.dropdowns, Modal.modals)

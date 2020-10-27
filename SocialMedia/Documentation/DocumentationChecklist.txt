@@ -86,15 +86,15 @@ CLIENT
 				PostsBox *** DONE
 				ProfileImagesBox DONE
 			ContentBox *** DONE
-			Editor
-			ImageBox
+			Editor *** DONE
+			ImageBox *** DONE
 		/Dropdowns
-			Dropdown
+			Dropdown *** DONE
 			FriendDropdown
 			ImageDropdown
 		/Modals
 			ConfirmModal
-			ContextModal
+			ContextModal ***
 			CreatePostModal
 			FullSizeImageModal
 			HelpModal

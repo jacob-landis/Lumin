@@ -36,10 +36,13 @@
             this.btnOpts.onclick = e => ContextModal.load(e, [
                 new ContextOption(this.editIcon, () => this.commentEditor.start()),
                 new ContextOption(Icons.deleteComment(),
-                    () => ConfirmModal.load('Are you sure you want to delete this comment?', confirmation => {
-                        if (!confirmation) return;
-                        this.remove();
-                }))
+                    () => ConfirmModal.load('Are you sure you want to delete this comment?',
+                        confirmation => {
+                            if (!confirmation) return;
+                            this.remove();
+                        }
+                    )
+                )
             ]);
         }
         CommentCard.commentCards.push(this);
