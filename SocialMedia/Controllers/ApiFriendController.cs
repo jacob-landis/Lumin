@@ -219,9 +219,11 @@ namespace SocialMedia.Controllers
 
             // Prep list for prepped profiles.
             List<ProfileModel> requests = new List<ProfileModel>();
-            if (friends != null) // If there were results.
+
+            // If there were results,
+            if (friends != null) 
             {
-                // Prep each result and add to list of requests.
+                // prep each result and add to list of requests.
                 foreach (Friend f in friends) { requests.Add(GetProfileModel(f.FromId)); }
             }
 

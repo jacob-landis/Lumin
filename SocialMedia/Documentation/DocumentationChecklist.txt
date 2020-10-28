@@ -90,11 +90,11 @@ CLIENT
 			ImageBox *** DONE
 		/Dropdowns
 			Dropdown *** DONE
-			FriendDropdown
-			ImageDropdown
+			FriendDropdown *** DONE
+			ImageDropdown *** DONE
 		/Modals
-			ConfirmModal
-			ContextModal ***
+			ConfirmModal *** DONE
+			ContextModal DONE
 			CreatePostModal
 			FullSizeImageModal
 			HelpModal

@@ -1,29 +1,93 @@
-﻿class CreatePostModal {
+﻿/*
+    This class contains the functionality of the create post form.
+*/
+class CreatePostModal {
+
+    /*
     
+    // A requirement of being a modal. The base class shows and hides this.
+    modalCon;
+    
+    // A text input elm for the user to enter a caption.
+    txtCaption;
+    
+    // An elm that wraps the caption input and error messages.
+    captionWrapper;
+    
+    // A content box for error messages.
+    errorBox;
+    
+    // A button that opens the image dropdown for the user to select an image from.
+    btnSelectImage;
+    
+    // A button that removes the image that is attached to the post.
+    btnClearImage;
+    
+    // A button that sends the post in a post request to the host.
+    btnSubmit;
+    
+    // A button that closes this modal.
+    btnCancel;
+    
+    // An ImageBox that isplays the image the user attaches to the post.
+    selectedImageCon;
+        
+    */
+
+    /*
+        Sudo-inherits from the sudo-base class
+        Gets handles on all necessary components.
+        Sets up event listeners.
+    */
     static initialize() {
+
+        // Inherit from base class.
         Modal.add(this);
+
+        // Get handles on modal HTML elms.
         this.modalCon = document.getElementById('createPostModal'); 
         this.txtCaption = document.getElementById('caption');
         this.captionWrapper = document.getElementById('captionWrapper');
-        this.errorBox = new ContentBox('createPostErrorBox');
         this.btnSelectImage = document.getElementById('btnSelectPostImage');
         this.btnClearImage = document.getElementById('btnClearPostImage');
         this.btnSubmit = document.getElementById('btnSubmit');
+        this.btnCancel = document.getElementById('btnCancel');
 
+        // Construct a content box for errors and get a handle on it.
+        this.errorBox = new ContentBox('createPostErrorBox');
+
+        // Append the error box's main tag to the caption wrapper.
         this.captionWrapper.append(this.errorBox.tag);
 
-        this.btnCancel = document.getElementById('btnCancel');
-        this.btnCancel.onclick = () => this.close();
+        // Construct an image box with an existing elm and get a handle on it.
+        // (Any image that is selected for this post can be clicked on to pick a different image, because of the click parameter value)
+        this.selectedImageCon = new ImageBox(document.getElementById('selectedImageCon'), '', 'selectedPostImage',
 
-        this.selectedImageCon = new ImageBox(
-            document.getElementById('selectedImageCon'), '', 'selectedPostImage', () => ()=> this.selectImage());
+            // Returns the following callback.
+            () =>
 
+                // When the image is clicked, invoke selectImage().
+                () => this.selectImage()
+        );
+
+        // Set btnSelectImage to invoke selectImage().
         this.btnSelectImage.onclick = () => this.selectImage();
+
+        // Set btnClearImage to invoke loadPaperClip().
         this.btnClearImage.onclick = () => this.loadPaperClip();
 
+        // Set btnSubmit to invoke submit().
         this.btnSubmit.onclick = () => this.submit();
+
+        // Set btnCancel to invoke close().
+        this.btnCancel.onclick = () => this.close();
     }
 
+    /*
+        Loads an image card into the selectedImageCon.
+
+        imageCard must be an ImageCard.
+    */
     static load(imageCard) {
         this.loadPaperClip();
         if (ImageDropdown.isOpen && !imageCard) this.convertImageDropdown();
@@ -31,6 +95,9 @@
         this.open();
     }
 
+    /*
+        
+    */
     static loadPaperClip() {
         ViewUtil.empty(this.selectedImageCon.tag);
         this.selectedImageCon.isLoaded = false;
@@ -39,6 +106,9 @@
         this.selectedImageCon.tag.append(paperClip);
     }
 
+    /*
+ 
+    */
     static selectImage() {
         ImageDropdown.load(imageCard => {
             ImageDropdown.close();
@@ -46,6 +116,9 @@
         });
     }
 
+    /*
+ 
+    */
     static convertImageDropdown() {
         ImageDropdown.convert(imageCard => ()=> {
             this.selectedImageCon.load(imageCard.rawImage.id);
@@ -53,6 +126,9 @@
         });
     }
 
+    /*
+ 
+    */
     static submit() {
         let charLimit = 1000;
 
@@ -83,6 +159,9 @@
         }
     }
 
+    /*
+ 
+    */
     static onClose(callback) {
         if (this.txtCaption.value.length < 1) {
             this.errorBox.clear();

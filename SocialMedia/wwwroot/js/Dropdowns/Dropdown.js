@@ -15,7 +15,13 @@ class Dropdown {
 
         dropdown must have a dropdownCon property that is an HTML elm with a 'dropdownBox' class attribute,
         it must have a content property that is an HTML elm with a 'dropdown-content' class attribute,
-        and it must have a load method. that call open() at the end of it. XXX consider redoing this logic!!!!
+        it must have a load method that invokes open() at the end of it,
+        and it must add invoke Dropdown.add() with itself as the parameter after it has initialized the required properties.
+        
+        XXX consider redoing this logic!!!!
+        
+        XXX the logic of open(), close(), toggle() and load() needs to be re-examined!!!
+
     */
     static add(dropdown) {
 
@@ -29,7 +35,7 @@ class Dropdown {
                 this.open(dropdown.dropdownCon);
 
                 // and raise the dropdown's isOpen flag.
-                dropdown.isOpen = true;
+                dropdown.isOpen = true; // XXX why not pass the whole dropdown into Dropdown.open() and let it raise the isOpen flag????
         }
 
         // Add close method to dropdown
@@ -55,7 +61,7 @@ class Dropdown {
                 if (dropdown.isOpen) dropdown.close();
 
                 // else, invoke load() on dropdown.
-                else dropdown.load();
+                else dropdown.load(); // XXX why is this not dropdown.open()????
         }
 
         // Add dropdown to global list.

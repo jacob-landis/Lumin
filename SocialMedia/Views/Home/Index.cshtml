@@ -119,9 +119,27 @@
                     @* A slot for a message from caller. (ex. Select image for profile picture.) *@
                     <div id="selectImagePrompt"></div>
 
-                    <input type="file" id="imageModalUploadImage" name="file" class="fileInput"> @* XXX where is this used? *@
+                    @* 
+                        This is normally visible on the page, but has been hidden by a stylesheet. It is 
+                        activated when the label below with the id of "btnImageModalUploadImage" is clicked on.
+                    *@
+                    <input type="file" id="imageModalUploadImage" name="file" class="fileInput">
 
-                    @* Btn image upload modal. Opens image upload modal. *@
+                    @* 
+                        Btn image upload modal. Effectively...
+
+                        Because of the 'for' attribute, clicking this label triggers file upload process of the file input elm.
+
+                        I find this behavior confusing, and I have a feeling it will be confusing to others, so I want to be extra
+                        clear that this behavior is part of HTML.
+
+                        The reason for this behavior is that there is a feature of forms where if you click on the label, the
+                        input is selected.
+                        Ex. First Name [___________]
+                        If this were a webpage, and you clicked on "First Name", your cursor would go to the text input (that is, if 
+                        the value of the label's 'for' attribute was the id of the text input).
+                        A similar thing happens when it is a file input.
+                    *@
                     <label for="imageModalUploadImage" id="btnImageModalUploadImage">
                         @* (compound icon) *@
                         <i id="plusIcon" class="fa fa-plus"></i>

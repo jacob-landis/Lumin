@@ -16,11 +16,26 @@ FEATURES
 	- A relationship is a ProfileID pair (to and from).
 	- A bool type field tracks whether the invitation has been accepted.
 	- Friend status is attached to the profile view model and full profile view model when sent to the client.
-		- Status: me,			 Response: Do nothing.
-		- Status: userRequested, Response: Attach a label that says "Pending".
-		- Status: friend:		 Response: Attach a button labeled "Remove" that sends delete request to server to remove friend.
-		- Status: requestedUser, Response: Attach a button labeled "Accept" that sends an update request to server to accept.
-		- Status: unrelated,	 Response: Attach a button labeled "Add" that sends a post request to server to add make request.
+
+		- Status: me
+			Description: This profile is the current user's profile.
+			Response: Do nothing.
+
+		- Status: userRequested
+			Description: The current user requested them.
+			Response: Attach a label that says "Pending".
+
+		- Status: friend
+			Description: Either sent to or from the current user but either case was accepted.
+			Response: Attach a button labeled "Remove" that sends delete request to server to remove friend.
+
+		- Status: requestedUser
+			Description: They requested the current user.
+			Response: Attach a button labeled "Accept" that sends an update request to server to accept.
+
+		- Status: unrelated
+			Description: No request has been made between them and the current user.
+			Response: Attach a button labeled "Add" that sends a post request to server to add make request.
 
 
 PATTERNS
