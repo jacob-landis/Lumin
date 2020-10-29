@@ -90,6 +90,7 @@ class ImageDropdown {
             // if the dropdown is opened for the purpose of selecting an image for something
             clickedImageCard => () => callback(clickedImageCard)
             :
+            // XXX this will break if the user has enough images to trigger lazy loading. The index will be wrong. XXX
             clickedImageCard => () => FullSizeImageModal.load(this.imageBox.contentBox.content.indexOf(clickedImageCard)));
 
         // LAZY LOADING xxx XXX why are there two of these??

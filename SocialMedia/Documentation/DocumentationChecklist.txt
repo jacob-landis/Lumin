@@ -95,9 +95,9 @@ CLIENT
 		/Modals
 			ConfirmModal *** DONE
 			ContextModal DONE
-			CreatePostModal
-			FullSizeImageModal
-			HelpModal
+			CreatePostModal *** DONE
+			FullSizeImageModal *** DONE
+			HelpModal DONE
 			Modal
 			ProfileModal
 			UploadImageModal
