@@ -98,8 +98,8 @@ CLIENT
 			CreatePostModal *** DONE
 			FullSizeImageModal *** DONE
 			HelpModal DONE
-			Modal
-			ProfileModal
+			Modal *** DONE
+			ProfileModal *** DONE
 			UploadImageModal
 		/TagBuilders
 			CommentCard

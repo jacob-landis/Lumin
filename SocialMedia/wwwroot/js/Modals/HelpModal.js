@@ -12,7 +12,7 @@ class HelpModal {
     */
 
     /*
-        Sudo-inherits from the sudo-base class
+        Sudo-inherits from the sudo-base class.
         Gets handles on all necessary components.
     */
     static initialize() {
