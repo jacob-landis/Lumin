@@ -100,7 +100,7 @@ CLIENT
 			HelpModal DONE
 			Modal *** DONE
 			ProfileModal *** DONE
-			UploadImageModal
+			UploadImageModal *** DONE
 		/TagBuilders
 			CommentCard
 			ContextOption
