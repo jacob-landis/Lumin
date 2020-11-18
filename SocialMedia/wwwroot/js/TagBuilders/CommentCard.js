@@ -51,7 +51,7 @@ class CommentCard {
         // HTML root.
         this.tag = ViewUtil.tag('div', { classList: 'comment' });
 
-        // 
+        // Sibling to OptsSection. Contains all but btnOpts.
         let mainSection = ViewUtil.tag('div', { classList: 'commentMainSection' });
         let optsSection = ViewUtil.tag('div', { classList: 'commentOptsSection' });
         let contentSection = ViewUtil.tag('div', { classList: 'commentContentSection' });
@@ -72,43 +72,73 @@ class CommentCard {
 
             // Append the options button to the options section.
             optsSection.append(this.btnOpts);
-            
+
+            // Set click callback of btnOpts to open context menu with an edit and delete option.
             this.btnOpts.onclick = e => ContextModal.load(e, [
+
+                // Edit: start comment edit.
                 new ContextOption(this.editIcon, () => this.commentEditor.start()),
+
+                // Delete: prompt for confirmation to delete.
                 new ContextOption(Icons.deleteComment(),
                     () => ConfirmModal.load('Are you sure you want to delete this comment?',
                         confirmation => {
                             if (!confirmation) return;
+
+                            // Delete comment.
                             this.remove();
                         }
                     )
                 )
             ]);
         }
+
+        // Add this comment to the collection.
         CommentCard.commentCards.push(this);
     }
 
     /*
         PUBLIC
 
-        Remove comment record from host.
-        Remove any coppies of this comment card.
+        Remove this comment's record from the host.
+        Remove any copies of this comment card.
         Reduce comment count by one on every copy of the comment's parent post card.
     */
     remove() {
+
+        // Remove this comment's record from the host.
         Repo.removeComment(this.comment.commentId);
+
+        // For each comment card in the collection,
         CommentCard.commentCards.forEach(c => {
+
+            // if it's CommentID matches this one,
             if (c.comment.commentId == this.comment.commentId) {
+
+                // remove it's root elm,
                 ViewUtil.remove(c.tag);
+
+                // and override it's collection reference with null.
                 c = null;
             }
         });
+
+        // Clean up collection by filtering out nulls.
         Util.filterNulls(CommentCard.commentCards);
+
+        // Delete this comment data from memory. XXX do other copies get deleted from memory? XXX Do the next lines run correctly? XXX
         delete this;
 
+        // For each post card in collection,
         PostCard.postCards.forEach(p => {
+
+            // if this comment belongs to the post,
             if (p.post.postId == this.comment.postId) {
+
+                // decrement the comment count display elm,
                 p.setCommentCount(p.totalCommentCount - 1);
+
+                // and decrement the count data property.
                 p.loadedCommentCount--;
             }
         });

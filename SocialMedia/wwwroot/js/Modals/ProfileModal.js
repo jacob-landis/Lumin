@@ -66,13 +66,14 @@ class ProfileModal {
         this.imageWrapper = document.getElementById('profileImages');
         this.profileBioWrapper = document.getElementById('profileBioWrapper');
         this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
-        this.profileBioWrapper.append(this.bioEditor.tag);
 
         // Construct an ImageBox for the profile picture and get a handle on it.
         this.profilePictureBox = new ImageBox(document.getElementById('profileModalPictureWrapper'), '', 'profile-picture sqr', null);
 
         // Construct an Editor for profile bio and get a handle on it.
         this.bioEditor = new Editor(this.btnChangeBio, '', 'bio', 250, bio => Repo.updateBio(bio));
+
+        this.profileBioWrapper.append(this.bioEditor.tag);
     }
 
     /*

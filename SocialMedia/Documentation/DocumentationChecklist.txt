@@ -5,6 +5,8 @@ DONE = commented
 XXXXXXXXXXXXXXXXXXXXXXX Rename any occurance of id to {type}Id
 XXXXXXXXXXXXXXXXXXXXXXX Check for null, false, nully, and falsy checking
 XXXXXXXXXXXXXXXXXXXXXXX Check for dead code, dead namespace imports
+XXXXXXXXXXXXXXXXXXXXXXX Rename callbacks to things like onCommentResults or onImageClick
+XXXXXXXXXXXXXXXXXXXXXXX Make FullProfile object. / Make modle classes for records returning from the host
 
 File Structure *** (by this I mean document the file structure)
 
@@ -102,8 +104,8 @@ CLIENT
 			ProfileModal *** DONE
 			UploadImageModal *** DONE
 		/TagBuilders
-			CommentCard
-			ContextOption
+			CommentCard *** DONE
+			ContextOption *** DONE
 			ImageCard
 			LikeCard
 			PostCard

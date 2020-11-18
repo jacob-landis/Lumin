@@ -4,7 +4,44 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <UserSecretsId>4a15e646-009f-4833-9763-fe11c3806e23</UserSecretsId>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\ts\Ajax.ts" />
+    <Content Remove="wwwroot\ts\Components\ContentBox.ts" />
+    <Content Remove="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
+    <Content Remove="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
+    <Content Remove="wwwroot\ts\Components\Editor.ts" />
+    <Content Remove="wwwroot\ts\Components\ImageBox.ts" />
+    <Content Remove="wwwroot\ts\Dropdowns\Dropdown.ts" />
+    <Content Remove="wwwroot\ts\Dropdowns\FriendDropdown.ts" />
+    <Content Remove="wwwroot\ts\Dropdowns\ImageDropdown.ts" />
+    <Content Remove="wwwroot\ts\IAppendable.ts" />
+    <Content Remove="wwwroot\ts\Main.ts" />
+    <Content Remove="wwwroot\ts\Modals\ConfirmModal.ts" />
+    <Content Remove="wwwroot\ts\Modals\ContextModal.ts" />
+    <Content Remove="wwwroot\ts\Modals\CreatePostModal.ts" />
+    <Content Remove="wwwroot\ts\Modals\FullSizeImageModal.ts" />
+    <Content Remove="wwwroot\ts\Modals\HelpModal.ts" />
+    <Content Remove="wwwroot\ts\Modals\Modal.ts" />
+    <Content Remove="wwwroot\ts\Modals\ProfileModal.ts" />
+    <Content Remove="wwwroot\ts\Modals\UploadImageModal.ts" />
+    <Content Remove="wwwroot\ts\PublicPosts.ts" />
+    <Content Remove="wwwroot\ts\Repo.ts" />
+    <Content Remove="wwwroot\ts\TagBuilders\Card.ts" />
+    <Content Remove="wwwroot\ts\TagBuilders\CommentCard.ts" />
+    <Content Remove="wwwroot\ts\TagBuilders\ContextOption.ts" />
+    <Content Remove="wwwroot\ts\TagBuilders\ImageCard.ts" />
+    <Content Remove="wwwroot\ts\TagBuilders\LikeCard.ts" />
+    <Content Remove="wwwroot\ts\TagBuilders\PostCard.ts" />
+    <Content Remove="wwwroot\ts\TagBuilders\ProfileCard.ts" />
+    <Content Remove="wwwroot\ts\User.ts" />
+    <Content Remove="wwwroot\ts\Util\Behavior.ts" />
+    <Content Remove="wwwroot\ts\Util\Icons.ts" />
+    <Content Remove="wwwroot\ts\Util\Util.ts" />
+    <Content Remove="wwwroot\ts\Util\ViewUtil.ts" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.9.11" />
@@ -18,6 +55,42 @@
   <ItemGroup>
     <Folder Include="wwwroot\ImgThumb\" />
     <Folder Include="wwwroot\ImgFull\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\ts\Ajax.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\ContentBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\Editor.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\ImageBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Dropdowns\Dropdown.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Dropdowns\FriendDropdown.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Dropdowns\ImageDropdown.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\IAppendable.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Main.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\ConfirmModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\ContextModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\CreatePostModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\FullSizeImageModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\HelpModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\Modal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\ProfileModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\UploadImageModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\PublicPosts.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Repo.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\TagBuilders\Card.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\TagBuilders\CommentCard.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\TagBuilders\ContextOption.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\TagBuilders\ImageCard.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\TagBuilders\LikeCard.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\TagBuilders\PostCard.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\TagBuilders\ProfileCard.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\User.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Util\Behavior.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Util\Icons.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Util\Util.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Util\ViewUtil.ts" />
   </ItemGroup>
 
 </Project>
