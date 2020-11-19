@@ -147,7 +147,7 @@ class CreatePostModal extends Modal {
                 // XXX placeholder until the fullsize version arrived.
 
                 // and load image into selected image container by id so the fullsize verision is requested and displayed.
-                this.selectedImageBox.load(imageCard.rawImage.id);
+                this.selectedImageBox.load(imageCard.image.id);
             }
         );
     }
@@ -168,7 +168,7 @@ class CreatePostModal extends Modal {
             imageCard => () => {
 
                 // load image into selected image container by id so the fullsize verision is requested and displayed,
-                this.selectedImageBox.load(imageCard.rawImage.id);
+                this.selectedImageBox.load(imageCard.image.id);
 
                 // and close the image dropdown.
                 imageDropdown.close();
@@ -216,7 +216,7 @@ class CreatePostModal extends Modal {
         else {
 
             // Set imageId of post to the attached image's id or to 0 if no image was attached.
-            let imageId = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.rawImage.id : 0;
+            let imageId = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.id : 0;
 
             // Prep the caption and ImageID to be sent off.
             let post = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId }); // XXX there is a method in Repo for this. XXX

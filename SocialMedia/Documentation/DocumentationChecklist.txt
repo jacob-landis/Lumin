@@ -7,6 +7,7 @@ XXXXXXXXXXXXXXXXXXXXXXX Check for null, false, nully, and falsy checking
 XXXXXXXXXXXXXXXXXXXXXXX Check for dead code, dead namespace imports
 XXXXXXXXXXXXXXXXXXXXXXX Rename callbacks to things like onCommentResults or onImageClick
 XXXXXXXXXXXXXXXXXXXXXXX Make FullProfile object. / Make modle classes for records returning from the host
+XXXXXXXXXXXXXXXXXXXXXXX Use defualt parameters where the ternary operator is used to give defaults to properties
 
 File Structure *** (by this I mean document the file structure)
 

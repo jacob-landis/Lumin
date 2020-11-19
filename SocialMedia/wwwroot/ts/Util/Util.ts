@@ -26,7 +26,7 @@
         );
     }
 
-    static formatDateTime(dateTime) {
+    static formatDateTime(dateTime: string) {
 
         let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 

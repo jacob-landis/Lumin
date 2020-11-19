@@ -115,7 +115,7 @@ class ImageDropdown extends Dropdown {
     public convert(callback: (imageCard: ImageCard) => void): void {
 
         // Loop through each image card in the image box and change it's callback to the one provided.
-        this.imageBox.content.forEach(i => (<ImageCard> i).click = imageCard => callback(imageCard));
+        this.imageBox.content.forEach(i => (<ImageCard> i).onImageClick = imageCard => callback(imageCard));
 
         // Bring the dropdown to the foreground.
         this.rootElm.style.zIndex = `${Modal.openModals.length + 2}`; // XXX test if this can be exchanged for the last argument in load(). XXX

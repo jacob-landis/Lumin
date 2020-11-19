@@ -118,7 +118,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
         // If a classList or click callback was ever provided, apply them to the imageCard.
         if (this.heldImageClassList) imageCard.rootElm.classList = this.heldImageClassList;
-        if (this.heldImageClick) imageCard.click = this.heldImageClick;
+        if (this.heldImageClick) imageCard.onImageClick = this.heldImageClick;
 
         // Append tag of new image card to this image box's main HTML elm.
         this.rootElm.append(imageCard.rootElm);

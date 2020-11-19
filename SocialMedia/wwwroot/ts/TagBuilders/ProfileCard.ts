@@ -48,7 +48,7 @@
             nextCase: 'userRequested'
         }
     }
-
+    profile;
     constructor(profile) {
         this.profile = profile;
         this.case = ProfileCard.cases[this.profile.relationToUser];

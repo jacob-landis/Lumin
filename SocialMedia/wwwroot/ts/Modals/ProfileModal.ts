@@ -212,7 +212,7 @@ class ProfileModal extends Modal {
             ProfileCard.changeUserProfilePicture(null, imageCard);
 
             // and send an update request to the host to change the profile picture in the profile record.
-            Repo.updateProfilePicture(imageCard.rawImage.id, null, null,
+            Repo.updateProfilePicture(imageCard.image.id, null, null,
 
                 // When the host sends back the fullsize version of the new profile picture, load it into the profile modal display.
                 imageCard => this.profilePictureBox.loadImage(imageCard));

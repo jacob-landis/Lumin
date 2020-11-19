@@ -1,4 +1,4 @@
-﻿class PostCard {
+﻿class PostCard extends Card {
 
     static list(posts) {
         let postCards = [];
@@ -9,8 +9,11 @@
     }
 
     static postCards = [];
+    
+    constructor(rootElm: HTMLElement, post: PostRecord) {
 
-    constructor(post) {
+        super(rootElm);
+
         this.profileId = post.profile.profileId;
         this.post = post;
         this.postId = post.postId;
@@ -21,11 +24,11 @@
         // POST CONSTRUCTION
         // __________________________________ TAG
 
-        this.tag = ViewUtil.tag('div', { classList: 'postCard' });
+        this.rootElm = ViewUtil.tag('div', { classList: 'postCard' });
         let postSection = ViewUtil.tag('div', { classList: 'postSection' });
         let commentSection = ViewUtil.tag('div', { classList: 'commentSection' });
 
-        this.tag.append(postSection, commentSection);
+        this.rootElm.append(postSection, commentSection);
 
         // __________________________________ COMMENT INPUT
 
@@ -128,12 +131,12 @@
 
         // triggered when image is done loading
         this.observer = new MutationObserver(() => this.resizeCommentBox());
-        this.observer.observe(this.tag, { attributes: true });
+        this.observer.observe(this.rootElm, { attributes: true });
         this.postImageWrapper.onLoadEnd = () => this.mutate();
 
         // unload or reload posts above and below the position of the viewport
         window.addEventListener('scroll', () => {
-            let offset = this.tag.offsetTop - window.pageYOffset;
+            let offset = this.rootElm.offsetTop - window.pageYOffset;
             
             if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
                 if (this.hasImage) this.postImageWrapper.unload();
@@ -188,5 +191,5 @@
         delete this;
     }
     // to trigger the mutation observer which triggers a resize. the assigned id is never used.
-    mutate() { this.tag.id = 'loadedPost'; }
+    mutate() { this.rootElm.id = 'loadedPost'; }
 }
