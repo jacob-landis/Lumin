@@ -8,6 +8,6 @@ class ContextOption extends Card {
         rootElm.classList.add('context-option');
         rootElm.onclick = onOptionClick;
 
-        super(rootElm);
+        super(rootElm); 
     }
 }

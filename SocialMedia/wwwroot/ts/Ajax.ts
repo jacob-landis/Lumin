@@ -1,107 +1,106 @@
 ﻿class Ajax {
 
-    static JSONstring(string) { return JSON.stringify({ str: string }); }
+    private static JSONstring(string): string { return JSON.stringify({ str: string }); }
 
     //LIKE
-    static unlike(contentType: string, contentId: number) {
-        this.call(`apilike/unlike/${contentType}/${contentId}`, "POST");
+    public static unlike(contentType: ContentType, contentId: number): void {
+        this.call(`apilike/unlike/${contentType.toString}/${contentId}`, "POST");
     }
 
-    static postLike(contentType: string, contentId: number) {
-        this.call(`apilike/like/${contentType}/${contentId}`, "POST");
+    public static postLike(contentType: ContentType, contentId: number): void {
+        this.call(`apilike/like/${contentType.toString}/${contentId}`, "POST");
     }
 
-    static getLikes(contentType: string, contentId: number) {
-        this.call(`apilike/likes/${contentType}/${contentId}`, "GET");
+    public static getLikes(contentType: ContentType, contentId: number): void {
+        this.call(`apilike/likes/${contentType.toString}/${contentId}`, "GET");
     } // NOT IN USE
 
 
     //COMMENT
-    static deleteComment(commentId: number) {
+    public static deleteComment(commentId: number): void {
         this.call(`apicomment/deletecomment/${commentId}`, "POST");
     }
 
-    static updateComment(commentId: number, commentText: string) {
+    public static updateComment(commentId: number, commentText: string): void {
         this.call(`apicomment/updatecomment/${commentId}`, "POST", null, commentText);
     }
 
-    static postComment(commentForm: string, onCopyResults: (commentCard: CommentCard) => void) {
+    public static postComment(commentForm: string, onCopyResults: (commentCard: CommentCard) => void): void {
         this.call(
             "apicomment", 
             "POST",
-            results => onCopyResults(new CommentCard(results)),
+            results => onCopyResults(new CommentCard(JSON.parse(results))),
             commentForm
         );
     }
 
-    static getComments(postId: number, skip: number, take: number, onCommentResults: (commentCards: CommentCard[]) => void) {
+    public static getComments(postId: number, skip: number, take: number, onCommentResults: (commentCards: CommentCard[]) => void): void {
         this.call(
             `apicomment/postcomments/${postId}/${skip}/${take}`,
             "GET",
-            commentResults => onCommentResults(CommentCard.list(commentResults))
+            (commentResults: string)=> onCommentResults(CommentCard.list(JSON.parse(commentResults)))
         );
     }
 
-    static getCommentCount(postId: number, onCommentCountResults: (commentCount) => void) {
+    public static getCommentCount(postId: number, onCommentCountResults: (commentCount) => void): void {
         this.call(`apicomment/commentcount/${postId}`, "GET", onCommentCountResults);
     }
 
     //PROFILE
-    static updateBio(bioText: string) {
+    public static updateBio(bioText: string): void {
         this.call("apiprofile/updatebio", "POST", null, this.JSONstring(bioText));
     }
 
-    static updateProfilePicture(
+    public static updateProfilePicture(
         imageId: number,
-        imageClassList: string,
-        onImageClick: (targetImageCard: ImageCard) => void,
-        onCopyResults: (fullsizeImageCard: ImageCard) => void
-    ) {
+        imageClassList?: string,
+        onImageClick?: (targetImageCard: ImageCard) => void,
+        onCopyResults?: (fullsizeImageCard: ImageCard) => void
+    ): void {
         this.call(
             `apiprofile/updateprofilepicture/${imageId}`,
             "POST",
-            imageResults => onCopyResults(new ImageCard(imageResults, imageClassList, onImageClick))
+            imageResults => onCopyResults(new ImageCard(JSON.parse(imageResults), imageClassList, onImageClick))
         );
     }
 
-    static getProfile(profileId: number, onProfileResults: (profileCard: ProfileCard) => void) {
+    public static getProfile(profileId: number, onProfileResults: (profileCard: ProfileCard) => void): void {
         this.call(
             `apiprofile/${profileId}`,
             "GET",
-            profileResults => onProfileResults(new ProfileCard(profileResults))
+            profileResults => onProfileResults(new ProfileCard(JSON.parse(profileResults)))
         );
     }
 
-    static getFullProfile(profileId: number, onFullProfileResults: (fullProfile) => void) {
+    public static getFullProfile(profileId: number, onFullProfileResults: (fullProfile: FullProfileRecord) => void): void {
         this.call(
             `apiprofile/fullprofile/${profileId}`,
             "POST",
-            fullProfileResults => {
-                fullProfileResults.profilePicture = new ImageCard(fullProfileResults.profilePicture);
-                onFullProfileResults(fullProfileResults);
+            (fullProfileResults: string) => {
+                onFullProfileResults(JSON.parse(fullProfileResults));
             }
         );
     }
 
-    static getCurrentProfile(onCurrentProfileResults: (currentProfile) => void) {
+    public static getCurrentProfile(onCurrentProfileResults: (currentProfile) => void): void {
         this.call("apiprofile/currentprofile", "GET", onCurrentProfileResults);
     }
 
 
     //FRIEND
-    static deleteFriend(profileId: number) {
+    public static deleteFriend(profileId: number): void {
         this.call(`apifriend/deletefriend/${profileId}`, "POST");
     } // remove
 
-    static acceptFriendRequest(profileId: number) {
+    public static acceptFriendRequest(profileId: number): void {
         this.call(`apifriend/acceptrequest/${profileId}`, "POST");
     } // accept
 
-    static sendFriendRequest(profileId: number) {
+    public static sendFriendRequest(profileId: number): void {
         this.call(`apifriend/createrequest/${profileId}`, "POST");
     } // request
     
-    static getFriends(profileId: number, searchText: string, onProfileResults: (profileCards: ProfileCard[]) => void) {
+    public static getFriends(profileId: number, searchText: string, onProfileResults: (profileCards: ProfileCard[]) => void): void {
 
         let newId = profileId ? profileId : 0;
         let newSearch = this.JSONstring(searchText ? searchText : "NULL");
@@ -109,97 +108,97 @@
         this.call(
             `apifriend/friends/${newId}`,
             "POST", 
-            profileResults => onProfileResults(ProfileCard.list(profileResults)),
+            (profileResults: string) => onProfileResults(ProfileCard.list(JSON.parse(profileResults))),
             newSearch
         );
     }
 
 
     //IMAGE
-    static deleteImage(imageId: number) {
+    public static deleteImage(imageId: number): void {
         this.call(`apiimage/deleteimage/${imageId}`, "POST");
     }
 
-    static postImage(imageAsString: string, onCopyResults: (returnImageCard: ImageCard) => void) {
+    public static postImage(imageAsString: string, onCopyResults: (returnImageCard: ImageCard) => void): void {
         this.call(
             "apiimage", 
             "POST", 
-            imageCopy => onCopyResults(new ImageCard(imageCopy)),
+            (imageCopy: string) => onCopyResults(new ImageCard(JSON.parse(imageCopy))),
             imageAsString
         );
     }
 
-    static getProfileImages(
+    public static getProfileImages(
         profileId: number,
         skip: number,
         take: number,
         imageClassList: string,
         onImageClick: (targetImageCard: ImageCard) => void,
         onImageResults: (imageCards: ImageCard[]) => void
-    ) {
+    ): void {
         this.call(
             `apiimage/profileimages/${profileId}/${skip}/${take}`, 
             "GET",
-            imageResults => onImageResults(ImageCard.list(imageResults, imageClassList, onImageClick))
+            (imageResults: string) => onImageResults(ImageCard.list(JSON.parse(imageResults), imageClassList, onImageClick))
         );
     }
 
-    static getProfileImagesCount(profileId: number, onCountResults: (imageCount) => void) {
+    public static getProfileImagesCount(profileId: number, onCountResults: (imageCount) => void): void {
         this.call(`apiimage/profileimagescount/${profileId}`, "GET", onCountResults);
     }
 
-    static getImage(
-        profileId: number,
+    public static getImage(
+        imageId: number,
         thumb: boolean,
         imageClassList: string,
         onImageClick: (targetImageCard: ImageCard) => void,
         onImageResults: (imageCard: ImageCard) => void
-    ) {
+    ): void {
         this.call(
-            `apiimage/${profileId}/${thumb ? 1 : 0}`, 
+            `apiimage/${imageId}/${thumb ? 1 : 0}`, 
             "GET",
-            imageResults => onImageResults(new ImageCard(imageResults, imageClassList, onImageClick))
+            (imageResults: string) => onImageResults(new ImageCard(JSON.parse(imageResults), imageClassList, onImageClick))
         );
     }
 
 
     //POST
-    static deletePost(postId: number) {
+    public static deletePost(postId: number): void {
         this.call(`apipost/deletepost/${postId}`, "POST");
     }
 
-    static updatePost(postId: number, postCaptionText: string) {
+    public static updatePost(postId: number, postCaptionText: string): void {
         this.call(`apipost/updatepost/${postId}`, "POST", null, this.JSONstring(postCaptionText));
     }
 
-    static submitPost(postForm: string, onCopyResults: (postCard: PostCard) => void) {
+    public static submitPost(postForm: string, onCopyResults: (postCard: PostCard) => void): void {
         this.call(
             "apipost",
             "POST",
-            copyResults => onCopyResults(new PostCard(copyResults)),
+            (copyResults: string) => onCopyResults(new PostCard(JSON.parse(copyResults))),
             postForm
         );
     }
 
-    static getPublicPosts(skip: number, take: number, onPostResults: (postCards: PostCard[]) => void) {
+    public static getPublicPosts(skip: number, take: number, onPostResults: (postCards: PostCard[]) => void): void {
         this.call(
             `apipost/publicposts/${skip}/${take}`,
             "GET",
-            postResults => onPostResults(PostCard.list(postResults))
+            (postResults: string) => onPostResults(PostCard.list(JSON.parse(postResults)))
         );
     }
 
-    static getProfilePosts(profileId: number, skip: number, take: number, onPostResults: (postCards: PostCard[]) => void) {
+    public static getProfilePosts(profileId: number, skip: number, take: number, onPostResults: (postCards: PostCard[]) => void): void {
         this.call(
             `apipost/profileposts/${profileId}/${skip}/${take}`, 
             "GET",
-            postResults => onPostResults(PostCard.list(postResults))
+            (postResults: string) => onPostResults(PostCard.list(JSON.parse(postResults)))
         );
     }
 
 
     //CALL
-    private static call(path: string, method: string, onResults?: (results: string) => void, data?: string) {
+    private static call(path: string, method: string, onResults?: (results: string) => void, data?: string): void {
 
         // check server for current user (redirect if session is expired)
         this.finalCall("apiprofile/confirmuser", "GET", confirmed => {
@@ -208,7 +207,7 @@
         });
     }
 
-    private static finalCall(path: string, method: string, onResults?: (results: string) => void, data?: string) {
+    private static finalCall(path: string, method: string, onResults?: (results: string) => void, data?: string): void {
         $.ajax({
             url: "/api/" + path,
             contentType: "application/json",

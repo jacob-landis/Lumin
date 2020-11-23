@@ -1,7 +1,10 @@
 ﻿class User {
-    static set id(id) { User._id = id; }
-    static get id() { return User._id; }
+    private static _id: number;
+    private static _profilePictureId: number;
 
-    static set profilePictureId(id) { User._profilePictureId = id; }
+    static set profileId(profileId) { User._id = profileId; }
+    static get profileId() { return User._id; }
+
+    static set profilePictureId(profileId) { User._profilePictureId = profileId; }
     static get profilePictureId() { return User._profilePictureId; }
 }

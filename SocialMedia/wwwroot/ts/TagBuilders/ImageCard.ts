@@ -6,11 +6,11 @@
         imageCard: ImageCard,
         newClassList: string = imageCard.rootElm.classList.value,
         newOnImageClick: (targetImageCard: ImageCard) => void = () => imageCard.rootElm.onclick
-    ) {
+    ): ImageCard {
         return new ImageCard(imageCard.image, newClassList, newOnImageClick);
     }
 
-    public static list(images: ImageRecord[], classList: string, onImageClick?: (targetImageCard: ImageCard) => void) {
+    public static list(images: ImageRecord[], classList: string, onImageClick?: (targetImageCard: ImageCard) => void): ImageCard[] {
         if (!images) return null;
         let imageCards = [];
         images.forEach(i => imageCards.push(new ImageCard(i, classList, onImageClick)));
@@ -18,32 +18,32 @@
     }
 
     /*
-         
+         Returns an anonymous function that is meant to be assigned to an oncontextmenu.
+
     */
     // A property that that is assigned 
     public static get userOwnerOptionSet() {
-        // a function that takes a MouseEvent,
-        return (e: MouseEvent) => {
-            // and returns a function that takes an ImageCard,
-            return (imageCard: ImageCard) => {
-                // and loads the context modal with options and the mouseEvent.
-                return contextModal.load(e, [
 
-                    new ContextOption(Icons.createPost(), () => {
-                        imageDropdown.close();
-                        createPostModal.load(imageCard);
-                    }),
-                    new ContextOption(Icons.deleteImage(), () => {
-                        confirmModal.load('Are you sure you want to delete this image?', confirmation => {
-                            if (!confirmation) return;
-                            imageCard.remove();
+        // A function that returns a function that takes an ImageCard,
+        // An oncontextmenu callback that loads the onImageClick into buttons.
+        return (event: MouseEvent) => (targetImageCard: ImageCard) => 
 
-                            //return answer == false? null : imageCard.remove(); // TEST THIS XXXXXXXXXXXXX
-                        });
-                    })
-                ]);
-            }
-        }
+            // and loads the context modal with options and the mouseEvent.
+            contextModal.load(event, [
+
+                new ContextOption(Icons.createPost(), () => {
+                    imageDropdown.close();
+                    createPostModal.load(targetImageCard);
+                }),
+                new ContextOption(Icons.deleteImage(), () => {
+                    confirmModal.load('Are you sure you want to delete this image?', confirmation => {
+                        if (!confirmation) return;
+                        targetImageCard.remove();
+
+                        //return answer == false? null : imageCard.remove(); // TEST THIS XXXXXXXXXXXXX
+                    });
+                })
+            ]);
     }
 
     // /STATIC
@@ -59,8 +59,8 @@
     set onImageClick(onImageClick: (targetImageCard: ImageCard) => void) {
 
         // Set the value of the two properties to a function that send this instance back through the onImageClick callback.
-        this._onImageClick   =
-        this.rootElm.onclick = () => onImageClick(this);
+        this.rootElm.onclick = (e) => onImageClick(this);
+        this._onImageClick = (e) => onImageClick(this);
     }
 
     public constructor(image: ImageRecord, classList?: string, onImageClick?: (targetImageCard: ImageCard) => void) {
@@ -77,7 +77,7 @@
         this.onImageClick = onImageClick ? onImageClick : Behavior.singleFullSizeImage;
 
         // R-Click on imageCard action.
-        this.rootElm.oncontextmenu = image.profileId == User.id ? ImageCard.userOwnerOptionSet : null;
+        this.rootElm.oncontextmenu = image.profileId == User.profileId ? ImageCard.userOwnerOptionSet : null;
 
         ImageCard.imageCards.push(this);
     }
@@ -87,7 +87,7 @@
 
         PostCard.postCards.forEach(p => {
             // Only need to remove tag. Cascading delete in db is done on server.
-            if (p.imageId == this.image.imageId) ViewUtil.remove(p.tag);
+            if (p.post.image.imageId == this.image.imageId) ViewUtil.remove(p.rootElm);
         });
 
         ImageCard.imageCards.forEach(i => {
@@ -101,7 +101,7 @@
         // XXX instead, fullsizeImage modal should change to the next or prev image (prev as default), and if singular THEN close.
         fullSizeImageModal.close();// temporary solution
         
-        delete this;
+        //delete this; XXX
     }
 
 }

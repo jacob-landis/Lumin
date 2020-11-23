@@ -1,38 +1,54 @@
-﻿class LikeCard {
+﻿class LikeCard extends Card {
 
-    static cardHandles = [];
+    static likeCards: LikeCard[] = [];
 
-    static btnLikeCallback;
+    static btnLikeCallback; // XXX don't know where this is used. XXX
 
-    constructor(likes, type, dateTime) {
-        let card = ViewUtil.tag('div', { classList: 'likeCard' });
+    public static changeAllContentInstances(referenceLikesRecord: LikesRecord) {
+        this.likeCards.forEach(c => {
+            if (
+                c.likesRecord.contentId == referenceLikesRecord.contentId
+                && c.likesRecord.contentType == referenceLikesRecord.contentType
+            ) {
+
+                c.likesRecord.count = c.likesRecord.hasLiked ? -1 : 1;
+                c.countDisplayElm.innerText = `${c.likesRecord.count}`;
+
+                c.btnLike.classList.toggle('hasLiked');
+
+                c.likesRecord.hasLiked = !c.likesRecord.hasLiked;
+            }
+        });
+    }
+
+    private likesRecord: LikesRecord;
+    private countDisplayElm: HTMLElement;
+    private btnLike: HTMLElement;
+
+    constructor(likes: LikesRecord, type: ContentType, dateTime: string) {
+        
+        super(ViewUtil.tag('div', { classList: 'likeCard' }));
+        
         let dateTimeStamp = ViewUtil.tag('div', { classList: 'contentPostDate', innerText: Util.formatDateTime(dateTime) });
 
-        this.contentId = likes.contentId;
-        this.hasLiked = likes.hasLiked;
-        this.type = type;
-        this.btnLike = ViewUtil.tag('i', { classList: 'fa fa-thumbs-up likeIcon ' + (this.hasLiked ? 'hasLiked' : '') });
-        this.count = ViewUtil.tag('div', { classList: 'likeCount', innerText: likes.count != 0 ? likes.count : '0' });
+        this.likesRecord = likes;
+        this.btnLike = ViewUtil.tag('i', { classList: 'fa fa-thumbs-up likeIcon ' + (this.likesRecord.hasLiked ? 'hasLiked' : '') });
+        this.countDisplayElm = ViewUtil.tag('div', { classList: 'likeCount', innerText: likes.count != 0 ? likes.count : '0' });
 
-        card.append(this.btnLike, this.count, dateTimeStamp);
+        this.rootElm.append(this.btnLike, this.countDisplayElm, dateTimeStamp);
 
         this.btnLike.onclick = () => {
-            
-            if (this.hasLiked) Repo.dislike(this.type, likes.contentId);
-            else Repo.like(this.type, likes.contentId);
 
-            LikeCard.cardHandles.forEach(c => {
-                if (c.contentId == this.contentId && c.type == this.type) {
-                    c.count.innerText = parseInt(c.count.innerText) + (c.hasLiked ? -1 : 1);
-                    c.btnLike.classList.toggle('hasLiked');
-                    c.hasLiked = !c.hasLiked;
-                }
+            // Update the record on the host.
+            if (this.likesRecord.hasLiked) Ajax.unlike(type, likes.contentId);
+            else Ajax.postLike(type, likes.contentId);
 
-            });
+            // Adjust like cards on all occurences of this content.
+            LikeCard.changeAllContentInstances(this.likesRecord);
         }
 
-        LikeCard.cardHandles.push(this);
-
-        return card;
+        LikeCard.likeCards.push(this);
     }
+
+
 }

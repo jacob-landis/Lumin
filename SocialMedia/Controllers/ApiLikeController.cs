@@ -29,13 +29,14 @@ namespace SocialMedia.Controllers
 
         /*
              Returns the number of likes for a post or comment and wether the user has liked the post or comment.
-             The PostID or CommentID is also attache.
+             The PostID or CommentID is also attached.
         */
         [HttpGet("likes/{contentType}/{contentId}")]
-        public LikeModel GetCommentLikes(int contentType, int contentId) =>
+        public LikeModel GetContentLikes(int contentType, int contentId) =>
             new LikeModel
             {
                 ContentId = contentId,
+                ContentType = contentType,
                 Count = likeRepo.CountByContentId(contentType, contentId),
                 HasLiked = likeRepo.HasLiked(contentType, contentId, currentProfile.id)
             };
@@ -59,7 +60,7 @@ namespace SocialMedia.Controllers
         [HttpPost("like/{contentType}/{contentId}")]
         public void Like(int contentType, int contentId)
         {
-            // XXX Confirm that use has not already liked!!!
+            // XXX Confirm that user has not already liked!!!
             Like like = new Like
             {
                 DateTime = DateTime.UtcNow, // Current datetime.

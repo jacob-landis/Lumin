@@ -51,7 +51,7 @@ HOST
 				CommentModel DONE
 				CreateModel *** DONE
 				FullProfileModel DONE
-				LikeModel DONE
+				LikeModel *** DONE
 				LoginModel DONE
 				PostModel DONE
 				ProfileModel DONE

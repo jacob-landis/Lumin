@@ -34,8 +34,8 @@ class ContentBox implements IAppendable {
     public get length(): number { return this.content.length; }
 
     // Shortcuts to get the height and width properties of this content box's rootElm.
-    public get height(): number { return Util.getDivHeight(this.rootElm); }
-    public get width(): number { return Util.getDivWidth(this.rootElm); }
+    public get height(): number { return Util.getElmHeight(this.rootElm); }
+    public get width(): number { return Util.getElmWidth(this.rootElm); }
     
     // A shortcut to set the height properties of this content box's rootElm.
     // Used to make rootElm become scrollable at a specified height.

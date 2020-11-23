@@ -53,7 +53,7 @@ class ContextModal extends Modal {
         e.preventDefault();
 
         // Reposition this modal tag to the position of the mouse.
-        this.optionsBox.rootElm.style.left = e.clientX - this.optionsBox.width;
-        this.optionsBox.rootElm.style.top = e.clientY - this.optionsBox.height;
+        this.optionsBox.rootElm.style.left = `${e.clientX - this.optionsBox.width}`;
+        this.optionsBox.rootElm.style.top = `${e.clientY - this.optionsBox.height}`;
     }
 }

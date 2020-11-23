@@ -52,7 +52,11 @@ class CommentCard extends Card {
 
         // Append the comment editor.
         contentSection.append(commentEditor.rootElm);
-        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, new LikeCard(comment.likes, 2, comment.dateTime).rootElm);
+        mainSection.append(
+            new ProfileCard(comment.profile).rootElm,
+            contentSection,
+            new LikeCard(comment.likes, ContentType.Comment, comment.dateTime).rootElm
+        );
         this.rootElm.append(mainSection, optsSection);
 
         // If the user owns this comment, provide an options button.
@@ -90,7 +94,7 @@ class CommentCard extends Card {
         Remove any copies of this comment card.
         Reduce comment count by one on every copy of the comment's parent post card.
     */
-    remove() {
+    public remove(): void {
 
         // Remove this comment's record from the host.
         Ajax.deleteComment(this.comment.commentId);
@@ -113,7 +117,7 @@ class CommentCard extends Card {
         Util.filterNulls(CommentCard.commentCards);
 
         // Delete this comment data from memory. XXX do other copies get deleted from memory? XXX Do the next lines run correctly? XXX
-        delete this;
+        //delete this;
 
         // For each post card in collection,
         PostCard.postCards.forEach(p => {
@@ -125,7 +129,7 @@ class CommentCard extends Card {
                 p.setCommentCount(p.totalCommentCount - 1);
 
                 // and decrement the count data property.
-                p.loadedCommentCount--;
+                p.totalCommentCount--;
             }
         });
     }

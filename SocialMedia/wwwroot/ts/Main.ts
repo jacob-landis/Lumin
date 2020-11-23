@@ -15,7 +15,7 @@ class Main {
     static navBar;
 
     static initialize(profile) {
-        User.id = profile.profileId;
+        User.profileId = profile.profileId;
         User.profilePictureId = profile.profilePicture;
 
         this.navBar = document.getElementById("navBar"); // used to asses height of display port by other classes
@@ -116,7 +116,7 @@ class Main {
         document.getElementById('btnOpenHelpModal').onclick = () => helpModal.open();
 
         // OPEN USER PROFILE MODAL
-        document.getElementById('btnOpenUserProfileModal').onclick = () => profileModal.launch(User.id)
+        document.getElementById('btnOpenUserProfileModal').onclick = () => profileModal.launch(User.profileId)
 
         // CREATE POST
         document.getElementById('btnCreatePost').onclick = () => createPostModal.load()

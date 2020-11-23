@@ -1,39 +1,37 @@
 ﻿class Icons {
 
-    static buildIcon(suffixes) {
+    private static buildIcon(suffixes: string[]): HTMLElement {
         
-        let tag = ViewUtil.tag('div', { classList: 'icon' });
+        let elm: HTMLElement = ViewUtil.tag('div', { classList: 'icon' });
 
-        suffixes.forEach(s => tag.append(ViewUtil.tag('i', { classList: `fa fa-${s}` })));
+        suffixes.forEach(s => elm.append(ViewUtil.tag('i', { classList: `fa fa-${s}` })));
         
-        return tag;
+        return elm;
     }
 
+    public static acceptRequest(): HTMLElement { return Icons.buildIcon(['check icon-sm', 'user']) }
 
-    static acceptRequest = () => Icons.buildIcon(['check icon-sm', 'user'])
+    public static cancelRequest(): HTMLElement { return Icons.buildIcon(['times icon-sm', 'user']) }
 
-    static cancelRequest = () => Icons.buildIcon(['times icon-sm', 'user'])
+    public static removeFriend(): HTMLElement  { return Icons.buildIcon(['minus icon-sm', 'user']) }
 
-    static removeFriend  = () => Icons.buildIcon(['minus icon-sm', 'user'])
+    public static sendRequest(): HTMLElement   { return Icons.buildIcon(['plus icon-sm', 'user']) }
 
-    static sendRequest   = () => Icons.buildIcon(['plus icon-sm', 'user'])
+    public static deleteComment(): HTMLElement { return Icons.buildIcon(['minus icon-sm', 'comment']) }
 
-    static deleteComment = () => Icons.buildIcon(['minus icon-sm', 'comment'])
+    public static attachToPost(): HTMLElement  { return Icons.buildIcon(['paperclip icon-sm', 'sticky-note']) }
 
-    static attachToPost  = () => Icons.buildIcon(['paperclip icon-sm', 'sticky-note'])
+    public static deleteImage(): HTMLElement   { return Icons.buildIcon(['minus icon-sm', 'image']) }
 
-    static deleteImage   = () => Icons.buildIcon(['minus icon-sm', 'image'])
+    public static createPost(): HTMLElement    { return Icons.buildIcon(['plus icon-sm', 'sticky-note']) }
 
-    static createPost    = () => Icons.buildIcon(['plus icon-sm', 'sticky-note'])
+    public static deletePost(): HTMLElement    { return Icons.buildIcon(['minus icon-sm', 'sticky-note']) }
 
-    static deletePost    = () => Icons.buildIcon(['minus icon-sm', 'sticky-note'])
+    public static paperClip(): HTMLElement     { return Icons.buildIcon(['paperclip']) }
 
-    static paperClip     = () => Icons.buildIcon(['paperclip'])
+    public static confirm(): HTMLElement       { return Icons.buildIcon(['check']) }
 
-    static confirm       = () => Icons.buildIcon(['check'])
+    public static cancel(): HTMLElement        { return Icons.buildIcon(['times']) }
 
-    static cancel        = () => Icons.buildIcon(['times'])
-
-    static edit          = () => Icons.buildIcon(['edit'])
-
+    public static edit(): HTMLElement          { return Icons.buildIcon(['edit']) }
 }

@@ -65,7 +65,7 @@ class FullSizeImageModal extends Modal {
         this.imageControls = [this.imageCount, this.btnNext, this.btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
-        this.imageCon = new ImageBox(imageBoxElm, '', imageClassList, () => ()=> this.toggleControls());
+        this.imageCon = new ImageBox(imageBoxElm, imageClassList, () => ()=> this.toggleControls());
 
         // Set height of imageCon so the image is not overlapped by the nav bar.
         this.imageCon.height = window.innerHeight - Main.navBar.clientHeight;
@@ -111,16 +111,16 @@ class FullSizeImageModal extends Modal {
         this.reset(); // XXX reset is only two lines and is only invoked once here, replace this line with it's two line. XXX
 
         // Get a handle on the provided ProfileID or the current user's ProfileID.
-        this.profileId = profileId ? profileId : User.id;
+        this.profileId = profileId ? profileId : User.profileId;
 
         // Set the index in the current collection.
         this.index = clickedImageIndex;
 
         // Request the count of current collection by ProfileID.
-        Repo.imageCount(this.profileId,
+        Ajax.getProfileImagesCount(this.profileId,
 
             // When the count arrives.
-            imageCount => {
+            (imageCount: number) => {
 
                 // Get a handle on the count.
                 this.profileImagesCount = imageCount;
@@ -160,13 +160,13 @@ class FullSizeImageModal extends Modal {
             this.updateImageCount();
 
             // Request a list of images with a 1 long range. This is the only way to request by index.
-            Repo.images(this.profileId, this.index, 1, '', () => { },
+            Ajax.getProfileImages(this.profileId, this.index, 1, '', () => { },
 
                 // When the array of 1 image card arrives.
                 imageCards =>
 
                     // Load that image card into the fullsize image container.
-                    this.imageCon.load(imageCards[0].rawImage.id, null, ()=> ()=> this.toggleControls()));
+                    this.imageCon.load(imageCards[0].image.imageId, null, ()=> ()=> this.toggleControls()));
         }
     }
     

@@ -51,7 +51,7 @@ class Dropdown implements IAppendable {
     // NON-STATIC
 
     public rootElm: HTMLElement;
-    private contentElm: HTMLElement;
+    protected contentElm: HTMLElement;
     private frameElm: HTMLElement;
 
     protected constructor(rootElm: HTMLElement, contentElm: HTMLElement) {
@@ -94,7 +94,7 @@ class Dropdown implements IAppendable {
         Dropdown.openDropdowns[Dropdown.openDropdowns.indexOf(this)] = null;
 
         // Filter out the null value from modalCons.
-        Dropdown.openDropdowns = Util.filterNulls(Dropdown.openDropdowns);
+        Util.filterNulls(Dropdown.openDropdowns);
     }
 
     public toggle(): void {

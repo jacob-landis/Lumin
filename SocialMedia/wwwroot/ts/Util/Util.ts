@@ -1,24 +1,24 @@
 ﻿class Util {
 
-    static getDivHeight(div) {
+    public static getElmHeight(elm: HTMLElement): number {
         return Math.max(
-            div.scrollHeight,
-            div.offsetHeight,
-            div.clientHeight
+            elm.scrollHeight,
+            elm.offsetHeight,
+            elm.clientHeight
         );
     }
 
-    static getDivWidth(div) {
+    public static getElmWidth(elm: HTMLElement): number {
         return Math.max(
-            div.scrollWidth,
-            div.offsetWidth,
-            div.clientWidth,
+            elm.scrollWidth,
+            elm.offsetWidth,
+            elm.clientWidth,
         );
     }
 
-    static getDocumentHeight() {
-        let d = document.documentElement;
-        let b = document.body;
+    public static getDocumentHeight(): number {
+        let d: HTMLElement = document.documentElement;
+        let b: HTMLElement = document.body;
         return Math.max(
             b.scrollHeight, d.scrollHeight,
             b.offsetHeight, d.offsetHeight,
@@ -26,7 +26,7 @@
         );
     }
 
-    static formatDateTime(dateTime: string) {
+    public static formatDateTime(dateTime: string): string {
 
         let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -34,7 +34,7 @@
 
         let date = jsDateTime.substring(0, jsDateTime.indexOf(','));
         let mdy = date.split('/');
-        date = `${months[mdy[0] - 1]} ${numSuffix(mdy[1])}, ${mdy[2]}`;
+        date = `${months[Number(mdy[0]) - 1]} ${numSuffix(Number(mdy[1]))}, ${mdy[2]}`;
 
         let time = jsDateTime.substring(jsDateTime.indexOf(' ') + 1);
         let hm = time.split(':');
@@ -43,13 +43,16 @@
 
         return `${date} at ${time}`;
 
-        function numSuffix(num) {
-            num = parseInt(num);
-            if (num == 1 || num == 21 || num == 31) return num + 'st';
-            if (num == 2 || num == 22) return num + 'nd';
-            return num + 'th';
+        function numSuffix(n: number): string {
+            
+            // XXX replace with a switch case statement XXX
+            if (n == 1 || n == 21 || n == 31) return n + 'st';
+            if (n == 2 || n == 22) return n + 'nd';
+            return n + 'th';
         }
     }
 
-    static filterNulls =array=> array.filter(i => i != null)
+    public static filterNulls(array: any[]): void {
+        array.filter(i => i != null);
+    }
 }

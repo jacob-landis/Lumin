@@ -13,7 +13,7 @@ class ProfileImagesBox extends ContentBox {
     private clickCallback: (imageCard: ImageCard) => void;
 
     // The ProfileID of the profile who's images are being loaded.
-    private profileId: number;
+    public profileId: number;
     
     /*
         PARAMETERS:
@@ -28,7 +28,7 @@ class ProfileImagesBox extends ContentBox {
             // When content box is ready for more content,
             (skip: number, take: number) => {
                 // send an images request to the host with the set skip and take values along with the ProfileID of this image box,
-                Repo.images(this.profileId, skip, take, 'listImage sqr', this.clickCallback,
+                Ajax.getProfileImages(this.profileId, skip, take, 'listImage sqr', this.clickCallback,
                     // and when they return as image cards with the click value that was just provided,
                     (imageCards: ImageCard[]) =>
                         // add them to this image box.
@@ -39,7 +39,7 @@ class ProfileImagesBox extends ContentBox {
 
         // Get handle on ProfileID.
         // If a ProfileID was provided, this.profileID is profileId, else this.profileId is the current user's ProfileID.
-        this.profileId = profileId ? profileId : User.id;
+        this.profileId = profileId ? profileId : User.profileId;
 
         // Get handle on click action.
         this.clickCallback = clickCallback;
@@ -51,16 +51,20 @@ class ProfileImagesBox extends ContentBox {
         ProfileImagesBox.profileImageBoxes.push(this);
     }
 
+    public addImageCards(imageCards: ImageCard[]) {
+        imageCards.forEach(i => this.addImageCard(i));
+    }
+
     /*
         Takes an image card and does some final preparation before adding it to this image box's content box.
     */
-    public addImageCard(imageCard: (ImageCard | ImageCard[])): void {
+    public addImageCard(imageCard: ImageCard): void {
 
         // Imbed click action stored in this image box to image card.
-        imageCard.click = this.clickCallback;
+        imageCard.onImageClick = this.clickCallback;
 
         // Update classList of image card so it is square and fits in the grid.
-        imageCard.rootElm.classList = 'listImage sqr';
+        imageCard.rootElm.classList.add('listImage sqr');
 
         // Add image card to this image box's content box.
         this.add(imageCard, true);

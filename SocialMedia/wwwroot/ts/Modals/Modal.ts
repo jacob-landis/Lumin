@@ -117,7 +117,7 @@ class Modal implements IAppendable {
         Modal.openModals[Modal.openModals.indexOf(this)] = null;
 
         // Filter out the null value from modalCons.
-        Modal.openModals = Util.filterNulls(Modal.openModals);
+        Util.filterNulls(Modal.openModals);
 
         // IF NO MODALS ARE OPEN, UNLOCK SCROLLING
         // If no modal is open,

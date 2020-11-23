@@ -15,9 +15,9 @@ namespace SocialMedia.Models
 
         // The ProfileID of the profile that created the like.
         public int? ProfileId { get; set; }
-
-        // Either post or comment.
-        public int ContentType { get; set; } // 1 = Post, 2 = Comment
+        
+        // The type of the content that this belongs to. (1 = Post, 2 = Comment)
+        public int ContentType { get; set; }
 
         // Post or comment ID.
         public int? ContentId { get; set; }

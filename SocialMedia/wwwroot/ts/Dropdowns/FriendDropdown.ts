@@ -61,11 +61,11 @@ class FriendDropdown extends Dropdown {
         this.friendsBox.clear();
 
         // Request unnaccepted friend requests to the current user's profile (requestedUser) and add to friendsBox.
-        Repo.friends(null, null, profiles => this.friendsBox.add(profiles));
+        Ajax.getFriends(null, null, profiles => this.friendsBox.add(profiles));
 
         // Request accepted friend requests to and from the current user's profile (friend) and add to friendsBox.
         // XXX may need to use currentUser.id instead of profileId if this dropdown is not used to display other profiles' friends.
-        Repo.friends(User.id, null, profiles => this.friendsBox.add(profiles));
+        Ajax.getFriends(User.profileId, null, profiles => this.friendsBox.add(profiles));
     }
 
     /*
@@ -88,7 +88,7 @@ class FriendDropdown extends Dropdown {
         this.friendsBox.clear();
 
         // and send a search request.
-        Repo.friends(null, search,
+        Ajax.getFriends(null, search,
 
             // When the results return as profile cards, add them to the friends box.
             profiles => this.friendsBox.add(profiles));

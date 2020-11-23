@@ -13,6 +13,7 @@ class Editor implements IAppendable {
 
     public rootElm: HTMLElement;
 
+    // XXX Look into event bubbling. That is why elements are being triggered in the background. XXX
     private targetHandles: HTMLElement[];
 
     // Off-click callback. Toggled between a function that does nothing and a function that invokes cancel().

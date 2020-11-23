@@ -13,7 +13,7 @@ class ProfileModal extends Modal {
     private postWrapper;
     
     // ImageBox for profile picture.
-    private profilePictureBox;
+    public profilePictureBox: ImageBox;
     
     // Container elm for an ProfileImagesBox.
     private imageWrapper;
@@ -28,7 +28,7 @@ class ProfileModal extends Modal {
     private bioEditor;
     
     // A FULL profile. The profile being displayed. 
-    private profile;
+    private profile: FullProfileRecord;
     
     // Container elm for imageWrapper. Enables scrolling.
     private imageScrollBox: HTMLElement;
@@ -73,10 +73,10 @@ class ProfileModal extends Modal {
         this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
 
         // Construct an ImageBox for the profile picture and get a handle on it.
-        this.profilePictureBox = new ImageBox(imageBoxElm, '', imageClassList, null);
+        this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
 
         // Construct an Editor for profile bio and get a handle on it.
-        this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, 250, bio => Repo.updateBio(bio));
+        this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, 250, (bio: string) => Ajax.updateBio(bio));
 
         this.profileBioWrapper.append(this.bioEditor.tag);
     }
@@ -84,12 +84,12 @@ class ProfileModal extends Modal {
     /*
         Request a full profile and send it to load() when it arrives. XXX make this request in load and have the login in there be inside the callback. XXX
     */
-    public launch(profileId: number): void { Repo.fullProfile(profileId, fullProfile => this.load(fullProfile)); }
+    public launch(profileId: number): void { Ajax.getFullProfile(profileId, (fullProfile: FullProfileRecord) => this.load(fullProfile)); }
 
     /*
         Loads profile information into the different slots and then opens this modal.
     */
-    public load(fullProfile): void {
+    public load(fullProfile: FullProfileRecord): void {
 
         // Clear out modal.
         this.reset();
@@ -105,10 +105,10 @@ class ProfileModal extends Modal {
 
         // PRIVATE PROFILE OPTIONS
         // If profile is current user's,
-        if (this.profile.profileId == User.id) {
+        if (this.profile.profileId == User.profileId) {
 
             // set click callback of profile picture to invoke select profile picture,
-            this.profilePictureBox.heldClick = () => this.selectProfilePicture
+            this.profilePictureBox.heldImageClick = () => this.selectProfilePicture
 
             // give button for user to edit bio,
             this.profileBioWrapper.append(this.btnChangeBio);
@@ -121,14 +121,14 @@ class ProfileModal extends Modal {
         else {
 
             // set click callback of profile picture to display it in fullsize image modal,
-            this.profilePictureBox.heldClick = Behavior.singleFullSizeImage;
+            this.profilePictureBox.heldImageClick = Behavior.singleFullSizeImage;
 
             // and detach the button to edit the bio.
             ViewUtil.remove(this.btnChangeBio);
         }
 
         // Set profile picture display.
-        this.profilePictureBox.loadImage(this.profile.profilePicture);
+        this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
 
         // IMAGES BOX
         // Construct new ProfileImageBox and set up profile images display.
@@ -146,7 +146,7 @@ class ProfileModal extends Modal {
         this.imageScrollBox.onscroll = () => {
 
             // create shortcut,
-            let divHeight = Util.getDivHeight(this.imageScrollBox);
+            let divHeight = Util.getElmHeight(this.imageScrollBox);
 
             // take measurement,
             let offset = this.imageScrollBox.scrollTop + divHeight - 50;
@@ -163,7 +163,7 @@ class ProfileModal extends Modal {
         this.friendBox.clear();
 
         // Request friends by ProfileID and load them into friendBox when they arrive as profile cards.
-        Repo.friends(this.profile.profileId, null, profiles => this.friendBox.add(profiles));
+        Ajax.getFriends(this.profile.profileId, null, (profileCards: ProfileCard[]) => this.friendBox.add(profileCards));
 
         // POSTS BOX
         // Construct a new PostsBox and set it to load this profile's ProfileID.
@@ -212,10 +212,10 @@ class ProfileModal extends Modal {
             ProfileCard.changeUserProfilePicture(null, imageCard);
 
             // and send an update request to the host to change the profile picture in the profile record.
-            Repo.updateProfilePicture(imageCard.image.id, null, null,
+            Ajax.updateProfilePicture(imageCard.image.imageId, null, null,
 
                 // When the host sends back the fullsize version of the new profile picture, load it into the profile modal display.
-                imageCard => this.profilePictureBox.loadImage(imageCard));
+                (imageCard: ImageCard) => this.profilePictureBox.loadImage(imageCard));
         });
     }
 

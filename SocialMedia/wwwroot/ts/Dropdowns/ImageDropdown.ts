@@ -56,7 +56,7 @@ class ImageDropdown extends Dropdown {
                     ProfileImagesBox.profileImageBoxes.forEach(p => {
 
                         // and if the image box is displaying the current user's images, add the newly uploaded image to it.
-                        if (p.profileId == User.id) p.addImageCard(imageCard);
+                        if (p.profileId == User.profileId) p.addImageCard(imageCard);
                     })
             );
 

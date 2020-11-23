@@ -54,14 +54,14 @@ class CreatePostModal extends Modal {
         this.btnCancel = btnCancel;
 
         // Construct a content box for errors and get a handle on it.
-        this.errorBox = new ContentBox(contentBoxElmId);
+        this.errorBox = new ContentBox(document.getElementById(contentBoxElmId));
 
         // Append the error box's main tag to the caption wrapper.
         this.captionWrapper.append(this.errorBox.rootElm);
 
         // Construct an image box with an existing elm and get a handle on it.
         // (Any image that is selected for this post can be clicked on to pick a different image, because of the click parameter value)
-        this.selectedImageBox = new ImageBox(imageBoxElm, '', imageClassList,
+        this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList,
 
             // Returns the following callback.
             () =>
@@ -147,7 +147,7 @@ class CreatePostModal extends Modal {
                 // XXX placeholder until the fullsize version arrived.
 
                 // and load image into selected image container by id so the fullsize verision is requested and displayed.
-                this.selectedImageBox.load(imageCard.image.id);
+                this.selectedImageBox.load(imageCard.image.imageId);
             }
         );
     }
@@ -168,7 +168,7 @@ class CreatePostModal extends Modal {
             imageCard => () => {
 
                 // load image into selected image container by id so the fullsize verision is requested and displayed,
-                this.selectedImageBox.load(imageCard.image.id);
+                this.selectedImageBox.load(imageCard.image.imageId);
 
                 // and close the image dropdown.
                 imageDropdown.close();
@@ -216,19 +216,19 @@ class CreatePostModal extends Modal {
         else {
 
             // Set imageId of post to the attached image's id or to 0 if no image was attached.
-            let imageId = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.id : 0;
+            let imageId = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.imageId : 0;
 
             // Prep the caption and ImageID to be sent off.
             let post = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId }); // XXX there is a method in Repo for this. XXX
 
-            // Send post to host in a post request.
-            Repo.postPost(post,
+            // Send post to host in a post request. XXX put post in a PostRecord XXX
+            Ajax.submitPost(post,
 
                 // If and when the post was added and comes back, loop through all the active post boxes,
                 postCard => PostsBox.postBoxes.forEach(p => {
 
                     // and add the returned post to the post boxes it belongs in.
-                    if (p.profileId == User.id) p.addPost(new PostCard(postCard.post));
+                    if (p.profileId == User.profileId) p.addPost(new PostCard(postCard.post));
                 })
             );
 

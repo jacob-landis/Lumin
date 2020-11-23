@@ -61,6 +61,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\ImgThumb\" />
     <Folder Include="wwwroot\ImgFull\" />
+    <Folder Include="wwwroot\ts\JsTranspile\" />
   </ItemGroup>
 
   <ItemGroup>
