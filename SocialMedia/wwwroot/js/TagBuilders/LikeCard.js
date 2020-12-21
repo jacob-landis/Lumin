@@ -1,38 +1,47 @@
-﻿class LikeCard {
-
-    static cardHandles = [];
-
-    static btnLikeCallback;
-
-    constructor(likes, type, dateTime) {
-        let card = ViewUtil.tag('div', { classList: 'likeCard' });
-        let dateTimeStamp = ViewUtil.tag('div', { classList: 'contentPostDate', innerText: Util.formatDateTime(dateTime) });
-
-        this.contentId = likes.contentId;
-        this.hasLiked = likes.hasLiked;
-        this.type = type;
-        this.btnLike = ViewUtil.tag('i', { classList: 'fa fa-thumbs-up likeIcon ' + (this.hasLiked ? 'hasLiked' : '') });
-        this.count = ViewUtil.tag('div', { classList: 'likeCount', innerText: likes.count != 0 ? likes.count : '0' });
-
-        card.append(this.btnLike, this.count, dateTimeStamp);
-
-        this.btnLike.onclick = () => {
-            
-            if (this.hasLiked) Repo.dislike(this.type, likes.contentId);
-            else Repo.like(this.type, likes.contentId);
-
-            LikeCard.cardHandles.forEach(c => {
-                if (c.contentId == this.contentId && c.type == this.type) {
-                    c.count.innerText = parseInt(c.count.innerText) + (c.hasLiked ? -1 : 1);
-                    c.btnLike.classList.toggle('hasLiked');
-                    c.hasLiked = !c.hasLiked;
-                }
-
-            });
-        }
-
-        LikeCard.cardHandles.push(this);
-
-        return card;
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-}
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var LikeCard = (function (_super) {
+    __extends(LikeCard, _super);
+    function LikeCard(likes, type, dateTime) {
+        var _this = _super.call(this, ViewUtil.tag('div', { classList: 'likeCard' })) || this;
+        var dateTimeStamp = ViewUtil.tag('div', { classList: 'contentPostDate', innerText: Util.formatDateTime(dateTime) });
+        _this.likesRecord = likes;
+        _this.btnLike = ViewUtil.tag('i', { classList: 'fa fa-thumbs-up likeIcon ' + (_this.likesRecord.hasLiked ? 'hasLiked' : '') });
+        _this.countDisplayElm = ViewUtil.tag('div', { classList: 'likeCount', innerText: likes.count != 0 ? likes.count : '0' });
+        _this.rootElm.append(_this.btnLike, _this.countDisplayElm, dateTimeStamp);
+        _this.btnLike.onclick = function () {
+            if (_this.likesRecord.hasLiked)
+                Ajax.unlike(type, likes.contentId);
+            else
+                Ajax.postLike(type, likes.contentId);
+            LikeCard.changeAllContentInstances(_this.likesRecord);
+        };
+        LikeCard.likeCards.push(_this);
+        return _this;
+    }
+    LikeCard.changeAllContentInstances = function (referenceLikesRecord) {
+        this.likeCards.forEach(function (c) {
+            if (c.likesRecord.contentId == referenceLikesRecord.contentId
+                && c.likesRecord.contentType == referenceLikesRecord.contentType) {
+                c.likesRecord.count = c.likesRecord.hasLiked ? -1 : 1;
+                c.countDisplayElm.innerText = "" + c.likesRecord.count;
+                c.btnLike.classList.toggle('hasLiked');
+                c.likesRecord.hasLiked = !c.likesRecord.hasLiked;
+            }
+        });
+    };
+    LikeCard.likeCards = [];
+    return LikeCard;
+}(Card));
+//# sourceMappingURL=LikeCard.js.map

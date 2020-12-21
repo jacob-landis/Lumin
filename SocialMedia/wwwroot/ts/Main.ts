@@ -20,20 +20,22 @@ class Main {
 
         this.navBar = document.getElementById("navBar"); // used to asses height of display port by other classes
 
+        // PUBLIC POST FEED
+        publicPosts = new PublicPosts(document.getElementById('publicPosts'));
+
         // MODALS
         Modal.initialize(
             document.getElementById('modalFrameTemplate'),
-            document.getElementById('btnCloseModal'),
-            document.getElementById('modalFrameContainer')
+            document.getElementById('modalFrameContainer'),
+            document.getElementById('btnCloseModal')
         );
 
         contextModal = new ContextModal(
-            document.getElementById('contextModal'),
-            document.getElementById('btnConfirmYes')
+            document.getElementById('contextContent')
         );
 
         confirmModal = new ConfirmModal(
-            document.getElementById('confirmModal'),
+            document.getElementById('confirmContent'),
             document.getElementById('promptMessage'),
             document.getElementById('btnConfirmYes'),
             document.getElementById('btnConfirmNo')
@@ -85,8 +87,7 @@ class Main {
             'errorMsg uploadImageError'
         );
 
-        publicPosts = new PublicPosts(document.getElementById('publicPosts'));
-        helpModal = new HelpModal(document.getElementById('helpModal'));
+        helpModal = new HelpModal(document.getElementById('helpContent'));
 
         // DROPDOWNS
         Dropdown.initialize(

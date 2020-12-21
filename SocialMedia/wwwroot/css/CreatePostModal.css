@@ -8,10 +8,6 @@
     height: 500px;
 }
 
-.fixedContent {
-    overflow: hidden;
-}
-
 #selectedImageCon > .icon > i {
     font-size: 400pt;
     color: rgb(240, 240, 240);

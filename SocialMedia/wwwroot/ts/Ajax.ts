@@ -29,7 +29,7 @@
         this.call(
             "apicomment", 
             "POST",
-            results => onCopyResults(new CommentCard(JSON.parse(results))),
+            (commentResults: string) => onCopyResults(new CommentCard(<CommentRecord><unknown>commentResults)),
             commentForm
         );
     }
@@ -38,7 +38,10 @@
         this.call(
             `apicomment/postcomments/${postId}/${skip}/${take}`,
             "GET",
-            (commentResults: string)=> onCommentResults(CommentCard.list(JSON.parse(commentResults)))
+            (commentResults: string) => {
+                if (commentResults == null) return;
+                onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults))
+            }
         );
     }
 
@@ -60,7 +63,7 @@
         this.call(
             `apiprofile/updateprofilepicture/${imageId}`,
             "POST",
-            imageResults => onCopyResults(new ImageCard(JSON.parse(imageResults), imageClassList, onImageClick))
+            (imageResults: string) => onCopyResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, onImageClick))
         );
     }
 
@@ -68,7 +71,7 @@
         this.call(
             `apiprofile/${profileId}`,
             "GET",
-            profileResults => onProfileResults(new ProfileCard(JSON.parse(profileResults)))
+            (profileResults: string) => onProfileResults(new ProfileCard(<ProfileRecord><unknown>profileResults))
         );
     }
 
@@ -77,7 +80,7 @@
             `apiprofile/fullprofile/${profileId}`,
             "POST",
             (fullProfileResults: string) => {
-                onFullProfileResults(JSON.parse(fullProfileResults));
+                onFullProfileResults(<FullProfileRecord><unknown>fullProfileResults);
             }
         );
     }
@@ -108,7 +111,7 @@
         this.call(
             `apifriend/friends/${newId}`,
             "POST", 
-            (profileResults: string) => onProfileResults(ProfileCard.list(JSON.parse(profileResults))),
+            (profileResults: string) => onProfileResults(ProfileCard.list(<ProfileRecord[]><unknown>profileResults)),
             newSearch
         );
     }
@@ -123,7 +126,7 @@
         this.call(
             "apiimage", 
             "POST", 
-            (imageCopy: string) => onCopyResults(new ImageCard(JSON.parse(imageCopy))),
+            (imageCopy: string) => onCopyResults(new ImageCard(<ImageRecord><unknown>imageCopy)),
             imageAsString
         );
     }
@@ -139,7 +142,7 @@
         this.call(
             `apiimage/profileimages/${profileId}/${skip}/${take}`, 
             "GET",
-            (imageResults: string) => onImageResults(ImageCard.list(JSON.parse(imageResults), imageClassList, onImageClick))
+            (imageResults: string) => onImageResults(ImageCard.list(<ImageRecord[]><unknown>imageResults, imageClassList, onImageClick))
         );
     }
 
@@ -157,7 +160,7 @@
         this.call(
             `apiimage/${imageId}/${thumb ? 1 : 0}`, 
             "GET",
-            (imageResults: string) => onImageResults(new ImageCard(JSON.parse(imageResults), imageClassList, onImageClick))
+            (imageResults: string) => onImageResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, onImageClick))
         );
     }
 
@@ -175,7 +178,7 @@
         this.call(
             "apipost",
             "POST",
-            (copyResults: string) => onCopyResults(new PostCard(JSON.parse(copyResults))),
+            (copyResults: string) => onCopyResults(new PostCard(<PostRecord><unknown>copyResults)),
             postForm
         );
     }
@@ -184,7 +187,7 @@
         this.call(
             `apipost/publicposts/${skip}/${take}`,
             "GET",
-            (postResults: string) => onPostResults(PostCard.list(JSON.parse(postResults)))
+            (postResults: string) => onPostResults(PostCard.list(<PostRecord[]><unknown>postResults))
         );
     }
 
@@ -192,7 +195,7 @@
         this.call(
             `apipost/profileposts/${profileId}/${skip}/${take}`, 
             "GET",
-            (postResults: string) => onPostResults(PostCard.list(JSON.parse(postResults)))
+            (postResults: string) => onPostResults(PostCard.list(<PostRecord[]><unknown>postResults))
         );
     }
 

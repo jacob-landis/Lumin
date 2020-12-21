@@ -39,6 +39,16 @@ class ImageDropdown extends Dropdown {
         this.imageWrapper = imagesWrapper;
         this.prompt = prompt;
 
+        // Create ProfileImagesBox to hold dropdown images. Load current users images.
+        this.imageBox = new ProfileImagesBox(null, (targetImageCard) =>
+
+            // Load album into fullsize image modal starting at the index of the clicked image card.
+            fullSizeImageModal.load(this.imageBox.content.indexOf(targetImageCard))
+        );
+
+        // Append ProfileImagesBox to this imageWrapper.
+        this.imageWrapper.append(this.imageBox.rootElm);
+
         // UPLOAD IMAGE
         // Sets up onchange event on file input.
         // This is triggered once the user has selected a file from their computers file system.

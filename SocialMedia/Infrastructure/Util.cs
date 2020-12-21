@@ -83,9 +83,9 @@ namespace SocialMedia.Infrastructure
             // Fill new RawImage with details from provided image record and have byte array of image retrieved.
             new RawImage
             {
-                Id = image.ImageId,
+                ImageId = image.ImageId,
                 ProfileId = image.ProfileId,
-                Raw = ImageToByte(image.Name, getThumbnail)
+                ImageAsByteArray = ImageToByte(image.Name, getThumbnail)
             };
 
         /*

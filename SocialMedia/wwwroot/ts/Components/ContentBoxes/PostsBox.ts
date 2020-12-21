@@ -31,17 +31,22 @@ class PostsBox extends ContentBox {
                 
                 // if a ProfileID was included,
                 if (profileId)
-                    // send a profilePosts request to the server with the set skip and take values along with the ProfileID of this post box,
+
+                    // send a profilePosts request to the server,
                     Ajax.getProfilePosts(this.profileId, skip, take,
+
                         // and when the posts return as post cards,
                         (postCards: PostCard[]) =>
+
                             // add them to the content box of this post box.
                             this.add(postCards))
                 else
                     // or else send a publicPosts request to the server with the set skip and take values of this post box,
                     Ajax.getPublicPosts(skip, take,
+
                         // and when the posts return as post cards,
                         (postCards: PostCard[]) =>
+
                             // add them to the content box of this post box.
                             this.add(postCards));
             }

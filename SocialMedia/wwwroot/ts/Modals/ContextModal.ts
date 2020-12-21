@@ -11,12 +11,12 @@ class ContextModal extends Modal {
         Gets handles on all necessary components.
         Sets up event listeners.
     */
-    constructor(rootElm: HTMLElement, optionsBoxElm: HTMLElement) {
+    constructor(contentElm: HTMLElement) {
 
-        super(rootElm);
+        super(contentElm);
 
         // Create a new content box using a modal HTML component and get a handle on it.
-        this.optionsBox = new ContentBox(optionsBoxElm);
+        this.optionsBox = new ContentBox(contentElm);
 
         // Set up scroll event listener for window. Close on scroll.
         window.addEventListener('scroll', () => {

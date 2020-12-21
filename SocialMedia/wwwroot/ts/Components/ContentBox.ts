@@ -52,7 +52,7 @@ class ContentBox implements IAppendable {
 
         // Get a handle on the provided tag.
         this.rootElm = rootElm;
-
+        
         // Add 'content-box' to the classList attribute.
         this.rootElm.classList.add('content-box');
 
@@ -109,7 +109,6 @@ class ContentBox implements IAppendable {
 
             // If content is not null,
             if (c) {
-
                 // prepend or append it's HTML tag to this content box's HTML tag.
                 if (prepend) this.rootElm.prepend(c.rootElm);
                 else this.rootElm.append(c.rootElm);

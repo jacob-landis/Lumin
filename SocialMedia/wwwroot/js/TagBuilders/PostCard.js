@@ -1,190 +1,160 @@
-﻿class PostCard {
-
-    static list(posts) {
-        let postCards = [];
-        if (posts) {
-            posts.forEach(p => postCards.push(new PostCard(p)));
-            return postCards;
-        }
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-
-    static postCards = [];
-
-    constructor(post) {
-        this.profileId = post.profile.profileId;
-        this.post = post;
-        this.postId = post.postId;
-        this.image = post.image;
-
-        if (this.post.image) this.hasImage = true;
-
-        // POST CONSTRUCTION
-        // __________________________________ TAG
-
-        this.tag = ViewUtil.tag('div', { classList: 'postCard' });
-        let postSection = ViewUtil.tag('div', { classList: 'postSection' });
-        let commentSection = ViewUtil.tag('div', { classList: 'commentSection' });
-
-        this.tag.append(postSection, commentSection);
-
-        // __________________________________ COMMENT INPUT
-
-        this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
-        this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
-        this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
-
-        this.commentsBox = new ContentBox(null, 'comments', 30, (skip, take) =>
-                Repo.comments(this.postId, skip, take, comments => this.commentsBox.add(comments)));
-
-        let txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
-        let btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
-
-        commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentCountSlot, this.commentsBox.tag);
-        this.commentInputWrapper.append(txtComment, btnComment);
-
-        // __________________________________ 
-
-        this.postImageWrapper = new ImageBox(null, 'postImageWrapper', 'postImage', Behavior.singleFullSizeImage);
-
-        if (this.hasImage) {
-            this.postImageWrapper.load(this.post.image.id);
-            this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var PostCard = (function (_super) {
+    __extends(PostCard, _super);
+    function PostCard(post) {
+        var _this = _super.call(this, ViewUtil.tag('div', { classList: 'postCard' })) || this;
+        _this.post = post;
+        if (_this.post.image)
+            _this.hasImage = true;
+        var postSection = ViewUtil.tag('div', { classList: 'postSection' });
+        var commentSection = ViewUtil.tag('div', { classList: 'commentSection' });
+        _this.rootElm.append(postSection, commentSection);
+        _this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
+        _this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
+        _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
+        _this.commentsBox = new ContentBox(ViewUtil.tag('div'), 30, function (skip, take) {
+            return Ajax.getComments(_this.post.postId, skip, take, function (comments) { return _this.commentsBox.add(comments); });
+        });
+        var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
+        var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
+        commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentCountSlot, _this.commentsBox.rootElm);
+        _this.commentInputWrapper.append(txtComment, btnComment);
+        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', Behavior.singleFullSizeImage);
+        if (_this.hasImage) {
+            _this.postImageWrapper.load(_this.post.image.imageId);
+            _this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });
         }
-        else this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper noImageCaptionWrapper' });
-
-        this.postHeading = ViewUtil.tag('div', { classList: 'postHeading' });
-
-        postSection.append(this.postHeading, this.captionWrapper, this.postImageWrapper.tag);
-
-        // must have a handle on editIcon to exclude it from the window onclick event listener in Editor
-        this.editIcon = Icons.edit();
-        this.captionEditor = new Editor(this.editIcon, post.caption, 'post-caption-editor', 1000,
-            caption => Repo.updatePost(this.postId, caption));
-
-        this.captionWrapper.append(this.captionEditor.tag);
-
-        //------------------------------------------------------------------------------------------
-
-        let profileCardSlot = ViewUtil.tag('div', { classList: 'profileCardSlot' });
-        let likeCardSlot = ViewUtil.tag('div', { classList: 'detailsSlot' });
-        let postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
-
-        this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
-        profileCardSlot.append(new ProfileCard(post.profile).tag);
-        likeCardSlot.append(new LikeCard(post.likes, 1, post.dateTime));
-
-        //------------------------------------------------------------------------------------------
-        // END POST CONSTRUCTION
-
-        // Load comments
-        this.commentsBox.request(15);
-        this.requestCommentCount();
-
-        // On scroll
-        this.commentsBox.tag.onscroll = () => {
-            let divHeight = this.commentsBox.tag.scrollHeight;
-            let offset = this.commentsBox.tag.scrollTop + this.commentsBox.tag.clientHeight;
-
-            if (offset == divHeight) this.commentsBox.request();
-        }
-
-        // PRIVATE OPTIONS
+        else
+            _this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper noImageCaptionWrapper' });
+        _this.postHeading = ViewUtil.tag('div', { classList: 'postHeading' });
+        postSection.append(_this.postHeading, _this.captionWrapper, _this.postImageWrapper.rootElm);
+        _this.editIcon = Icons.edit();
+        _this.captionEditor = new Editor(_this.editIcon, post.caption, 'post-caption-editor', 1000, function (caption) { return Ajax.updatePost(_this.post.postId, caption); });
+        _this.captionWrapper.append(_this.captionEditor.rootElm);
+        var profileCardSlot = ViewUtil.tag('div', { classList: 'profileCardSlot' });
+        var likeCardSlot = ViewUtil.tag('div', { classList: 'detailsSlot' });
+        var postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
+        _this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
+        profileCardSlot.append(new ProfileCard(post.profile).rootElm);
+        likeCardSlot.append(new LikeCard(post.likes, ContentType.Post, post.dateTime).rootElm);
+        _this.commentsBox.request(15);
+        _this.requestCommentCount();
+        _this.commentsBox.rootElm.onscroll = function () {
+            var divHeight = _this.commentsBox.rootElm.scrollHeight;
+            var offset = _this.commentsBox.rootElm.scrollTop + _this.commentsBox.rootElm.clientHeight;
+            if (offset == divHeight)
+                _this.commentsBox.request();
+        };
         if (post.profile.relationToUser == 'me') {
-            let btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
+            var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
-
-            btnPostOpts.onclick = e => ContextModal.load(e, [
-                new ContextOption(this.editIcon, () => this.captionEditor.start()),
-                new ContextOption(Icons.deletePost(), () =>
-                    ConfirmModal.load('Are you sure you want to delete this post?', confirmation => {
-                        if (!confirmation) return;
-                        this.remove();
-                    }))
-            ]);
+            btnPostOpts.onclick = function (e) { return contextModal.load(e, [
+                new ContextOption(_this.editIcon, function () { return _this.captionEditor.start(); }),
+                new ContextOption(Icons.deletePost(), function () {
+                    return confirmModal.load('Are you sure you want to delete this post?', function (confirmation) {
+                        if (!confirmation)
+                            return;
+                        _this.remove();
+                    });
+                })
+            ]); };
         }
-
-        // submit comment
-        btnComment.onclick = () => {
-            let error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
-            
+        btnComment.onclick = function () {
+            var error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
             if (txtComment.value.length <= 125) {
-                Repo.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }),
-                    commentCard => {
-                        PostCard.postCards.forEach(p => {
-                            if (p.post.postId == commentCard.comment.postId) {
-                                p.commentsBox.add(CommentCard.copy(commentCard), true);
-                                p.resizeCommentBox();
-                                p.setCommentCount(this.totalCommentCount + 1);
-                            }
-                        });
+                Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentCard) {
+                    PostCard.postCards.forEach(function (p) {
+                        if (p.post.postId == commentCard.comment.postId) {
+                            p.commentsBox.add(CommentCard.copy(commentCard), true);
+                            p.resizeCommentBox();
+                            p.setCommentCount(_this.totalCommentCount + 1);
+                        }
+                    });
                 });
-                ViewUtil.empty(this.errorSlot);
+                ViewUtil.empty(_this.errorSlot);
                 txtComment.value = "";
             }
-            else this.errorSlot.append(error);
-        }
-
-        // triggered when image is done loading
-        this.observer = new MutationObserver(() => this.resizeCommentBox());
-        this.observer.observe(this.tag, { attributes: true });
-        this.postImageWrapper.onLoadEnd = () => this.mutate();
-
-        // unload or reload posts above and below the position of the viewport
-        window.addEventListener('scroll', () => {
-            let offset = this.tag.offsetTop - window.pageYOffset;
-            
+            else
+                _this.errorSlot.append(error);
+        };
+        _this.observer = new MutationObserver(function () { return _this.resizeCommentBox(); });
+        _this.observer.observe(_this.rootElm, { attributes: true });
+        _this.postImageWrapper.onLoadEnd = function () { return _this.mutate(); };
+        window.addEventListener('scroll', function () {
+            var offset = _this.rootElm.offsetTop - window.pageYOffset;
             if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
-                if (this.hasImage) this.postImageWrapper.unload();
+                if (_this.hasImage)
+                    _this.postImageWrapper.unload();
             }
             else if (offset > -2000 && offset < 2000) {
-                if (this.hasImage) this.postImageWrapper.reload();
+                if (_this.hasImage)
+                    _this.postImageWrapper.reload();
             }
         });
-
-        PostCard.postCards.push(this);
+        PostCard.postCards.push(_this);
+        return _this;
     }
-
-    resizeCommentBox() {
-        let inputHeight = this.commentInputWrapper.clientHeight;
-        let contentHeight = this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight;
-
+    PostCard.list = function (posts) {
+        var postCards = [];
+        if (posts) {
+            posts.forEach(function (p) { return postCards.push(new PostCard(p)); });
+            return postCards;
+        }
+    };
+    PostCard.prototype.resizeCommentBox = function () {
+        var inputHeight = this.commentInputWrapper.clientHeight;
+        var contentHeight = this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight;
         this.commentsBox.height = contentHeight - inputHeight;
-        if (this.commentsBox.height < 250) this.commentsBox.height = 250;
+        if (this.commentsBox.height < 250)
+            this.commentsBox.height = 250;
         this.observer.disconnect();
-    }
-
-    setCommentCount(newCount) {
+    };
+    PostCard.prototype.setCommentCount = function (newCount) {
         this.totalCommentCount = newCount;
-        this.commentCountText.innerText = PostCard.formatCommentCount(newCount);
-    }
-
-    requestCommentCount() {
-        Repo.commentCount(this.postId, commentCount => {
-            this.commentCountText = ViewUtil.tag('div');
-            this.setCommentCount(commentCount);
-
-            this.commentCountSlot.append(this.commentCountText);
+        switch (newCount) {
+            case 0:
+                this.commentCountText.innerText = 'No Comments';
+                break;
+            case 1:
+                this.commentCountText.innerText = '1 Comment';
+                break;
+            default: this.commentCountText.innerText = newCount + " Comments";
+        }
+    };
+    PostCard.prototype.requestCommentCount = function () {
+        var _this = this;
+        Ajax.getCommentCount(this.post.postId, function (commentCount) {
+            _this.commentCountText = ViewUtil.tag('div');
+            _this.setCommentCount(commentCount);
+            _this.commentCountSlot.append(_this.commentCountText);
         });
-    }
-
-    static formatCommentCount(commentCount) {
-        if (commentCount == 0) return 'No Comments';
-        else if (commentCount == 1) return '1 Comment';
-        else return `${commentCount} Comments`;
-    }
-
-    remove() {
+    };
+    PostCard.prototype.remove = function () {
+        var _this = this;
         this.setCommentCount(this.totalCommentCount - 1);
-        Repo.removePost(this.postId);
-        PostCard.postCards.forEach(c => {
-            if (c.postId == this.postId) {
-                ViewUtil.remove(c.tag);
+        Ajax.deletePost(this.post.postId);
+        PostCard.postCards.forEach(function (c) {
+            if (c.post.postId == _this.post.postId) {
+                ViewUtil.remove(c.rootElm);
                 c = null;
             }
         });
-        PostCard.postCards = Util.filterNulls(PostCard.postCards);
-        delete this;
-    }
-    // to trigger the mutation observer which triggers a resize. the assigned id is never used.
-    mutate() { this.tag.id = 'loadedPost'; }
-}
+        Util.filterNulls(PostCard.postCards);
+    };
+    PostCard.prototype.mutate = function () { this.rootElm.id = 'loadedPost'; };
+    PostCard.postCards = [];
+    return PostCard;
+}(Card));
+//# sourceMappingURL=PostCard.js.map

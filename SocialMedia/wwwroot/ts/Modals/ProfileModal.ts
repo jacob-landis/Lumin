@@ -167,10 +167,10 @@ class ProfileModal extends Modal {
 
         // POSTS BOX
         // Construct a new PostsBox and set it to load this profile's ProfileID.
-        this.postBox = new PostsBox(this.profile.profileId);
+        this.postBox = new PostsBox(this.profile.profileId, this.postWrapper);
 
         // Append new PostsBox to container elm.
-        this.postWrapper.append(this.postBox.rootElm);
+        //this.postWrapper.append(this.postBox.rootElm); // XXX Instead I put postWrapper in the PostsBox. Delete this. XXX
 
         // Start post feed to make first request.
         this.postBox.start();

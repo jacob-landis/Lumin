@@ -30,10 +30,11 @@ class ProfileImagesBox extends ContentBox {
                 // send an images request to the host with the set skip and take values along with the ProfileID of this image box,
                 Ajax.getProfileImages(this.profileId, skip, take, 'listImage sqr', this.clickCallback,
                     // and when they return as image cards with the click value that was just provided,
-                    (imageCards: ImageCard[]) =>
+                    (imageCards: ImageCard[]) => {
                         // add them to this image box.
                         this.add(imageCards)
-                    );
+                    }
+                );
             }
         );
 

@@ -1,37 +1,24 @@
-﻿class Icons {
-
-    static buildIcon(suffixes) {
-        
-        let tag = ViewUtil.tag('div', { classList: 'icon' });
-
-        suffixes.forEach(s => tag.append(ViewUtil.tag('i', { classList: `fa fa-${s}` })));
-        
-        return tag;
+var Icons = (function () {
+    function Icons() {
     }
-
-    static paperClip = () => this.buildIcon(['paperclip']);
-
-    static acceptRequest = () => this.buildIcon(['check icon-sm', 'user'])
-
-    static cancelRequest = () => this.buildIcon(['times icon-sm', 'user'])
-
-    static sendRequest = () => this.buildIcon(['plus icon-sm', 'user'])
-
-    static removeFriend = () => this.buildIcon(['minus icon-sm', 'user'])
-
-    static confirm = () => this.buildIcon(['check'])
-
-    static cancel = () => this.buildIcon(['times'])
-
-    static edit = () => this.buildIcon(['edit'])
-
-    static deleteComment = () => this.buildIcon(['minus icon-sm', 'comment'])
-
-    static createPost = () => this.buildIcon(['plus icon-sm', 'sticky-note'])
-
-    static deletePost = () => this.buildIcon(['minus icon-sm', 'sticky-note'])
-
-    static attachToPost = () => this.buildIcon(['paperclip icon-sm', 'sticky-note'])
-
-    static deleteImage = () => this.buildIcon(['minus icon-sm', 'image'])
-}
+    Icons.buildIcon = function (suffixes) {
+        var elm = ViewUtil.tag('div', { classList: 'icon' });
+        suffixes.forEach(function (s) { return elm.append(ViewUtil.tag('i', { classList: "fa fa-" + s })); });
+        return elm;
+    };
+    Icons.acceptRequest = function () { return Icons.buildIcon(['check icon-sm', 'user']); };
+    Icons.cancelRequest = function () { return Icons.buildIcon(['times icon-sm', 'user']); };
+    Icons.removeFriend = function () { return Icons.buildIcon(['minus icon-sm', 'user']); };
+    Icons.sendRequest = function () { return Icons.buildIcon(['plus icon-sm', 'user']); };
+    Icons.deleteComment = function () { return Icons.buildIcon(['minus icon-sm', 'comment']); };
+    Icons.attachToPost = function () { return Icons.buildIcon(['paperclip icon-sm', 'sticky-note']); };
+    Icons.deleteImage = function () { return Icons.buildIcon(['minus icon-sm', 'image']); };
+    Icons.createPost = function () { return Icons.buildIcon(['plus icon-sm', 'sticky-note']); };
+    Icons.deletePost = function () { return Icons.buildIcon(['minus icon-sm', 'sticky-note']); };
+    Icons.paperClip = function () { return Icons.buildIcon(['paperclip']); };
+    Icons.confirm = function () { return Icons.buildIcon(['check']); };
+    Icons.cancel = function () { return Icons.buildIcon(['times']); };
+    Icons.edit = function () { return Icons.buildIcon(['edit']); };
+    return Icons;
+}());
+//# sourceMappingURL=Icons.js.map

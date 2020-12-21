@@ -6,7 +6,7 @@
     "sourceMap": true,
     "target": "es5",
     "module": "commonjs",
-    "outDir": "./JsTranspile"
+    "outDir": "../js"
   },
   "exclude": [
     "node_modules",

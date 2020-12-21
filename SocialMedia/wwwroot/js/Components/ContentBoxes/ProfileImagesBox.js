@@ -1,73 +1,42 @@
-﻿/*
-    This class is a sudo-extension of ContentBox.
-    It manages the logic of a content box that specifically stores a single profile's images.
-
-    First images request is sent to the host upon contruction.
-*/
-class ProfileImagesBox {
-
-    // A global collection of ImageBox instances.
-    static profileImageBoxes = [];
-
-    // The click action that gets imbedded in every image in this image box's content box.
-    click;
-
-    // The ProfileID of the profile who's images are being loaded.
-    profileId;
-
-    // The base class used to store the image cards.
-    contentBox;
-
-    /*
-        PARAMETERS:
-        profileId can be null.
-        click can be null.
-    */
-    constructor(profileId, click) {
-
-        // Get handle on ProfileID.
-        // If a ProfileID was provided, this.profileID is profileId, else this.profileId is the current user's ProfileID.
-        this.profileId = profileId ? profileId : User.id;
-
-        // Get handle on click action.
-        this.click = click;
-
-        // Construct a new content box and get a handle on it.
-        this.contentBox = new ContentBox(null, 'images-box', 20,
-
-            // When content box is ready for more content,
-            (skip, take) => {
-
-                // send an images request to the host with the set skip and take values along with the ProfileID of this image box,
-                Repo.images(this.profileId, skip, take, 'listImage sqr', this.click,
-
-                    // and when they return as image cards with the click value that was just provided,
-                    imageCards =>
-
-                        // add them to this image box's content box.
-                        this.contentBox.add(imageCards));
-            }
-        );
-
-        // Send first request to host.
-        this.contentBox.request(40);
-
-        // Add this image box to the collection.
-        ProfileImagesBox.profileImageBoxes.push(this);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-
-    /*
-        Takes an image card and does some final preparation before adding it to this image box's content box.
-    */
-    addImageCard(imageCard) {
-
-        // Imbed click action stored in this image box to image card.
-        imageCard.click = this.click;
-
-        // Update classList of image card so it is square and fits in the grid.
-        imageCard.tag.classList = 'listImage sqr';
-
-        // Add image card to this image box's content box.
-        this.contentBox.add(imageCard, true);
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var ProfileImagesBox = (function (_super) {
+    __extends(ProfileImagesBox, _super);
+    function ProfileImagesBox(profileId, clickCallback) {
+        var _this = this;
+        var rootElm = ViewUtil.tag('div', { classList: 'images-box' });
+        _this = _super.call(this, rootElm, 20, function (skip, take) {
+            Ajax.getProfileImages(_this.profileId, skip, take, 'listImage sqr', _this.clickCallback, function (imageCards) {
+                _this.add(imageCards);
+            });
+        }) || this;
+        _this.profileId = profileId ? profileId : User.profileId;
+        _this.clickCallback = clickCallback;
+        _this.request(40);
+        ProfileImagesBox.profileImageBoxes.push(_this);
+        return _this;
     }
-}
+    ProfileImagesBox.prototype.addImageCards = function (imageCards) {
+        var _this = this;
+        imageCards.forEach(function (i) { return _this.addImageCard(i); });
+    };
+    ProfileImagesBox.prototype.addImageCard = function (imageCard) {
+        imageCard.onImageClick = this.clickCallback;
+        imageCard.rootElm.classList.add('listImage sqr');
+        this.add(imageCard, true);
+    };
+    ProfileImagesBox.profileImageBoxes = [];
+    return ProfileImagesBox;
+}(ContentBox));
+//# sourceMappingURL=ProfileImagesBox.js.map

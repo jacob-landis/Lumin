@@ -1,28 +1,9 @@
-﻿class Behavior {
-
-    //static userImageContextOpts =imageCard=> e=> {
-
-    //    ContextModal.load(e, true, [
-
-    //        new ContextOption(Icons.createPost(), () => {
-    //            ImageDropdown.close();
-    //            CreatePostModal.load(imageCard);
-    //        }),
-    //        new ContextOption(Icons.deleteImage(), () => {
-    //            console.log(imageCard);
-    //        })
-    //    ]);
-    //}
-
-    static singleFullSizeImage =imageCard=> ()=> {
-        FullSizeImageModal.loadSingle(imageCard.rawImage.id);
+var Behavior = (function () {
+    function Behavior() {
     }
-
-    //static fullSizeImage =clickedImageCard=> () => {
-    //    FullSizeImageModal.load(
-    //        ImageDropdown.imageBox.content.indexOf(clickedImageCard),
-    //        ImageDropdown.profileId
-    //    );
-    //}
-    
-}
+    Behavior.singleFullSizeImage = function (imageCard) { return function () {
+        fullSizeImageModal.loadSingle(imageCard.rawImage.id);
+    }; };
+    return Behavior;
+}());
+//# sourceMappingURL=Behavior.js.map

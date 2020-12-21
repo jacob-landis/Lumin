@@ -1,29 +1,25 @@
-﻿/*
-    This class contains logic for creating context menu options.
-*/
-class ContextOption {
-
-    // The root HTML elm.
-    tag;
-
-    /*
-        PARAMETERS:
-        tag must be an HTML elm.
-        func must be at least an empty function.
-    */
-    constructor(tag, func) {
-
-        // Create root HTML elm with class for CSS and onclick callback of the one provided, and get a handle on it.
-        this.tag = ViewUtil.tag(
-            'div',
-            {
-                classList: 'context-option',
-                onclick: func
-            });
-
-        // Append the provided elm to this options root elm.
-        this.tag.append(tag);
-        // XXX if the provided tag had an on-click as well as this context option's tag, which on-click would invoke? Both?
-        // XXX this relates to the editory and whether it can handle imbedding the invoke start() callback.
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-}
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var ContextOption = (function (_super) {
+    __extends(ContextOption, _super);
+    function ContextOption(rootElm, onOptionClick) {
+        var _this = this;
+        rootElm.classList.add('context-option');
+        rootElm.onclick = onOptionClick;
+        _this = _super.call(this, rootElm) || this;
+        return _this;
+    }
+    return ContextOption;
+}(Card));
+//# sourceMappingURL=ContextOption.js.map

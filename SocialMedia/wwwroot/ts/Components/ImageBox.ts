@@ -88,7 +88,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         click can be a function or null. If it is null the current images onclick event will not be changed.
     */
     public load(imageId: number, classList?: string, click?: (e: MouseEvent) => void): void {
-
+        console.log(imageId)
         // Replace handle on imageId.
         this.heldImageId = imageId;
 
@@ -117,7 +117,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         ViewUtil.empty(this.rootElm);
 
         // If a classList or click callback was ever provided, apply them to the imageCard.
-        if (this.heldImageClassList) imageCard.rootElm.classList.add(this.heldImageClassList);
+        if (this.heldImageClassList) ViewUtil.addClassList(this.heldImageClassList, imageCard.rootElm);
         if (this.heldImageClick) imageCard.onImageClick = ()=> this.heldImageClick;
 
         // Append tag of new image card to this image box's main HTML elm.
@@ -153,7 +153,6 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
         // If an image is not loaded,
         if (!this.isLoaded)
-
             // Request an image with the request settings and apply the attribute settings when it returns.
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, () => this.heldImageClick,
 

@@ -42,6 +42,7 @@ class Dropdown implements IAppendable {
     private static frameContainer: HTMLElement; // provided in initialize
 
     public static initialize(frameTemplate: HTMLElement, frameContainer: HTMLElement): void {
+        
         this.frameTemplate = frameTemplate;
         this.frameContainer = frameContainer;
     }
@@ -57,9 +58,9 @@ class Dropdown implements IAppendable {
     protected constructor(rootElm: HTMLElement, contentElm: HTMLElement) {
         this.rootElm = rootElm;
         this.contentElm = contentElm;
-
+        
         // Clone frame template.
-        this.frameElm = ViewUtil.copy(Dropdown.frameTemplate); // XXX convert Node to HTMLElement.
+        this.frameElm = ViewUtil.copy(Dropdown.frameTemplate);
 
         // Append rootElm to frame.
         this.frameElm.append(this.rootElm);
@@ -75,7 +76,7 @@ class Dropdown implements IAppendable {
         Show the provided dropdown's main tag after invoking close() on all the other dropdowns. 
     */
     public open(): void {
-        
+
         // Iterate over all dropdowns and invoke close() on each.
         Dropdown.openDropdowns.forEach(d => d.close());
 
@@ -89,22 +90,17 @@ class Dropdown implements IAppendable {
     public close(): void {
         ViewUtil.hide(this.rootElm);
         
-        // REMOVE THIS FROM LIST OF MODALS
-        // Set the handle of the given modalCon in modalCons to null.
-        Dropdown.openDropdowns[Dropdown.openDropdowns.indexOf(this)] = null;
-
-        // Filter out the null value from modalCons.
-        Util.filterNulls(Dropdown.openDropdowns);
+        // REMOVE THIS FROM LIST OF DROPDOWNS
+        Dropdown.openDropdowns.splice(Dropdown.openDropdowns.indexOf(this));
     }
 
     public toggle(): void {
+        this.rootElm.style.display != 'block' ? this.open() : this.close();
 
-        this.rootElm.style.display != 'none' ? this.open() : this.close();
+        //// If the dropdown is open, close it,
+        //if (this.rootElm.style.display != 'none') this.close();
 
-        // If the dropdown is open, close it,
-        if (this.rootElm.style.display != 'none') this.close();
-
-        // else, open it.
-        else this.open();
+        //// else, open it.
+        //else this.open();
     }
 }

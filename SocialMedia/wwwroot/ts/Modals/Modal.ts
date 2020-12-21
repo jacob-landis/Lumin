@@ -23,7 +23,6 @@ class Modal implements IAppendable {
     public static openModals: Modal[] = []; // provided in constructor
 
     private static frameTemplate: HTMLElement; // provided in initialize
-
     private static frameContainer: HTMLElement; // provided in initialize
 
     // Used to close the foremost modal.
@@ -31,7 +30,7 @@ class Modal implements IAppendable {
     protected static btnClose: HTMLElement; // provided in initialize
 
     public static initialize(frameTemplate: HTMLElement, frameContainer: HTMLElement, btnClose: HTMLElement): void {
-
+        
         // Get a handle on the frame template.
         this.frameTemplate = frameTemplate;
         this.frameContainer = frameContainer;
@@ -58,23 +57,22 @@ class Modal implements IAppendable {
     // ---------------------------------------------------------------------------------------------------------------
     // NON-STATIC
 
+    // Frame template clone.
     public rootElm: HTMLElement;
-    private frameElm: HTMLElement;
 
-    // Only usable by derived classes.
-    protected constructor(rootElm: HTMLElement) {
+    /*
+        Only usable by derived classes.
+    */
+    protected constructor(contentElm: HTMLElement) {
 
-        // Get handle 
-        this.rootElm = rootElm;
-        
         // Clone frame template.
-        this.frameElm = ViewUtil.copy(Modal.frameTemplate); // XXX convert Node to HTMLElement.
+        this.rootElm = ViewUtil.copy(Modal.frameTemplate);
+        
+        // Append contentElm to frame(rootElm).
+        this.rootElm.append(contentElm);
 
-        // Append rootElm to frame.
-        this.frameElm.append(this.rootElm);
-
-        // Append frame to frame container.
-        Modal.frameContainer.append(this.frameElm);
+        // Append frame(rootElm) to frame container.
+        Modal.frameContainer.append(this.rootElm);
     }
     
     /*
@@ -87,7 +85,7 @@ class Modal implements IAppendable {
         this.close();
 
         // Show modal.
-        ViewUtil.show(this.frameElm)
+        ViewUtil.show(this.rootElm)
         
         // Display close button.
         ViewUtil.show(Modal.btnClose, 'block');
@@ -110,21 +108,15 @@ class Modal implements IAppendable {
     public close(): void {
 
         // Hide modal.
-        ViewUtil.hide(this.frameElm);
-
-        // REMOVE THIS FROM LIST OF MODALS
-        // Set the handle of the given modalCon in modalCons to null.
-        Modal.openModals[Modal.openModals.indexOf(this)] = null;
-
-        // Filter out the null value from modalCons.
-        Util.filterNulls(Modal.openModals);
-
-        // IF NO MODALS ARE OPEN, UNLOCK SCROLLING
+        ViewUtil.hide(this.rootElm);
+        
+        // Remove this from list of modals.
+        Modal.openModals.splice(Modal.openModals.indexOf(this));
+        
         // If no modal is open,
         if (Modal.openModals.length == 0) {
 
             // remove the class from body that locks scrolling,
-            //document.getElementsByTagName("BODY")[0].classList = '';
             document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
 
             // and hide btnClose.

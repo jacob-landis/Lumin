@@ -1,32 +1,81 @@
-﻿class ProfileCard {
-
-    static profileCards = [];
-
-    static list(profiles) {
-        let profileCards = [];
-        profiles.forEach(p => profileCards.push(new ProfileCard(p)));
-        return profileCards;
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-
-    static changeUserProfilePicture(imageId, imageCard) {
-        if (imageId) Repo.image(imageId, null, null, true, imageCard=> applyChanges(imageCard));
-        else applyChanges(imageCard);
-        // profile picture is not being set when image is deleted that IS prof pic
-        function applyChanges(imageCard) {
-            ProfileCard.profileCards.forEach(p => {
-                if (p.profile.profileId == User.id) p.imageBox.loadImage(ImageCard.copy(imageCard));
-            });
-
-            // full scale prof pic will be loaded on ProfileModal because that is the only place to change it
-            // however, the default prof pic cannot be selected, only from deleting the current picture
-            ProfileModal.profilePictureBox.loadImage(ImageCard.copy(imageCard));
-
-            User.profilePictureId = imageCard.rawImage.id;
-            Repo.updateProfilePicture(imageCard.rawImage.id);
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var ProfileCard = (function (_super) {
+    __extends(ProfileCard, _super);
+    function ProfileCard(profile) {
+        var _this = _super.call(this, ViewUtil.tag('div', { classList: 'profileCard' })) || this;
+        _this.profile = profile;
+        _this.case = ProfileCard.cases[_this.profile.relationToUser];
+        _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, true);
+        _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', function () { }));
+        _this.rootElm.append(_this.imageBox.rootElm, ViewUtil.tag('span', { classList: 'profileCardName', innerText: _this.profile.name }));
+        if (_this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me')
+            _this.rootElm.onclick = function (e) { return profileModal.launch(_this.profile.profileId); };
+        if (_this.profile.relationToUser != 'me') {
+            _this.rootElm.oncontextmenu = function (e) { return contextModal.load(e, [
+                new ContextOption(_this.case.icon, function () {
+                    var id = _this.profile.profileId;
+                    switch (_this.case.label) {
+                        case 'Accept':
+                            Ajax.acceptFriendRequest(id);
+                            break;
+                        case 'Request':
+                            Ajax.sendFriendRequest(id);
+                            break;
+                        case 'Cancel':
+                            _this.remove();
+                            break;
+                        case 'Unfriend': confirmModal.load('Are you sure you want to unfriend this user?', function (confirmation) { if (confirmation)
+                            _this.remove(); });
+                    }
+                    _this.case = ProfileCard.cases[_this.case.nextCase];
+                })
+            ]); };
         }
+        ProfileCard.profileCards.push(_this);
+        return _this;
     }
-
-    static cases = {
+    ProfileCard.list = function (profiles) {
+        var profileCards = [];
+        profiles.forEach(function (p) { return profileCards.push(new ProfileCard(p)); });
+        return profileCards;
+    };
+    ProfileCard.changeUserProfilePicture = function (imageId, imageCard) {
+        if (imageId)
+            Ajax.getImage(imageId, true, null, null, function (imageCard) { return applyChanges(imageCard); });
+        else
+            applyChanges(imageCard);
+        function applyChanges(imageCard) {
+            ProfileCard.profileCards.forEach(function (p) {
+                if (p.profile.profileId == User.profileId)
+                    p.imageBox.loadImage(ImageCard.copy(imageCard));
+            });
+            profileModal.profilePictureBox.loadImage(ImageCard.copy(imageCard));
+            User.profilePictureId = imageCard.rawImage.id;
+            Ajax.updateProfilePicture(imageCard.rawImage.id);
+        }
+    };
+    ProfileCard.prototype.remove = function () {
+        var _this = this;
+        PostCard.postCards.forEach(function (p) {
+            if (p.post.profile.profileId == _this.profile.profileId)
+                ViewUtil.remove(p.rootElm);
+        });
+        Ajax.deleteFriend(this.profile.profileId);
+    };
+    ProfileCard.profileCards = [];
+    ProfileCard.cases = {
         'friend': {
             label: 'Unfriend',
             icon: Icons.removeFriend(),
@@ -47,48 +96,7 @@
             icon: Icons.sendRequest(),
             nextCase: 'userRequested'
         }
-    }
-
-    constructor(profile) {
-        this.profile = profile;
-        this.case = ProfileCard.cases[this.profile.relationToUser];
-
-        this.tag = ViewUtil.tag('div', { classList: 'profileCard' });
-        this.imageBox = new ImageBox(null, 'profileCardThumbWrapper', 'sqr', null, true);
-        this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', () => { }));
-        this.tag.append(this.imageBox.tag,
-            ViewUtil.tag('span', { classList: 'profileCardName', innerText: this.profile.name }));
-        
-        // card click
-        if (this.profile.relationToUser == 'friend' || this.profile.relationToUser == 'me')
-            this.tag.onclick = e => ProfileModal.launch(this.profile.profileId)
-
-        if (this.profile.relationToUser != 'me') {
-            this.tag.oncontextmenu = e => ContextModal.load(e, [
-                new ContextOption(this.case.icon, () => {
-
-                    let id = this.profile.profileId;
-                    switch (this.case.label) {
-                        case 'Accept': Repo.acceptFriend(id); break;
-                        case 'Request': Repo.requestFriend(id); break;
-                        case 'Cancel': this.remove(id); break;
-                        case 'Unfriend': ConfirmModal.load('Are you sure you want to unfriend this user?',
-                            confirmation => { if (confirmation) this.remove(id); });
-                    }
-                    this.case = ProfileCard.cases[this.case.nextCase];
-                })
-            ]);
-        }
-        ProfileCard.profileCards.push(this);
-    }
-
-    // removes posts from this friend in public feed
-    // (removing friends from lists would require distinguishing those cards from profile cards that are attached to comments)
-    remove() {
-        PostCard.postCards.forEach(p => {
-            if (p.profileId == this.profile.profileId) ViewUtil.remove(p.tag);
-        });
-
-        Repo.removeFriend(this.profile.profileId);
-    }
-}
+    };
+    return ProfileCard;
+}(Card));
+//# sourceMappingURL=ProfileCard.js.map

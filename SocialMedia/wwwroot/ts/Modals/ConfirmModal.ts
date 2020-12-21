@@ -11,14 +11,14 @@ class ConfirmModal extends Modal {
         Sets up event listeners.
     */
     public constructor(
-        rootElm: HTMLElement,           // Base parameter.
+        contentElm: HTMLElement,           // Base parameter.
 
         // Used to show a message to the user (Ex. "Are you sure you want to delete this comment?")
         private lblPrompt: HTMLElement, // XXX consider using this technique in other places or remove this case of it. XXX
         btnYes: HTMLElement,            // Invokes confirm with true.
         btnNo: HTMLElement              // Invokes confirm with false.
     ) {
-        super(rootElm);
+        super(contentElm);
 
         // Connect yes and no buttons to confirm(), but load a different value into each.
         btnYes.onclick = () => this.respond(true)

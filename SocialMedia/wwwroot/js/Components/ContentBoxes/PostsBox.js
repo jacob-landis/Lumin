@@ -1,75 +1,37 @@
-﻿/*
-    This class is a sudo-extension of ContentBox.
-    It manages the logic of a content box that specifically stores posts.
-    
-    Constructor establishes a request feed for lazy loading but does not initiate it.
-    Start() must be called to initiate it.
-*/
-class PostsBox {
-
-    // A global collection of PostBox instances.
-    static postBoxes = [];
-
-    // The profile who's post feed will be loaded.
-    // If profileId is false this will ask the host for the public feed.
-    profileId;
-
-    // The base class used to store the post cards.
-    contentBox;
-
-    /*
-        PARAMETERS:
-        profileId can be null.
-        existingTag must be an HTML element.
-    */
-    constructor(profileId, existingTag) {
-
-        // XXX if no ProfileID can be used and just defualt public posts can be requested, why is it made mandatory that this be a valid ProfileID?
-        // is this for when postBoxes are scanned to add or remove a post card?
-        this.profileId = profileId ? profileId : User.id;
-
-        // Prep callback for ContentBox construction.
-        let contentBoxRequestFunc =
-
-            // When content box is ready for more content,
-            (skip, take) =>
-
-                // if a ProfileID was included,
-                profileId ?
-
-                    // send a profilePosts request to the server with the set skip and take values along with the ProfileID of this post box,
-                    Repo.profilePosts(this.profileId, skip, take,
-
-                        // and when the posts return as post cards,
-                        (posts) =>
-
-                            // add them to the content box of this post box.
-                            this.contentBox.add(posts))
-                    
-                    :
-                    // or else send a publicPosts request to the server with the set skip and take values of this post box,
-                    Repo.publicPosts(skip, take,
-
-                        // and when the posts return as post cards,
-                        (posts) =>
-
-                            // add them to the content box of this post box.
-                            this.contentBox.add(posts));
-
-        // Construct a new ContentBox.
-        this.contentBox = new ContentBox(existingTag, 'posts-box', 5, contentBoxRequestFunc);
-
-        // Add to collection of live post boxes.
-        PostsBox.postBoxes.push(this);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-
-    /*
-        Shortcut for adding posts to this post box's content box.
-    */
-    addPost(postCard) { this.contentBox.add(postCard, true); }
-
-    /*
-        Send first request to host. 
-    */
-    start() { this.contentBox.request(15); }
-}
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var PostsBox = (function (_super) {
+    __extends(PostsBox, _super);
+    function PostsBox(profileId, rootElm) {
+        var _this = this;
+        rootElm.classList.add('post-box');
+        _this = _super.call(this, rootElm, 5, function (skip, take) {
+            if (profileId)
+                Ajax.getProfilePosts(_this.profileId, skip, take, function (postCards) {
+                    return _this.add(postCards);
+                });
+            else
+                Ajax.getPublicPosts(skip, take, function (postCards) {
+                    return _this.add(postCards);
+                });
+        }) || this;
+        _this.profileId = profileId ? profileId : User.profileId;
+        return _this;
+    }
+    PostsBox.prototype.addPost = function (postCard) { this.add(postCard, true); };
+    PostsBox.prototype.start = function () { this.request(15); };
+    PostsBox.postBoxes = [];
+    return PostsBox;
+}(ContentBox));
+//# sourceMappingURL=PostsBox.js.map

@@ -78,7 +78,7 @@ class FullSizeImageModal extends Modal {
 
         // Set the callback of content to invoke close().
         // Target is checked because clicking an elm above content will still count as a click on content, but content will not be the target.
-        this.content.onclick =e => { if (e.target == this.content) this.close(); }
+        //this.content.onclick =e => { if (e.target == this.content) this.close(); }
     }
 
     /*
@@ -163,10 +163,11 @@ class FullSizeImageModal extends Modal {
             Ajax.getProfileImages(this.profileId, this.index, 1, '', () => { },
 
                 // When the array of 1 image card arrives.
-                imageCards =>
-
+                (imageCards) => {
                     // Load that image card into the fullsize image container.
-                    this.imageCon.load(imageCards[0].image.imageId, null, ()=> ()=> this.toggleControls()));
+                    this.imageCon.load(imageCards[0].image.imageId, null, () => () => this.toggleControls())
+                }
+            );
         }
     }
     

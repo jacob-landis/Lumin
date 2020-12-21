@@ -7,7 +7,13 @@
         
         if (x) {
             if (x.id) tag.id = x.id;
-            if (x.classList) tag.classList.add(x.classList); // TEST
+            if (x.classList) 
+                (<string>x.classList).split(' ').forEach(
+                    (className: string) => {
+                        if (className != '' && className != null)
+                            tag.classList.add(className)
+                    }
+                )
             if (x.name) tag.setAttribute('name', x.name); // TEST
             if (x.color) tag.style.color = x.color;
             if (x.innerHTML) tag.innerHTML = x.innerHTML;
@@ -22,6 +28,12 @@
 
 
 //_____ TAG MANIPULATORS
+
+    // Add the provided classList to the provided element.
+    public static addClassList(classList: string, elm: HTMLElement) {
+        let classListArray: string[] = classList.split(' ');
+        classListArray.forEach(c => elm.classList.add(c));
+    }
 
     // Return deep copy of the provided element.
     public static copy(elm: HTMLElement): HTMLElement {

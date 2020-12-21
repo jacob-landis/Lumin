@@ -35,7 +35,7 @@
         this.post = post;
 
         if (this.post.image) this.hasImage = true;
-
+        
         // POST CONSTRUCTION
         // __________________________________ TAG
         
