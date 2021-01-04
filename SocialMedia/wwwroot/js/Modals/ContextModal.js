@@ -20,7 +20,9 @@ var ContextModal = (function (_super) {
             if (_this.optionsBox.rootElm.style.display != "none")
                 _this.close();
         });
-        _this.optionsBox.rootElm.onclick = function () { return _this.close(); };
+        _this.optionsBox.rootElm.onclick = function () {
+            _this.close();
+        };
         return _this;
     }
     ContextModal.prototype.load = function (e, options) {

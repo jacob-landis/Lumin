@@ -27,7 +27,9 @@ class ContextModal extends Modal {
 
         // Set up click event on r-click menu to close when clicked on.
         // (The click event on the button on this modal will also be triggered.)
-        this.optionsBox.rootElm.onclick = () => this.close();
+        this.optionsBox.rootElm.onclick = () => {
+            this.close();
+        }
 
     }
 

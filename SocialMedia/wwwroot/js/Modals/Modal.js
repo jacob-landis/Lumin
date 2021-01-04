@@ -1,7 +1,12 @@
 var Modal = (function () {
     function Modal(contentElm) {
-        this.rootElm = ViewUtil.copy(Modal.frameTemplate);
-        this.rootElm.append(contentElm);
+        if (contentElm.id == "contextContent") {
+            this.rootElm = contentElm;
+        }
+        else {
+            this.rootElm = ViewUtil.copy(Modal.frameTemplate);
+            this.rootElm.append(contentElm);
+        }
         Modal.frameContainer.append(this.rootElm);
     }
     Modal.initialize = function (frameTemplate, frameContainer, btnClose) {
@@ -17,7 +22,8 @@ var Modal = (function () {
     };
     Modal.closeTopModal = function () { this.openModals[this.openModals.length - 1].close(); };
     Modal.prototype.open = function () {
-        this.close();
+        if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block")
+            this.close();
         ViewUtil.show(this.rootElm);
         ViewUtil.show(Modal.btnClose, 'block');
         this.rootElm.style.zIndex = "" + Modal.openModals.push(this);
@@ -26,7 +32,7 @@ var Modal = (function () {
     };
     Modal.prototype.close = function () {
         ViewUtil.hide(this.rootElm);
-        Modal.openModals.splice(Modal.openModals.indexOf(this));
+        Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
         if (Modal.openModals.length == 0) {
             document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
             ViewUtil.hide(Modal.btnClose);

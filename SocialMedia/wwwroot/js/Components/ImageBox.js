@@ -25,7 +25,6 @@ var ImageBox = (function () {
         configurable: true
     });
     ImageBox.prototype.load = function (imageId, classList, click) {
-        console.log(imageId);
         this.heldImageId = imageId;
         this.heldImageClassList = classList ? classList : this.heldImageClassList;
         this.heldImageClick = click ? click : this.heldImageClick;

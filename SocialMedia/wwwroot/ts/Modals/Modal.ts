@@ -39,14 +39,14 @@ class Modal implements IAppendable {
         // Set event listener on btnCloseModal to invoke closeHighestModal.
         this.btnClose.onclick = () => this.closeTopModal();
         
-        // Set click event for window to,
+        // Set click event for window to close top modal.
         window.onclick = e => {
 
-            // cast event target and check if it has modalBox in it's class list,
-            // (the "target" could be behind the elm that was actually clicked. I dont know why, but checking the classlist specifically work)
-            if ((<HTMLElement>e.target).classList.contains("modalBox")) // XXX double check this. XXX
+            // If the event target has modalBox in it's class list.
+            // (the "target" could be behind the elm that was actually clicked. I dont know why, but checking the classlist specifically works)
+            if ((<HTMLElement>e.target).classList.contains("modalBox"))
 
-                // and invoke closeTopModal if it does.
+                // Invoke closeTopModal.
                 this.closeTopModal();
         };
     }
@@ -64,7 +64,7 @@ class Modal implements IAppendable {
         Only usable by derived classes.
     */
     protected constructor(contentElm: HTMLElement) {
-
+        
         // Clone frame template.
         this.rootElm = ViewUtil.copy(Modal.frameTemplate);
         
@@ -82,7 +82,8 @@ class Modal implements IAppendable {
     public open(): void {
         
         // Refresh modal.
-        this.close();
+        // If open, close.
+        if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block") this.close();
 
         // Show modal.
         ViewUtil.show(this.rootElm)
@@ -97,8 +98,7 @@ class Modal implements IAppendable {
         if (!(this.rootElm.id == 'contextModal' || this.rootElm.id == 'confirmModal')) // XOR
 
             // Give body elm a class that locks page scrolling.
-            //document.getElementsByTagName("BODY")[0].classList = 'scrollLocked';
-        document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+            document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
     }
     
     /*
@@ -110,9 +110,9 @@ class Modal implements IAppendable {
         // Hide modal.
         ViewUtil.hide(this.rootElm);
         
-        // Remove this from list of modals.
-        Modal.openModals.splice(Modal.openModals.indexOf(this));
-        
+        // Remove this from list of modals. Start at the index of this and delete 1 item.
+        Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+
         // If no modal is open,
         if (Modal.openModals.length == 0) {
 
