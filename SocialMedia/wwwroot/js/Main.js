@@ -1,11 +1,11 @@
+var contextMenu;
+var confirmPrompt;
 var modal;
-var contextModal;
 var createPostModal;
 var fullSizeImageModal;
 var profileModal;
 var uploadImageModal;
 var publicPosts;
-var confirmModal;
 var helpModal;
 var imageDropdown;
 var friendDropdown;
@@ -17,9 +17,9 @@ var Main = (function () {
         User.profilePictureId = profile.profilePicture;
         this.navBar = document.getElementById("navBar");
         publicPosts = new PublicPosts(document.getElementById('publicPosts'));
+        contextMenu = new ContextMenu(document.getElementById('contextMenu'), document.getElementById('contextContent'));
+        confirmPrompt = new ConfirmPrompt(document.getElementById('confirmPrompt'), document.getElementById('confirmContent'), document.getElementById('promptMessage'), document.getElementById('btnConfirmYes'), document.getElementById('btnConfirmNo'));
         Modal.initialize(document.getElementById('modalFrameTemplate'), document.getElementById('modalFrameContainer'), document.getElementById('btnCloseModal'));
-        contextModal = new ContextModal(document.getElementById('contextContent'));
-        confirmModal = new ConfirmModal(document.getElementById('confirmContent'), document.getElementById('promptMessage'), document.getElementById('btnConfirmYes'), document.getElementById('btnConfirmNo'));
         createPostModal = new CreatePostModal(document.getElementById('createPostModal'), document.getElementById('caption'), document.getElementById('captionWrapper'), document.getElementById('btnSelectPostImage'), document.getElementById('btnClearPostImage'), document.getElementById('btnSubmit'), document.getElementById('btnCancel'), document.getElementById('selectedImageCon'), 'selectedPostImage', 'createPostErrorBox');
         fullSizeImageModal = new FullSizeImageModal(document.getElementById('fullsizeImageModal'), document.getElementById('fullSizeImageModalContent'), document.getElementById('btnFullsizePrevious'), document.getElementById('btnFullsizeNext'), document.getElementById('imageCount'), document.getElementById('fullsizeImageCon'), 'fullSizeImage');
         profileModal = new ProfileModal(document.getElementById('profileModal'), document.getElementById('profileModalContent'), document.getElementById('profileModalName'), document.getElementById('profilePosts'), document.getElementById('profileImages'), document.getElementById('profileBioWrapper'), document.getElementById('profileModalPictureWrapper'), document.getElementById('profileImagesWrapper'), document.getElementById('profileFriends'), 'profile-picture sqr', 'bio');

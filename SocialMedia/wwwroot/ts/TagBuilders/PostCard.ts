@@ -114,10 +114,10 @@
             let btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
 
-            btnPostOpts.onclick = e => contextModal.load(e, [
+            btnPostOpts.onclick = e => contextMenu.load(e, [
                 new ContextOption(this.editIcon, () => this.captionEditor.start()),
                 new ContextOption(Icons.deletePost(), () =>
-                    confirmModal.load('Are you sure you want to delete this post?', confirmation => {
+                    confirmPrompt.load('Are you sure you want to delete this post?', confirmation => {
                         if (!confirmation) return;
                         this.remove();
                     }))

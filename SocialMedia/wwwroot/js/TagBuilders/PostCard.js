@@ -60,10 +60,10 @@ var PostCard = (function (_super) {
         if (post.profile.relationToUser == 'me') {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
-            btnPostOpts.onclick = function (e) { return contextModal.load(e, [
+            btnPostOpts.onclick = function (e) { return contextMenu.load(e, [
                 new ContextOption(_this.editIcon, function () { return _this.captionEditor.start(); }),
                 new ContextOption(Icons.deletePost(), function () {
-                    return confirmModal.load('Are you sure you want to delete this post?', function (confirmation) {
+                    return confirmPrompt.load('Are you sure you want to delete this post?', function (confirmation) {
                         if (!confirmation)
                             return;
                         _this.remove();

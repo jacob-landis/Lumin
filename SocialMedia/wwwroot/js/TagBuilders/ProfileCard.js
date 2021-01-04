@@ -23,7 +23,7 @@ var ProfileCard = (function (_super) {
         if (_this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me')
             _this.rootElm.onclick = function (e) { return profileModal.launch(_this.profile.profileId); };
         if (_this.profile.relationToUser != 'me') {
-            _this.rootElm.oncontextmenu = function (e) { return contextModal.load(e, [
+            _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, [
                 new ContextOption(_this.case.icon, function () {
                     var id = _this.profile.profileId;
                     switch (_this.case.label) {
@@ -36,7 +36,7 @@ var ProfileCard = (function (_super) {
                         case 'Cancel':
                             _this.remove();
                             break;
-                        case 'Unfriend': confirmModal.load('Are you sure you want to unfriend this user?', function (confirmation) { if (confirmation)
+                        case 'Unfriend': confirmPrompt.load('Are you sure you want to unfriend this user?', function (confirmation) { if (confirmation)
                             _this.remove(); });
                     }
                     _this.case = ProfileCard.cases[_this.case.nextCase];

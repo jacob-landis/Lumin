@@ -273,7 +273,7 @@ class CreatePostModal extends Modal {
         else {
 
             // Prompt the user to confirm cancelation.
-            confirmModal.load('Are you sure you want to cancel?',
+            confirmPrompt.load('Are you sure you want to cancel?',
 
                 // When their descision returns,
                 confirmation => {

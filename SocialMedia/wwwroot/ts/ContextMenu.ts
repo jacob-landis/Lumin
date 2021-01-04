@@ -2,18 +2,21 @@
     This class contains the functionality for a context menu.
     It only needs to be provided options and a click event.
 */
-class ContextModal extends Modal {
+class ContextMenu {
 
     // An enhanced container for storing the tags of context options.
     optionsBox: ContentBox;
+    private backgroundElm: HTMLElement;
+    private contentElm: HTMLElement;
     
     /*
         Gets handles on all necessary components.
         Sets up event listeners.
     */
-    constructor(contentElm: HTMLElement) {
+    constructor(backgroundElm: HTMLElement, contentElm: HTMLElement) {
 
-        super(contentElm);
+        this.backgroundElm = backgroundElm;
+        this.contentElm = contentElm;
 
         // Create a new content box using a modal HTML component and get a handle on it.
         this.optionsBox = new ContentBox(contentElm);
@@ -23,6 +26,10 @@ class ContextModal extends Modal {
 
             // When window is scrolled, if this modal is open, close it.
             if (this.optionsBox.rootElm.style.display != "none") this.close();
+        });
+
+        window.addEventListener('click', e => {
+            if (e.target == this.backgroundElm) this.close();
         });
 
         // Set up click event on r-click menu to close when clicked on.
@@ -57,5 +64,17 @@ class ContextModal extends Modal {
         // Reposition this modal tag to the position of the mouse.
         this.optionsBox.rootElm.style.left = `${e.clientX - this.optionsBox.width}`;
         this.optionsBox.rootElm.style.top = `${e.clientY - this.optionsBox.height}`;
+    }
+
+    private open() {
+
+        // Show modal.
+        ViewUtil.show(this.backgroundElm);
+    }
+
+    private close() {
+
+        // Hide modal.
+        ViewUtil.hide(this.backgroundElm);
     }
 }

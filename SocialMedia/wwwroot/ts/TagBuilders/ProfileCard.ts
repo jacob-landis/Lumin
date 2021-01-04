@@ -77,7 +77,7 @@
             this.rootElm.onclick = e => profileModal.launch(this.profile.profileId)
 
         if (this.profile.relationToUser != 'me') {
-            this.rootElm.oncontextmenu = e => contextModal.load(e, [
+            this.rootElm.oncontextmenu = e => contextMenu.load(e, [
                 new ContextOption(this.case.icon, () => {
 
                     let id = this.profile.profileId;
@@ -85,7 +85,7 @@
                         case 'Accept': Ajax.acceptFriendRequest(id); break;
                         case 'Request': Ajax.sendFriendRequest(id); break;
                         case 'Cancel': this.remove(); break;
-                        case 'Unfriend': confirmModal.load('Are you sure you want to unfriend this user?',
+                        case 'Unfriend': confirmPrompt.load('Are you sure you want to unfriend this user?',
                             confirmation => { if (confirmation) this.remove(); });
                     }
                     this.case = ProfileCard.cases[this.case.nextCase];

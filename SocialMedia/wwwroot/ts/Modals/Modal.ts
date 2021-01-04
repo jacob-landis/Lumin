@@ -40,7 +40,7 @@ class Modal implements IAppendable {
         this.btnClose.onclick = () => this.closeTopModal();
         
         // Set click event for window to close top modal.
-        window.onclick = e => {
+        window.addEventListener('click', e => {
 
             // If the event target has modalBox in it's class list.
             // (the "target" could be behind the elm that was actually clicked. I dont know why, but checking the classlist specifically works)
@@ -48,7 +48,7 @@ class Modal implements IAppendable {
 
                 // Invoke closeTopModal.
                 this.closeTopModal();
-        };
+        });
     }
 
     private static closeTopModal(): void { this.openModals[this.openModals.length - 1].close(); }
@@ -93,12 +93,9 @@ class Modal implements IAppendable {
 
         // Add modal to list of open modals, and give it the highest z index. (push() returns the index number of the new value)
         this.rootElm.style.zIndex = `${Modal.openModals.push(this)}`;
-        
-        // If modal is not context modal or confirm modal, lock scrolling.
-        if (!(this.rootElm.id == 'contextModal' || this.rootElm.id == 'confirmModal')) // XOR
 
-            // Give body elm a class that locks page scrolling.
-            document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+        // Give body elm a class that locks page scrolling.
+        document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
     }
     
     /*

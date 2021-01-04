@@ -27,9 +27,9 @@ var CommentCard = (function (_super) {
         _this.rootElm.append(mainSection, optsSection);
         if (comment.profile.relationToUser == 'me') {
             optsSection.append(btnOpts);
-            btnOpts.onclick = function (e) { return contextModal.load(e, [
+            btnOpts.onclick = function (e) { return contextMenu.load(e, [
                 new ContextOption(editIcon, function () { return commentEditor.start(); }),
-                new ContextOption(Icons.deleteComment(), function () { return confirmModal.load('Are you sure you want to delete this comment?', function (answer) {
+                new ContextOption(Icons.deleteComment(), function () { return confirmPrompt.load('Are you sure you want to delete this comment?', function (answer) {
                     if (answer == false)
                         return;
                     else

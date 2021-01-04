@@ -1,16 +1,19 @@
 ﻿/*
     This class creates a prompt, giving the user a chance to back out of an action.
 */
-class ConfirmModal extends Modal {
+class ConfirmPrompt {
     
     // The callback that the user's answer gets returned through.
     private onUserDecision: (answer: boolean) => void;
+    private backgroundElm: HTMLElement;
+    private contentElm: HTMLElement;
 
     /*
         Gets handles on all necessary components.
         Sets up event listeners.
     */
     public constructor(
+        backgroundElm: HTMLElement,
         contentElm: HTMLElement,           // Base parameter.
 
         // Used to show a message to the user (Ex. "Are you sure you want to delete this comment?")
@@ -18,7 +21,8 @@ class ConfirmModal extends Modal {
         btnYes: HTMLElement,            // Invokes confirm with true.
         btnNo: HTMLElement              // Invokes confirm with false.
     ) {
-        super(contentElm);
+        this.backgroundElm = backgroundElm;
+        this.contentElm = contentElm;
 
         // Connect yes and no buttons to confirm(), but load a different value into each.
         btnYes.onclick = () => this.respond(true)
@@ -54,5 +58,24 @@ class ConfirmModal extends Modal {
 
         // Close this modal.
         this.close();
+    }
+
+    private open() {
+
+        // Show modal.
+        ViewUtil.show(this.backgroundElm);
+        
+        // Give body elm a class that locks page scrolling.
+        document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+    }
+
+    private close() {
+
+        // Hide modal.
+        ViewUtil.hide(this.backgroundElm);
+        
+        // Remove the class from body that locks page scrolling.
+        document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
+        
     }
 }

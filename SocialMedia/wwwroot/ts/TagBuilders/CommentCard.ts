@@ -66,14 +66,14 @@ class CommentCard extends Card {
             optsSection.append(btnOpts);
 
             // Set click callback of btnOpts to open context menu with an edit and delete option.
-            btnOpts.onclick = e => contextModal.load(e, [
+            btnOpts.onclick = e => contextMenu.load(e, [
 
                 // Edit: start comment edit.
                 new ContextOption(editIcon, () => commentEditor.start()),
 
                 // Delete: prompt for confirmation to delete.
                 new ContextOption(Icons.deleteComment(),
-                    () => confirmModal.load('Are you sure you want to delete this comment?',
+                    () => confirmPrompt.load('Are you sure you want to delete this comment?',
                         answer => {
                             if (answer == false) return;
                             else this.remove(); // Delete comment.

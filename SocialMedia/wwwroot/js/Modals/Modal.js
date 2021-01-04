@@ -1,12 +1,7 @@
 var Modal = (function () {
     function Modal(contentElm) {
-        if (contentElm.id == "contextContent") {
-            this.rootElm = contentElm;
-        }
-        else {
-            this.rootElm = ViewUtil.copy(Modal.frameTemplate);
-            this.rootElm.append(contentElm);
-        }
+        this.rootElm = ViewUtil.copy(Modal.frameTemplate);
+        this.rootElm.append(contentElm);
         Modal.frameContainer.append(this.rootElm);
     }
     Modal.initialize = function (frameTemplate, frameContainer, btnClose) {
@@ -15,10 +10,10 @@ var Modal = (function () {
         this.frameContainer = frameContainer;
         this.btnClose = btnClose;
         this.btnClose.onclick = function () { return _this.closeTopModal(); };
-        window.onclick = function (e) {
+        window.addEventListener('click', function (e) {
             if (e.target.classList.contains("modalBox"))
                 _this.closeTopModal();
-        };
+        });
     };
     Modal.closeTopModal = function () { this.openModals[this.openModals.length - 1].close(); };
     Modal.prototype.open = function () {
@@ -27,8 +22,7 @@ var Modal = (function () {
         ViewUtil.show(this.rootElm);
         ViewUtil.show(Modal.btnClose, 'block');
         this.rootElm.style.zIndex = "" + Modal.openModals.push(this);
-        if (!(this.rootElm.id == 'contextModal' || this.rootElm.id == 'confirmModal'))
-            document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+        document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
     };
     Modal.prototype.close = function () {
         ViewUtil.hide(this.rootElm);

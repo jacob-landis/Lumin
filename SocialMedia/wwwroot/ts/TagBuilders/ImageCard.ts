@@ -29,14 +29,14 @@
         return (event: MouseEvent) => (targetImageCard: ImageCard) => 
 
             // and loads the context modal with options and the mouseEvent.
-            contextModal.load(event, [
+            contextMenu.load(event, [
 
                 new ContextOption(Icons.createPost(), () => {
                     imageDropdown.close();
                     createPostModal.load(targetImageCard);
                 }),
                 new ContextOption(Icons.deleteImage(), () => {
-                    confirmModal.load('Are you sure you want to delete this image?', confirmation => {
+                    confirmPrompt.load('Are you sure you want to delete this image?', confirmation => {
                         if (!confirmation) return;
                         targetImageCard.remove();
 

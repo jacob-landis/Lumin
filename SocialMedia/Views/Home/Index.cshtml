@@ -22,12 +22,10 @@
 <script src="~/js/Records/ProfileRecord.js"></script>
 
 <script src="~/js/Modals/Modal.js"></script>
-<script src="~/js/Modals/ContextModal.js"></script>
 <script src="~/js/Modals/CreatePostModal.js"></script>
 <script src="~/js/Modals/UploadImageModal.js"></script>
 <script src="~/js/Modals/FullSizeImageModal.js"></script>
 <script src="~/js/Modals/ProfileModal.js"></script>
-<script src="~/js/Modals/ConfirmModal.js"></script>
 <script src="~/js/Modals/HelpModal.js"></script>
 
 <script src="~/js/Dropdowns/Dropdown.js"></script>
@@ -45,6 +43,8 @@
 <script src="~/js/Main.js"></script>
 <script src="~/js/User.js"></script>
 <script src="~/js/Ajax.js"></script>
+<script src="~/js/ConfirmPrompt.js"></script>
+<script src="~/js/ContextMenu.js"></script>
 <script src="~/js/PublicPosts.js"></script>
 <script src="~/js/IAppendable.js"></script>
 @* END JS INCLUSION *@
@@ -192,12 +192,40 @@
 
     @* Empty column for gridview. Acts as left padding (right div column is omitted). *@
     <div></div>
-    
+
     @* Container for main post feed. *@
     <div id="publicPosts"></div>
 
 </div>
 @*-----------------------------/MAIN-BODY-------------------------*@
+
+@* ------------------------------------------STANDALONE COMPONENTS------------------------------------------ *@
+
+@* CONFIRM PROMPT *@
+@* Prompts the user before an action is followed through with. *@
+<div id="confirmPrompt">
+    <div id="confirmContent" class="modal-content modal-content-sm fixedContent">
+
+        @* Caller specified msg. *@
+        <h4 id="promptMessage"></h4>
+
+        @* Confirm action. *@
+        <button class="myBtnDefault" id="btnConfirmYes">Yes</button>
+
+        @* Abort action. *@
+        <button class="myBtnDefault" id="btnConfirmNo">No</button>
+
+    </div>
+</div>
+
+@* CONTEXT MENU *@
+@* Cutom R-Click dropdown. *@
+@* Container for options. *@
+<div id="contextMenu">
+    <div id="contextContent"></div>
+</div>
+@* ------------------------------------------/STANDALONE COMPONENTS------------------------------------------ *@
+
 
 @*---------------------------------------------------MODALS----------------------------------------------------*@
 @*
@@ -216,7 +244,8 @@
 @* Btn close modal. Shared by every modal. *@
 <i id="btnCloseModal" class="fa fa-times-circle-o"></i>
 
-@* SPECIALIZATIONS *@
+
+@* SPECIALIZATIONS--------------------------------------- *@
 
 @* HELP MODAL *@
 @* Nothing functional exists in the help modal. It explains to the user how to use Lumin. *@
@@ -320,43 +349,22 @@
 
 </div>
 
-@* CONFIRM PROMPT *@
-@* Prompts the user before an action is followed through with. *@
-<div id="confirmContent" class="modal-content modal-content-sm fixedContent">
-
-    @* Caller specified msg. *@
-    <h4 id="promptMessage"></h4>
-
-    @* Confirm action. *@
-    <button class="myBtnDefault" id="btnConfirmYes">Yes</button>
-
-    @* Abort action. *@
-    <button class="myBtnDefault" id="btnConfirmNo">No</button>
-
-</div>
-
-
-@* CONTEXT MODAL *@
-@* Cutom R-Click dropdown. Does not follow modal tradition. *@
-@* Container for options. *@
-<div id="contextContent"></div>
-
 @* FULLSIZE IMAGE MODAL *@
 @* Used for viewing images full screen. Collections of images can be navigated through with the left right buttons. *@
 <div id="fullsizeImageModal" class="modal-content">
 
-    @* This us used in FullsizeImageModal.js. *@
+    @* This us used in FullsizeImageModal.ts. *@
     @*<div class="modal-content" id="fullSizeImageModalContent">
-    </div>*@
+        </div>*@
 
-        @* Btn previous image. *@
-        <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
+    @* Btn previous image. *@
+    <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
 
-        @* Full size image container. *@
-        <div id="fullsizeImageCon"></div>
+    @* Full size image container. *@
+    <div id="fullsizeImageCon"></div>
 
-        @* Btn next image. *@
-        <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>
+    @* Btn next image. *@
+    <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>
 
     @* XXX Why is this outside of modal content?? *@
     <div id="imageCount"></div>

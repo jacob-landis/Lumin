@@ -39,13 +39,13 @@ var ImageCard = (function (_super) {
     Object.defineProperty(ImageCard, "userOwnerOptionSet", {
         get: function () {
             return function (event) { return function (targetImageCard) {
-                return contextModal.load(event, [
+                return contextMenu.load(event, [
                     new ContextOption(Icons.createPost(), function () {
                         imageDropdown.close();
                         createPostModal.load(targetImageCard);
                     }),
                     new ContextOption(Icons.deleteImage(), function () {
-                        confirmModal.load('Are you sure you want to delete this image?', function (confirmation) {
+                        confirmPrompt.load('Are you sure you want to delete this image?', function (confirmation) {
                             if (!confirmation)
                                 return;
                             targetImageCard.remove();

@@ -1,11 +1,12 @@
-﻿var modal: Modal;
-var contextModal: ContextModal;
+﻿var contextMenu: ContextMenu;
+var confirmPrompt: ConfirmPrompt;
+
+var modal: Modal;
 var createPostModal: CreatePostModal;
 var fullSizeImageModal : FullSizeImageModal;
 var profileModal : ProfileModal;
 var uploadImageModal : UploadImageModal;
 var publicPosts : PublicPosts;
-var confirmModal : ConfirmModal;
 var helpModal : HelpModal;
 var imageDropdown : ImageDropdown;
 var friendDropdown : FriendDropdown;
@@ -23,22 +24,26 @@ class Main {
         // PUBLIC POST FEED
         publicPosts = new PublicPosts(document.getElementById('publicPosts'));
 
+        // CONTEXT PROMPT
+        contextMenu = new ContextMenu(
+            document.getElementById('contextMenu'),
+            document.getElementById('contextContent')
+        );
+
+        // CONFIRM MENU
+        confirmPrompt = new ConfirmPrompt(
+            document.getElementById('confirmPrompt'),
+            document.getElementById('confirmContent'),
+            document.getElementById('promptMessage'),
+            document.getElementById('btnConfirmYes'),
+            document.getElementById('btnConfirmNo')
+        );
+
         // MODALS
         Modal.initialize(
             document.getElementById('modalFrameTemplate'),
             document.getElementById('modalFrameContainer'),
             document.getElementById('btnCloseModal')
-        );
-
-        contextModal = new ContextModal(
-            document.getElementById('contextContent')
-        );
-
-        confirmModal = new ConfirmModal(
-            document.getElementById('confirmContent'),
-            document.getElementById('promptMessage'),
-            document.getElementById('btnConfirmYes'),
-            document.getElementById('btnConfirmNo')
         );
 
         createPostModal = new CreatePostModal(

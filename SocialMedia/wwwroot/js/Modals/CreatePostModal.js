@@ -97,7 +97,7 @@ var CreatePostModal = (function (_super) {
             _super.prototype.close.call(this);
         }
         else {
-            confirmModal.load('Are you sure you want to cancel?', function (confirmation) {
+            confirmPrompt.load('Are you sure you want to cancel?', function (confirmation) {
                 if (!confirmation)
                     return;
                 _this.txtCaption.value = '';
