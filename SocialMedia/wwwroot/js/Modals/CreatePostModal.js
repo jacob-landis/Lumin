@@ -34,10 +34,11 @@ var CreatePostModal = (function (_super) {
     }
     CreatePostModal.prototype.load = function (imageCard) {
         this.loadPaperClip();
-        if (imageDropdown.rootElm.style.display != 'none' && !imageCard)
-            this.convertImageDropdown();
+        if (imageDropdown.rootElm.style.display == "none")
+            imageDropdown.open();
+        this.convertImageDropdown();
         if (imageCard)
-            this.selectedImageBox.load(imageCard.rawImage.id);
+            this.selectedImageBox.load(imageCard.image.imageId);
         this.open();
     };
     CreatePostModal.prototype.loadPaperClip = function () {

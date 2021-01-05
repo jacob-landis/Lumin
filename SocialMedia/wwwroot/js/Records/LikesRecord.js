@@ -4,7 +4,7 @@ var ContentType;
     ContentType[ContentType["Comment"] = 2] = "Comment";
 })(ContentType || (ContentType = {}));
 var LikesRecord = (function () {
-    function LikesRecord(likesRecordString) {
+    function LikesRecord() {
     }
     return LikesRecord;
 }());

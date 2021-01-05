@@ -8,10 +8,9 @@ var ContextMenu = (function () {
             if (_this.optionsBox.rootElm.style.display != "none")
                 _this.close();
         });
-        window.addEventListener('click', function (e) {
-            if (e.target == _this.backgroundElm)
-                _this.close();
-        });
+        this.backgroundElm.onclick = function () {
+            _this.close();
+        };
         this.optionsBox.rootElm.onclick = function () {
             _this.close();
         };

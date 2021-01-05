@@ -28,9 +28,10 @@ class ContextMenu {
             if (this.optionsBox.rootElm.style.display != "none") this.close();
         });
 
-        window.addEventListener('click', e => {
-            if (e.target == this.backgroundElm) this.close();
-        });
+        // Click-off to close.
+        this.backgroundElm.onclick = () => {
+            this.close();
+        }
 
         // Set up click event on r-click menu to close when clicked on.
         // (The click event on the button on this modal will also be triggered.)

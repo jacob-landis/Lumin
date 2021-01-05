@@ -87,18 +87,23 @@ class CreatePostModal extends Modal {
 
         imageCard must be an ImageCard.
     */
-    public load(imageCard?): void {
+    public load(imageCard?: ImageCard): void {
 
         // Clear selected image container.
         this.loadPaperClip();
 
-        // If the image dropdown is open and no image card was provided, convert to image dropdown to image selection functionality.
+        // If the image dropdown is open, convert to image dropdown to image selection functionality.
         // XXX This assumes that if the image dropdown was open that the user wants to attach an image to their post.
         // XXX Consider making it so the image dropdown is only converted when selectImage() is invoked.
-        if (imageDropdown.rootElm.style.display != 'none' && !imageCard) this.convertImageDropdown();
+
+        // NEW
+        if (imageDropdown.rootElm.style.display == "none") imageDropdown.open();
+
+        this.convertImageDropdown();
+        // /NEW
 
         // If an image card was provided, load it into the selected image container.
-        if (imageCard) this.selectedImageBox.load(imageCard.rawImage.id);
+        if (imageCard) this.selectedImageBox.load(imageCard.image.imageId);
 
         // Open this modal.
         this.open();

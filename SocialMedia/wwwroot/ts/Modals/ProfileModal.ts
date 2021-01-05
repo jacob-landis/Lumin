@@ -7,25 +7,25 @@ class ProfileModal extends Modal {
     private content;
     
     // The profile name display elm.
-    private profileModalName;
+    private profileModalName: HTMLElement;
     
     // Container elm for a PostsBox that is below the profile modal header.
-    private postWrapper;
+    private postWrapper: HTMLElement;
     
     // ImageBox for profile picture.
     public profilePictureBox: ImageBox;
     
     // Container elm for an ProfileImagesBox.
-    private imageWrapper;
+    private imageWrapper: HTMLElement;
     
     // Container elm for Editor. Also used to store btnChangeBio.
-    private profileBioWrapper;
+    private profileBioWrapper: HTMLElement;
     
     // Starts editing process. Added and removed from profileBioWrapper depending on if profile is the current user's.
-    private btnChangeBio;
+    private btnChangeBio: HTMLElement;
     
     // An Editor used to display and sometimes edit the bio.
-    private bioEditor;
+    private bioEditor: Editor;
     
     // A FULL profile. The profile being displayed. 
     private profile: FullProfileRecord;
@@ -78,7 +78,7 @@ class ProfileModal extends Modal {
         // Construct an Editor for profile bio and get a handle on it.
         this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, 250, (bio: string) => Ajax.updateBio(bio));
 
-        this.profileBioWrapper.append(this.bioEditor.tag);
+        this.profileBioWrapper.append(this.bioEditor.rootElm);
     }
 
     /*
@@ -96,7 +96,7 @@ class ProfileModal extends Modal {
 
         // Get a handle on the new arrival.
         this.profile = fullProfile;
-
+        
         // Set name display.
         this.profileModalName.innerText = fullProfile.name;
 

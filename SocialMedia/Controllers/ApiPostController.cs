@@ -227,6 +227,7 @@ namespace SocialMedia.Controllers
                 Likes = new LikeModel
                 {
                     ContentId = id,
+                    ContentType = 1,
                     Count = likeRepo.CountByContentId(1, id),
                     HasLiked = likeRepo.HasLiked(1, id, currentProfile.id)
                 },

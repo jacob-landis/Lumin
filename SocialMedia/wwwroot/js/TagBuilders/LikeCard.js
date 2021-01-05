@@ -13,18 +13,18 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var LikeCard = (function (_super) {
     __extends(LikeCard, _super);
-    function LikeCard(likes, type, dateTime) {
+    function LikeCard(likes, dateTime) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'likeCard' })) || this;
         var dateTimeStamp = ViewUtil.tag('div', { classList: 'contentPostDate', innerText: Util.formatDateTime(dateTime) });
         _this.likesRecord = likes;
         _this.btnLike = ViewUtil.tag('i', { classList: 'fa fa-thumbs-up likeIcon ' + (_this.likesRecord.hasLiked ? 'hasLiked' : '') });
-        _this.countDisplayElm = ViewUtil.tag('div', { classList: 'likeCount', innerText: likes.count != 0 ? likes.count : '0' });
+        _this.countDisplayElm = ViewUtil.tag('div', { classList: 'likeCount', innerText: _this.likesRecord.count != 0 ? _this.likesRecord.count : '0' });
         _this.rootElm.append(_this.btnLike, _this.countDisplayElm, dateTimeStamp);
         _this.btnLike.onclick = function () {
             if (_this.likesRecord.hasLiked)
-                Ajax.unlike(type, likes.contentId);
+                Ajax.unlike(_this.likesRecord.contentType, _this.likesRecord.contentId);
             else
-                Ajax.postLike(type, likes.contentId);
+                Ajax.postLike(_this.likesRecord.contentType, _this.likesRecord.contentId);
             LikeCard.changeAllContentInstances(_this.likesRecord);
         };
         LikeCard.likeCards.push(_this);
@@ -34,7 +34,7 @@ var LikeCard = (function (_super) {
         this.likeCards.forEach(function (c) {
             if (c.likesRecord.contentId == referenceLikesRecord.contentId
                 && c.likesRecord.contentType == referenceLikesRecord.contentType) {
-                c.likesRecord.count = c.likesRecord.hasLiked ? -1 : 1;
+                c.likesRecord.count += c.likesRecord.hasLiked ? -1 : 1;
                 c.countDisplayElm.innerText = "" + c.likesRecord.count;
                 c.btnLike.classList.toggle('hasLiked');
                 c.likesRecord.hasLiked = !c.likesRecord.hasLiked;

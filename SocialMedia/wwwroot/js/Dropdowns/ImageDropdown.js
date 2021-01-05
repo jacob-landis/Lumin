@@ -50,6 +50,7 @@ var ImageDropdown = (function (_super) {
             });
         this.prompt.innerText = callback ? 'Select an Image' : 'My Images';
         this.rootElm.style.zIndex = "" + (Modal.openModals.length + 1);
+        _super.prototype.open.call(this);
     };
     ImageDropdown.prototype.convert = function (callback) {
         this.imageBox.content.forEach(function (i) { return i.onImageClick = function (imageCard) { return callback(imageCard); }; });

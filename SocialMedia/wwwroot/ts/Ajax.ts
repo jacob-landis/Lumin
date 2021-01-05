@@ -4,16 +4,16 @@
 
     //LIKE
     public static unlike(contentType: ContentType, contentId: number): void {
-        this.call(`apilike/unlike/${contentType.toString}/${contentId}`, "POST");
+        this.call(`apilike/unlike/${contentType}/${contentId}`, "POST");
     }
 
     public static postLike(contentType: ContentType, contentId: number): void {
-        this.call(`apilike/like/${contentType.toString}/${contentId}`, "POST");
+        this.call(`apilike/like/${contentType}/${contentId}`, "POST");
     }
 
-    public static getLikes(contentType: ContentType, contentId: number): void {
-        this.call(`apilike/likes/${contentType.toString}/${contentId}`, "GET");
-    } // NOT IN USE
+    //public static getLikes(contentType: ContentType, contentId: number): void {
+    //    this.call(`apilike/likes/${contentType}/${contentId}`, "GET");
+    //} // NOT IN USE
 
 
     //COMMENT
@@ -216,7 +216,9 @@
             contentType: "application/json",
             method: method,
             data: data,
-            success: results => { if (onResults) onResults(results); }
+            success: results => {
+                if (onResults) onResults(results);
+            }
         });
     }
 }

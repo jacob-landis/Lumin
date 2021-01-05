@@ -25,7 +25,7 @@ var ProfileModal = (function (_super) {
         _this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, 250, function (bio) { return Ajax.updateBio(bio); });
-        _this.profileBioWrapper.append(_this.bioEditor.tag);
+        _this.profileBioWrapper.append(_this.bioEditor.rootElm);
         return _this;
     }
     ProfileModal.prototype.launch = function (profileId) {

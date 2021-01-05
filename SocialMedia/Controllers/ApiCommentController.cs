@@ -126,6 +126,7 @@ namespace SocialMedia.Controllers
             LikeModel likes = new LikeModel // attach info for likes
             {
                 ContentId = id, // link like data to parent comment by CommentId
+                ContentType = 2,
                 Count = likeRepo.CountByContentId(2, id), // set like count by CommentId
                 HasLiked = likeRepo.HasLiked(2, id, currentProfile.id) // determine if user has like and assign value
             };

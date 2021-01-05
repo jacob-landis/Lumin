@@ -113,6 +113,8 @@ class ImageDropdown extends Dropdown {
         // Put the dropdown in the foreground in case a modal is open.
         // Otherwise it is covered by the modal backdrop and that backdrop will dim the dropdown and intercept any click intended for the dropdown.
         this.rootElm.style.zIndex = `${Modal.openModals.length + 1}`;
+
+        super.open();
     }
 
     /*

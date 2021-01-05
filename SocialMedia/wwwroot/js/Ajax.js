@@ -3,13 +3,10 @@ var Ajax = (function () {
     }
     Ajax.JSONstring = function (string) { return JSON.stringify({ str: string }); };
     Ajax.unlike = function (contentType, contentId) {
-        this.call("apilike/unlike/" + contentType.toString + "/" + contentId, "POST");
+        this.call("apilike/unlike/" + contentType + "/" + contentId, "POST");
     };
     Ajax.postLike = function (contentType, contentId) {
-        this.call("apilike/like/" + contentType.toString + "/" + contentId, "POST");
-    };
-    Ajax.getLikes = function (contentType, contentId) {
-        this.call("apilike/likes/" + contentType.toString + "/" + contentId, "GET");
+        this.call("apilike/like/" + contentType + "/" + contentId, "POST");
     };
     Ajax.deleteComment = function (commentId) {
         this.call("apicomment/deletecomment/" + commentId, "POST");
@@ -106,8 +103,10 @@ var Ajax = (function () {
             contentType: "application/json",
             method: method,
             data: data,
-            success: function (results) { if (onResults)
-                onResults(results); }
+            success: function (results) {
+                if (onResults)
+                    onResults(results);
+            }
         });
     };
     return Ajax;

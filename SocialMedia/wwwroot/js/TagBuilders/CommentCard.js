@@ -23,7 +23,7 @@ var CommentCard = (function (_super) {
         var editIcon = Icons.edit();
         var commentEditor = new Editor(editIcon, comment.content, 'comment-editor', 125, function (content) { return Ajax.updateComment(_this.comment.commentId, content); });
         contentSection.append(commentEditor.rootElm);
-        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, new LikeCard(comment.likes, ContentType.Comment, comment.dateTime).rootElm);
+        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, new LikeCard(comment.likes, comment.dateTime).rootElm);
         _this.rootElm.append(mainSection, optsSection);
         if (comment.profile.relationToUser == 'me') {
             optsSection.append(btnOpts);

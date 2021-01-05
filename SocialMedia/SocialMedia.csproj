@@ -24,7 +24,6 @@
     <Content Remove="wwwroot\ts\Modals\CreatePostModal.ts" />
     <Content Remove="wwwroot\ts\Modals\FullSizeImageModal.ts" />
     <Content Remove="wwwroot\ts\Modals\HelpModal.ts" />
-    <Content Remove="wwwroot\ts\Modals\Image.ts" />
     <Content Remove="wwwroot\ts\Modals\Modal.ts" />
     <Content Remove="wwwroot\ts\Modals\ProfileModal.ts" />
     <Content Remove="wwwroot\ts\Modals\UploadImageModal.ts" />
@@ -81,7 +80,6 @@
     <TypeScriptCompile Include="wwwroot\ts\Modals\CreatePostModal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\FullSizeImageModal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\HelpModal.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\Modals\Image.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\Modal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\ProfileModal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\UploadImageModal.ts" />

@@ -55,7 +55,7 @@ class CommentCard extends Card {
         mainSection.append(
             new ProfileCard(comment.profile).rootElm,
             contentSection,
-            new LikeCard(comment.likes, ContentType.Comment, comment.dateTime).rootElm
+            new LikeCard(comment.likes, comment.dateTime).rootElm
         );
         this.rootElm.append(mainSection, optsSection);
 

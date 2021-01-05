@@ -1,8 +1,8 @@
 ﻿class PostRecord {
     postId: number;
+    caption: string;
+    dateTime: string;
     profile: ProfileRecord;
     image: ImageRecord;
-    caption: string;
     likes: LikesRecord;
-    dateTime: string;
 }
