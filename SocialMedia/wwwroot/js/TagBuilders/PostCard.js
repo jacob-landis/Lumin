@@ -31,7 +31,7 @@ var PostCard = (function (_super) {
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
         commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentCountSlot, _this.commentsBox.rootElm);
         _this.commentInputWrapper.append(txtComment, btnComment);
-        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', Behavior.singleFullSizeImage);
+        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', function (e) { return Behavior.singleFullSizeImage; });
         if (_this.hasImage) {
             _this.postImageWrapper.load(_this.post.image.imageId);
             _this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });

@@ -64,7 +64,7 @@
         this.postImageWrapper = new ImageBox(
             ViewUtil.tag('div', { classList: 'postImageWrapper' }),
             'postImage',
-            Behavior.singleFullSizeImage
+            (e) => Behavior.singleFullSizeImage
         );
 
         if (this.hasImage) {
@@ -207,6 +207,7 @@
         Util.filterNulls(PostCard.postCards);
         //delete this; XXX
     }
-    // to trigger the mutation observer which triggers a resize. the assigned id is never used.
+
+    // Triggers the mutation observer which triggers a resize. The assigned id is never used.
     private mutate(): void { this.rootElm.id = 'loadedPost'; }
 }

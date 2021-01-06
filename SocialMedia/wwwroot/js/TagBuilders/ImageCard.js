@@ -20,7 +20,22 @@ var ImageCard = (function (_super) {
         })) || this;
         _this.image = image;
         _this.onImageClick = onImageClick ? onImageClick : Behavior.singleFullSizeImage;
-        _this.rootElm.oncontextmenu = image.profileId == User.profileId ? ImageCard.userOwnerOptionSet : null;
+        if (image.profileId == User.profileId)
+            _this.rootElm.oncontextmenu = function (event) {
+                return contextMenu.load(event, [
+                    new ContextOption(Icons.createPost(), function () {
+                        imageDropdown.close();
+                        createPostModal.load(_this);
+                    }),
+                    new ContextOption(Icons.deleteImage(), function () {
+                        confirmPrompt.load('Are you sure you want to delete this image?', function (confirmation) {
+                            if (!confirmation)
+                                return;
+                            _this.remove();
+                        });
+                    })
+                ]);
+            };
         ImageCard.imageCards.push(_this);
         return _this;
     }
@@ -36,27 +51,6 @@ var ImageCard = (function (_super) {
         images.forEach(function (i) { return imageCards.push(new ImageCard(i, classList, onImageClick)); });
         return imageCards;
     };
-    Object.defineProperty(ImageCard, "userOwnerOptionSet", {
-        get: function () {
-            return function (event) { return function (targetImageCard) {
-                return contextMenu.load(event, [
-                    new ContextOption(Icons.createPost(), function () {
-                        imageDropdown.close();
-                        createPostModal.load(targetImageCard);
-                    }),
-                    new ContextOption(Icons.deleteImage(), function () {
-                        confirmPrompt.load('Are you sure you want to delete this image?', function (confirmation) {
-                            if (!confirmation)
-                                return;
-                            targetImageCard.remove();
-                        });
-                    })
-                ]);
-            }; };
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(ImageCard.prototype, "onImageClick", {
         get: function () { return this._onImageClick; },
         set: function (onImageClick) {

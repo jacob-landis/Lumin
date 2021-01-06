@@ -92,15 +92,11 @@ class CreatePostModal extends Modal {
         // Clear selected image container.
         this.loadPaperClip();
 
-        // If the image dropdown is open, convert to image dropdown to image selection functionality.
-        // XXX This assumes that if the image dropdown was open that the user wants to attach an image to their post.
-        // XXX Consider making it so the image dropdown is only converted when selectImage() is invoked.
+        // If the image dropdown is closed, open it.
+        if (imageDropdown.rootElm.style.display == "none" || imageDropdown.rootElm.style.display == "") this.selectImage();
 
-        // NEW
-        if (imageDropdown.rootElm.style.display == "none") imageDropdown.open();
-
+        // Change image onclicks in image dropdown.
         this.convertImageDropdown();
-        // /NEW
 
         // If an image card was provided, load it into the selected image container.
         if (imageCard) this.selectedImageBox.load(imageCard.image.imageId);
@@ -111,7 +107,7 @@ class CreatePostModal extends Modal {
 
     /*
         Clears selected image and loads the paper clip icon.
-        The paper clip icon indicates that no image is attached and it can be clicked on to attach an image.
+        The paper clip icon indicates that no image is attached.
 
         XXX The image box may be manually unloaded and loaded because paperClip does not have a tag property
         XXX I could instead wrap it in an object like: {tag: paperClip}
@@ -127,9 +123,6 @@ class CreatePostModal extends Modal {
         // Get handle on new paper clip icon.
         let paperClip = Icons.paperClip();
 
-        // Set click callback to invoke selectImage();
-        paperClip.onclick = () => this.selectImage();
-
         // Append paper clip icon to selected image container.
         this.selectedImageBox.rootElm.append(paperClip);
     }
@@ -144,10 +137,6 @@ class CreatePostModal extends Modal {
 
             // When the selected image card returns,
             imageCard => {
-
-                // close the image dropdown,
-                imageDropdown.close();
-
                 // XXX if the image container were forced into certain dimensions, a stretched out thumbnail could be a
                 // XXX placeholder until the fullsize version arrived.
 
@@ -159,24 +148,17 @@ class CreatePostModal extends Modal {
 
     /*
         Changes the callback in the already open image dropdown to return the selected image.
-
-        XXX The order of the arguments in the callback is different above, even though the arguments are the same. Explain why
-        XXX they are different or make them the same.
     */
     public convertImageDropdown(): void {
 
         // Send new callback to image dropdown.
         imageDropdown.convert(
-
-            // XXX this is another clue in the mystery of the double callback. XXX
+            
             // When the selected image card returns,
-            imageCard => () => {
+            imageCard => {
 
                 // load image into selected image container by id so the fullsize verision is requested and displayed,
                 this.selectedImageBox.load(imageCard.image.imageId);
-
-                // and close the image dropdown.
-                imageDropdown.close();
             }
         );
     }

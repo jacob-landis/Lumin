@@ -34,34 +34,30 @@ var CreatePostModal = (function (_super) {
     }
     CreatePostModal.prototype.load = function (imageCard) {
         this.loadPaperClip();
-        if (imageDropdown.rootElm.style.display == "none")
-            imageDropdown.open();
+        if (imageDropdown.rootElm.style.display == "none" || imageDropdown.rootElm.style.display == "")
+            this.selectImage();
         this.convertImageDropdown();
         if (imageCard)
             this.selectedImageBox.load(imageCard.image.imageId);
         this.open();
     };
     CreatePostModal.prototype.loadPaperClip = function () {
-        var _this = this;
         ViewUtil.empty(this.selectedImageBox.rootElm);
         this.selectedImageBox.isLoaded = false;
         var paperClip = Icons.paperClip();
-        paperClip.onclick = function () { return _this.selectImage(); };
         this.selectedImageBox.rootElm.append(paperClip);
     };
     CreatePostModal.prototype.selectImage = function () {
         var _this = this;
         imageDropdown.load(function (imageCard) {
-            imageDropdown.close();
             _this.selectedImageBox.load(imageCard.image.imageId);
         });
     };
     CreatePostModal.prototype.convertImageDropdown = function () {
         var _this = this;
-        imageDropdown.convert(function (imageCard) { return function () {
+        imageDropdown.convert(function (imageCard) {
             _this.selectedImageBox.load(imageCard.image.imageId);
-            imageDropdown.close();
-        }; });
+        });
     };
     CreatePostModal.prototype.submit = function () {
         var charLimit = 1000;

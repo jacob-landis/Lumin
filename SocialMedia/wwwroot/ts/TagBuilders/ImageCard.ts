@@ -17,45 +17,16 @@
         return imageCards;
     }
 
-    /*
-         Returns an anonymous function that is meant to be assigned to an oncontextmenu.
-
-    */
-    // A property that that is assigned 
-    public static get userOwnerOptionSet() {
-
-        // A function that returns a function that takes an ImageCard,
-        // An oncontextmenu callback that loads the onImageClick into buttons.
-        return (event: MouseEvent) => (targetImageCard: ImageCard) => 
-
-            // and loads the context modal with options and the mouseEvent.
-            contextMenu.load(event, [
-
-                new ContextOption(Icons.createPost(), () => {
-                    imageDropdown.close();
-                    createPostModal.load(targetImageCard);
-                }),
-                new ContextOption(Icons.deleteImage(), () => {
-                    confirmPrompt.load('Are you sure you want to delete this image?', confirmation => {
-                        if (!confirmation) return;
-                        targetImageCard.remove();
-
-                        //return answer == false? null : imageCard.remove(); // TEST THIS XXXXXXXXXXXXX
-                    });
-                })
-            ]);
-    }
-
     // /STATIC
     // ---------------------------------------------------------------------------------------------------------------
     // NON-STATIC
 
     public image: ImageRecord;
-
+    
+    // ON IMAGE CLICK
+    // 
     private _onImageClick: (targetedImageCard: ImageCard) => void;
-
     get onImageClick(): (targetImageCard: ImageCard) => void { return this._onImageClick; }
-
     set onImageClick(onImageClick: (targetImageCard: ImageCard) => void) {
 
         // Set the value of the two properties to a function that send this instance back through the onImageClick callback.
@@ -77,8 +48,25 @@
         this.onImageClick = onImageClick ? onImageClick : Behavior.singleFullSizeImage;
 
         // R-Click on imageCard action.
-        this.rootElm.oncontextmenu = image.profileId == User.profileId ? ImageCard.userOwnerOptionSet : null;
+        if (image.profileId == User.profileId) this.rootElm.oncontextmenu = (event: MouseEvent) => 
 
+            // and loads the context modal with options and the mouseEvent.
+            contextMenu.load(event, [
+
+                new ContextOption(Icons.createPost(), () => {
+                    imageDropdown.close();
+                    createPostModal.load(this);
+                }),
+                new ContextOption(Icons.deleteImage(), () => {
+                    confirmPrompt.load('Are you sure you want to delete this image?', confirmation => {
+                        if (!confirmation) return;
+                        this.remove();
+
+                        //return answer == false? null : imageCard.remove(); // TEST THIS XXXXXXXXXXXXX
+                    });
+                })
+            ]);
+        
         ImageCard.imageCards.push(this);
     }
 

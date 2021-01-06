@@ -121,7 +121,7 @@ class ProfileModal extends Modal {
         else {
 
             // set click callback of profile picture to display it in fullsize image modal,
-            this.profilePictureBox.heldImageClick = Behavior.singleFullSizeImage;
+            this.profilePictureBox.heldImageClick = (e) => Behavior.singleFullSizeImage;
 
             // and detach the button to edit the bio.
             ViewUtil.remove(this.btnChangeBio);

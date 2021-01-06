@@ -14,8 +14,8 @@
     //    ]);
     //}
 
-    public static singleFullSizeImage =imageCard=> ()=> {
-        fullSizeImageModal.loadSingle(imageCard.rawImage.id);
+    public static singleFullSizeImage = (imageCard: ImageCard) => ()=> {
+        fullSizeImageModal.loadSingle(imageCard.image.imageId);
     }
 
     //static fullSizeImage =clickedImageCard=> () => {

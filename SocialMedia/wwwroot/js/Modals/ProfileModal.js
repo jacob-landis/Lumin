@@ -44,7 +44,7 @@ var ProfileModal = (function (_super) {
             this.btnChangeBio.onclick = function () { return _this.bioEditor.start(); };
         }
         else {
-            this.profilePictureBox.heldImageClick = Behavior.singleFullSizeImage;
+            this.profilePictureBox.heldImageClick = function (e) { return Behavior.singleFullSizeImage; };
             ViewUtil.remove(this.btnChangeBio);
         }
         this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
