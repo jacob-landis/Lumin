@@ -44,13 +44,13 @@ var ProfileModal = (function (_super) {
             this.btnChangeBio.onclick = function () { return _this.bioEditor.start(); };
         }
         else {
-            this.profilePictureBox.heldImageClick = function (e) { return Behavior.singleFullSizeImage; };
+            this.profilePictureBox.heldImageClick = function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); };
             ViewUtil.remove(this.btnChangeBio);
         }
         this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
-        this.imagesBox = new ProfileImagesBox(this.profile.profileId, function (imageCard) { return function () {
-            return fullSizeImageModal.load(_this.imagesBox.content.indexOf(imageCard), _this.profile.profileId);
-        }; });
+        this.imagesBox = new ProfileImagesBox(this.profile.profileId, function (target) {
+            return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), _this.profile.profileId);
+        });
         this.imageWrapper.append(this.imagesBox.rootElm);
         this.imageScrollBox.onscroll = function () {
             var divHeight = Util.getElmHeight(_this.imageScrollBox);

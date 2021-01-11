@@ -64,9 +64,9 @@ class CreatePostModal extends Modal {
         this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList,
 
             // Returns the following callback.
-            () =>
+            //() =>
                 // When the image is clicked, invoke selectImage().
-                () => this.selectImage()
+                (targetImageCard: ImageCard) => this.selectImage()
         );
 
         // Set btnSelectImage to invoke selectImage().

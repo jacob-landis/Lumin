@@ -17,7 +17,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     private heldImageClassList: string;
 
     // Setting. Click callback to apply to images upon loading them.
-    public heldImageClick: (e: MouseEvent) => void;
+    public heldImageClick: (targetImageCard: ImageCard) => void;
     
     // Request setting.
     // A reference to the last image that was loaded or the image to be loaded.
@@ -57,7 +57,12 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
          click can be a function or null.
          getThumbnail can be true or false/null (null and false have the same outcome). Size setting: true = small, false = big.
     */
-    constructor(rootElm: HTMLElement, imageClassList: string, click?: (e: MouseEvent) => void, getThumbNail?: boolean) {
+    constructor(
+        rootElm: HTMLElement,
+        imageClassList: string,
+        click?: (targetImageCard: ImageCard) => void,
+        getThumbNail?: boolean
+    ) {
 
         // Get a handle on the provided size setting.
         this.getThumbNail = getThumbNail;
@@ -87,7 +92,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         classlist can be a string or null. If it is null the current images classlist attribute will not be changed.
         click can be a function or null. If it is null the current images onclick event will not be changed.
     */
-    public load(imageId: number, classList?: string, click?: (e: MouseEvent) => void): void {
+    public load(imageId: number, classList?: string, click?: (targetImageCard: ImageCard) => void): void {
         
         // Replace handle on imageId.
         this.heldImageId = imageId;
@@ -118,7 +123,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
         // If a classList or click callback was ever provided, apply them to the imageCard.
         if (this.heldImageClassList) ViewUtil.addClassList(this.heldImageClassList, imageCard.rootElm);
-        if (this.heldImageClick) imageCard.onImageClick = ()=> this.heldImageClick;
+        if (this.heldImageClick) imageCard.onImageClick = this.heldImageClick;
 
         // Append tag of new image card to this image box's main HTML elm.
         this.rootElm.append(imageCard.rootElm);
@@ -154,7 +159,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         // If an image is not loaded,
         if (!this.isLoaded)
             // Request an image with the request settings and apply the attribute settings when it returns.
-            Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, () => this.heldImageClick,
+            Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldImageClick,
 
                 // When the prepped image card arrives,
                 (imageCard: ImageCard) => {

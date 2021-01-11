@@ -121,7 +121,7 @@ class ProfileModal extends Modal {
         else {
 
             // set click callback of profile picture to display it in fullsize image modal,
-            this.profilePictureBox.heldImageClick = (e) => Behavior.singleFullSizeImage;
+            this.profilePictureBox.heldImageClick = (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId);
 
             // and detach the button to edit the bio.
             ViewUtil.remove(this.btnChangeBio);
@@ -132,11 +132,10 @@ class ProfileModal extends Modal {
 
         // IMAGES BOX
         // Construct new ProfileImageBox and set up profile images display.
-        this.imagesBox = new ProfileImagesBox(this.profile.profileId, imageCard => () =>
-
-            // XXX Mystery of the double callback. XXX
+        this.imagesBox = new ProfileImagesBox(this.profile.profileId, (target: ImageCard) =>
+            
             // Set click callback of each image to open a collection in fullzise image modal.
-            fullSizeImageModal.load(this.imagesBox.content.indexOf(imageCard), this.profile.profileId));
+            fullSizeImageModal.load(this.imagesBox.content.indexOf(target), this.profile.profileId));
 
         // Append new profile images box to container elm.
         this.imageWrapper.append(this.imagesBox.rootElm);

@@ -154,7 +154,7 @@
         imageId: number,
         thumb: boolean,
         imageClassList: string,
-        onImageClick: (targetImageCard: ImageCard) => void,
+        onImageClick: (target: ImageCard) => void,
         onImageResults: (imageCard: ImageCard) => void
     ): void {
         this.call(

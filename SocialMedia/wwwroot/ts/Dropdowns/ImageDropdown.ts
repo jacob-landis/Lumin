@@ -40,7 +40,7 @@ class ImageDropdown extends Dropdown {
         this.prompt = prompt;
 
         // Create ProfileImagesBox to hold dropdown images. Load current users images.
-        this.imageBox = new ProfileImagesBox(null, (targetImageCard) =>
+        this.imageBox = new ProfileImagesBox(null, (targetImageCard: ImageCard) =>
 
             // Load album into fullsize image modal starting at the index of the clicked image card.
             fullSizeImageModal.load(this.imageBox.content.indexOf(targetImageCard))

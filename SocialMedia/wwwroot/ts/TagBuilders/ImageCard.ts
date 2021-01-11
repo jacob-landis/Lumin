@@ -24,17 +24,17 @@
     public image: ImageRecord;
     
     // ON IMAGE CLICK
-    // 
-    private _onImageClick: (targetedImageCard: ImageCard) => void;
-    get onImageClick(): (targetImageCard: ImageCard) => void { return this._onImageClick; }
-    set onImageClick(onImageClick: (targetImageCard: ImageCard) => void) {
+    private _onImageClick:         (target: ImageCard) => void;
+    get onImageClick():            (target: ImageCard) => void  { return this._onImageClick; }
+    set onImageClick(onImageClick: (target: ImageCard) => void) {
 
+        // XXX consider getting rid of _onImageClick. Instead, get the value of this.rootElm.onclick. XXX
         // Set the value of the two properties to a function that send this instance back through the onImageClick callback.
-        this.rootElm.onclick = (e) => onImageClick(this);
-        this._onImageClick = (e) => onImageClick(this);
+        this._onImageClick = (target: ImageCard) => onImageClick(target);
+        this.rootElm.onclick = (event: MouseEvent) => onImageClick(this);
     }
 
-    public constructor(image: ImageRecord, classList?: string, onImageClick?: (targetImageCard: ImageCard) => void) {
+    public constructor(image: ImageRecord, classList?: string, onImageClick?: (target: ImageCard) => void) {
         
         super(ViewUtil.tag('img', {
             src: image.imageAsByteArray,
@@ -45,7 +45,7 @@
         this.image = image;
 
         // L-Click on imageCard action.
-        this.onImageClick = onImageClick ? onImageClick : Behavior.singleFullSizeImage;
+        this.onImageClick = onImageClick ? onImageClick : (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId);
 
         // R-Click on imageCard action.
         if (image.profileId == User.profileId) this.rootElm.oncontextmenu = (event: MouseEvent) => 
@@ -82,8 +82,9 @@
             if (i.rawImage.id == this.image.imageId) ViewUtil.remove(i.tag);
         });
 
+        // If the user deleted the image that was their profile picture, change all occurances of their profile picture to the defualt.
         if (this.image.imageId == User.profilePictureId)
-            Ajax.getImage(0, true, 'sqr', () => { }, imageCard =>
+            Ajax.getImage(0, true, 'sqr', () => { }, (imageCard: ImageCard) =>
                 ProfileCard.changeUserProfilePicture(null, imageCard));
 
         // XXX instead, fullsizeImage modal should change to the next or prev image (prev as default), and if singular THEN close.

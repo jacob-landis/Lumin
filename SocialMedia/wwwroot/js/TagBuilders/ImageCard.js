@@ -19,7 +19,7 @@ var ImageCard = (function (_super) {
             classList: classList
         })) || this;
         _this.image = image;
-        _this.onImageClick = onImageClick ? onImageClick : Behavior.singleFullSizeImage;
+        _this.onImageClick = onImageClick ? onImageClick : function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); };
         if (image.profileId == User.profileId)
             _this.rootElm.oncontextmenu = function (event) {
                 return contextMenu.load(event, [
@@ -55,8 +55,11 @@ var ImageCard = (function (_super) {
         get: function () { return this._onImageClick; },
         set: function (onImageClick) {
             var _this = this;
-            this.rootElm.onclick = function (e) { return onImageClick(_this); };
-            this._onImageClick = function (e) { return onImageClick(_this); };
+            this._onImageClick = function (target) { return onImageClick(target); };
+            this.rootElm.onclick = function (event) {
+                console.log(onImageClick);
+                onImageClick(_this);
+            };
         },
         enumerable: true,
         configurable: true

@@ -96,11 +96,5 @@ class Dropdown implements IAppendable {
 
     public toggle(): void {
         this.rootElm.style.display != 'block' ? this.open() : this.close();
-
-        //// If the dropdown is open, close it,
-        //if (this.rootElm.style.display != 'none') this.close();
-
-        //// else, open it.
-        //else this.open();
     }
 }

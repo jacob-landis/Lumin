@@ -64,7 +64,7 @@
         this.postImageWrapper = new ImageBox(
             ViewUtil.tag('div', { classList: 'postImageWrapper' }),
             'postImage',
-            (e) => Behavior.singleFullSizeImage
+            (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId)
         );
 
         if (this.hasImage) {
@@ -79,7 +79,7 @@
 
         // must have a handle on editIcon to exclude it from the window onclick event listener in Editor
         this.editIcon = Icons.edit();
-        this.captionEditor = new Editor(this.editIcon, post.caption, 'post-caption-editor', 1000,
+        this.captionEditor = new Editor(this.editIcon, this.post.caption, 'post-caption-editor', 1000,
             caption => Ajax.updatePost(this.post.postId, caption));
 
         this.captionWrapper.append(this.captionEditor.rootElm);
@@ -91,8 +91,8 @@
         let postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
 
         this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
-        profileCardSlot.append(new ProfileCard(post.profile).rootElm);
-        likeCardSlot.append(new LikeCard(post.likes, post.dateTime).rootElm);
+        profileCardSlot.append(new ProfileCard(this.post.profile).rootElm);
+        likeCardSlot.append(new LikeCard(this.post.likes, this.post.dateTime).rootElm);
 
         //------------------------------------------------------------------------------------------
         // END POST CONSTRUCTION

@@ -32,12 +32,11 @@ var ImageBox = (function () {
         this.reload();
     };
     ImageBox.prototype.loadImage = function (imageCard) {
-        var _this = this;
         ViewUtil.empty(this.rootElm);
         if (this.heldImageClassList)
             ViewUtil.addClassList(this.heldImageClassList, imageCard.rootElm);
         if (this.heldImageClick)
-            imageCard.onImageClick = function () { return _this.heldImageClick; };
+            imageCard.onImageClick = this.heldImageClick;
         this.rootElm.append(imageCard.rootElm);
         this.isLoaded = true;
     };
@@ -51,7 +50,7 @@ var ImageBox = (function () {
     ImageBox.prototype.reload = function () {
         var _this = this;
         if (!this.isLoaded)
-            Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, function () { return _this.heldImageClick; }, function (imageCard) {
+            Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldImageClick, function (imageCard) {
                 _this.imageCard = imageCard;
                 ViewUtil.empty(_this.rootElm);
                 _this.rootElm.append(_this.imageCard.rootElm);

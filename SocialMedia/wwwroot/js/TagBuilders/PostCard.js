@@ -31,7 +31,7 @@ var PostCard = (function (_super) {
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
         commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentCountSlot, _this.commentsBox.rootElm);
         _this.commentInputWrapper.append(txtComment, btnComment);
-        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', function (e) { return Behavior.singleFullSizeImage; });
+        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
         if (_this.hasImage) {
             _this.postImageWrapper.load(_this.post.image.imageId);
             _this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });
@@ -41,14 +41,14 @@ var PostCard = (function (_super) {
         _this.postHeading = ViewUtil.tag('div', { classList: 'postHeading' });
         postSection.append(_this.postHeading, _this.captionWrapper, _this.postImageWrapper.rootElm);
         _this.editIcon = Icons.edit();
-        _this.captionEditor = new Editor(_this.editIcon, post.caption, 'post-caption-editor', 1000, function (caption) { return Ajax.updatePost(_this.post.postId, caption); });
+        _this.captionEditor = new Editor(_this.editIcon, _this.post.caption, 'post-caption-editor', 1000, function (caption) { return Ajax.updatePost(_this.post.postId, caption); });
         _this.captionWrapper.append(_this.captionEditor.rootElm);
         var profileCardSlot = ViewUtil.tag('div', { classList: 'profileCardSlot' });
         var likeCardSlot = ViewUtil.tag('div', { classList: 'detailsSlot' });
         var postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
         _this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
-        profileCardSlot.append(new ProfileCard(post.profile).rootElm);
-        likeCardSlot.append(new LikeCard(post.likes, post.dateTime).rootElm);
+        profileCardSlot.append(new ProfileCard(_this.post.profile).rootElm);
+        likeCardSlot.append(new LikeCard(_this.post.likes, _this.post.dateTime).rootElm);
         _this.commentsBox.request(15);
         _this.requestCommentCount();
         _this.commentsBox.rootElm.onscroll = function () {
