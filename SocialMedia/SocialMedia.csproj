@@ -43,8 +43,6 @@
     <Content Remove="wwwroot\ts\TagBuilders\PostCard.ts" />
     <Content Remove="wwwroot\ts\TagBuilders\ProfileCard.ts" />
     <Content Remove="wwwroot\ts\User.ts" />
-    <Content Remove="wwwroot\ts\Util\Behavior.ts" />
-    <Content Remove="wwwroot\ts\Util\Icons.ts" />
     <Content Remove="wwwroot\ts\Util\Util.ts" />
     <Content Remove="wwwroot\ts\Util\ViewUtil.ts" />
   </ItemGroup>
@@ -99,8 +97,6 @@
     <TypeScriptCompile Include="wwwroot\ts\TagBuilders\PostCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\TagBuilders\ProfileCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\User.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\Util\Behavior.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\Util\Icons.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Util\Util.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Util\ViewUtil.ts" />
   </ItemGroup>

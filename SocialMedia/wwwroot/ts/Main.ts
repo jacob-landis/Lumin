@@ -60,7 +60,7 @@ class Main {
         );
 
         fullSizeImageModal = new FullSizeImageModal(
-            document.getElementById('fullsizeImageModal'),
+            document.getElementById('fullSizeImageModal'),
             document.getElementById('fullSizeImageModalContent'),
             document.getElementById('btnFullsizePrevious'),
             document.getElementById('btnFullsizeNext'),

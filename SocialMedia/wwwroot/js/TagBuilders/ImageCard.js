@@ -56,10 +56,7 @@ var ImageCard = (function (_super) {
         set: function (onImageClick) {
             var _this = this;
             this._onImageClick = function (target) { return onImageClick(target); };
-            this.rootElm.onclick = function (event) {
-                console.log(onImageClick);
-                onImageClick(_this);
-            };
+            this.rootElm.onclick = function (event) { return onImageClick(_this); };
         },
         enumerable: true,
         configurable: true
