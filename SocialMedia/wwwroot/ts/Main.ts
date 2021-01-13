@@ -19,7 +19,7 @@ class Main {
         User.profileId = profile.profileId;
         User.profilePictureId = profile.profilePicture;
 
-        this.navBar = document.getElementById("navBar"); // used to asses height of display port by other classes
+        this.navBar = document.getElementById("navBar"); // used to assess height of display port by other classes
 
         // PUBLIC POST FEED
         publicPosts = new PublicPosts(document.getElementById('publicPosts'));

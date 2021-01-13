@@ -51,20 +51,11 @@ var ProfileCard = (function (_super) {
         profiles.forEach(function (p) { return profileCards.push(new ProfileCard(p)); });
         return profileCards;
     };
-    ProfileCard.changeUserProfilePicture = function (imageId, imageCard) {
-        if (imageId)
-            Ajax.getImage(imageId, true, null, null, function (imageCard) { return applyChanges(imageCard); });
-        else
-            applyChanges(imageCard);
-        function applyChanges(imageCard) {
-            ProfileCard.profileCards.forEach(function (p) {
-                if (p.profile.profileId == User.profileId)
-                    p.imageBox.loadImage(ImageCard.copy(imageCard));
-            });
-            profileModal.profilePictureBox.loadImage(ImageCard.copy(imageCard));
-            User.profilePictureId = imageCard.rawImage.id;
-            Ajax.updateProfilePicture(imageCard.rawImage.id);
-        }
+    ProfileCard.changeUserProfilePicture = function (imageCard) {
+        ProfileCard.profileCards.forEach(function (p) {
+            if (p.profile.profileId == User.profileId)
+                p.imageBox.loadImage(ImageCard.copy(imageCard));
+        });
     };
     ProfileCard.prototype.remove = function () {
         var _this = this;

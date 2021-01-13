@@ -39,7 +39,7 @@ var ProfileModal = (function (_super) {
         this.profileModalName.innerText = fullProfile.name;
         this.bioEditor.setText(fullProfile.bio);
         if (this.profile.profileId == User.profileId) {
-            this.profilePictureBox.heldImageClick = function () { return _this.selectProfilePicture; };
+            this.profilePictureBox.heldImageClick = function (target) { return _this.selectProfilePicture(); };
             this.profileBioWrapper.append(this.btnChangeBio);
             this.btnChangeBio.onclick = function () { return _this.bioEditor.start(); };
         }
@@ -73,11 +73,15 @@ var ProfileModal = (function (_super) {
     };
     ProfileModal.prototype.selectProfilePicture = function () {
         var _this = this;
-        imageDropdown.load(function (imageCard) {
+        imageDropdown.load(function (target) {
             imageDropdown.close();
             imageDropdown.rootElm.style.zIndex = '0';
-            ProfileCard.changeUserProfilePicture(null, imageCard);
-            Ajax.updateProfilePicture(imageCard.image.imageId, null, null, function (imageCard) { return _this.profilePictureBox.loadImage(imageCard); });
+            ProfileCard.changeUserProfilePicture(target);
+            User.profilePictureId = target.image.imageId;
+            _this.profilePictureBox.loadImage(target);
+            Ajax.updateProfilePicture(target.image.imageId, null, null, function (imageCard) {
+                return _this.profilePictureBox.loadImage(imageCard);
+            });
         });
     };
     ProfileModal.prototype.reset = function () {

@@ -74,7 +74,7 @@ var ImageCard = (function (_super) {
         });
         if (this.image.imageId == User.profilePictureId)
             Ajax.getImage(0, true, 'sqr', function () { }, function (imageCard) {
-                return ProfileCard.changeUserProfilePicture(null, imageCard);
+                return ProfileCard.changeUserProfilePicture(imageCard);
             });
         fullSizeImageModal.close();
     };

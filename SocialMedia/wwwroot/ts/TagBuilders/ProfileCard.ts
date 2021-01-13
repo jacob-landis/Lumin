@@ -8,23 +8,10 @@
         return profileCards;
     }
 
-    public static changeUserProfilePicture(imageId: number, imageCard: ImageCard): void {
-        if (imageId) Ajax.getImage(imageId, true, null, null, imageCard=> applyChanges(imageCard));
-        else applyChanges(imageCard);
-
-        // profile picture is not being set when image is deleted that IS prof pic
-        function applyChanges(imageCard) {
-            ProfileCard.profileCards.forEach(p => {
-                if (p.profile.profileId == User.profileId) p.imageBox.loadImage(ImageCard.copy(imageCard));
-            });
-
-            // full scale prof pic will be loaded on ProfileModal because that is the only place to change it
-            // however, the default prof pic cannot be selected, only from deleting the current picture
-            profileModal.profilePictureBox.loadImage(ImageCard.copy(imageCard));
-
-            User.profilePictureId = imageCard.rawImage.id;
-            Ajax.updateProfilePicture(imageCard.rawImage.id);
-        }
+    public static changeUserProfilePicture(imageCard: ImageCard): void {
+        ProfileCard.profileCards.forEach(p => {
+            if (p.profile.profileId == User.profileId) p.imageBox.loadImage(ImageCard.copy(imageCard));
+        });
     }
     
     private static cases = {

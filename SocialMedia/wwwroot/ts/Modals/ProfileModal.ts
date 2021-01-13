@@ -108,7 +108,7 @@ class ProfileModal extends Modal {
         if (this.profile.profileId == User.profileId) {
 
             // set click callback of profile picture to invoke select profile picture,
-            this.profilePictureBox.heldImageClick = () => this.selectProfilePicture
+            this.profilePictureBox.heldImageClick = (target: ImageCard) => this.selectProfilePicture()
 
             // give button for user to edit bio,
             this.profileBioWrapper.append(this.btnChangeBio);
@@ -197,24 +197,30 @@ class ProfileModal extends Modal {
     */
     private selectProfilePicture(): void {
 
-        // Load image dropdown with callback. When the image the user selected returns,
-        imageDropdown.load(imageCard => {
+        // Load image dropdown with callback.
+        imageDropdown.load((target: ImageCard) => {
 
-            // close the image dropdown,
+            // Close the image dropdown.
             imageDropdown.close();
 
-            // reset z index of dropdown,
+            // Reset z index of dropdown.
             imageDropdown.rootElm.style.zIndex = '0'; // XXX move to onclose of imageDropdown. XXX
 
-            // change any occurence of the user's profile picture to the newly selected one,
-            // (This has the side effect of using the thumbnail as a placeholder for the profile modal picture until the fullsize arrives.)
-            ProfileCard.changeUserProfilePicture(null, imageCard);
+            // Change any occurence of the user's profile picture to the newly selected one.
+            ProfileCard.changeUserProfilePicture(target);
 
-            // and send an update request to the host to change the profile picture in the profile record.
-            Ajax.updateProfilePicture(imageCard.image.imageId, null, null,
+            // Update stored shorcut to profile picture.
+            User.profilePictureId = target.image.imageId;
+
+            // Inserts the low res thumbnail as a placeholder until the fullsize version is returned.
+            this.profilePictureBox.loadImage(target);
+
+            // Send an update request to the host to change the profile picture in the profile record.
+            Ajax.updateProfilePicture(target.image.imageId, null, null,
 
                 // When the host sends back the fullsize version of the new profile picture, load it into the profile modal display.
-                (imageCard: ImageCard) => this.profilePictureBox.loadImage(imageCard));
+                (imageCard: ImageCard) =>
+                    this.profilePictureBox.loadImage(imageCard));
         });
     }
 

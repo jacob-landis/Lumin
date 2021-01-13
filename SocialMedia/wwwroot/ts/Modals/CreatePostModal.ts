@@ -93,7 +93,7 @@ class CreatePostModal extends Modal {
         this.loadPaperClip();
 
         // If the image dropdown is closed, open it.
-        if (imageDropdown.rootElm.style.display == "none" || imageDropdown.rootElm.style.display == "") this.selectImage();
+        //if (imageDropdown.rootElm.style.display == "none" || imageDropdown.rootElm.style.display == "") this.selectImage();
 
         // Change image onclicks in image dropdown.
         this.convertImageDropdown();
@@ -148,6 +148,7 @@ class CreatePostModal extends Modal {
 
     /*
         Changes the callback in the already open image dropdown to return the selected image.
+        XXX Move to only used spot XXX
     */
     public convertImageDropdown(): void {
 

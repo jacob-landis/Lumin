@@ -85,7 +85,7 @@
         // If the user deleted the image that was their profile picture, change all occurances of their profile picture to the defualt.
         if (this.image.imageId == User.profilePictureId)
             Ajax.getImage(0, true, 'sqr', () => { }, (imageCard: ImageCard) =>
-                ProfileCard.changeUserProfilePicture(null, imageCard));
+                ProfileCard.changeUserProfilePicture(imageCard));
 
         // XXX instead, fullsizeImage modal should change to the next or prev image (prev as default), and if singular THEN close.
         fullSizeImageModal.close();// temporary solution

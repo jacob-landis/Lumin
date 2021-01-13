@@ -104,8 +104,9 @@ class ContentBox implements IAppendable {
         // Loop through the provided content,
         content.forEach(c => {
 
-            // Add content to this content box's collection.
+            // Add content to the beginning of this content box's collection.
             this.content.push(c);
+            //this.content.unshift(c);
 
             // If content is not null,
             if (c) {

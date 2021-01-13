@@ -56,6 +56,8 @@ var ImageDropdown = (function (_super) {
         this.imageBox.content.forEach(function (i) { return i.onImageClick = function (imageCard) { return callback(imageCard); }; });
         this.rootElm.style.zIndex = "" + (Modal.openModals.length + 2);
         this.prompt.innerText = 'Select an Image';
+        if (this.rootElm.style.display != "inline" && this.rootElm.style.display != "block")
+            _super.prototype.open.call(this);
     };
     return ImageDropdown;
 }(Dropdown));

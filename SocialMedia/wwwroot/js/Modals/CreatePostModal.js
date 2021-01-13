@@ -32,8 +32,6 @@ var CreatePostModal = (function (_super) {
     }
     CreatePostModal.prototype.load = function (imageCard) {
         this.loadPaperClip();
-        if (imageDropdown.rootElm.style.display == "none" || imageDropdown.rootElm.style.display == "")
-            this.selectImage();
         this.convertImageDropdown();
         if (imageCard)
             this.selectedImageBox.load(imageCard.image.imageId);

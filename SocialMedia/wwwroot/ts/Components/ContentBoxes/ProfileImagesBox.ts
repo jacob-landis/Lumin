@@ -32,7 +32,7 @@ class ProfileImagesBox extends ContentBox {
                     // and when they return as image cards with the click value that was just provided,
                     (imageCards: ImageCard[]) => {
                         // add them to this image box.
-                        this.add(imageCards)
+                        this.add(imageCards);
                     }
                 );
             }
@@ -65,7 +65,8 @@ class ProfileImagesBox extends ContentBox {
         imageCard.onImageClick = this.clickCallback;
 
         // Update classList of image card so it is square and fits in the grid.
-        imageCard.rootElm.classList.add('listImage sqr');
+        imageCard.rootElm.classList.add('listImage');
+        imageCard.rootElm.classList.add('sqr');
 
         // Add image card to this image box's content box.
         this.add(imageCard, true);

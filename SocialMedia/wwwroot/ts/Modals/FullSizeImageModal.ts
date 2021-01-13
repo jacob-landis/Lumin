@@ -65,7 +65,7 @@ class FullSizeImageModal extends Modal {
         this.imageControls = [this.imageCount, this.btnNext, this.btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
-        this.imageCon = new ImageBox(imageBoxElm, imageClassList, /*() =>*/ (target: ImageCard)=> this.toggleControls());
+        this.imageCon = new ImageBox(imageBoxElm, imageClassList, (target: ImageCard)=> this.toggleControls());
 
         // Set height of imageCon so the image is not overlapped by the nav bar.
         this.imageCon.height = window.innerHeight - Main.navBar.clientHeight;
