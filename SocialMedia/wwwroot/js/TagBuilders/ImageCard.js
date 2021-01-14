@@ -65,12 +65,11 @@ var ImageCard = (function (_super) {
         var _this = this;
         Ajax.deleteImage(this.image.imageId);
         PostCard.postCards.forEach(function (p) {
-            if (p.post.image.imageId == _this.image.imageId)
+            if (p.post.image != null && p.post.image.imageId == _this.image.imageId)
                 ViewUtil.remove(p.rootElm);
         });
-        ImageCard.imageCards.forEach(function (i) {
-            if (i.rawImage.id == _this.image.imageId)
-                ViewUtil.remove(i.tag);
+        ProfileImagesBox.profileImageBoxes.forEach(function (p) {
+            p.removeImageCard(_this);
         });
         if (this.image.imageId == User.profilePictureId)
             Ajax.getImage(0, true, 'sqr', function () { }, function (imageCard) {

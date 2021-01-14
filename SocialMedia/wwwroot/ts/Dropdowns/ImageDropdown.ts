@@ -60,7 +60,7 @@ class ImageDropdown extends Dropdown {
             uploadImageModal.load(e,
 
                 // When the image is uploaded (if it was uploaded) and it comes back,
-                imageCard =>
+                (imageCard: ImageCard) =>
 
                     // loop through all the profileImageBoxs,
                     ProfileImagesBox.profileImageBoxes.forEach(p => {

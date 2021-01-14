@@ -72,10 +72,13 @@ var CreatePostModal = (function (_super) {
         else {
             var imageId = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.imageId : 0;
             var post = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId });
-            Ajax.submitPost(post, function (postCard) { return PostsBox.postBoxes.forEach(function (p) {
-                if (p.profileId == User.profileId)
-                    p.addPost(new PostCard(postCard.post));
-            }); });
+            Ajax.submitPost(post, function (post) {
+                console.log(PostsBox.postBoxes);
+                PostsBox.postBoxes.forEach(function (p) {
+                    if (p.profileId == User.profileId)
+                        p.addPost(new PostCard(post));
+                });
+            });
             this.txtCaption.value = '';
             this.close();
         }

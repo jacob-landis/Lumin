@@ -27,6 +27,7 @@ var PostsBox = (function (_super) {
                 });
         }) || this;
         _this.profileId = profileId ? profileId : User.profileId;
+        PostsBox.postBoxes.push(_this);
         return _this;
     }
     PostsBox.prototype.addPost = function (postCard) { this.add(postCard, true); };

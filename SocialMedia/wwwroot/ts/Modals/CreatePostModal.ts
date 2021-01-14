@@ -213,11 +213,16 @@ class CreatePostModal extends Modal {
             Ajax.submitPost(post,
 
                 // If and when the post was added and comes back, loop through all the active post boxes,
-                postCard => PostsBox.postBoxes.forEach(p => {
+                (post: PostRecord) => {
 
-                    // and add the returned post to the post boxes it belongs in.
-                    if (p.profileId == User.profileId) p.addPost(new PostCard(postCard.post));
-                })
+                    console.log(PostsBox.postBoxes);
+                    PostsBox.postBoxes.forEach((p: PostsBox) => {
+
+                        // and add the returned post to the post boxes it belongs in.
+                        if (p.profileId == User.profileId)
+                            p.addPost(new PostCard(post));
+                    });
+                }
             );
 
             // Clear caption in form.

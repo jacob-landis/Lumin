@@ -42,12 +42,15 @@ var ContentBox = (function () {
         if (this.loading && content.length < this.take)
             this.moreContent = false;
         content.forEach(function (c) {
-            _this.content.push(c);
-            if (c) {
-                if (prepend)
+            if (c != null) {
+                if (prepend) {
+                    _this.content.unshift(c);
                     _this.rootElm.prepend(c.rootElm);
-                else
+                }
+                else {
+                    _this.content.push(c);
                     _this.rootElm.append(c.rootElm);
+                }
             }
         });
         if (this.requestCallback) {

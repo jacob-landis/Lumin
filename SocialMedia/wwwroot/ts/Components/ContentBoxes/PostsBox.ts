@@ -56,6 +56,8 @@ class PostsBox extends ContentBox {
         // Used to make request a feed of one profile's posts.
         // If no value is provided, the current user's public feed will be loaded.
         this.profileId = profileId ? profileId : User.profileId;
+
+        PostsBox.postBoxes.push(this);
     }
 
     /*

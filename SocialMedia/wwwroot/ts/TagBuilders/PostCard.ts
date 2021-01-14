@@ -198,14 +198,19 @@
     public remove(): void {
         this.setCommentCount(this.totalCommentCount - 1);
         Ajax.deletePost(this.post.postId);
+
+        // XXX Instead of this, PostsBox should delete them so it can also splice it out of it's content array. XXX
         PostCard.postCards.forEach(c => {
             if (c.post.postId == this.post.postId) {
                 ViewUtil.remove(c.rootElm);
                 c = null;
             }
         });
+
         Util.filterNulls(PostCard.postCards);
-        //delete this; XXX
+
+        // XXX This is invalid code in TS. XXX
+        //delete this;
     }
 
     // Triggers the mutation observer which triggers a resize. The assigned id is never used.

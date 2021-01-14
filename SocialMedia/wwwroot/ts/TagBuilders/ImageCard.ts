@@ -73,13 +73,15 @@
     public remove(): void {
         Ajax.deleteImage(this.image.imageId);
 
-        PostCard.postCards.forEach(p => {
+        PostCard.postCards.forEach((p: PostCard) => {
             // Only need to remove tag. Cascading delete in db is done on server.
-            if (p.post.image.imageId == this.image.imageId) ViewUtil.remove(p.rootElm);
+            if (p.post.image != null && p.post.image.imageId == this.image.imageId)
+                ViewUtil.remove(p.rootElm);
         });
 
-        ImageCard.imageCards.forEach(i => {
-            if (i.rawImage.id == this.image.imageId) ViewUtil.remove(i.tag);
+        // XXX this ought to go in a static method in ProfileImagesBox. Or even in ContentBox. XXX
+        ProfileImagesBox.profileImageBoxes.forEach((p: ProfileImagesBox) => {
+            p.removeImageCard(this);
         });
 
         // If the user deleted the image that was their profile picture, change all occurances of their profile picture to the defualt.

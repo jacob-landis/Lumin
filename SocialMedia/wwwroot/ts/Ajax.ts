@@ -174,11 +174,11 @@
         this.call(`apipost/updatepost/${postId}`, "POST", null, this.JSONstring(postCaptionText));
     }
 
-    public static submitPost(postForm: string, onCopyResults: (postCard: PostCard) => void): void {
+    public static submitPost(postForm: string, onCopyResults: (post: PostRecord) => void): void {
         this.call(
             "apipost",
             "POST",
-            (copyResults: string) => onCopyResults(new PostCard(<PostRecord><unknown>copyResults)),
+            (copyResults: string) => onCopyResults(<PostRecord><unknown>copyResults),
             postForm
         );
     }

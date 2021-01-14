@@ -71,4 +71,24 @@ class ProfileImagesBox extends ContentBox {
         // Add image card to this image box's content box.
         this.add(imageCard, true);
     }
+
+    /*
+        Removes the given image from this ProfileImageBox. 
+    */
+    public removeImageCard(imageCard: ImageCard) {
+
+        // Loop through the content of this ProfileImagesBox.
+        this.content.forEach((i: ImageCard) => {
+
+            // If a match is found.
+            if (i.image.imageId == imageCard.image.imageId) {
+
+                // Splice from this.content.
+                this.content.splice(this.content.indexOf(i), 1);
+
+                // Remove the root element.
+                ViewUtil.remove(i.rootElm);
+            }
+        });
+    }
 }

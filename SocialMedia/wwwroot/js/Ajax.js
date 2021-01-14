@@ -80,7 +80,7 @@ var Ajax = (function () {
         this.call("apipost/updatepost/" + postId, "POST", null, this.JSONstring(postCaptionText));
     };
     Ajax.submitPost = function (postForm, onCopyResults) {
-        this.call("apipost", "POST", function (copyResults) { return onCopyResults(new PostCard(copyResults)); }, postForm);
+        this.call("apipost", "POST", function (copyResults) { return onCopyResults(copyResults); }, postForm);
     };
     Ajax.getPublicPosts = function (skip, take, onPostResults) {
         this.call("apipost/publicposts/" + skip + "/" + take, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });

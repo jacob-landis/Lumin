@@ -52,7 +52,7 @@ class UploadImageModal extends Modal {
         
         // Set btnConfirm to send image to host in a post request.
         this.btnConfirm.onclick = () => {
-            Ajax.postImage(this.stagedUpload, imageCard => {
+            Ajax.postImage(this.stagedUpload, (imageCard: ImageCard) => {
 
                 // When uploaded image returns as an image card, if another class has set up a callback, send the image card to it.
                 if (this.callback) this.callback(imageCard);
