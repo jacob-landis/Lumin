@@ -25,6 +25,7 @@ var ProfileModal = (function (_super) {
         _this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, 250, function (bio) { return Ajax.updateBio(bio); });
+        _this.postBox = new PostsBox(0, _this.postWrapper);
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
         return _this;
     }
@@ -61,7 +62,8 @@ var ProfileModal = (function (_super) {
         this.friendBox = new ContentBox(this.friendBoxElm);
         this.friendBox.clear();
         Ajax.getFriends(this.profile.profileId, null, function (profileCards) { return _this.friendBox.add(profileCards); });
-        this.postBox = new PostsBox(this.profile.profileId, this.postWrapper);
+        this.postBox.profileId = this.profile.profileId;
+        this.postBox.clear();
         this.postBox.start();
         this.rootElm.onscroll = function () {
             var divHeight = Util.getDocumentHeight();
@@ -86,9 +88,7 @@ var ProfileModal = (function (_super) {
     };
     ProfileModal.prototype.reset = function () {
         ViewUtil.empty(this.imageWrapper);
-        ViewUtil.empty(this.postWrapper);
         delete this.imagesBox;
-        delete this.postBox;
     };
     return ProfileModal;
 }(Modal));

@@ -141,5 +141,9 @@ class ContentBox implements IAppendable {
 
         // Clear this rootElm.
         ViewUtil.empty(this.rootElm);
+
+        // Reset flags
+        this.loading = false;
+        this.moreContent = true;
     }
 }

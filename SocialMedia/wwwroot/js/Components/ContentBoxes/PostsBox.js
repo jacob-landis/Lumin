@@ -17,7 +17,7 @@ var PostsBox = (function (_super) {
         var _this = this;
         rootElm.classList.add('post-box');
         _this = _super.call(this, rootElm, 5, function (skip, take) {
-            if (profileId)
+            if (profileId != null)
                 Ajax.getProfilePosts(_this.profileId, skip, take, function (postCards) {
                     return _this.add(postCards);
                 });
@@ -31,7 +31,9 @@ var PostsBox = (function (_super) {
         return _this;
     }
     PostsBox.prototype.addPost = function (postCard) { this.add(postCard, true); };
-    PostsBox.prototype.start = function () { this.request(15); };
+    PostsBox.prototype.start = function () {
+        this.request(15);
+    };
     PostsBox.postBoxes = [];
     return PostsBox;
 }(ContentBox));

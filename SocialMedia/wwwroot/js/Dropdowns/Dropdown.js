@@ -12,17 +12,20 @@ var Dropdown = (function () {
         this.frameContainer = frameContainer;
     };
     Dropdown.prototype.open = function () {
-        Dropdown.openDropdowns.forEach(function (d) { return d.close(); });
+        if (Dropdown.openDropdown != null)
+            Dropdown.openDropdown.close();
+        Dropdown.openDropdown = this;
         ViewUtil.show(this.rootElm, 'block');
     };
     Dropdown.prototype.close = function () {
         ViewUtil.hide(this.rootElm);
-        Dropdown.openDropdowns.splice(Dropdown.openDropdowns.indexOf(this));
+        Dropdown.openDropdown = null;
     };
     Dropdown.prototype.toggle = function () {
         this.rootElm.style.display != 'block' ? this.open() : this.close();
     };
     Dropdown.openDropdowns = [];
+    Dropdown.openDropdown = null;
     return Dropdown;
 }());
 //# sourceMappingURL=Dropdown.js.map

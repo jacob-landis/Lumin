@@ -25,11 +25,11 @@
         this.call(`apicomment/updatecomment/${commentId}`, "POST", null, commentText);
     }
 
-    public static postComment(commentForm: string, onCopyResults: (commentCard: CommentCard) => void): void {
+    public static postComment(commentForm: string, onCopyResults: (commentResults: CommentRecord) => void): void {
         this.call(
             "apicomment", 
             "POST",
-            (commentResults: string) => onCopyResults(new CommentCard(<CommentRecord><unknown>commentResults)),
+            (commentResults: string) => onCopyResults(<CommentRecord><unknown>commentResults),
             commentForm
         );
     }

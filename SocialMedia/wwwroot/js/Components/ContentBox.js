@@ -61,6 +61,8 @@ var ContentBox = (function () {
     ContentBox.prototype.clear = function () {
         this.content = [];
         ViewUtil.empty(this.rootElm);
+        this.loading = false;
+        this.moreContent = true;
     };
     ContentBox.contentBoxes = [];
     return ContentBox;

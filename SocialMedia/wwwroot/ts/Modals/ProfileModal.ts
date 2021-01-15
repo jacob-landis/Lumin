@@ -78,6 +78,8 @@ class ProfileModal extends Modal {
         // Construct an Editor for profile bio and get a handle on it.
         this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, 250, (bio: string) => Ajax.updateBio(bio));
 
+        this.postBox = new PostsBox(0, this.postWrapper);
+
         this.profileBioWrapper.append(this.bioEditor.rootElm);
     }
 
@@ -165,11 +167,9 @@ class ProfileModal extends Modal {
         Ajax.getFriends(this.profile.profileId, null, (profileCards: ProfileCard[]) => this.friendBox.add(profileCards));
 
         // POSTS BOX
-        // Construct a new PostsBox and set it to load this profile's ProfileID.
-        this.postBox = new PostsBox(this.profile.profileId, this.postWrapper);
+        this.postBox.profileId = this.profile.profileId;
 
-        // Append new PostsBox to container elm.
-        //this.postWrapper.append(this.postBox.rootElm); // XXX Instead I put postWrapper in the PostsBox. Delete this. XXX
+        this.postBox.clear();
 
         // Start post feed to make first request.
         this.postBox.start();
@@ -231,10 +231,10 @@ class ProfileModal extends Modal {
 
         // Emptie out the containers that are refilled on load.
         ViewUtil.empty(this.imageWrapper);
-        ViewUtil.empty(this.postWrapper);
+        //ViewUtil.empty(this.postWrapper);
 
         // Delete the components that are reconstructed on load.
         delete this.imagesBox;
-        delete this.postBox;
+        //delete this.postBox;
     }
 }

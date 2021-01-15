@@ -15,7 +15,7 @@ var Ajax = (function () {
         this.call("apicomment/updatecomment/" + commentId, "POST", null, commentText);
     };
     Ajax.postComment = function (commentForm, onCopyResults) {
-        this.call("apicomment", "POST", function (commentResults) { return onCopyResults(new CommentCard(commentResults)); }, commentForm);
+        this.call("apicomment", "POST", function (commentResults) { return onCopyResults(commentResults); }, commentForm);
     };
     Ajax.getComments = function (postId, skip, take, onCommentResults) {
         this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take, "GET", function (commentResults) {

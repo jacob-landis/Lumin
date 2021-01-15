@@ -49,13 +49,13 @@ class CommentCard extends Card {
         // Create an Editor for the comment text.
         let commentEditor: Editor = new Editor(editIcon, comment.content, 'comment-editor', 125,
             content => Ajax.updateComment(this.comment.commentId, content));
-
+        
         // Append the comment editor.
         contentSection.append(commentEditor.rootElm);
         mainSection.append(
             new ProfileCard(comment.profile).rootElm,
             contentSection,
-            new LikeCard(comment.likes, comment.dateTime).rootElm
+            new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime).rootElm
         );
         this.rootElm.append(mainSection, optsSection);
 

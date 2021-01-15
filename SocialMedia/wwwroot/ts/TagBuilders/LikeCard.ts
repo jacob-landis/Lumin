@@ -10,7 +10,6 @@
                 c.likesRecord.contentId == referenceLikesRecord.contentId
                 && c.likesRecord.contentType == referenceLikesRecord.contentType
             ) {
-
                 c.likesRecord.count += c.likesRecord.hasLiked ? -1 : 1;
                 c.countDisplayElm.innerText = `${c.likesRecord.count}`;
 
@@ -38,7 +37,7 @@
         this.rootElm.append(this.btnLike, this.countDisplayElm, dateTimeStamp);
 
         this.btnLike.onclick = () => {
-
+            
             // Update the record on the host.
             if (this.likesRecord.hasLiked) Ajax.unlike(this.likesRecord.contentType, this.likesRecord.contentId);
             else Ajax.postLike(this.likesRecord.contentType, this.likesRecord.contentId);

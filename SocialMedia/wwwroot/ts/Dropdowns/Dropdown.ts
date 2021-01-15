@@ -37,7 +37,7 @@ class Dropdown implements IAppendable {
 
     */
     // XXX --------------------------XXX
-    private static openDropdowns: Dropdown[] = [];
+    private static openDropdown: Dropdown = null;
     private static frameTemplate: HTMLElement; // provided in initialize
     private static frameContainer: HTMLElement; // provided in initialize
 
@@ -73,25 +73,30 @@ class Dropdown implements IAppendable {
     }
 
     /*
-        Show the provided dropdown's main tag after invoking close() on all the other dropdowns. 
+        Show the dropdown after closing the open one.
     */
     public open(): void {
+        
+        // If a dropdown is open, close it.
+        if (Dropdown.openDropdown != null) Dropdown.openDropdown.close();
 
-        // Iterate over all dropdowns and invoke close() on each.
-        Dropdown.openDropdowns.forEach(d => d.close());
+        // Put this in openDropdown slot. In effect raising the flag.
+        Dropdown.openDropdown = this;
 
-        // Show the provided dropdown's main tag.
+        // Show the dropdown's root element.
         ViewUtil.show(this.rootElm, 'block');
     }
 
     /*
-        Hide the provided dropdown's main tag. 
+        Hide the dropdown. 
     */ 
     public close(): void {
+
+        // Hide the dropdown's root element.
         ViewUtil.hide(this.rootElm);
         
-        // REMOVE THIS FROM LIST OF DROPDOWNS
-        Dropdown.openDropdowns.splice(Dropdown.openDropdowns.indexOf(this));
+        // Clear this from openDropdown slot. In effect lowering the flag.
+        Dropdown.openDropdown = null;
     }
 
     public toggle(): void {

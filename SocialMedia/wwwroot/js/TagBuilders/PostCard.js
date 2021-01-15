@@ -74,10 +74,10 @@ var PostCard = (function (_super) {
         btnComment.onclick = function () {
             var error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
             if (txtComment.value.length <= 125) {
-                Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentCard) {
+                Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentResults) {
                     PostCard.postCards.forEach(function (p) {
-                        if (p.post.postId == commentCard.comment.postId) {
-                            p.commentsBox.add(CommentCard.copy(commentCard), true);
+                        if (p.post.postId == commentResults.postId) {
+                            p.commentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
                             p.resizeCommentBox();
                             p.setCommentCount(_this.totalCommentCount + 1);
                         }

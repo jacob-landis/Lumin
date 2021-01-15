@@ -30,16 +30,16 @@ class PostsBox extends ContentBox {
             (skip: number, take: number): void => {
                 
                 // if a ProfileID was included,
-                if (profileId)
+                if (profileId != null)
 
                     // send a profilePosts request to the server,
                     Ajax.getProfilePosts(this.profileId, skip, take,
 
                         // and when the posts return as post cards,
-                        (postCards: PostCard[]) =>
-
+                        (postCards: PostCard[]) => 
                             // add them to the content box of this post box.
-                            this.add(postCards))
+                            this.add(postCards)
+                    )
                 else
                     // or else send a publicPosts request to the server with the set skip and take values of this post box,
                     Ajax.getPublicPosts(skip, take,
@@ -68,5 +68,7 @@ class PostsBox extends ContentBox {
     /*
         Send first request to host. 
     */
-    public start(): void { this.request(15); }
+    public start(): void {
+        this.request(15);
+    }
 }

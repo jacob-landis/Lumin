@@ -214,8 +214,6 @@ class CreatePostModal extends Modal {
 
                 // If and when the post was added and comes back, loop through all the active post boxes,
                 (post: PostRecord) => {
-
-                    console.log(PostsBox.postBoxes);
                     PostsBox.postBoxes.forEach((p: PostsBox) => {
 
                         // and add the returned post to the post boxes it belongs in.
