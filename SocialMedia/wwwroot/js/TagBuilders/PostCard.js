@@ -48,7 +48,7 @@ var PostCard = (function (_super) {
         var postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
         _this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
         profileCardSlot.append(new ProfileCard(_this.post.profile).rootElm);
-        likeCardSlot.append(new LikeCard(_this.post.likes, _this.post.dateTime).rootElm);
+        likeCardSlot.append(new LikeCard(LikesRecord.copy(_this.post.likes), _this.post.dateTime).rootElm);
         _this.commentsBox.request(15);
         _this.requestCommentCount();
         _this.commentsBox.rootElm.onscroll = function () {

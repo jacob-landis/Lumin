@@ -92,7 +92,7 @@
 
         this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
         profileCardSlot.append(new ProfileCard(this.post.profile).rootElm);
-        likeCardSlot.append(new LikeCard(this.post.likes, this.post.dateTime).rootElm);
+        likeCardSlot.append(new LikeCard(LikesRecord.copy(this.post.likes), this.post.dateTime).rootElm);
 
         //------------------------------------------------------------------------------------------
         // END POST CONSTRUCTION

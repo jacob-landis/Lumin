@@ -24,7 +24,6 @@ var Dropdown = (function () {
     Dropdown.prototype.toggle = function () {
         this.rootElm.style.display != 'block' ? this.open() : this.close();
     };
-    Dropdown.openDropdowns = [];
     Dropdown.openDropdown = null;
     return Dropdown;
 }());

@@ -15,7 +15,9 @@ var Modal = (function () {
                 _this.closeTopModal();
         });
     };
-    Modal.closeTopModal = function () { this.openModals[this.openModals.length - 1].close(); };
+    Modal.closeTopModal = function () {
+        this.openModals[this.openModals.length - 1].close();
+    };
     Modal.prototype.open = function () {
         if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block")
             this.close();
@@ -25,6 +27,7 @@ var Modal = (function () {
         document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
     };
     Modal.prototype.close = function () {
+        console.log("close");
         ViewUtil.hide(this.rootElm);
         Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
         if (Modal.openModals.length == 0) {

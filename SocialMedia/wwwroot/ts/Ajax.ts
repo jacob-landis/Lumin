@@ -22,7 +22,7 @@
     }
 
     public static updateComment(commentId: number, commentText: string): void {
-        this.call(`apicomment/updatecomment/${commentId}`, "POST", null, commentText);
+        this.call(`apicomment/updatecomment/${commentId}`, "POST", null, this.JSONstring(commentText));
     }
 
     public static postComment(commentForm: string, onCopyResults: (commentResults: CommentRecord) => void): void {

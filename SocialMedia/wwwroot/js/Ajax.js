@@ -12,7 +12,7 @@ var Ajax = (function () {
         this.call("apicomment/deletecomment/" + commentId, "POST");
     };
     Ajax.updateComment = function (commentId, commentText) {
-        this.call("apicomment/updatecomment/" + commentId, "POST", null, commentText);
+        this.call("apicomment/updatecomment/" + commentId, "POST", null, this.JSONstring(commentText));
     };
     Ajax.postComment = function (commentForm, onCopyResults) {
         this.call("apicomment", "POST", function (commentResults) { return onCopyResults(commentResults); }, commentForm);

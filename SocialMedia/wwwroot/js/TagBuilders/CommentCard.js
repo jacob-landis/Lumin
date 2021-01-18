@@ -21,14 +21,20 @@ var CommentCard = (function (_super) {
         var contentSection = ViewUtil.tag('div', { classList: 'commentContentSection' });
         var btnOpts = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
         var editIcon = Icons.edit();
-        var commentEditor = new Editor(editIcon, comment.content, 'comment-editor', 125, function (content) { return Ajax.updateComment(_this.comment.commentId, content); });
-        contentSection.append(commentEditor.rootElm);
+        _this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', 125, function (content) {
+            Ajax.updateComment(_this.comment.commentId, content);
+            CommentCard.commentCards.forEach(function (c) {
+                if (c.comment.commentId == _this.comment.commentId)
+                    c.commentEditor.setText(content);
+            });
+        });
+        contentSection.append(_this.commentEditor.rootElm);
         mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime).rootElm);
         _this.rootElm.append(mainSection, optsSection);
         if (comment.profile.relationToUser == 'me') {
             optsSection.append(btnOpts);
             btnOpts.onclick = function (e) { return contextMenu.load(e, [
-                new ContextOption(editIcon, function () { return commentEditor.start(); }),
+                new ContextOption(editIcon, function () { return _this.commentEditor.start(); }),
                 new ContextOption(Icons.deleteComment(), function () { return confirmPrompt.load('Are you sure you want to delete this comment?', function (answer) {
                     if (answer == false)
                         return;

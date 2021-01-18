@@ -51,7 +51,9 @@ class Modal implements IAppendable {
         });
     }
 
-    private static closeTopModal(): void { this.openModals[this.openModals.length - 1].close(); }
+    private static closeTopModal(): void {
+        this.openModals[this.openModals.length - 1].close();
+    }
     
     // /STATIC
     // ---------------------------------------------------------------------------------------------------------------

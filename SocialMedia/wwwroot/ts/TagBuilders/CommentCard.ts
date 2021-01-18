@@ -29,6 +29,8 @@ class CommentCard extends Card {
     // Comment data.
     public comment: CommentRecord;
 
+    public commentEditor: Editor;
+
     /*
         Contructs a new comment card JS obj and HTML elm.
     */
@@ -47,11 +49,22 @@ class CommentCard extends Card {
         let editIcon: HTMLElement = Icons.edit();
 
         // Create an Editor for the comment text.
-        let commentEditor: Editor = new Editor(editIcon, comment.content, 'comment-editor', 125,
-            content => Ajax.updateComment(this.comment.commentId, content));
+        this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', 125,
+            (content: string) => {
+
+                // Send update request to server.
+                Ajax.updateComment(this.comment.commentId, content)
+
+                // Change any other occurances of this comment.
+                CommentCard.commentCards.forEach((c: CommentCard) => {
+                    if (c.comment.commentId == this.comment.commentId)
+                        c.commentEditor.setText(content);
+                });
+            }
+        );
         
         // Append the comment editor.
-        contentSection.append(commentEditor.rootElm);
+        contentSection.append(this.commentEditor.rootElm);
         mainSection.append(
             new ProfileCard(comment.profile).rootElm,
             contentSection,
@@ -69,7 +82,7 @@ class CommentCard extends Card {
             btnOpts.onclick = e => contextMenu.load(e, [
 
                 // Edit: start comment edit.
-                new ContextOption(editIcon, () => commentEditor.start()),
+                new ContextOption(editIcon, () => this.commentEditor.start()),
 
                 // Delete: prompt for confirmation to delete.
                 new ContextOption(Icons.deleteComment(),
