@@ -10,7 +10,7 @@ class ProfileImagesBox extends ContentBox {
     public static profileImageBoxes: ProfileImagesBox[] = [];
 
     // The click action that gets imbedded in every image in this image box's content box.
-    private clickCallback: (imageCard: ImageCard) => void;
+    public clickCallback: (imageCard: ImageCard) => void;
 
     // The ProfileID of the profile who's images are being loaded.
     public profileId: number;
@@ -32,7 +32,7 @@ class ProfileImagesBox extends ContentBox {
                     // and when they return as image cards with the click value that was just provided,
                     (imageCards: ImageCard[]) => {
                         // add them to this image box.
-                        this.add(imageCards);
+                        this.addImageCards(imageCards);
                     }
                 );
             }
@@ -59,7 +59,7 @@ class ProfileImagesBox extends ContentBox {
     /*
         Takes an image card and does some final preparation before adding it to this image box's content box.
     */
-    public addImageCard(imageCard: ImageCard): void {
+    public addImageCard(imageCard: ImageCard, prepend?: boolean): void {
 
         // Imbed click action stored in this image box to image card.
         imageCard.onImageClick = this.clickCallback;
@@ -69,7 +69,7 @@ class ProfileImagesBox extends ContentBox {
         imageCard.rootElm.classList.add('sqr');
 
         // Add image card to this image box's content box.
-        this.add(imageCard, true);
+        this.add(imageCard, prepend);
     }
 
     /*

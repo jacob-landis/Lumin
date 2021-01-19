@@ -43,7 +43,8 @@ var ContentBox = (function () {
             this.moreContent = false;
         content.forEach(function (c) {
             if (c != null) {
-                if (prepend) {
+                console.log(prepend);
+                if (prepend == true) {
                     _this.content.unshift(c);
                     _this.rootElm.prepend(c.rootElm);
                 }

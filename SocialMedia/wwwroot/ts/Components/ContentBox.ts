@@ -107,8 +107,9 @@ class ContentBox implements IAppendable {
             // If content is not null.
             if (c != null) {
 
+                console.log(prepend);
                 // Unshift or push content to this.content and prepend or append its root element to this content box's root element.
-                if (prepend) {
+                if (prepend == true) {
                     this.content.unshift(c);
                     this.rootElm.prepend(c.rootElm);
                 }

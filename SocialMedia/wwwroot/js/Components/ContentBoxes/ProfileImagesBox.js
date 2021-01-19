@@ -18,7 +18,7 @@ var ProfileImagesBox = (function (_super) {
         var rootElm = ViewUtil.tag('div', { classList: 'images-box' });
         _this = _super.call(this, rootElm, 20, function (skip, take) {
             Ajax.getProfileImages(_this.profileId, skip, take, 'listImage sqr', _this.clickCallback, function (imageCards) {
-                _this.add(imageCards);
+                _this.addImageCards(imageCards);
             });
         }) || this;
         _this.profileId = profileId ? profileId : User.profileId;
@@ -31,11 +31,11 @@ var ProfileImagesBox = (function (_super) {
         var _this = this;
         imageCards.forEach(function (i) { return _this.addImageCard(i); });
     };
-    ProfileImagesBox.prototype.addImageCard = function (imageCard) {
+    ProfileImagesBox.prototype.addImageCard = function (imageCard, prepend) {
         imageCard.onImageClick = this.clickCallback;
         imageCard.rootElm.classList.add('listImage');
         imageCard.rootElm.classList.add('sqr');
-        this.add(imageCard, true);
+        this.add(imageCard, prepend);
     };
     ProfileImagesBox.prototype.removeImageCard = function (imageCard) {
         var _this = this;

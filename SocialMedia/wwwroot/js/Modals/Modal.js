@@ -27,12 +27,13 @@ var Modal = (function () {
         document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
     };
     Modal.prototype.close = function () {
-        console.log("close");
-        ViewUtil.hide(this.rootElm);
-        Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
-        if (Modal.openModals.length == 0) {
-            document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
-            ViewUtil.hide(Modal.btnClose);
+        if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block") {
+            ViewUtil.hide(this.rootElm);
+            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            if (Modal.openModals.length == 0) {
+                document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
+                ViewUtil.hide(Modal.btnClose);
+            }
         }
     };
     Modal.openModals = [];

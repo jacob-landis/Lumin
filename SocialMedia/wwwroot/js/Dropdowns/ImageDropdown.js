@@ -25,7 +25,7 @@ var ImageDropdown = (function (_super) {
             return uploadImageModal.load(e, function (imageCard) {
                 return ProfileImagesBox.profileImageBoxes.forEach(function (p) {
                     if (p.profileId == User.profileId)
-                        p.addImageCard(imageCard);
+                        p.addImageCard(ImageCard.copy(imageCard), true);
                 });
             });
         };
@@ -53,7 +53,9 @@ var ImageDropdown = (function (_super) {
         _super.prototype.open.call(this);
     };
     ImageDropdown.prototype.convert = function (callback) {
-        this.imageBox.content.forEach(function (i) { return i.onImageClick = function (imageCard) { return callback(imageCard); }; });
+        var _this = this;
+        this.imageBox.clickCallback = function (target) { return callback(target); };
+        this.imageBox.content.forEach(function (i) { return i.onImageClick = _this.imageBox.clickCallback; });
         this.rootElm.style.zIndex = "" + (Modal.openModals.length + 2);
         this.prompt.innerText = 'Select an Image';
         if (this.rootElm.style.display != "inline" && this.rootElm.style.display != "block")

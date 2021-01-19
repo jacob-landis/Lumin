@@ -106,20 +106,24 @@ class Modal implements IAppendable {
     */
     public close(): void {
 
-        // Hide modal.
-        ViewUtil.hide(this.rootElm);
+        // If open.
+        if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block") {
+
+            // Hide modal.
+            ViewUtil.hide(this.rootElm);
         
-        // Remove this from list of modals. Start at the index of this and delete 1 item.
-        Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            // Remove this from list of modals. Start at the index of this and delete 1 item.
+            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
 
-        // If no modal is open,
-        if (Modal.openModals.length == 0) {
+            // If no modal is open,
+            if (Modal.openModals.length == 0) {
 
-            // remove the class from body that locks scrolling,
-            document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
+                // remove the class from body that locks scrolling,
+                document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
 
-            // and hide btnClose.
-            ViewUtil.hide(Modal.btnClose);
+                // and hide btnClose.
+                ViewUtil.hide(Modal.btnClose);
+            }
         }
     }
 }

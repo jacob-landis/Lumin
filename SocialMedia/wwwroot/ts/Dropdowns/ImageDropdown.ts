@@ -19,6 +19,9 @@ class ImageDropdown extends Dropdown {
 
     // Holds image cards.
     private imageBox: ProfileImagesBox;
+    
+    // Holds an onClick callback. Set when image onClicks are converted. Used for newly uploaded images so they can fit in.
+    private heldOnClick: (target: ImageCard) => void;
 
     /*
         Gets handles on all necessary components.
@@ -54,9 +57,9 @@ class ImageDropdown extends Dropdown {
         // This is triggered once the user has selected a file from their computers file system.
         // (Refer to this elm in /Views/Home/Index.cshtml for further explaination.)
         // This has the additional function of updating any and all active displays of the current user's images when one is added.
-        btnUploadImageModal.onchange = e =>
+        btnUploadImageModal.onchange = (e: MouseEvent) =>
 
-            // Send file and callback to image upload modal.
+            // Send file (must be accessed through the MouseEvent) and callback to image upload modal.
             uploadImageModal.load(e,
 
                 // When the image is uploaded (if it was uploaded) and it comes back,
@@ -66,7 +69,7 @@ class ImageDropdown extends Dropdown {
                     ProfileImagesBox.profileImageBoxes.forEach(p => {
 
                         // and if the image box is displaying the current user's images, add the newly uploaded image to it.
-                        if (p.profileId == User.profileId) p.addImageCard(imageCard);
+                        if (p.profileId == User.profileId) p.addImageCard(ImageCard.copy(imageCard), true);
                     })
             );
 
@@ -84,7 +87,7 @@ class ImageDropdown extends Dropdown {
 
     /*
         Override open() so load can be called first.
-        (open() is called on dropdowns when toggled)
+        (this.open() is called on dropdowns when toggled)
     */
     public open() {
         this.load();
@@ -126,8 +129,11 @@ class ImageDropdown extends Dropdown {
     */
     public convert(callback: (imageCard: ImageCard) => void): void {
 
+        // XXX (NEW) Save callback in ProfileImagesBox for newly uploaded images that come in to get their callback from.
+        this.imageBox.clickCallback = (target: ImageCard) => callback(target);
+
         // Loop through each image card in the image box and change it's callback to the one provided.
-        this.imageBox.content.forEach(i => (<ImageCard> i).onImageClick = imageCard => callback(imageCard));
+        this.imageBox.content.forEach(i => (<ImageCard> i).onImageClick = this.imageBox.clickCallback);
 
         // Bring the dropdown to the foreground.
         this.rootElm.style.zIndex = `${Modal.openModals.length + 2}`; // XXX test if this can be exchanged for the last argument in load(). XXX
