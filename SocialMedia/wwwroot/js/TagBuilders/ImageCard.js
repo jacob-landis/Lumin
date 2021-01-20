@@ -71,10 +71,14 @@ var ImageCard = (function (_super) {
         ProfileImagesBox.profileImageBoxes.forEach(function (p) {
             p.removeImageCard(_this);
         });
-        if (this.image.imageId == User.profilePictureId)
+        if (this.image.imageId == User.profilePictureId) {
             Ajax.getImage(0, true, 'sqr', function () { }, function (imageCard) {
                 return ProfileCard.changeUserProfilePicture(imageCard);
             });
+            Ajax.getImage(0, false, 'sqr', function () { }, function (imageCard) {
+                return profileModal.profilePictureBox.loadImage(imageCard);
+            });
+        }
         fullSizeImageModal.close();
     };
     ImageCard.imageCards = [];

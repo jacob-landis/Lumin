@@ -41,7 +41,13 @@ var PostCard = (function (_super) {
         _this.postHeading = ViewUtil.tag('div', { classList: 'postHeading' });
         postSection.append(_this.postHeading, _this.captionWrapper, _this.postImageWrapper.rootElm);
         _this.editIcon = Icons.edit();
-        _this.captionEditor = new Editor(_this.editIcon, _this.post.caption, 'post-caption-editor', 1000, function (caption) { return Ajax.updatePost(_this.post.postId, caption); });
+        _this.captionEditor = new Editor(_this.editIcon, _this.post.caption, 'post-caption-editor', 1000, function (caption) {
+            Ajax.updatePost(_this.post.postId, caption);
+            PostCard.postCards.forEach(function (p) {
+                if (p.post.postId == _this.post.postId)
+                    p.captionEditor.setText(caption);
+            });
+        });
         _this.captionWrapper.append(_this.captionEditor.rootElm);
         var profileCardSlot = ViewUtil.tag('div', { classList: 'profileCardSlot' });
         var likeCardSlot = ViewUtil.tag('div', { classList: 'detailsSlot' });

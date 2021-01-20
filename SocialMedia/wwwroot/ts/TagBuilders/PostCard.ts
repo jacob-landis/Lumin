@@ -80,7 +80,18 @@
         // must have a handle on editIcon to exclude it from the window onclick event listener in Editor
         this.editIcon = Icons.edit();
         this.captionEditor = new Editor(this.editIcon, this.post.caption, 'post-caption-editor', 1000,
-            caption => Ajax.updatePost(this.post.postId, caption));
+            (caption: string) => {
+
+                Ajax.updatePost(this.post.postId, caption)
+
+                // Loop through all post cards.
+                PostCard.postCards.forEach((p: PostCard) => {
+
+                    // If a match is found, update its caption.
+                    if (p.post.postId == this.post.postId) p.captionEditor.setText(caption);
+                });
+            }
+        );
 
         this.captionWrapper.append(this.captionEditor.rootElm);
 
