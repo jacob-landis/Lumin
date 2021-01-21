@@ -4,6 +4,13 @@ var Modal = (function () {
         this.rootElm.append(contentElm);
         Modal.frameContainer.append(this.rootElm);
     }
+    Object.defineProperty(Modal, "highestZIndex", {
+        get: function () {
+            return this.openModals.length == 0 ? 0 : +Modal.openModals[Modal.openModals.length - 1].rootElm.style.zIndex;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Modal.initialize = function (frameTemplate, frameContainer, btnClose) {
         var _this = this;
         this.frameTemplate = frameTemplate;
@@ -23,8 +30,10 @@ var Modal = (function () {
             this.close();
         ViewUtil.show(this.rootElm);
         ViewUtil.show(Modal.btnClose, 'block');
-        this.rootElm.style.zIndex = "" + Modal.openModals.push(this);
+        this.rootElm.style.zIndex = "" + (Modal.highestZIndex + 1);
+        Modal.openModals.push(this);
         document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+        Dropdown.moveToForeground();
     };
     Modal.prototype.close = function () {
         if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block") {

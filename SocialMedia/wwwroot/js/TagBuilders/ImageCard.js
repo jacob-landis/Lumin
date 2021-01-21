@@ -24,7 +24,6 @@ var ImageCard = (function (_super) {
             _this.rootElm.oncontextmenu = function (event) {
                 return contextMenu.load(event, [
                     new ContextOption(Icons.createPost(), function () {
-                        imageDropdown.close();
                         createPostModal.load(_this);
                     }),
                     new ContextOption(Icons.deleteImage(), function () {

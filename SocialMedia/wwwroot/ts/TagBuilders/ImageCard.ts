@@ -54,7 +54,6 @@
             contextMenu.load(event, [
 
                 new ContextOption(Icons.createPost(), () => {
-                    imageDropdown.close();
                     createPostModal.load(this);
                 }),
                 new ContextOption(Icons.deleteImage(), () => {

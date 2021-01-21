@@ -37,7 +37,7 @@ class Dropdown implements IAppendable {
 
     */
     // XXX --------------------------XXX
-    private static openDropdown: Dropdown = null;
+    public static openDropdown: Dropdown = null;
     private static frameTemplate: HTMLElement; // provided in initialize
     private static frameContainer: HTMLElement; // provided in initialize
 
@@ -45,6 +45,20 @@ class Dropdown implements IAppendable {
         
         this.frameTemplate = frameTemplate;
         this.frameContainer = frameContainer;
+    }
+    
+    /*
+        Move any open dropdown to the foreground by raising it's zIndex.
+    */
+    public static moveToForeground() {
+        if (this.openDropdown != null) this.openDropdown.rootElm.style.zIndex = `${Modal.highestZIndex + 1}`;
+    }
+
+    /*
+        Move any open dropdown to the background by lowering it's zIndex.
+    */
+    public static moveToBackground() {
+        if (this.openDropdown != null) this.openDropdown.rootElm.style.zIndex = `${Modal.highestZIndex - 1}`;
     }
 
     // /STATIC
@@ -82,6 +96,10 @@ class Dropdown implements IAppendable {
 
         // Put this in openDropdown slot. In effect raising the flag.
         Dropdown.openDropdown = this;
+        
+        // Put the dropdown in the foreground in case a modal is open.
+        // Otherwise it is covered by the modal backdrop and that backdrop will dim the dropdown and intercept any click intended for the dropdown.
+        this.rootElm.style.zIndex = `${Modal.highestZIndex + 1}`;
 
         // Show the dropdown's root element.
         ViewUtil.show(this.rootElm, 'block');
@@ -99,7 +117,16 @@ class Dropdown implements IAppendable {
         Dropdown.openDropdown = null;
     }
 
+    /*
+        Either open, close, or move to foreground.
+    */
     public toggle(): void {
-        this.rootElm.style.display != 'block' ? this.open() : this.close();
+        
+        let closed = this.rootElm.style.display != 'block';
+        let openAndCovered = !closed && (+this.rootElm.style.zIndex < Modal.highestZIndex);
+
+        if      (openAndCovered) Dropdown.moveToForeground();
+        else if (closed)         this.open();
+        else                     this.close();
     }
 }

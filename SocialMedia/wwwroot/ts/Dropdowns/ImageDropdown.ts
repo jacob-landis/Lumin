@@ -43,10 +43,10 @@ class ImageDropdown extends Dropdown {
         this.prompt = prompt;
 
         // Create ProfileImagesBox to hold dropdown images. Load current users images.
-        this.imageBox = new ProfileImagesBox(null, (targetImageCard: ImageCard) =>
+        this.imageBox = new ProfileImagesBox(null, (target: ImageCard) =>
 
             // Load album into fullsize image modal starting at the index of the clicked image card.
-            fullSizeImageModal.load(this.imageBox.content.indexOf(targetImageCard))
+            fullSizeImageModal.load(this.imageBox.content.indexOf(target))
         );
 
         // Append ProfileImagesBox to this imageWrapper.
@@ -112,11 +112,7 @@ class ImageDropdown extends Dropdown {
         // If the user is selecting something, indicate that clicking on an image selects it for something, 
         // else, indicate that clicking an image will make it go fullscreen.
         this.prompt.innerText = callback ? 'Select an Image' : 'My Images';
-
-        // Put the dropdown in the foreground in case a modal is open.
-        // Otherwise it is covered by the modal backdrop and that backdrop will dim the dropdown and intercept any click intended for the dropdown.
-        this.rootElm.style.zIndex = `${Modal.openModals.length + 1}`;
-
+        
         super.open();
     }
 
@@ -129,18 +125,16 @@ class ImageDropdown extends Dropdown {
     */
     public convert(callback: (imageCard: ImageCard) => void): void {
 
-        // XXX (NEW) Save callback in ProfileImagesBox for newly uploaded images that come in to get their callback from.
+        // Save callback in ProfileImagesBox for newly uploaded images that come in to get their callback from.
         this.imageBox.clickCallback = (target: ImageCard) => callback(target);
 
         // Loop through each image card in the image box and change it's callback to the one provided.
         this.imageBox.content.forEach(i => (<ImageCard> i).onImageClick = this.imageBox.clickCallback);
 
-        // Bring the dropdown to the foreground.
-        this.rootElm.style.zIndex = `${Modal.openModals.length + 2}`; // XXX test if this can be exchanged for the last argument in load(). XXX
-
         // Prompt the user to select an image.
         this.prompt.innerText = 'Select an Image';
 
+        // If this is closed, open.
         if (this.rootElm.style.display != "inline" && this.rootElm.style.display != "block") super.open();
     }
 }

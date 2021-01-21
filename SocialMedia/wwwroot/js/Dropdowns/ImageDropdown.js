@@ -49,14 +49,12 @@ var ImageDropdown = (function (_super) {
                 return fullSizeImageModal.load(_this.imageBox.content.indexOf(clickedImage));
             });
         this.prompt.innerText = callback ? 'Select an Image' : 'My Images';
-        this.rootElm.style.zIndex = "" + (Modal.openModals.length + 1);
         _super.prototype.open.call(this);
     };
     ImageDropdown.prototype.convert = function (callback) {
         var _this = this;
         this.imageBox.clickCallback = function (target) { return callback(target); };
         this.imageBox.content.forEach(function (i) { return i.onImageClick = _this.imageBox.clickCallback; });
-        this.rootElm.style.zIndex = "" + (Modal.openModals.length + 2);
         this.prompt.innerText = 'Select an Image';
         if (this.rootElm.style.display != "inline" && this.rootElm.style.display != "block")
             _super.prototype.open.call(this);

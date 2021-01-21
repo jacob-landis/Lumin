@@ -19,8 +19,14 @@
 */
 
 class Modal implements IAppendable {
-    
-    public static openModals: Modal[] = []; // provided in constructor
+
+    // Holds references to all open modals.
+    public static openModals: Modal[] = [];
+
+    // The highest zIndex of the last modal in openModals.
+    public static get highestZIndex(): number {
+        return this.openModals.length == 0 ? 0 : +Modal.openModals[Modal.openModals.length - 1].rootElm.style.zIndex;
+    }
 
     private static frameTemplate: HTMLElement; // provided in initialize
     private static frameContainer: HTMLElement; // provided in initialize
@@ -82,22 +88,28 @@ class Modal implements IAppendable {
         Can be overridden.
     */
     public open(): void {
-        
+
         // Refresh modal.
         // If open, close.
         if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block") this.close();
 
         // Show modal.
         ViewUtil.show(this.rootElm)
-        
+
         // Display close button.
         ViewUtil.show(Modal.btnClose, 'block');
+        
+        // Assign this root element the highest zIndex of all the open modals.
+        this.rootElm.style.zIndex = `${Modal.highestZIndex + 1}`;
 
-        // Add modal to list of open modals, and give it the highest z index. (push() returns the index number of the new value)
-        this.rootElm.style.zIndex = `${Modal.openModals.push(this)}`;
+        // Add this to the list of open modals.
+        Modal.openModals.push(this);
 
         // Give body elm a class that locks page scrolling.
         document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+        
+        // Bring any open dropdown to foreground.
+        Dropdown.moveToForeground();
     }
     
     /*

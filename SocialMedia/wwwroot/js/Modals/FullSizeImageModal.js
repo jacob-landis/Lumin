@@ -31,7 +31,7 @@ var FullSizeImageModal = (function (_super) {
         var _this = this;
         this.imageCon.load(imageId, this.imageClassList, function () { return function () { return _this.toggleClose(); }; });
         this.hideControls();
-        _super.prototype.open.call(this);
+        this.openOverrided();
     };
     FullSizeImageModal.prototype.load = function (clickedImageIndex, profileId) {
         var _this = this;
@@ -43,7 +43,12 @@ var FullSizeImageModal = (function (_super) {
             _this.updateImageCount();
             _this.requestImage(0);
         });
+        this.openOverrided();
+        imageDropdown.toggle();
+    };
+    FullSizeImageModal.prototype.openOverrided = function () {
         _super.prototype.open.call(this);
+        Dropdown.moveToBackground();
     };
     FullSizeImageModal.prototype.requestImage = function (increment) {
         var _this = this;

@@ -94,8 +94,9 @@ class FullSizeImageModal extends Modal {
         // Hides all controls.
         this.hideControls();
 
+        // UNTESTED CHANGE
         // Open this modal. (btnClose control is unhidden by Modal)
-        super.open();
+        this.openOverrided();
     }
 
     /*
@@ -132,9 +133,24 @@ class FullSizeImageModal extends Modal {
                 this.requestImage(0);
             }
         );
-
+        
         // Open this modal.
+        this.openOverrided();
+        
+        // Move image dropdown to foreground.
+        imageDropdown.toggle();
+    }
+
+    /*
+        Invokes super.open(), then undoes something that super.open() did.
+        super.open() moves any dropdown to the foreground. This undoes that by moving it to the background.
+        This is used so the image dropdown can be used as a pocket for full size image modal and so other dropdowns don't get in the way.
+    */
+    private openOverrided() {
         super.open();
+
+        // Move any dropdown to background.
+        Dropdown.moveToBackground();
     }
 
     /*
