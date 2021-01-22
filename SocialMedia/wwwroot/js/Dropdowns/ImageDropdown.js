@@ -17,8 +17,8 @@ var ImageDropdown = (function (_super) {
         var _this = _super.call(this, rootElm, contentElm) || this;
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;
-        _this.imageBox = new ProfileImagesBox(null, function (targetImageCard) {
-            return fullSizeImageModal.load(_this.imageBox.content.indexOf(targetImageCard));
+        _this.imageBox = new ProfileImagesBox(null, function (target) {
+            return fullSizeImageModal.load(_this.imageBox.content.indexOf(target));
         });
         _this.imageWrapper.append(_this.imageBox.rootElm);
         btnUploadImageModal.onchange = function (e) {
@@ -37,18 +37,33 @@ var ImageDropdown = (function (_super) {
         return _this;
     }
     ImageDropdown.prototype.open = function () {
-        this.load();
+        this.load(User.profileId, "My images");
         _super.prototype.open.call(this);
     };
-    ImageDropdown.prototype.load = function (callback) {
+    ImageDropdown.prototype.load = function (profileId, promptMsg, onImageClick) {
         var _this = this;
-        if (callback != null)
-            this.convert(callback);
-        else
-            this.convert(function (clickedImage) {
-                return fullSizeImageModal.load(_this.imageBox.content.indexOf(clickedImage));
-            });
-        this.prompt.innerText = callback ? 'Select an Image' : 'My Images';
+        if (promptMsg === void 0) { promptMsg = ""; }
+        if (onImageClick != null) {
+            if (profileId == this.imageBox.profileId) {
+                this.convert(onImageClick);
+            }
+            else {
+                this.imageBox.load(profileId, onImageClick);
+            }
+        }
+        else {
+            if (profileId == this.imageBox.profileId) {
+                this.convert(function (target) {
+                    fullSizeImageModal.load(_this.imageBox.content.indexOf(target), profileId);
+                });
+            }
+            else {
+                this.imageBox.load(profileId, function (target) {
+                    fullSizeImageModal.load(_this.imageBox.content.indexOf(target), profileId);
+                });
+            }
+        }
+        this.prompt.innerText = promptMsg;
         _super.prototype.open.call(this);
     };
     ImageDropdown.prototype.convert = function (callback) {

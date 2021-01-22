@@ -23,10 +23,16 @@ var ProfileImagesBox = (function (_super) {
         }) || this;
         _this.profileId = profileId ? profileId : User.profileId;
         _this.clickCallback = clickCallback;
-        _this.request(40);
+        _super.prototype.request.call(_this, 40);
         ProfileImagesBox.profileImageBoxes.push(_this);
         return _this;
     }
+    ProfileImagesBox.prototype.load = function (profileId, onImageClick) {
+        this.profileId = profileId;
+        this.clickCallback = onImageClick;
+        _super.prototype.clear.call(this);
+        _super.prototype.request.call(this, 40);
+    };
     ProfileImagesBox.prototype.addImageCards = function (imageCards) {
         var _this = this;
         imageCards.forEach(function (i) { return _this.addImageCard(i); });
@@ -35,7 +41,7 @@ var ProfileImagesBox = (function (_super) {
         imageCard.onImageClick = this.clickCallback;
         imageCard.rootElm.classList.add('listImage');
         imageCard.rootElm.classList.add('sqr');
-        this.add(imageCard, prepend);
+        _super.prototype.add.call(this, imageCard, prepend);
     };
     ProfileImagesBox.prototype.removeImageCard = function (imageCard) {
         var _this = this;

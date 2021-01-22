@@ -135,6 +135,12 @@ class CreatePostModal extends Modal {
         // Load the image dropdown.
         imageDropdown.load(
 
+            // Load current user.
+            User.profileId,
+
+            // Prompt Msg
+            "Select an image",
+
             // When the selected image card returns,
             imageCard => {
                 // XXX if the image container were forced into certain dimensions, a stretched out thumbnail could be a

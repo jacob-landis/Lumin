@@ -90,7 +90,7 @@ class ImageDropdown extends Dropdown {
         (this.open() is called on dropdowns when toggled)
     */
     public open() {
-        this.load();
+        this.load(User.profileId, "My images");
         super.open();
     }
 
@@ -99,19 +99,50 @@ class ImageDropdown extends Dropdown {
         give the user a prompt,
         and bring this dropdown to the foreground.
     */
-    public load(callback?: (imageCard: ImageCard) => void): void {
+    public load(profileId: number, promptMsg: string = "", onImageClick?: (target: ImageCard) => void): void {
 
-        // If a callback was provided, send the image to it that is selected,
-        if (callback != null) this.convert(callback);
+        // If a callback was provided.
+        if (onImageClick != null) {
 
-        // else, open the image in fullsize image modal that is selected.
-        else this.convert((clickedImage: ImageCard) =>
-            fullSizeImageModal.load(this.imageBox.content.indexOf(<IAppendable> clickedImage)));
+            // If its the same profile.
+            if (profileId == this.imageBox.profileId) {
+
+                // Convert the onclick of the currently loaded images to the one provided.
+                this.convert(onImageClick);
+            }
+            else {
+
+                // Start over image loading with new profile and onclick.
+                this.imageBox.load(profileId, onImageClick);
+            }
+        }
+        else {
+
+            // If its the same profile.
+            if (profileId == this.imageBox.profileId) {
+
+                // Convert the onclick of the currently loaded images to the defualt onclick.
+                this.convert((target: ImageCard) => {
+
+                    // Open the image in fullsize image modal that is selected.
+                    fullSizeImageModal.load(this.imageBox.content.indexOf(<IAppendable>target), profileId);
+                });
+            }
+            else {
+
+                // Start over image loading with new profile and defualt onclick.
+                this.imageBox.load(profileId, (target: ImageCard) => {
+
+                    // Open the image in fullsize image modal that is selected.
+                    fullSizeImageModal.load(this.imageBox.content.indexOf(<IAppendable>target), profileId);
+                });
+            } 
+        }
         
         // Change the prompt.
         // If the user is selecting something, indicate that clicking on an image selects it for something, 
         // else, indicate that clicking an image will make it go fullscreen.
-        this.prompt.innerText = callback ? 'Select an Image' : 'My Images';
+        this.prompt.innerText = promptMsg;
         
         super.open();
     }

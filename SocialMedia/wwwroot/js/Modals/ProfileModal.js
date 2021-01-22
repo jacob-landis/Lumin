@@ -75,7 +75,7 @@ var ProfileModal = (function (_super) {
     };
     ProfileModal.prototype.selectProfilePicture = function () {
         var _this = this;
-        imageDropdown.load(function (target) {
+        imageDropdown.load(User.profileId, "Select a profile picture", function (target) {
             imageDropdown.close();
             imageDropdown.rootElm.style.zIndex = '0';
             ProfileCard.changeUserProfilePicture(target);

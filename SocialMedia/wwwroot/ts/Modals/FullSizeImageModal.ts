@@ -38,6 +38,9 @@ class FullSizeImageModal extends Modal {
 
     private imageClassList: string;
 
+    // Singular flag/switch. false == plural.
+    private singular: boolean = null;
+
     /*
         Sudo-inherits from the sudo-base class.
         Gets handles on all necessary components.
@@ -89,14 +92,16 @@ class FullSizeImageModal extends Modal {
     public loadSingle(imageId: number): void {
 
         // Load image into imageCon by ImageID.
-        this.imageCon.load(imageId, this.imageClassList, () => ()=> this.toggleClose());
+        this.imageCon.load(imageId, this.imageClassList, (target: ImageCard) => this.toggleClose());
 
         // Hides all controls.
         this.hideControls();
-
-        // UNTESTED CHANGE
+        
         // Open this modal. (btnClose control is unhidden by Modal)
         this.openOverrided();
+
+        // Raise singular flag.
+        this.singular = true;
     }
 
     /*
@@ -107,9 +112,6 @@ class FullSizeImageModal extends Modal {
         profileId can be an int or null. If null, it will become the current user's ProfileID.
     */
     public load(clickedImageIndex: number, profileId?: number): void {
-
-        // Reset this modal.
-        this.reset(); // XXX reset is only two lines and is only invoked once here, replace this line with it's two line. XXX
 
         // Get a handle on the provided ProfileID or the current user's ProfileID.
         this.profileId = profileId ? profileId : User.profileId;
@@ -137,8 +139,15 @@ class FullSizeImageModal extends Modal {
         // Open this modal.
         this.openOverrided();
         
-        // Move image dropdown to foreground.
-        imageDropdown.toggle();
+        // Get profile by id and use its name to load image dropdown.
+        Ajax.getProfile(profileId, (profileCard: ProfileCard) => {
+
+            let promptMsg: string = (profileId == User.profileId) ? "My images" : `${profileCard.profile.name}'s images`;
+
+            imageDropdown.load(profileId, promptMsg);
+        });
+
+        this.singular = false;
     }
 
     /*
@@ -151,6 +160,24 @@ class FullSizeImageModal extends Modal {
 
         // Move any dropdown to background.
         Dropdown.moveToBackground();
+    }
+    
+    /*
+        Closes after reseting this modal.
+    */
+    public close() {
+
+        // Reset 
+        this.showControls();
+
+        // If singular, hide image dropdown.
+        // (prevents incorrect showing in this.showControls())
+        if (this.singular == true) ViewUtil.hide(imageDropdown.rootElm);
+
+        // Clear full size image slot.
+        this.imageCon.unload();
+
+        super.close();
     }
 
     /*
@@ -181,20 +208,10 @@ class FullSizeImageModal extends Modal {
                 // When the array of 1 image card arrives.
                 (imageCards) => {
                     // Load that image card into the fullsize image container.
-                    this.imageCon.load(imageCards[0].image.imageId, null, () => () => this.toggleControls())
+                    this.imageCon.load(imageCards[0].image.imageId, null, (target: ImageCard) => this.toggleControls());
                 }
             );
         }
-    }
-    
-    /*
-        Resets this modal to it's default state.
-
-        XXX not used enough. soon to be depricated. XXX
-    */
-    private reset(): void {
-        this.showControls();
-        this.imageCon.unload();
     }
 
     // Update the image count tag's inner text value.
@@ -207,8 +224,14 @@ class FullSizeImageModal extends Modal {
     private toggleControls(): void { this.btnNext.style.display != 'none' ? this.hideControls() : this.showControls(); }
 
     // Show the control elms.
-    private showControls() { this.imageControls.forEach(c => ViewUtil.show(c)); }
+    private showControls() {
+        ViewUtil.show(imageDropdown.rootElm);
+        this.imageControls.forEach(c => ViewUtil.show(c));
+    }
 
     // Hide the control elms.
-    private hideControls() { this.imageControls.forEach(c => ViewUtil.hide(c)); }
+    private hideControls() {
+        ViewUtil.hide(imageDropdown.rootElm);
+        this.imageControls.forEach(c => ViewUtil.hide(c));
+    }
 }

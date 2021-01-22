@@ -45,7 +45,7 @@ var CreatePostModal = (function (_super) {
     };
     CreatePostModal.prototype.selectImage = function () {
         var _this = this;
-        imageDropdown.load(function (imageCard) {
+        imageDropdown.load(User.profileId, "Select an image", function (imageCard) {
             _this.selectedImageBox.load(imageCard.image.imageId);
         });
     };

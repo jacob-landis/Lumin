@@ -197,8 +197,8 @@ class ProfileModal extends Modal {
     */
     private selectProfilePicture(): void {
 
-        // Load image dropdown with callback.
-        imageDropdown.load((target: ImageCard) => {
+        // Load image dropdown for current user and set the onclick to change profile picture.
+        imageDropdown.load(User.profileId, "Select a profile picture", (target: ImageCard) => {
 
             // Close the image dropdown.
             imageDropdown.close();
