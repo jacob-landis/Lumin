@@ -39,7 +39,9 @@ class ContentBox implements IAppendable {
     
     // A shortcut to set the height properties of this content box's rootElm.
     // Used to make rootElm become scrollable at a specified height.
-    public set height(height: number) { this.rootElm.style.height = `${height}`; }
+    public set height(height: number) {
+        this.rootElm.style.height = `${height}`;
+    }
 
     /*
         PARAMETERS:

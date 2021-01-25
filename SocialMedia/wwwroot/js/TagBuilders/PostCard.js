@@ -25,7 +25,12 @@ var PostCard = (function (_super) {
         _this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         _this.commentsBox = new ContentBox(ViewUtil.tag('div'), 30, function (skip, take) {
-            return Ajax.getComments(_this.post.postId, skip, take, function (comments) { return _this.commentsBox.add(comments); });
+            return Ajax.getComments(_this.post.postId, skip, take, function (comments) {
+                var isFirstCommentsBatch = _this.commentsBox.content.length == 0;
+                _this.commentsBox.add(comments);
+                if (isFirstCommentsBatch)
+                    _this.resizeCommentBox();
+            });
         });
         var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
@@ -95,9 +100,11 @@ var PostCard = (function (_super) {
             else
                 _this.errorSlot.append(error);
         };
-        _this.observer = new MutationObserver(function () { return _this.resizeCommentBox(); });
-        _this.observer.observe(_this.rootElm, { attributes: true });
-        _this.postImageWrapper.onLoadEnd = function () { return _this.mutate(); };
+        if (_this.hasImage) {
+            _this.observer = new MutationObserver(function () { return _this.resizeCommentBox(); });
+            _this.observer.observe(_this.rootElm, { attributes: true });
+            _this.postImageWrapper.onLoadEnd = function () { return _this.mutate(); };
+        }
         window.addEventListener('scroll', function () {
             var offset = _this.rootElm.offsetTop - window.pageYOffset;
             if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
@@ -122,10 +129,10 @@ var PostCard = (function (_super) {
     PostCard.prototype.resizeCommentBox = function () {
         var inputHeight = this.commentInputWrapper.clientHeight;
         var contentHeight = this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight;
-        this.commentsBox.height = contentHeight - inputHeight;
-        if (this.commentsBox.height < 250)
-            this.commentsBox.height = 250;
-        this.observer.disconnect();
+        var targetHeight = contentHeight - inputHeight;
+        this.commentsBox.height = targetHeight > 250 ? targetHeight : 250;
+        if (this.observer != undefined)
+            this.observer.disconnect();
     };
     PostCard.prototype.setCommentCount = function (newCount) {
         this.totalCommentCount = newCount;

@@ -50,8 +50,19 @@
         this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
 
-        this.commentsBox = new ContentBox(ViewUtil.tag('div'), 30, (skip, take) =>
-                Ajax.getComments(this.post.postId, skip, take, comments => this.commentsBox.add(comments)));
+        this.commentsBox = new ContentBox(ViewUtil.tag('div'), 30, (skip: number, take: number) =>
+            Ajax.getComments(this.post.postId, skip, take, (comments: CommentCard[]) => {
+
+                // Determine if this is the first batch.
+                // This is used after the comments have been added, but it must be determined before they are added.
+                let isFirstCommentsBatch: boolean = this.commentsBox.content.length == 0;
+
+                this.commentsBox.add(comments);
+
+                // If first batch (was just loaded), resize the comments section (now that the elements have loaded).
+                if (isFirstCommentsBatch) this.resizeCommentBox();
+            })
+        );
 
         let txtComment: HTMLInputElement = <HTMLInputElement> ViewUtil.tag('textarea', { classList: 'txtComment' });
         let btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
@@ -158,10 +169,14 @@
             else this.errorSlot.append(error);
         }
 
-        // triggered when image is done loading
-        this.observer = new MutationObserver(() => this.resizeCommentBox());
-        this.observer.observe(this.rootElm, { attributes: true });
-        this.postImageWrapper.onLoadEnd = () => this.mutate();
+        // If post has image.
+        if (this.hasImage) {
+
+            // triggered when image is done loading
+            this.observer = new MutationObserver(() => this.resizeCommentBox());
+            this.observer.observe(this.rootElm, { attributes: true });
+            this.postImageWrapper.onLoadEnd = () => this.mutate();
+        }
 
         // unload or reload posts above and below the position of the viewport
         window.addEventListener('scroll', () => {
@@ -182,9 +197,14 @@
         let inputHeight = this.commentInputWrapper.clientHeight;
         let contentHeight = this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight;
 
-        this.commentsBox.height = contentHeight - inputHeight;
-        if (this.commentsBox.height < 250) this.commentsBox.height = 250;
-        this.observer.disconnect();
+        // The desired height of the comments box.
+        let targetHeight: number = contentHeight - inputHeight;
+
+        // Set height of comment box to the target height, or at least 250px.
+        this.commentsBox.height = targetHeight > 250 ? targetHeight : 250;
+
+        // If there is an observer (if the post has an image), disconnect the observer.
+        if (this.observer != undefined) this.observer.disconnect();
     }
     
     public setCommentCount(newCount: number): void {

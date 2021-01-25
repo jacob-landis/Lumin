@@ -18,7 +18,9 @@ var ContentBox = (function () {
     });
     Object.defineProperty(ContentBox.prototype, "height", {
         get: function () { return Util.getElmHeight(this.rootElm); },
-        set: function (height) { this.rootElm.style.height = "" + height; },
+        set: function (height) {
+            this.rootElm.style.height = "" + height;
+        },
         enumerable: true,
         configurable: true
     });
