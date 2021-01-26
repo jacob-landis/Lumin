@@ -28,7 +28,7 @@ var PostCard = (function (_super) {
             return Ajax.getComments(_this.post.postId, skip, take, function (comments) {
                 var isFirstCommentsBatch = _this.commentsBox.content.length == 0;
                 _this.commentsBox.add(comments);
-                if (isFirstCommentsBatch)
+                if (isFirstCommentsBatch && !_this.hasImage)
                     _this.resizeCommentBox();
             });
         });

@@ -1,22 +1,33 @@
-﻿#fullSizeImageModal {
-    background-color: rgba(0,0,0,0.8);
-    overflow: hidden;
+﻿/* Modal Frame */
+.fullSizeImageModalRoot {
+
 }
 
-#fullSizeImageCon {
+#fullSizeImageModalContent {
+    /*overflow: hidden;*/
+    /* Overwrite styles from .modal-content in Modal.css */
+    background-color: rgba(0,0,0,0);
+    margin: 0;
+    padding: 0;
+    border: none;
+    width: 0;
+}
+
+#fullSizeImageBox {
     margin: auto;
+    width: 0;
 }
 
 .fullSizeImage {
     max-height: 100%;
 }
 
-#fullSizeImageModalContent {
+#fullSizeImageModalComponents {
     background: none;
     border: none;
     box-shadow: none;
     width: 100%;
-    margin: 30px auto;
+    margin: 40px auto;
     display: flex;
     flex-direction: row;
     align-items: center;

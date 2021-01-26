@@ -1,4 +1,5 @@
-﻿.modalBox {
+﻿/* Modal Frame */
+.modalBox {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -10,7 +11,7 @@
     background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
 }
 
-.modal-content {
+.my-modal-content {
     background-color: #fefefe;
     margin: 5% auto; /* 5% from the top and centered */
     padding: 20px;

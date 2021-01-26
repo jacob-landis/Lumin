@@ -248,7 +248,7 @@
 
 @* HELP MODAL *@
 @* Nothing functional exists in the help modal. It explains to the user how to use Lumin. *@
-<div id="helpContent" class="modal-content modal-content-med">
+<div id="helpContent" class="my-modal-content modal-content-med">
     <h1>Help</h1>
 
     <div class="helpSection">
@@ -350,16 +350,16 @@
 
 @* FULLSIZE IMAGE MODAL *@
 @* Used for viewing images full screen. Collections of images can be navigated through with the left right buttons. *@
-<div id="fullSizeImageModal" class="modal-content">
+<div id="fullSizeImageModalContent" class="my-modal-content">
     
     @* This us used in FullsizeImageModal.ts. *@
-    <div id="fullSizeImageModalContent">
+    <div id="fullSizeImageModalComponents">
 
         @* Btn previous image. *@
         <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
 
         @* Full size image container. *@
-        <div id="fullsizeImageCon"></div>
+        <div id="fullsizeImageBox"></div>
 
         @* Btn next image. *@
         <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>
@@ -371,7 +371,7 @@
 </div>
 
 @* IMAGE UPLOAD MODAL *@
-<div id="imageUploadModal" class="modal-content modal-content-sm">
+<div id="imageUploadModal" class="my-modal-content modal-content-sm">
 
     @* Image to be uploaded is displayed here. *@
     <div id="stagedUploadCon"></div>
@@ -388,7 +388,7 @@
 </div>
 
 @* PROFILE MODAL *@
-<div id="profileModal" class="modal-content">
+<div id="profileModal" class="my-modal-content">
     @* Profile header. *@
     <div id="profileSummary">
 
@@ -423,7 +423,7 @@
 </div>
 
 @* CREATE POST MODAL *@
-<div id="createPostModal" class="modal-content modal-content-med fixedContent">
+<div id="createPostModal" class="my-modal-content modal-content-med fixedContent">
 
     @* Container for the post image the user selected. *@
     <div id="selectedImageCon"></div>

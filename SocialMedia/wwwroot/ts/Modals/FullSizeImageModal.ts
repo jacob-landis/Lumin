@@ -57,6 +57,8 @@ class FullSizeImageModal extends Modal {
     ) {
         super(rootElm);
 
+        this.rootElm.classList.add("fullSizeImageModalRoot");
+
         // Get handles on modal HTML elms.
         this.content = content;
         this.btnPrev = btnPrev;

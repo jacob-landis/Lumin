@@ -16,6 +16,7 @@ var FullSizeImageModal = (function (_super) {
     function FullSizeImageModal(rootElm, content, btnPrev, btnNext, imageCount, imageBoxElm, imageClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.singular = null;
+        _this.rootElm.classList.add("fullSizeImageModalRoot");
         _this.content = content;
         _this.btnPrev = btnPrev;
         _this.btnNext = btnNext;

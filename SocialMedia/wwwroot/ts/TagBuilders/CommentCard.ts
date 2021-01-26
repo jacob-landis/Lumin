@@ -135,14 +135,11 @@ class CommentCard extends Card {
         // For each post card in collection,
         PostCard.postCards.forEach(p => {
 
-            // if this comment belongs to the post,
+            // If this comment belongs to the current post.
             if (p.post.postId == this.comment.postId) {
-
-                // decrement the comment count display elm,
+                
+                // Display the new comment count.
                 p.setCommentCount(p.totalCommentCount - 1);
-
-                // and decrement the count data property.
-                p.totalCommentCount--;
             }
         });
     }

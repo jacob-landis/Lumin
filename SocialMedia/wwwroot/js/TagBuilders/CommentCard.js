@@ -67,7 +67,6 @@ var CommentCard = (function (_super) {
         PostCard.postCards.forEach(function (p) {
             if (p.post.postId == _this.comment.postId) {
                 p.setCommentCount(p.totalCommentCount - 1);
-                p.totalCommentCount--;
             }
         });
     };

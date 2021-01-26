@@ -59,8 +59,8 @@
 
                 this.commentsBox.add(comments);
 
-                // If first batch (was just loaded), resize the comments section (now that the elements have loaded).
-                if (isFirstCommentsBatch) this.resizeCommentBox();
+                // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
+                if (isFirstCommentsBatch && !this.hasImage) this.resizeCommentBox();
             })
         );
 
