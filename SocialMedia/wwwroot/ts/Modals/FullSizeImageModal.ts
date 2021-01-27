@@ -48,7 +48,7 @@ class FullSizeImageModal extends Modal {
     */
     public constructor(
         rootElm: HTMLElement,
-        content: HTMLElement,
+        //content: HTMLElement,
         btnPrev: HTMLElement,
         btnNext: HTMLElement,
         imageCount: HTMLElement,
@@ -57,10 +57,12 @@ class FullSizeImageModal extends Modal {
     ) {
         super(rootElm);
 
+        //rootElm.onclick = (event: MouseEvent) => this.close();
+
         this.rootElm.classList.add("fullSizeImageModalRoot");
 
         // Get handles on modal HTML elms.
-        this.content = content;
+        //this.content = content;
         this.btnPrev = btnPrev;
         this.btnNext = btnNext;
         this.imageCount = imageCount;
@@ -73,7 +75,7 @@ class FullSizeImageModal extends Modal {
         this.imageCon = new ImageBox(imageBoxElm, imageClassList, (target: ImageCard)=> this.toggleControls());
 
         // Set height of imageCon so the image is not overlapped by the nav bar.
-        this.imageCon.height = window.innerHeight - Main.navBar.clientHeight;
+        //this.imageCon.height = window.innerHeight - Main.navBar.clientHeight;
 
         // Set the callback of btnPrev to invoke requestImage with a deincrement.
         this.btnPrev.onclick = () => this.requestImage(-1);

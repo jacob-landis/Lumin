@@ -13,18 +13,16 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var FullSizeImageModal = (function (_super) {
     __extends(FullSizeImageModal, _super);
-    function FullSizeImageModal(rootElm, content, btnPrev, btnNext, imageCount, imageBoxElm, imageClassList) {
+    function FullSizeImageModal(rootElm, btnPrev, btnNext, imageCount, imageBoxElm, imageClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.singular = null;
         _this.rootElm.classList.add("fullSizeImageModalRoot");
-        _this.content = content;
         _this.btnPrev = btnPrev;
         _this.btnNext = btnNext;
         _this.imageCount = imageCount;
         _this.imageClassList = imageClassList;
         _this.imageControls = [_this.imageCount, _this.btnNext, _this.btnPrev, Modal.btnClose];
         _this.imageCon = new ImageBox(imageBoxElm, imageClassList, function (target) { return _this.toggleControls(); });
-        _this.imageCon.height = window.innerHeight - Main.navBar.clientHeight;
         _this.btnPrev.onclick = function () { return _this.requestImage(-1); };
         _this.btnNext.onclick = function () { return _this.requestImage(1); };
         return _this;

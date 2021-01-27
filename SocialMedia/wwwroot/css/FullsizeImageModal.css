@@ -1,37 +1,35 @@
 ﻿/* Modal Frame */
 .fullSizeImageModalRoot {
-
 }
 
 #fullSizeImageModalContent {
-    /*overflow: hidden;*/
-    /* Overwrite styles from .modal-content in Modal.css */
-    background-color: rgba(0,0,0,0);
-    margin: 0;
-    padding: 0;
-    border: none;
-    width: 0;
-}
-
-#fullSizeImageBox {
-    margin: auto;
-    width: 0;
-}
-
-.fullSizeImage {
-    max-height: 100%;
-}
-
-#fullSizeImageModalComponents {
     background: none;
     border: none;
     box-shadow: none;
-    width: 100%;
     margin: 40px auto;
     display: flex;
     flex-direction: row;
     align-items: center;
 }
+
+#fullSizeImageBox {
+    position: fixed;
+    display: inline;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.fullSizeImage {
+    max-height: 100%;
+    max-width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/*#fullSizeImageModalComponents {
+}*/
 
 /*full fize image modal button*/
 .fsimb { 
