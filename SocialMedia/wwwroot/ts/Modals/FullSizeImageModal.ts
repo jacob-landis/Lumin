@@ -5,11 +5,6 @@
 */
 
 class FullSizeImageModal extends Modal {
-    
-    // This is used to close this modal.
-    // Normally the Modal base class sets the click callback of modalCon for every sub-modal to close the highest modal,
-    // but since the content elm covers up modalCon in this modal, modalCon cannot be clicked on.
-    private content: HTMLElement;
 
     // Image box for the fullsize image to be displayed in.
     private imageCon: ImageBox;
@@ -48,7 +43,6 @@ class FullSizeImageModal extends Modal {
     */
     public constructor(
         rootElm: HTMLElement,
-        //content: HTMLElement,
         btnPrev: HTMLElement,
         btnNext: HTMLElement,
         imageCount: HTMLElement,
@@ -57,12 +51,10 @@ class FullSizeImageModal extends Modal {
     ) {
         super(rootElm);
 
-        //rootElm.onclick = (event: MouseEvent) => this.close();
-
-        this.rootElm.classList.add("fullSizeImageModalRoot");
-
+        // Set background-click-to-close functionality. This element covers the real modal root element. XXX Should be called contentRootElm. XXX
+        rootElm.onclick = (event: MouseEvent) => { if (event.target == rootElm) this.close(); }
+        
         // Get handles on modal HTML elms.
-        //this.content = content;
         this.btnPrev = btnPrev;
         this.btnNext = btnNext;
         this.imageCount = imageCount;
@@ -73,19 +65,12 @@ class FullSizeImageModal extends Modal {
 
         // Construct a image box for the fullsize image and get a handle on it.
         this.imageCon = new ImageBox(imageBoxElm, imageClassList, (target: ImageCard)=> this.toggleControls());
-
-        // Set height of imageCon so the image is not overlapped by the nav bar.
-        //this.imageCon.height = window.innerHeight - Main.navBar.clientHeight;
-
+        
         // Set the callback of btnPrev to invoke requestImage with a deincrement.
         this.btnPrev.onclick = () => this.requestImage(-1);
 
         // Set the callback of btnPrev to invoke requestImage with an increment.
         this.btnNext.onclick =()=> this.requestImage(1);
-
-        // Set the callback of content to invoke close().
-        // Target is checked because clicking an elm above content will still count as a click on content, but content will not be the target.
-        //this.content.onclick =e => { if (e.target == this.content) this.close(); }
     }
 
     /*

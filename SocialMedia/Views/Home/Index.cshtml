@@ -352,22 +352,18 @@
 @* Used for viewing images full screen. Collections of images can be navigated through with the left right buttons. *@
 <div id="fullSizeImageModalContent" class="my-modal-content">
     
-    @* This us used in FullsizeImageModal.ts. *@
-    @*<div id="fullSizeImageModalComponents">*@
+    @* Btn previous image. *@
+    <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
 
-        @* Btn previous image. *@
-        <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
+    @* Full size image container. *@
+    <div id="fullsizeImageBox"></div>
 
-        @* Full size image container. *@
-        <div id="fullsizeImageBox"></div>
+    @* Btn next image. *@
+    <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>
 
-        @* Btn next image. *@
-        <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>
+    @* Display image count in an image collection. (Ex. "7/10") *@
+    <div id="imageCount"></div>
 
-        @* XXX Why is this outside of modal content?? *@
-        <div id="imageCount"></div>
-
-    @*</div>*@
 </div>
 
 @* IMAGE UPLOAD MODAL *@

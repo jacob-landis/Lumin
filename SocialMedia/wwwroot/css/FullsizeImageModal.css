@@ -1,35 +1,36 @@
-﻿/* Modal Frame */
-.fullSizeImageModalRoot {
-}
-
-#fullSizeImageModalContent {
+﻿#fullSizeImageModalContent {
     background: none;
     border: none;
     box-shadow: none;
+
     margin: 40px auto;
+    padding: 0;
+
+    position: fixed;
     display: flex;
     flex-direction: row;
     align-items: center;
-}
 
-#fullSizeImageBox {
-    position: fixed;
-    display: inline;
-    left: 0;
     top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
 }
 
-.fullSizeImage {
-    max-height: 100%;
-    max-width: 100%;
-    margin-right: auto;
-    margin-left: auto;
+#fullSizeImageBox {
+    margin: auto;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/*#fullSizeImageModalComponents {
-}*/
+.fullSizeImage {
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
 
 /*full fize image modal button*/
 .fsimb { 

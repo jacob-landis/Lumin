@@ -61,7 +61,6 @@ class Main {
 
         fullSizeImageModal = new FullSizeImageModal(
             document.getElementById('fullSizeImageModalContent'),
-            //document.getElementById('fullSizeImageModalComponents'),
             document.getElementById('btnFullsizePrevious'),
             document.getElementById('btnFullsizeNext'),
             document.getElementById('imageCount'),
