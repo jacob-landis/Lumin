@@ -13,9 +13,11 @@ var friendDropdown : FriendDropdown;
 
 class Main {
 
-    static navBar;
+    static navBar: HTMLElement;
 
+    // XXX Translate profile. XXX
     static initialize(profile) {
+
         User.profileId = profile.profileId;
         User.profilePictureId = profile.profilePicture;
 
@@ -118,18 +120,18 @@ class Main {
         // ----------------------------- SET UP ON-CLICKS -------------------------
 
         // OPEN HELP MODAL
-        document.getElementById('btnOpenHelpModal').onclick = () => helpModal.open();
+        document.getElementById('btnOpenHelpModal').onclick = (e: MouseEvent) => helpModal.open();
 
         // OPEN USER PROFILE MODAL
-        document.getElementById('btnOpenUserProfileModal').onclick = () => profileModal.launch(User.profileId)
+        document.getElementById('btnOpenUserProfileModal').onclick = (e: MouseEvent) => profileModal.launch(User.profileId)
 
         // CREATE POST
-        document.getElementById('btnCreatePost').onclick = () => createPostModal.load()
+        document.getElementById('btnCreatePost').onclick = (e: MouseEvent) => createPostModal.load()
 
         // SHOW FRIENDS
-        document.getElementById('btnShowFriends').onclick = () => friendDropdown.toggle()
+        document.getElementById('btnShowFriends').onclick = (e: MouseEvent) => friendDropdown.toggle()
 
         // SHOW IMAGES
-        document.getElementById('btnShowImages').onclick = () => imageDropdown.toggle()
+        document.getElementById('btnShowImages').onclick = (e: MouseEvent) => imageDropdown.toggle()
     }
 }

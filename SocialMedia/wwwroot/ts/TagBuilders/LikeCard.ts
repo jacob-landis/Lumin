@@ -2,20 +2,20 @@
 
     static likeCards: LikeCard[] = [];
 
-    static btnLikeCallback; // XXX don't know where this is used. XXX
+    static btnLikeCallback: (e: MouseEvent) => void; // XXX don't know where this is used. XXX
 
     public static changeAllContentInstances(referenceLikesRecord: LikesRecord) {
-        this.likeCards.forEach(c => {
+        this.likeCards.forEach((likeCard: LikeCard) => {
             if (
-                c.likesRecord.contentId == referenceLikesRecord.contentId
-                && c.likesRecord.contentType == referenceLikesRecord.contentType
+                likeCard.likesRecord.contentId == referenceLikesRecord.contentId
+                && likeCard.likesRecord.contentType == referenceLikesRecord.contentType
             ) {
-                c.likesRecord.count += c.likesRecord.hasLiked ? -1 : 1;
-                c.countDisplayElm.innerText = `${c.likesRecord.count}`;
+                likeCard.likesRecord.count += likeCard.likesRecord.hasLiked ? -1 : 1;
+                likeCard.countDisplayElm.innerText = `${likeCard.likesRecord.count}`;
 
-                c.btnLike.classList.toggle('hasLiked');
+                likeCard.btnLike.classList.toggle('hasLiked');
 
-                c.likesRecord.hasLiked = !c.likesRecord.hasLiked;
+                likeCard.likesRecord.hasLiked = !likeCard.likesRecord.hasLiked;
             }
         });
     }
@@ -36,7 +36,7 @@
 
         this.rootElm.append(this.btnLike, this.countDisplayElm, dateTimeStamp);
 
-        this.btnLike.onclick = () => {
+        this.btnLike.onclick = (e: MouseEvent) => {
             
             // Update the record on the host.
             if (this.likesRecord.hasLiked) Ajax.unlike(this.likesRecord.contentType, this.likesRecord.contentId);
@@ -48,6 +48,4 @@
 
         LikeCard.likeCards.push(this);
     }
-
-
 }

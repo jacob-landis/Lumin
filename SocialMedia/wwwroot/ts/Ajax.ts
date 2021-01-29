@@ -1,6 +1,6 @@
 ﻿class Ajax {
 
-    private static JSONstring(string): string { return JSON.stringify({ str: string }); }
+    private static JSONstring(string: string): string { return JSON.stringify({ str: string }); }
 
     //LIKE
     public static unlike(contentType: ContentType, contentId: number): void {
@@ -45,7 +45,7 @@
         );
     }
 
-    public static getCommentCount(postId: number, onCommentCountResults: (commentCount) => void): void {
+    public static getCommentCount(postId: number, onCommentCountResults: (commentCount: string) => void): void {
         this.call(`apicomment/commentcount/${postId}`, "GET", onCommentCountResults);
     }
 
@@ -85,7 +85,10 @@
         );
     }
 
-    public static getCurrentProfile(onCurrentProfileResults: (currentProfile) => void): void {
+    /*
+        Used in index.cshtml to invoke Main.initialize 
+    */
+    public static getCurrentProfile(onCurrentProfileResults: (currentProfile: string) => void): void {
         this.call("apiprofile/currentprofile", "GET", onCurrentProfileResults);
     }
 
@@ -105,8 +108,8 @@
     
     public static getFriends(profileId: number, searchText: string, onProfileResults: (profileCards: ProfileCard[]) => void): void {
 
-        let newId = profileId ? profileId : 0;
-        let newSearch = this.JSONstring(searchText ? searchText : "NULL");
+        let newId: number = profileId ? profileId : 0;
+        let newSearch: string = this.JSONstring(searchText ? searchText : "NULL");
         
         this.call(
             `apifriend/friends/${newId}`,
@@ -146,7 +149,7 @@
         );
     }
 
-    public static getProfileImagesCount(profileId: number, onCountResults: (imageCount) => void): void {
+    public static getProfileImagesCount(profileId: number, onCountResults: (imageCount: string) => void): void {
         this.call(`apiimage/profileimagescount/${profileId}`, "GET", onCountResults);
     }
 
@@ -204,7 +207,8 @@
     private static call(path: string, method: string, onResults?: (results: string) => void, data?: string): void {
 
         // check server for current user (redirect if session is expired)
-        this.finalCall("apiprofile/confirmuser", "GET", confirmed => {
+        this.finalCall("apiprofile/confirmuser", "GET", (confirmed: string) => {
+            // XXX if (confirmed != "" || confirmed != null) XXX TRY THIS XXX
             if (confirmed) this.finalCall(path, method, onResults, data);
             else location.reload(true);
         });
@@ -216,7 +220,7 @@
             contentType: "application/json",
             method: method,
             data: data,
-            success: results => {
+            success: (results: string) => {
                 if (onResults) onResults(results);
             }
         });

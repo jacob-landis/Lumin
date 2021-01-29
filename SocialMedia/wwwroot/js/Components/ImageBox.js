@@ -3,7 +3,7 @@ var ImageBox = (function () {
         this.isLoaded = false;
         this.getThumbNail = getThumbNail;
         this.heldImageClassList = imageClassList;
-        this.heldImageClick = click ? click : function () { };
+        this.heldImageClick = click ? click : function (target) { };
         this.rootElm = rootElm;
         this.rootElm.classList.add('image-box');
         ImageBox.imageBoxes.push(this);

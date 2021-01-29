@@ -24,10 +24,10 @@ var CreatePostModal = (function (_super) {
         _this.errorBox = new ContentBox(document.getElementById(contentBoxElmId));
         _this.captionWrapper.append(_this.errorBox.rootElm);
         _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, function (targetImageCard) { return _this.selectImage(); });
-        _this.btnSelectImage.onclick = function () { return _this.selectImage(); };
-        _this.btnClearImage.onclick = function () { return _this.loadPaperClip(); };
-        _this.btnSubmit.onclick = function () { return _this.submit(); };
-        _this.btnCancel.onclick = function () { return _this.close(); };
+        _this.btnSelectImage.onclick = function (e) { return _this.selectImage(); };
+        _this.btnClearImage.onclick = function (e) { return _this.loadPaperClip(); };
+        _this.btnSubmit.onclick = function (e) { return _this.submit(); };
+        _this.btnCancel.onclick = function (e) { return _this.close(); };
         return _this;
     }
     CreatePostModal.prototype.load = function (imageCard) {

@@ -9,14 +9,14 @@ class CommentCard extends Card {
         Creates a new comment card with the data from the one provided.
         Used to put a comment in multiple places. 
     */
-    public static copy(commentCard) {
+    public static copy(commentCard): CommentCard {
         return new CommentCard(commentCard.comment);
     }
 
     /*
         Converts an array of comments into an array of comment cards.
     */
-    public static list(comments: CommentRecord[]) {
+    public static list(comments: CommentRecord[]): CommentCard[] {
         let commentCards: CommentCard[] = [];
         comments.forEach(comment => commentCards.push(new CommentCard(comment)));
         return commentCards;
@@ -79,15 +79,15 @@ class CommentCard extends Card {
             optsSection.append(btnOpts);
 
             // Set click callback of btnOpts to open context menu with an edit and delete option.
-            btnOpts.onclick = e => contextMenu.load(e, [
+            btnOpts.onclick = (e: MouseEvent) => contextMenu.load(e, [
 
                 // Edit: start comment edit.
-                new ContextOption(editIcon, () => this.commentEditor.start()),
+                new ContextOption(editIcon, (e: MouseEvent) => this.commentEditor.start()),
 
                 // Delete: prompt for confirmation to delete.
                 new ContextOption(Icons.deleteComment(),
-                    () => confirmPrompt.load('Are you sure you want to delete this comment?',
-                        answer => {
+                    (e: MouseEvent) => confirmPrompt.load('Are you sure you want to delete this comment?',
+                        (answer: boolean) => {
                             if (answer == false) return;
                             else this.remove(); // Delete comment.
                         }
@@ -113,7 +113,7 @@ class CommentCard extends Card {
         Ajax.deleteComment(this.comment.commentId);
 
         // For each comment card in the collection,
-        CommentCard.commentCards.forEach(commentCard => {
+        CommentCard.commentCards.forEach((commentCard: CommentCard) => {
 
             // if it's CommentID matches this one,
             if (commentCard.comment.commentId == this.comment.commentId) {
@@ -133,7 +133,7 @@ class CommentCard extends Card {
         //delete this;
 
         // For each post card in collection,
-        PostCard.postCards.forEach(p => {
+        PostCard.postCards.forEach((p: PostCard) => {
 
             // If this comment belongs to the current post.
             if (p.post.postId == this.comment.postId) {

@@ -24,8 +24,8 @@ var FullSizeImageModal = (function (_super) {
         _this.imageClassList = imageClassList;
         _this.imageControls = [_this.imageCount, _this.btnNext, _this.btnPrev, Modal.btnClose];
         _this.imageCon = new ImageBox(imageBoxElm, imageClassList, function (target) { return _this.toggleControls(); });
-        _this.btnPrev.onclick = function () { return _this.requestImage(-1); };
-        _this.btnNext.onclick = function () { return _this.requestImage(1); };
+        _this.btnPrev.onclick = function (e) { return _this.requestImage(-1); };
+        _this.btnNext.onclick = function (e) { return _this.requestImage(1); };
         return _this;
     }
     FullSizeImageModal.prototype.loadSingle = function (imageId) {
@@ -40,7 +40,7 @@ var FullSizeImageModal = (function (_super) {
         this.profileId = profileId ? profileId : User.profileId;
         this.index = clickedImageIndex;
         Ajax.getProfileImagesCount(this.profileId, function (imageCount) {
-            _this.profileImagesCount = imageCount;
+            _this.profileImagesCount = +imageCount;
             _this.updateImageCount();
             _this.requestImage(0);
         });
@@ -68,7 +68,7 @@ var FullSizeImageModal = (function (_super) {
         if (indexToBe >= 0 && indexToBe < this.profileImagesCount) {
             this.index = indexToBe;
             this.updateImageCount();
-            Ajax.getProfileImages(this.profileId, this.index, 1, '', function () { }, function (imageCards) {
+            Ajax.getProfileImages(this.profileId, this.index, 1, '', function (target) { }, function (imageCards) {
                 _this.imageCon.load(imageCards[0].image.imageId, null, function (target) { return _this.toggleControls(); });
             });
         }
@@ -78,11 +78,11 @@ var FullSizeImageModal = (function (_super) {
     FullSizeImageModal.prototype.toggleControls = function () { this.btnNext.style.display != 'none' ? this.hideControls() : this.showControls(); };
     FullSizeImageModal.prototype.showControls = function () {
         ViewUtil.show(imageDropdown.rootElm);
-        this.imageControls.forEach(function (c) { return ViewUtil.show(c); });
+        this.imageControls.forEach(function (control) { return ViewUtil.show(control); });
     };
     FullSizeImageModal.prototype.hideControls = function () {
         ViewUtil.hide(imageDropdown.rootElm);
-        this.imageControls.forEach(function (c) { return ViewUtil.hide(c); });
+        this.imageControls.forEach(function (control) { return ViewUtil.hide(control); });
     };
     return FullSizeImageModal;
 }(Modal));

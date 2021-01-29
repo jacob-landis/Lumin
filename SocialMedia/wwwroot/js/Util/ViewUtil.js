@@ -1,34 +1,34 @@
 var ViewUtil = (function () {
     function ViewUtil() {
     }
-    ViewUtil.tag = function (tagName, x) {
-        var tag = document.createElement(tagName);
-        if (x) {
-            if (x.id)
-                tag.id = x.id;
-            if (x.classList)
-                x.classList.split(' ').forEach(function (className) {
+    ViewUtil.tag = function (tagName, propertySetting) {
+        var newElement = document.createElement(tagName);
+        if (propertySetting) {
+            if (propertySetting.id)
+                newElement.id = propertySetting.id;
+            if (propertySetting.classList)
+                propertySetting.classList.split(' ').forEach(function (className) {
                     if (className != '' && className != null)
-                        tag.classList.add(className);
+                        newElement.classList.add(className);
                 });
-            if (x.name)
-                tag.setAttribute('name', x.name);
-            if (x.color)
-                tag.style.color = x.color;
-            if (x.innerHTML)
-                tag.innerHTML = x.innerHTML;
-            if (x.innerText)
-                tag.innerText = x.innerText;
-            if (x.src)
-                tag.setAttribute('src', "data:image/png;base64," + x.src);
-            if (x.onclick)
-                tag.onclick = x.onclick;
-            if (x.type)
-                tag.setAttribute('type', x.type);
-            if (x.oncontextmenu)
-                tag.oncontextmenu = x.oncontextmenu;
+            if (propertySetting.name)
+                newElement.setAttribute('name', propertySetting.name);
+            if (propertySetting.color)
+                newElement.style.color = propertySetting.color;
+            if (propertySetting.innerHTML)
+                newElement.innerHTML = propertySetting.innerHTML;
+            if (propertySetting.innerText)
+                newElement.innerText = propertySetting.innerText;
+            if (propertySetting.src)
+                newElement.setAttribute('src', "data:image/png;base64," + propertySetting.src);
+            if (propertySetting.onclick)
+                newElement.onclick = propertySetting.onclick;
+            if (propertySetting.type)
+                newElement.setAttribute('type', propertySetting.type);
+            if (propertySetting.oncontextmenu)
+                newElement.oncontextmenu = propertySetting.oncontextmenu;
         }
-        return tag;
+        return newElement;
     };
     ViewUtil.addClassList = function (classList, elm) {
         var classListArray = classList.split(' ');

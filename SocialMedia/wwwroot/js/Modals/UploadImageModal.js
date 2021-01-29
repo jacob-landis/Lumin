@@ -20,12 +20,12 @@ var UploadImageModal = (function (_super) {
         _this.btnSelectDifferentImage = btnSelectDifferentImage;
         _this.stagedUploadClassList = stagedUploadClassList;
         _this.errMsgClassList = errMsgClassList;
-        _this.btnConfirm.onclick = function () {
+        _this.btnConfirm.onclick = function (e) {
             Ajax.postImage(_this.stagedUpload, function (imageCard) {
                 if (_this.callback)
                     _this.callback(imageCard);
             });
-            _this.close();
+            _super.prototype.close.call(_this);
         };
         _this.btnSelectDifferentImage.onchange = function (e) { return _this.load(e, _this.callback); };
         return _this;
@@ -33,15 +33,16 @@ var UploadImageModal = (function (_super) {
     UploadImageModal.prototype.load = function (e, callback) {
         var _this = this;
         this.reader = new FileReader();
-        this.reader.onloadend = function () { return _this.stageFile(); };
+        this.reader.onloadend = function (e) { return _this.stageFile(); };
         ViewUtil.empty(this.stagedUploadCon);
         ViewUtil.hide(this.btnConfirm);
         this.callback = callback;
-        this.stagedFileName = e.srcElement.files[0].name;
-        var isValidSize = e.srcElement.files[0].size <= 15728640;
+        var imageFile = e.srcElement.files[0];
+        this.stagedFileName = imageFile.name;
+        var isValidSize = imageFile.size <= 15728640;
         var isValidType = this.validateType(this.stagedFileName);
         if (isValidSize && isValidType) {
-            this.reader.readAsDataURL(e.srcElement.files[0]);
+            this.reader.readAsDataURL(imageFile);
         }
         else {
             if (!isValidSize)
@@ -49,7 +50,7 @@ var UploadImageModal = (function (_super) {
             if (!isValidType)
                 this.displayError('- The file you selected is not a valid image type (png, jpg or tif)');
         }
-        this.open();
+        _super.prototype.open.call(this);
     };
     UploadImageModal.prototype.stageFile = function () {
         ViewUtil.show(this.btnConfirm);

@@ -47,7 +47,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
     // Set callback that is invoked at the end of reload().
     // Used by PostCard to make adjustments.
-    set onLoadEnd(onLoadEnd: () => void) { this._onLoadEnd = ()=> onLoadEnd() }
+    set onLoadEnd(onLoadEnd: () => void) { this._onLoadEnd = () => onLoadEnd() }
 
     /*
          PARAMETERS:
@@ -71,7 +71,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         this.heldImageClassList = imageClassList;
 
         // If a click callback was provided, get a handle on it, else get a handle on an empty function.
-        this.heldImageClick = click ? click : () => { };
+        this.heldImageClick = click ? click : (target: ImageCard) => { };
         
         // Get a handle on rootElm.
         this.rootElm = rootElm;

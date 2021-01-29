@@ -51,7 +51,7 @@ class UploadImageModal extends Modal {
         this.errMsgClassList = errMsgClassList;
         
         // Set btnConfirm to send image to host in a post request.
-        this.btnConfirm.onclick = () => {
+        this.btnConfirm.onclick = (e: MouseEvent) => {
             Ajax.postImage(this.stagedUpload, (imageCard: ImageCard) => {
 
                 // When uploaded image returns as an image card, if another class has set up a callback, send the image card to it.
@@ -59,11 +59,11 @@ class UploadImageModal extends Modal {
             });
 
             // Close this modal.
-            this.close();
+            super.close();
         }
 
         // Set onchange callback of selectDifferentImage (XXX basically a button XXX) to invoke load() with the file that was selected and this callback.
-        this.btnSelectDifferentImage.onchange =e=> this.load(e, this.callback) // XXX this.callback has not been initialized. Review this logic. XXX
+        this.btnSelectDifferentImage.onchange = (e: Event) => this.load(e, this.callback) // XXX this.callback has not been initialized. Review this logic. XXX
     }
 
     /*
@@ -72,14 +72,14 @@ class UploadImageModal extends Modal {
         e must be the onchange event of a file input.
         callback must be at least an empty callback. It receives the image that is sent back from the host after it is uploaded.
     */
-    public load(e, callback): void {
+    public load(e: Event, callback: (imageCard: ImageCard) => void): void {
 
         // Construct new file reader to prep image from transmission to the host.
         this.reader = new FileReader();
 
         // Set onloadend callback of file reader to invoke stageFile().
         // The results of the file read are read from stageFile().
-        this.reader.onloadend =()=> this.stageFile()
+        this.reader.onloadend = (e: ProgressEvent) => this.stageFile()
 
         // Prepare for both the validation success and failure scenario.
 
@@ -93,19 +93,22 @@ class UploadImageModal extends Modal {
         // Get a handle on the provided callback.
         this.callback = callback;
 
+        // Shorten handle on image file.
+        let imageFile: File = (<HTMLInputElement> e.srcElement).files[0];
+
         // Get a handle on the file name.
-        this.stagedFileName = e.srcElement.files[0].name;
+        this.stagedFileName = imageFile.name;
 
         // Validate file size.
         // 15728640 == 15MB
-        let isValidSize: boolean = e.srcElement.files[0].size <= 15728640;
+        let isValidSize: boolean = imageFile.size <= 15728640;
 
         // Validate file type.
         let isValidType: boolean = this.validateType(this.stagedFileName);
 
         // If the file is valid, read it,
         if (isValidSize && isValidType) {
-            this.reader.readAsDataURL(e.srcElement.files[0]);
+            this.reader.readAsDataURL(imageFile);
         }
 
         // else, display validation errors.
@@ -114,7 +117,7 @@ class UploadImageModal extends Modal {
             if (!isValidType) this.displayError('- The file you selected is not a valid image type (png, jpg or tif)');
         }
 
-        this.open();
+        super.open();
     }
 
     /*
@@ -161,7 +164,7 @@ class UploadImageModal extends Modal {
         Shortcut for displaying errors.
         Simply provide a string.
     */
-    private displayError(errorMsg): void {
+    private displayError(errorMsg: string): void {
 
         // Create tag with provided string and give it classes for CSS.
         this.stagedUploadCon.append(ViewUtil.tag('div', {

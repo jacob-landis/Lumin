@@ -62,7 +62,7 @@ var PostCard = (function (_super) {
         likeCardSlot.append(new LikeCard(LikesRecord.copy(_this.post.likes), _this.post.dateTime).rootElm);
         _this.commentsBox.request(15);
         _this.requestCommentCount();
-        _this.commentsBox.rootElm.onscroll = function () {
+        _this.commentsBox.rootElm.onscroll = function (e) {
             var divHeight = _this.commentsBox.rootElm.scrollHeight;
             var offset = _this.commentsBox.rootElm.scrollTop + _this.commentsBox.rootElm.clientHeight;
             if (offset == divHeight)
@@ -72,8 +72,8 @@ var PostCard = (function (_super) {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
             btnPostOpts.onclick = function (e) { return contextMenu.load(e, [
-                new ContextOption(_this.editIcon, function () { return _this.captionEditor.start(); }),
-                new ContextOption(Icons.deletePost(), function () {
+                new ContextOption(_this.editIcon, function (e) { return _this.captionEditor.start(); }),
+                new ContextOption(Icons.deletePost(), function (e) {
                     return confirmPrompt.load('Are you sure you want to delete this post?', function (confirmation) {
                         if (!confirmation)
                             return;
@@ -82,7 +82,7 @@ var PostCard = (function (_super) {
                 })
             ]); };
         }
-        btnComment.onclick = function () {
+        btnComment.onclick = function (e) {
             var error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
             if (txtComment.value.length <= 125) {
                 Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentResults) {
@@ -105,7 +105,7 @@ var PostCard = (function (_super) {
             _this.observer.observe(_this.rootElm, { attributes: true });
             _this.postImageWrapper.onLoadEnd = function () { return _this.mutate(); };
         }
-        window.addEventListener('scroll', function () {
+        window.addEventListener('scroll', function (e) {
             var offset = _this.rootElm.offsetTop - window.pageYOffset;
             if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
                 if (_this.hasImage)
@@ -150,7 +150,7 @@ var PostCard = (function (_super) {
         var _this = this;
         Ajax.getCommentCount(this.post.postId, function (commentCount) {
             _this.commentCountText = ViewUtil.tag('div');
-            _this.setCommentCount(commentCount);
+            _this.setCommentCount(+commentCount);
             _this.commentCountSlot.append(_this.commentCountText);
         });
     };
@@ -158,10 +158,10 @@ var PostCard = (function (_super) {
         var _this = this;
         this.setCommentCount(this.totalCommentCount - 1);
         Ajax.deletePost(this.post.postId);
-        PostCard.postCards.forEach(function (c) {
-            if (c.post.postId == _this.post.postId) {
-                ViewUtil.remove(c.rootElm);
-                c = null;
+        PostCard.postCards.forEach(function (postCard) {
+            if (postCard.post.postId == _this.post.postId) {
+                ViewUtil.remove(postCard.rootElm);
+                postCard = null;
             }
         });
         Util.filterNulls(PostCard.postCards);

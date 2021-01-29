@@ -20,7 +20,7 @@ class Editor implements IAppendable {
     // It is a function that does nothing when no edit is happening.
     // Only after an edit begins does it become a function that invokes cancel().
     // A refernce to this is held in the list of window event listeners, so redefining it is like turning it on and off.
-    private windowClickFunc: (e: MouseEvent) => void = () => { };
+    private windowClickFunc: (e: MouseEvent) => void = (e: MouseEvent) => { };
 
     // Length limit of text.
     private maxLength: number;
@@ -107,8 +107,8 @@ class Editor implements IAppendable {
         this.rootElm.append(this.errorBox.rootElm, this.textBox, this.btnSlot);
 
         // Imbed functionality in the control buttons.
-        this.btnConfirm.onclick = () => this.send()
-        this.btnCancel.onclick = () => this.revert()
+        this.btnConfirm.onclick = (e: MouseEvent) => this.send()
+        this.btnCancel.onclick = (e: MouseEvent) => this.revert()
         
         // Add off-click exceptions to an array and get a handle on it.
         // Clicking on these will NOT stop the edit, but clicking on anything else will.
@@ -121,11 +121,11 @@ class Editor implements IAppendable {
 
         // Include all child tags of the start button as off-click exceptions.
         // Currently, no other exceptions are compound elms.
-        let childNodes = btnStart.childNodes;
-        childNodes.forEach(c => this.targetHandles.push(<HTMLElement>c));
+        let childNodes: NodeListOf<ChildNode> = btnStart.childNodes;
+        childNodes.forEach((c: ChildNode) => this.targetHandles.push(<HTMLElement> c));
 
         // At this point, this.windowClickFunc is an empty function, but once it's value is replaced by a real function, it can catch the clicks.
-        window.addEventListener('click', e => this.windowClickFunc(e));
+        window.addEventListener('click', (e: MouseEvent) => this.windowClickFunc(e));
     }
     
     /* 
@@ -134,16 +134,16 @@ class Editor implements IAppendable {
     private turnOnWindowClickFunc(): void {
 
         // Replace empty function.
-        this.windowClickFunc = e => {
+        this.windowClickFunc = (event: MouseEvent) => {
 
             // Initialize hit flag as down.
             let hit: boolean = false;
 
             // Loop though off-click exception.
-            this.targetHandles.forEach(t => {
+            this.targetHandles.forEach((targetHandle: HTMLElement) => {
 
                 // If an exception was hit, raise the hit flag.
-                if (e.target == t) hit = true;
+                if (event.target == targetHandle) hit = true;
             });
             
             // If no exceptions were hit, it was an off-click, so revert the changes.
@@ -154,7 +154,7 @@ class Editor implements IAppendable {
     /*
         Puts provided text in text box.
     */
-    public setText(text): void {
+    public setText(text: string): void {
         this.textBox.innerText = text;
     }
 
@@ -222,7 +222,7 @@ class Editor implements IAppendable {
 
         // "turn off" this.windowClickFunc.
         // Replace it with an empty function.
-        this.windowClickFunc = () => { };
+        this.windowClickFunc = (e: MouseEvent) => { };
     }
 
     /*

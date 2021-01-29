@@ -20,7 +20,7 @@ var LikeCard = (function (_super) {
         _this.btnLike = ViewUtil.tag('i', { classList: 'fa fa-thumbs-up likeIcon ' + (_this.likesRecord.hasLiked ? 'hasLiked' : '') });
         _this.countDisplayElm = ViewUtil.tag('div', { classList: 'likeCount', innerText: _this.likesRecord.count != 0 ? _this.likesRecord.count : '0' });
         _this.rootElm.append(_this.btnLike, _this.countDisplayElm, dateTimeStamp);
-        _this.btnLike.onclick = function () {
+        _this.btnLike.onclick = function (e) {
             if (_this.likesRecord.hasLiked)
                 Ajax.unlike(_this.likesRecord.contentType, _this.likesRecord.contentId);
             else
@@ -31,13 +31,13 @@ var LikeCard = (function (_super) {
         return _this;
     }
     LikeCard.changeAllContentInstances = function (referenceLikesRecord) {
-        this.likeCards.forEach(function (c) {
-            if (c.likesRecord.contentId == referenceLikesRecord.contentId
-                && c.likesRecord.contentType == referenceLikesRecord.contentType) {
-                c.likesRecord.count += c.likesRecord.hasLiked ? -1 : 1;
-                c.countDisplayElm.innerText = "" + c.likesRecord.count;
-                c.btnLike.classList.toggle('hasLiked');
-                c.likesRecord.hasLiked = !c.likesRecord.hasLiked;
+        this.likeCards.forEach(function (likeCard) {
+            if (likeCard.likesRecord.contentId == referenceLikesRecord.contentId
+                && likeCard.likesRecord.contentType == referenceLikesRecord.contentType) {
+                likeCard.likesRecord.count += likeCard.likesRecord.hasLiked ? -1 : 1;
+                likeCard.countDisplayElm.innerText = "" + likeCard.likesRecord.count;
+                likeCard.btnLike.classList.toggle('hasLiked');
+                likeCard.likesRecord.hasLiked = !likeCard.likesRecord.hasLiked;
             }
         });
     };

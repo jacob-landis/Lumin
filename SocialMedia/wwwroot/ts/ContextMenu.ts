@@ -5,7 +5,7 @@
 class ContextMenu {
 
     // An enhanced container for storing the tags of context options.
-    optionsBox: ContentBox;
+    public optionsBox: ContentBox;
     private backgroundElm: HTMLElement;
     private contentElm: HTMLElement;
     
@@ -22,20 +22,20 @@ class ContextMenu {
         this.optionsBox = new ContentBox(contentElm);
 
         // Set up scroll event listener for window. Close on scroll.
-        window.addEventListener('scroll', () => {
+        window.addEventListener('scroll', (e: UIEvent) => {
 
             // When window is scrolled, if this modal is open, close it.
             if (this.optionsBox.rootElm.style.display != "none") this.close();
         });
 
         // Click-off to close.
-        this.backgroundElm.onclick = () => {
+        this.backgroundElm.onclick = (e: MouseEvent) => {
             this.close();
         }
 
         // Set up click event on r-click menu to close when clicked on.
         // (The click event on the button on this modal will also be triggered.)
-        this.optionsBox.rootElm.onclick = () => {
+        this.optionsBox.rootElm.onclick = (e: MouseEvent) => {
             this.close();
         }
 
@@ -67,13 +67,13 @@ class ContextMenu {
         this.optionsBox.rootElm.style.top = `${e.clientY - this.optionsBox.height}`;
     }
 
-    private open() {
+    private open(): void {
 
         // Show modal.
         ViewUtil.show(this.backgroundElm);
     }
 
-    private close() {
+    private close(): void {
 
         // Hide modal.
         ViewUtil.hide(this.backgroundElm);

@@ -34,8 +34,8 @@ var CommentCard = (function (_super) {
         if (comment.profile.relationToUser == 'me') {
             optsSection.append(btnOpts);
             btnOpts.onclick = function (e) { return contextMenu.load(e, [
-                new ContextOption(editIcon, function () { return _this.commentEditor.start(); }),
-                new ContextOption(Icons.deleteComment(), function () { return confirmPrompt.load('Are you sure you want to delete this comment?', function (answer) {
+                new ContextOption(editIcon, function (e) { return _this.commentEditor.start(); }),
+                new ContextOption(Icons.deleteComment(), function (e) { return confirmPrompt.load('Are you sure you want to delete this comment?', function (answer) {
                     if (answer == false)
                         return;
                     else

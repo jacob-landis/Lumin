@@ -70,16 +70,16 @@ class CreatePostModal extends Modal {
         );
 
         // Set btnSelectImage to invoke selectImage().
-        this.btnSelectImage.onclick = () => this.selectImage();
+        this.btnSelectImage.onclick = (e: MouseEvent) => this.selectImage();
 
         // Set btnClearImage to invoke loadPaperClip().
-        this.btnClearImage.onclick = () => this.loadPaperClip();
+        this.btnClearImage.onclick = (e: MouseEvent) => this.loadPaperClip();
 
         // Set btnSubmit to invoke submit().
-        this.btnSubmit.onclick = () => this.submit();
+        this.btnSubmit.onclick = (e: MouseEvent) => this.submit();
 
         // Set btnCancel to invoke close().
-        this.btnCancel.onclick = () => this.close();
+        this.btnCancel.onclick = (e: MouseEvent) => this.close();
     }
 
     /*
@@ -142,7 +142,7 @@ class CreatePostModal extends Modal {
             "Select an image",
 
             // When the selected image card returns,
-            imageCard => {
+            (imageCard: ImageCard) => {
                 // XXX if the image container were forced into certain dimensions, a stretched out thumbnail could be a
                 // XXX placeholder until the fullsize version arrived.
 
@@ -162,7 +162,7 @@ class CreatePostModal extends Modal {
         imageDropdown.convert(
             
             // When the selected image card returns,
-            imageCard => {
+            (imageCard: ImageCard) => {
 
                 // load image into selected image container by id so the fullsize verision is requested and displayed,
                 this.selectedImageBox.load(imageCard.image.imageId);
@@ -210,10 +210,10 @@ class CreatePostModal extends Modal {
         else {
 
             // Set imageId of post to the attached image's id or to 0 if no image was attached.
-            let imageId = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.imageId : 0;
+            let imageId: number = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.imageId : 0;
 
             // Prep the caption and ImageID to be sent off.
-            let post = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId }); // XXX there is a method in Repo for this. XXX
+            let post: string = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId }); // XXX there is a method in Repo for this. XXX
 
             // Send post to host in a post request. XXX put post in a PostRecord XXX
             Ajax.submitPost(post,
@@ -273,7 +273,7 @@ class CreatePostModal extends Modal {
             confirmPrompt.load('Are you sure you want to cancel?',
 
                 // When their descision returns,
-                confirmation => {
+                (confirmation: boolean) => {
 
                     // if they decided not to cancel, do nothing,
                     if (!confirmation) return;

@@ -3,7 +3,7 @@
     public static list(posts: PostRecord[]): PostCard[] {
         let postCards: PostCard[] = [];
         if (posts) {
-            posts.forEach(p => postCards.push(new PostCard(p)));
+            posts.forEach((p: PostRecord) => postCards.push(new PostCard(p)));
             return postCards;
         }
     }
@@ -39,8 +39,8 @@
         // POST CONSTRUCTION
         // __________________________________ TAG
         
-        let postSection = ViewUtil.tag('div', { classList: 'postSection' });
-        let commentSection = ViewUtil.tag('div', { classList: 'commentSection' });
+        let postSection: HTMLElement = ViewUtil.tag('div', { classList: 'postSection' });
+        let commentSection: HTMLElement = ViewUtil.tag('div', { classList: 'commentSection' });
 
         this.rootElm.append(postSection, commentSection);
 
@@ -65,7 +65,7 @@
         );
 
         let txtComment: HTMLInputElement = <HTMLInputElement> ViewUtil.tag('textarea', { classList: 'txtComment' });
-        let btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
+        let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
 
         commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentCountSlot, this.commentsBox.rootElm);
         this.commentInputWrapper.append(txtComment, btnComment);
@@ -108,9 +108,9 @@
 
         //------------------------------------------------------------------------------------------
 
-        let profileCardSlot = ViewUtil.tag('div', { classList: 'profileCardSlot' });
-        let likeCardSlot = ViewUtil.tag('div', { classList: 'detailsSlot' });
-        let postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
+        let profileCardSlot: HTMLElement = ViewUtil.tag('div', { classList: 'profileCardSlot' });
+        let likeCardSlot: HTMLElement = ViewUtil.tag('div', { classList: 'detailsSlot' });
+        let postOptsSlot: HTMLElement = ViewUtil.tag('div', { classList: 'postOptsSlot' });
 
         this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
         profileCardSlot.append(new ProfileCard(this.post.profile).rootElm);
@@ -124,22 +124,22 @@
         this.requestCommentCount();
 
         // On scroll
-        this.commentsBox.rootElm.onscroll = () => {
-            let divHeight = this.commentsBox.rootElm.scrollHeight;
-            let offset = this.commentsBox.rootElm.scrollTop + this.commentsBox.rootElm.clientHeight; // XXX can ContentBox.Height be used? XXX
+        this.commentsBox.rootElm.onscroll = (e: MouseEvent) => {
+            let divHeight: number = this.commentsBox.rootElm.scrollHeight;
+            let offset: number = this.commentsBox.rootElm.scrollTop + this.commentsBox.rootElm.clientHeight; // XXX can ContentBox.Height be used? XXX
 
             if (offset == divHeight) this.commentsBox.request();
         }
 
         // PRIVATE OPTIONS
         if (post.profile.relationToUser == 'me') {
-            let btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
+            let btnPostOpts: HTMLElement = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
 
-            btnPostOpts.onclick = e => contextMenu.load(e, [
-                new ContextOption(this.editIcon, () => this.captionEditor.start()),
-                new ContextOption(Icons.deletePost(), () =>
-                    confirmPrompt.load('Are you sure you want to delete this post?', confirmation => {
+            btnPostOpts.onclick = (e: MouseEvent) => contextMenu.load(e, [
+                new ContextOption(this.editIcon, (e: MouseEvent) => this.captionEditor.start()),
+                new ContextOption(Icons.deletePost(), (e: MouseEvent) =>
+                    confirmPrompt.load('Are you sure you want to delete this post?', (confirmation: boolean) => {
                         if (!confirmation) return;
                         this.remove();
                     }))
@@ -147,14 +147,14 @@
         }
 
         // submit comment
-        btnComment.onclick = () => {
+        btnComment.onclick = (e: MouseEvent) => {
             let error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
             
             if (txtComment.value.length <= 125) {
                 Ajax.postComment(
                     JSON.stringify({ Content: txtComment.value, PostId: post.postId }),
                     (commentResults: CommentRecord) => {
-                        PostCard.postCards.forEach(p => {
+                        PostCard.postCards.forEach((p: PostCard) => {
                             if (p.post.postId == commentResults.postId) {
                                 p.commentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
                                 p.resizeCommentBox();
@@ -179,8 +179,8 @@
         }
 
         // unload or reload posts above and below the position of the viewport
-        window.addEventListener('scroll', () => {
-            let offset = this.rootElm.offsetTop - window.pageYOffset;
+        window.addEventListener('scroll', (e: UIEvent) => {
+            let offset: number = this.rootElm.offsetTop - window.pageYOffset;
             
             if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
                 if (this.hasImage) this.postImageWrapper.unload();
@@ -194,8 +194,8 @@
     }
     
     private resizeCommentBox(): void {
-        let inputHeight = this.commentInputWrapper.clientHeight;
-        let contentHeight = this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight;
+        let inputHeight: number = this.commentInputWrapper.clientHeight;
+        let contentHeight: number = this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight;
 
         // The desired height of the comments box.
         let targetHeight: number = contentHeight - inputHeight;
@@ -218,9 +218,9 @@
     }
 
     private requestCommentCount(): void {
-        Ajax.getCommentCount(this.post.postId, commentCount => {
+        Ajax.getCommentCount(this.post.postId, (commentCount: string) => {
             this.commentCountText = ViewUtil.tag('div');
-            this.setCommentCount(commentCount);
+            this.setCommentCount(+commentCount);
 
             this.commentCountSlot.append(this.commentCountText);
         });
@@ -231,10 +231,10 @@
         Ajax.deletePost(this.post.postId);
 
         // XXX Instead of this, PostsBox should delete them so it can also splice it out of it's content array. XXX
-        PostCard.postCards.forEach(c => {
-            if (c.post.postId == this.post.postId) {
-                ViewUtil.remove(c.rootElm);
-                c = null;
+        PostCard.postCards.forEach((postCard: PostCard) => {
+            if (postCard.post.postId == this.post.postId) {
+                ViewUtil.remove(postCard.rootElm);
+                postCard = null;
             }
         });
 

@@ -32,7 +32,7 @@ var Util = (function () {
         }
     };
     Util.filterNulls = function (array) {
-        array.filter(function (i) { return i != null; });
+        array.filter(function (index) { return index != null; });
     };
     return Util;
 }());

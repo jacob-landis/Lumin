@@ -1,19 +1,20 @@
 ﻿class ImageCard extends Card {
     
-    public static imageCards = [];
+    public static imageCards: ImageCard[] = [];
 
     public static copy(
         imageCard: ImageCard,
         newClassList: string = imageCard.rootElm.classList.value,
-        newOnImageClick: (targetImageCard: ImageCard) => void = () => imageCard.rootElm.onclick
+        // XXX Shouldn't this just be "...d) => void = imageCard.rootElm.onclick"? XXX
+        newOnImageClick: (target: ImageCard) => void = (target: ImageCard) => imageCard.rootElm.onclick
     ): ImageCard {
         return new ImageCard(imageCard.image, newClassList, newOnImageClick);
     }
 
     public static list(images: ImageRecord[], classList: string, onImageClick?: (targetImageCard: ImageCard) => void): ImageCard[] {
         if (!images) return null;
-        let imageCards = [];
-        images.forEach(i => imageCards.push(new ImageCard(i, classList, onImageClick)));
+        let imageCards: ImageCard[] = [];
+        images.forEach((i: ImageRecord) => imageCards.push(new ImageCard(i, classList, onImageClick)));
         return imageCards;
     }
 
@@ -53,13 +54,14 @@
             // and loads the context modal with options and the mouseEvent.
             contextMenu.load(event, [
 
-                new ContextOption(Icons.createPost(), () => {
+                new ContextOption(Icons.createPost(), (e: MouseEvent) => {
                     createPostModal.load(this);
                 }),
-                new ContextOption(Icons.deleteImage(), () => {
-                    confirmPrompt.load('Are you sure you want to delete this image?', confirmation => {
-                        if (!confirmation) return;
-                        this.remove();
+                new ContextOption(Icons.deleteImage(), (e: MouseEvent) => {
+                    confirmPrompt.load('Are you sure you want to delete this image?',
+                        (confirmation: boolean) => {
+                            if (!confirmation) return;
+                            this.remove();
 
                         //return answer == false? null : imageCard.remove(); // TEST THIS XXXXXXXXXXXXX
                     });
@@ -86,10 +88,10 @@
         // If the user deleted the image that was their profile picture, change all occurances of their profile picture to the defualt.
         if (this.image.imageId == User.profilePictureId) {
 
-            Ajax.getImage(0, true, 'sqr', () => { }, (imageCard: ImageCard) =>
+            Ajax.getImage(0, true, 'sqr', (target: ImageCard) => { }, (imageCard: ImageCard) =>
                 ProfileCard.changeUserProfilePicture(imageCard));
 
-            Ajax.getImage(0, false, 'sqr', () => { }, (imageCard: ImageCard) =>
+            Ajax.getImage(0, false, 'sqr', (target: ImageCard) => { }, (imageCard: ImageCard) =>
                 profileModal.profilePictureBox.loadImage(imageCard));
         }
 

@@ -2,11 +2,11 @@
 
     private static buildIcon(suffixes: string[]): HTMLElement {
         
-        let elm: HTMLElement = ViewUtil.tag('div', { classList: 'icon' });
+        let iconRootElm: HTMLElement = ViewUtil.tag('div', { classList: 'icon' });
 
-        suffixes.forEach(s => elm.append(ViewUtil.tag('i', { classList: `fa fa-${s}` })));
+        suffixes.forEach((suffix: string) => iconRootElm.append(ViewUtil.tag('i', { classList: `fa fa-${suffix}` })));
         
-        return elm;
+        return iconRootElm;
     }
 
     public static acceptRequest(): HTMLElement { return Icons.buildIcon(['check icon-sm', 'user']) }

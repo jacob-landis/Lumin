@@ -28,17 +28,17 @@
 
     public static formatDateTime(dateTime: string): string {
 
-        let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        let months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        let jsDateTime = new Date(Date.parse(dateTime)).toLocaleString();
+        let jsDateTime: string = new Date(Date.parse(dateTime)).toLocaleString();
 
-        let date = jsDateTime.substring(0, jsDateTime.indexOf(','));
-        let mdy = date.split('/');
+        let date: string = jsDateTime.substring(0, jsDateTime.indexOf(','));
+        let mdy: string[] = date.split('/');
         date = `${months[Number(mdy[0]) - 1]} ${numSuffix(Number(mdy[1]))}, ${mdy[2]}`;
 
-        let time = jsDateTime.substring(jsDateTime.indexOf(' ') + 1);
-        let hm = time.split(':');
-        let meridiem = time.substring(time.indexOf(' ') + 1) == 'PM' ? 'pm' : 'am';
+        let time: string = jsDateTime.substring(jsDateTime.indexOf(' ') + 1);
+        let hm: string[] = time.split(':');
+        let meridiem: string = time.substring(time.indexOf(' ') + 1) == 'PM' ? 'pm' : 'am';
         time = `${hm[0]}:${hm[1]} ${meridiem}`;
 
         return `${date} at ${time}`;
@@ -53,6 +53,6 @@
     }
 
     public static filterNulls(array: any[]): void {
-        array.filter(i => i != null);
+        array.filter((index: any) => index != null);
     }
 }

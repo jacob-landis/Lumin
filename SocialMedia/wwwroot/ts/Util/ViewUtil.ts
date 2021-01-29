@@ -2,28 +2,28 @@
 
 //_____ TAG BUILDERS 
 
-    public static tag(tagName: string, x?): HTMLElement {
-        var tag: HTMLElement = document.createElement(tagName);
+    public static tag(tagName: string, propertySetting?: any): HTMLElement {
+        let newElement: HTMLElement = document.createElement(tagName);
         
-        if (x) {
-            if (x.id) tag.id = x.id;
-            if (x.classList) 
-                (<string>x.classList).split(' ').forEach(
+        if (propertySetting) {
+            if (propertySetting.id) newElement.id = propertySetting.id;
+            if (propertySetting.classList) 
+                (<string>propertySetting.classList).split(' ').forEach(
                     (className: string) => {
                         if (className != '' && className != null)
-                            tag.classList.add(className)
+                            newElement.classList.add(className)
                     }
                 )
-            if (x.name) tag.setAttribute('name', x.name); // TEST
-            if (x.color) tag.style.color = x.color;
-            if (x.innerHTML) tag.innerHTML = x.innerHTML;
-            if (x.innerText) tag.innerText = x.innerText;
-            if (x.src) tag.setAttribute('src', `data:image/png;base64,${x.src}`);  // TEST
-            if (x.onclick) tag.onclick = x.onclick;
-            if (x.type) tag.setAttribute('type', x.type); // TEST
-            if (x.oncontextmenu) tag.oncontextmenu = x.oncontextmenu;
+            if (propertySetting.name) newElement.setAttribute('name', propertySetting.name); // TEST
+            if (propertySetting.color) newElement.style.color = propertySetting.color;
+            if (propertySetting.innerHTML) newElement.innerHTML = propertySetting.innerHTML;
+            if (propertySetting.innerText) newElement.innerText = propertySetting.innerText;
+            if (propertySetting.src) newElement.setAttribute('src', `data:image/png;base64,${propertySetting.src}`);  // TEST
+            if (propertySetting.onclick) newElement.onclick = propertySetting.onclick;
+            if (propertySetting.type) newElement.setAttribute('type', propertySetting.type); // TEST
+            if (propertySetting.oncontextmenu) newElement.oncontextmenu = propertySetting.oncontextmenu;
         }
-        return tag;
+        return newElement;
     }
 
 
@@ -32,7 +32,7 @@
     // Add the provided classList to the provided element.
     public static addClassList(classList: string, elm: HTMLElement) {
         let classListArray: string[] = classList.split(' ');
-        classListArray.forEach(c => elm.classList.add(c));
+        classListArray.forEach((c: string) => elm.classList.add(c));
     }
 
     // Return deep copy of the provided element.

@@ -22,7 +22,7 @@ class ProfileImagesBox extends ContentBox {
     */
     constructor(profileId?: number, clickCallback?: (imageCard: ImageCard) => void) {
 
-        let rootElm = ViewUtil.tag('div', { classList: 'images-box' });
+        let rootElm: HTMLElement = ViewUtil.tag('div', { classList: 'images-box' });
 
         super(rootElm, 20,
             // When content box is ready for more content,
@@ -68,7 +68,7 @@ class ProfileImagesBox extends ContentBox {
         super.request(40);
     }
 
-    public addImageCards(imageCards: ImageCard[]) {
+    public addImageCards(imageCards: ImageCard[]): void {
         imageCards.forEach(i => this.addImageCard(i));
     }
 
@@ -91,7 +91,7 @@ class ProfileImagesBox extends ContentBox {
     /*
         Removes the given image from this ProfileImageBox. 
     */
-    public removeImageCard(imageCard: ImageCard) {
+    public removeImageCard(imageCard: ImageCard): void {
 
         // Loop through the content of this ProfileImagesBox.
         this.content.forEach((i: ImageCard) => {

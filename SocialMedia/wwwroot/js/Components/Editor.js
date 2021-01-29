@@ -1,7 +1,7 @@
 var Editor = (function () {
     function Editor(btnStart, text, classList, maxLength, callback) {
         var _this = this;
-        this.windowClickFunc = function () { };
+        this.windowClickFunc = function (e) { };
         btnStart.onclick = function () { return _this.start(); };
         this.maxLength = maxLength;
         this.callback = callback;
@@ -14,8 +14,8 @@ var Editor = (function () {
         this.btnCancel = Icons.cancel();
         this.btnSlot.append(this.btnConfirm, this.btnCancel);
         this.rootElm.append(this.errorBox.rootElm, this.textBox, this.btnSlot);
-        this.btnConfirm.onclick = function () { return _this.send(); };
-        this.btnCancel.onclick = function () { return _this.revert(); };
+        this.btnConfirm.onclick = function (e) { return _this.send(); };
+        this.btnCancel.onclick = function (e) { return _this.revert(); };
         this.targetHandles = [
             this.rootElm, this.errorBox.rootElm,
             this.btnSlot, this.btnConfirm,
@@ -28,10 +28,10 @@ var Editor = (function () {
     }
     Editor.prototype.turnOnWindowClickFunc = function () {
         var _this = this;
-        this.windowClickFunc = function (e) {
+        this.windowClickFunc = function (event) {
             var hit = false;
-            _this.targetHandles.forEach(function (t) {
-                if (e.target == t)
+            _this.targetHandles.forEach(function (targetHandle) {
+                if (event.target == targetHandle)
                     hit = true;
             });
             if (!hit)
@@ -65,7 +65,7 @@ var Editor = (function () {
         ViewUtil.hide(this.btnSlot);
         this.errorBox.clear();
         this.textBox.contentEditable = "" + false;
-        this.windowClickFunc = function () { };
+        this.windowClickFunc = function (e) { };
     };
     Editor.prototype.revert = function () {
         this.textBox.innerText = this.currentText;

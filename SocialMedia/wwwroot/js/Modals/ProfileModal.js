@@ -42,7 +42,7 @@ var ProfileModal = (function (_super) {
         if (this.profile.profileId == User.profileId) {
             this.profilePictureBox.heldImageClick = function (target) { return _this.selectProfilePicture(); };
             this.profileBioWrapper.append(this.btnChangeBio);
-            this.btnChangeBio.onclick = function () { return _this.bioEditor.start(); };
+            this.btnChangeBio.onclick = function (e) { return _this.bioEditor.start(); };
         }
         else {
             this.profilePictureBox.heldImageClick = function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); };
@@ -53,7 +53,7 @@ var ProfileModal = (function (_super) {
             return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), _this.profile.profileId);
         });
         this.imageWrapper.append(this.imagesBox.rootElm);
-        this.imageScrollBox.onscroll = function () {
+        this.imageScrollBox.onscroll = function (e) {
             var divHeight = Util.getElmHeight(_this.imageScrollBox);
             var offset = _this.imageScrollBox.scrollTop + divHeight - 50;
             if (offset >= divHeight)
@@ -65,7 +65,7 @@ var ProfileModal = (function (_super) {
         this.postBox.profileId = this.profile.profileId;
         this.postBox.clear();
         this.postBox.start();
-        this.rootElm.onscroll = function () {
+        this.rootElm.onscroll = function (e) {
             var divHeight = Util.getDocumentHeight();
             var offset = _this.rootElm.scrollTop + window.innerHeight + 2000;
             if (offset >= divHeight)

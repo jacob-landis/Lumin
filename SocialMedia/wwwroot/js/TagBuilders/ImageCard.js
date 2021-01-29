@@ -23,10 +23,10 @@ var ImageCard = (function (_super) {
         if (image.profileId == User.profileId)
             _this.rootElm.oncontextmenu = function (event) {
                 return contextMenu.load(event, [
-                    new ContextOption(Icons.createPost(), function () {
+                    new ContextOption(Icons.createPost(), function (e) {
                         createPostModal.load(_this);
                     }),
-                    new ContextOption(Icons.deleteImage(), function () {
+                    new ContextOption(Icons.deleteImage(), function (e) {
                         confirmPrompt.load('Are you sure you want to delete this image?', function (confirmation) {
                             if (!confirmation)
                                 return;
@@ -40,7 +40,7 @@ var ImageCard = (function (_super) {
     }
     ImageCard.copy = function (imageCard, newClassList, newOnImageClick) {
         if (newClassList === void 0) { newClassList = imageCard.rootElm.classList.value; }
-        if (newOnImageClick === void 0) { newOnImageClick = function () { return imageCard.rootElm.onclick; }; }
+        if (newOnImageClick === void 0) { newOnImageClick = function (target) { return imageCard.rootElm.onclick; }; }
         return new ImageCard(imageCard.image, newClassList, newOnImageClick);
     };
     ImageCard.list = function (images, classList, onImageClick) {
@@ -71,10 +71,10 @@ var ImageCard = (function (_super) {
             p.removeImageCard(_this);
         });
         if (this.image.imageId == User.profilePictureId) {
-            Ajax.getImage(0, true, 'sqr', function () { }, function (imageCard) {
+            Ajax.getImage(0, true, 'sqr', function (target) { }, function (imageCard) {
                 return ProfileCard.changeUserProfilePicture(imageCard);
             });
-            Ajax.getImage(0, false, 'sqr', function () { }, function (imageCard) {
+            Ajax.getImage(0, false, 'sqr', function (target) { }, function (imageCard) {
                 return profileModal.profilePictureBox.loadImage(imageCard);
             });
         }

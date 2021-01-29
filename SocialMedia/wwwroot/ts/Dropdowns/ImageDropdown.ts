@@ -66,7 +66,7 @@ class ImageDropdown extends Dropdown {
                 (imageCard: ImageCard) =>
 
                     // loop through all the profileImageBoxs,
-                    ProfileImagesBox.profileImageBoxes.forEach(p => {
+                    ProfileImagesBox.profileImageBoxes.forEach((p: ProfileImagesBox) => {
 
                         // and if the image box is displaying the current user's images, add the newly uploaded image to it.
                         if (p.profileId == User.profileId) p.addImageCard(ImageCard.copy(imageCard), true);
@@ -75,7 +75,7 @@ class ImageDropdown extends Dropdown {
 
         // LAZY LOADING
         // When content is scrolled,
-        this.contentElm.onscroll = () => {
+        this.contentElm.onscroll = (e: UIEvent) => {
 
             // take a scroll measurement,
             let offset = this.contentElm.scrollTop + window.innerHeight;
@@ -160,7 +160,7 @@ class ImageDropdown extends Dropdown {
         this.imageBox.clickCallback = (target: ImageCard) => callback(target);
 
         // Loop through each image card in the image box and change it's callback to the one provided.
-        this.imageBox.content.forEach(i => (<ImageCard> i).onImageClick = this.imageBox.clickCallback);
+        this.imageBox.content.forEach((imageCard: IAppendable) => (<ImageCard> imageCard).onImageClick = this.imageBox.clickCallback);
 
         // Prompt the user to select an image.
         this.prompt.innerText = 'Select an Image';

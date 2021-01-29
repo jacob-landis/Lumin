@@ -41,8 +41,8 @@ class FriendDropdown extends Dropdown {
         this.friendsBox = new ContentBox(friendBoxElm);
 
         // Set up the event listeners for invoking a search either by clicking on btnSearch or pressing the Enter key.
-        this.btnSearch.onclick = () => this.requestFriendables()
-        this.txtSearch.onkeyup =e=> { if (e.keyCode == 13) this.btnSearch.click(); }
+        this.btnSearch.onclick = (e: MouseEvent) => this.requestFriendables()
+        this.txtSearch.onkeyup = (e: KeyboardEvent) => { if (e.keyCode == 13) this.btnSearch.click(); }
     }
     
     public open(): void {
@@ -61,11 +61,11 @@ class FriendDropdown extends Dropdown {
         this.friendsBox.clear();
 
         // Request unnaccepted friend requests to the current user's profile (requestedUser) and add to friendsBox.
-        Ajax.getFriends(null, null, profiles => this.friendsBox.add(profiles));
+        Ajax.getFriends(null, null, (profiles: ProfileCard[]) => this.friendsBox.add(profiles));
 
         // Request accepted friend requests to and from the current user's profile (friend) and add to friendsBox.
         // XXX may need to use currentUser.id instead of profileId if this dropdown is not used to display other profiles' friends.
-        Ajax.getFriends(User.profileId, null, profiles => this.friendsBox.add(profiles));
+        Ajax.getFriends(User.profileId, null, (profiles: ProfileCard[]) => this.friendsBox.add(profiles));
     }
 
     /*
@@ -74,7 +74,7 @@ class FriendDropdown extends Dropdown {
     private requestFriendables(): void {
 
         // Extract user search input and get a handle on it.
-        let search = this.txtSearch.value;
+        let search: string = this.txtSearch.value;
 
         // If nothing was entered,
         if (search == "") {
@@ -91,6 +91,6 @@ class FriendDropdown extends Dropdown {
         Ajax.getFriends(null, search,
 
             // When the results return as profile cards, add them to the friends box.
-            profiles => this.friendsBox.add(profiles));
+            (profiles: ProfileCard[]) => this.friendsBox.add(profiles));
     }
 }

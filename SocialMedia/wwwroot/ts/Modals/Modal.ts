@@ -43,14 +43,14 @@ class Modal implements IAppendable {
         this.btnClose = btnClose;
         
         // Set event listener on btnCloseModal to invoke closeHighestModal.
-        this.btnClose.onclick = () => this.closeTopModal();
+        this.btnClose.onclick = (e: MouseEvent) => this.closeTopModal();
         
         // Set click event for window to close top modal.
-        window.addEventListener('click', e => {
+        window.addEventListener('click', (e: MouseEvent) => {
 
             // If the event target has modalBox in it's class list.
             // (the "target" could be behind the elm that was actually clicked. I dont know why, but checking the classlist specifically works)
-            if ((<HTMLElement>e.target).classList.contains("modalBox"))
+            if ((<HTMLElement> e.target).classList.contains("modalBox"))
 
                 // Invoke closeTopModal.
                 this.closeTopModal();

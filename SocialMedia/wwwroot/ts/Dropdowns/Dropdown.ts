@@ -50,14 +50,14 @@ class Dropdown implements IAppendable {
     /*
         Move any open dropdown to the foreground by raising it's zIndex.
     */
-    public static moveToForeground() {
+    public static moveToForeground(): void {
         if (this.openDropdown != null) this.openDropdown.rootElm.style.zIndex = `${Modal.highestZIndex + 1}`;
     }
 
     /*
         Move any open dropdown to the background by lowering it's zIndex.
     */
-    public static moveToBackground() {
+    public static moveToBackground(): void {
         if (this.openDropdown != null) this.openDropdown.rootElm.style.zIndex = `${Modal.highestZIndex - 1}`;
     }
 
@@ -122,8 +122,8 @@ class Dropdown implements IAppendable {
     */
     public toggle(): void {
         
-        let closed = this.rootElm.style.display != 'block';
-        let openAndCovered = !closed && (+this.rootElm.style.zIndex < Modal.highestZIndex);
+        let closed: boolean = this.rootElm.style.display != 'block';
+        let openAndCovered: boolean = !closed && (+this.rootElm.style.zIndex < Modal.highestZIndex);
 
         if      (openAndCovered) Dropdown.moveToForeground();
         else if (closed)         this.open();

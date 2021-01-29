@@ -4,13 +4,13 @@
 
     public static list(profiles: ProfileRecord[]): ProfileCard[] {
         let profileCards: ProfileCard[] = [];
-        profiles.forEach(p => profileCards.push(new ProfileCard(p)));
+        profiles.forEach((profileRecord: ProfileRecord) => profileCards.push(new ProfileCard(profileRecord)));
         return profileCards;
     }
 
     public static changeUserProfilePicture(imageCard: ImageCard): void {
-        ProfileCard.profileCards.forEach(p => {
-            if (p.profile.profileId == User.profileId) p.imageBox.loadImage(ImageCard.copy(imageCard));
+        ProfileCard.profileCards.forEach((profileCard: ProfileCard) => {
+            if (profileCard.profile.profileId == User.profileId) profileCard.imageBox.loadImage(ImageCard.copy(imageCard));
         });
     }
     
@@ -38,7 +38,7 @@
     }
 
     public profile: ProfileRecord;
-    private case: any;
+    private case: {label, icon, nextCase};
 
     private imageBox: ImageBox;
 
@@ -55,7 +55,7 @@
             null,
             true
         );
-        this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', () => { }));
+        this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', (target: ImageCard) => { }));
         this.rootElm.append(this.imageBox.rootElm,
             ViewUtil.tag('span', { classList: 'profileCardName', innerText: this.profile.name }));
         
@@ -64,16 +64,15 @@
             this.rootElm.onclick = e => profileModal.launch(this.profile.profileId)
 
         if (this.profile.relationToUser != 'me') {
-            this.rootElm.oncontextmenu = e => contextMenu.load(e, [
-                new ContextOption(this.case.icon, () => {
-
-                    let id = this.profile.profileId;
+            this.rootElm.oncontextmenu = (e: MouseEvent) => contextMenu.load(e, [
+                new ContextOption(this.case.icon, (e: MouseEvent) => {
+                    
                     switch (this.case.label) {
-                        case 'Accept': Ajax.acceptFriendRequest(id); break;
-                        case 'Request': Ajax.sendFriendRequest(id); break;
+                        case 'Accept': Ajax.acceptFriendRequest(this.profile.profileId); break;
+                        case 'Request': Ajax.sendFriendRequest(this.profile.profileId); break;
                         case 'Cancel': this.remove(); break;
                         case 'Unfriend': confirmPrompt.load('Are you sure you want to unfriend this user?',
-                            confirmation => { if (confirmation) this.remove(); });
+                            (confirmation: boolean) => { if (confirmation) this.remove(); });
                     }
                     this.case = ProfileCard.cases[this.case.nextCase];
                 })
@@ -85,7 +84,7 @@
     // removes posts from this friend in public feed
     // (removing friends from lists would require distinguishing those cards from profile cards that are attached to comments)
     private remove(): void {
-        PostCard.postCards.forEach(p => {
+        PostCard.postCards.forEach((p: PostCard) => {
             if (p.post.profile.profileId == this.profile.profileId) ViewUtil.remove(p.rootElm);
         });
 

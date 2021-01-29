@@ -29,7 +29,7 @@ var ImageDropdown = (function (_super) {
                 });
             });
         };
-        _this.contentElm.onscroll = function () {
+        _this.contentElm.onscroll = function (e) {
             var offset = _this.contentElm.scrollTop + window.innerHeight;
             if (offset >= _this.imageBox.height)
                 _this.imageBox.request(15);
@@ -69,7 +69,7 @@ var ImageDropdown = (function (_super) {
     ImageDropdown.prototype.convert = function (callback) {
         var _this = this;
         this.imageBox.clickCallback = function (target) { return callback(target); };
-        this.imageBox.content.forEach(function (i) { return i.onImageClick = _this.imageBox.clickCallback; });
+        this.imageBox.content.forEach(function (imageCard) { return imageCard.onImageClick = _this.imageBox.clickCallback; });
         this.prompt.innerText = 'Select an Image';
         if (this.rootElm.style.display != "inline" && this.rootElm.style.display != "block")
             _super.prototype.open.call(this);

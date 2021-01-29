@@ -18,20 +18,19 @@ var ProfileCard = (function (_super) {
         _this.profile = profile;
         _this.case = ProfileCard.cases[_this.profile.relationToUser];
         _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, true);
-        _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', function () { }));
+        _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', function (target) { }));
         _this.rootElm.append(_this.imageBox.rootElm, ViewUtil.tag('span', { classList: 'profileCardName', innerText: _this.profile.name }));
         if (_this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me')
             _this.rootElm.onclick = function (e) { return profileModal.launch(_this.profile.profileId); };
         if (_this.profile.relationToUser != 'me') {
             _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, [
-                new ContextOption(_this.case.icon, function () {
-                    var id = _this.profile.profileId;
+                new ContextOption(_this.case.icon, function (e) {
                     switch (_this.case.label) {
                         case 'Accept':
-                            Ajax.acceptFriendRequest(id);
+                            Ajax.acceptFriendRequest(_this.profile.profileId);
                             break;
                         case 'Request':
-                            Ajax.sendFriendRequest(id);
+                            Ajax.sendFriendRequest(_this.profile.profileId);
                             break;
                         case 'Cancel':
                             _this.remove();
@@ -48,13 +47,13 @@ var ProfileCard = (function (_super) {
     }
     ProfileCard.list = function (profiles) {
         var profileCards = [];
-        profiles.forEach(function (p) { return profileCards.push(new ProfileCard(p)); });
+        profiles.forEach(function (profileRecord) { return profileCards.push(new ProfileCard(profileRecord)); });
         return profileCards;
     };
     ProfileCard.changeUserProfilePicture = function (imageCard) {
-        ProfileCard.profileCards.forEach(function (p) {
-            if (p.profile.profileId == User.profileId)
-                p.imageBox.loadImage(ImageCard.copy(imageCard));
+        ProfileCard.profileCards.forEach(function (profileCard) {
+            if (profileCard.profile.profileId == User.profileId)
+                profileCard.imageBox.loadImage(ImageCard.copy(imageCard));
         });
     };
     ProfileCard.prototype.remove = function () {

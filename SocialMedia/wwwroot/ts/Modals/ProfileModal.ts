@@ -116,7 +116,7 @@ class ProfileModal extends Modal {
             this.profileBioWrapper.append(this.btnChangeBio);
 
             // and set click callback of that button.
-            this.btnChangeBio.onclick = () => this.bioEditor.start();
+            this.btnChangeBio.onclick = (e: MouseEvent) => this.bioEditor.start();
         }
 
         // else, this profile is not the current user's so,
@@ -144,13 +144,13 @@ class ProfileModal extends Modal {
         
         // LAZY LOADING IMAGES
         // On image box scroll,
-        this.imageScrollBox.onscroll = () => {
+        this.imageScrollBox.onscroll = (e: UIEvent) => {
 
             // create shortcut,
-            let divHeight = Util.getElmHeight(this.imageScrollBox);
+            let divHeight: number = Util.getElmHeight(this.imageScrollBox);
 
             // take measurement,
-            let offset = this.imageScrollBox.scrollTop + divHeight - 50;
+            let offset: number = this.imageScrollBox.scrollTop + divHeight - 50;
 
             // and if threshold is surpassed, request more images.
             if (offset >= divHeight) this.imagesBox.request(5);
@@ -176,13 +176,13 @@ class ProfileModal extends Modal {
 
         // LAZY LOADING POSTS
         // Set scroll callback for modalCon.
-        this.rootElm.onscroll = () => {
+        this.rootElm.onscroll = (e: UIEvent) => {
 
             // Make shortcut.
-            let divHeight = Util.getDocumentHeight();
+            let divHeight: number = Util.getDocumentHeight();
 
             // Take measurment.
-            let offset = this.rootElm.scrollTop + window.innerHeight + 2000;
+            let offset: number = this.rootElm.scrollTop + window.innerHeight + 2000;
 
             // If threshold was surpassed, request more posts.
             if (offset >= divHeight) this.postBox.request();

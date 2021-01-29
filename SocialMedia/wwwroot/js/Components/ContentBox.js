@@ -43,15 +43,15 @@ var ContentBox = (function () {
             content = [content];
         if (this.loading && content.length < this.take)
             this.moreContent = false;
-        content.forEach(function (c) {
-            if (c != null) {
+        content.forEach(function (content) {
+            if (content != null) {
                 if (prepend == true) {
-                    _this.content.unshift(c);
-                    _this.rootElm.prepend(c.rootElm);
+                    _this.content.unshift(content);
+                    _this.rootElm.prepend(content.rootElm);
                 }
                 else {
-                    _this.content.push(c);
-                    _this.rootElm.append(c.rootElm);
+                    _this.content.push(content);
+                    _this.rootElm.append(content.rootElm);
                 }
             }
         });

@@ -25,8 +25,8 @@ class ConfirmPrompt {
         this.contentElm = contentElm;
 
         // Connect yes and no buttons to confirm(), but load a different value into each.
-        btnYes.onclick = () => this.respond(true)
-        btnNo.onclick = () => this.respond(false)
+        btnYes.onclick = (e: MouseEvent) => this.respond(true)
+        btnNo.onclick = (e: MouseEvent) => this.respond(false)
     }
 
     /*
@@ -60,7 +60,7 @@ class ConfirmPrompt {
         this.close();
     }
 
-    private open() {
+    private open(): void {
 
         // Show modal.
         ViewUtil.show(this.backgroundElm);
@@ -69,7 +69,7 @@ class ConfirmPrompt {
         document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
     }
 
-    private close() {
+    private close(): void {
 
         // Hide modal.
         ViewUtil.hide(this.backgroundElm);

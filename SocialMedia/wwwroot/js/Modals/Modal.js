@@ -16,7 +16,7 @@ var Modal = (function () {
         this.frameTemplate = frameTemplate;
         this.frameContainer = frameContainer;
         this.btnClose = btnClose;
-        this.btnClose.onclick = function () { return _this.closeTopModal(); };
+        this.btnClose.onclick = function (e) { return _this.closeTopModal(); };
         window.addEventListener('click', function (e) {
             if (e.target.classList.contains("modalBox"))
                 _this.closeTopModal();

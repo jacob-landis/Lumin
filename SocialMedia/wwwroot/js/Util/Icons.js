@@ -2,9 +2,9 @@ var Icons = (function () {
     function Icons() {
     }
     Icons.buildIcon = function (suffixes) {
-        var elm = ViewUtil.tag('div', { classList: 'icon' });
-        suffixes.forEach(function (s) { return elm.append(ViewUtil.tag('i', { classList: "fa fa-" + s })); });
-        return elm;
+        var iconRootElm = ViewUtil.tag('div', { classList: 'icon' });
+        suffixes.forEach(function (suffix) { return iconRootElm.append(ViewUtil.tag('i', { classList: "fa fa-" + suffix })); });
+        return iconRootElm;
     };
     Icons.acceptRequest = function () { return Icons.buildIcon(['check icon-sm', 'user']); };
     Icons.cancelRequest = function () { return Icons.buildIcon(['times icon-sm', 'user']); };

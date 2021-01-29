@@ -104,19 +104,19 @@ class ContentBox implements IAppendable {
         if (this.loading && content.length < this.take) this.moreContent = false;
 
         // Loop through the provided content,
-        content.forEach(c => {
+        content.forEach((content: IAppendable) => {
 
             // If content is not null.
-            if (c != null) {
+            if (content != null) {
                 
                 // Unshift or push content to this.content and prepend or append its root element to this content box's root element.
                 if (prepend == true) {
-                    this.content.unshift(c);
-                    this.rootElm.prepend(c.rootElm);
+                    this.content.unshift(content);
+                    this.rootElm.prepend(content.rootElm);
                 }
                 else {
-                    this.content.push(c);
-                    this.rootElm.append(c.rootElm);
+                    this.content.push(content);
+                    this.rootElm.append(content.rootElm);
                 }
             }
         });

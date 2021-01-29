@@ -64,13 +64,13 @@ class FullSizeImageModal extends Modal {
         this.imageControls = [this.imageCount, this.btnNext, this.btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
-        this.imageCon = new ImageBox(imageBoxElm, imageClassList, (target: ImageCard)=> this.toggleControls());
+        this.imageCon = new ImageBox(imageBoxElm, imageClassList, (target: ImageCard) => this.toggleControls());
         
         // Set the callback of btnPrev to invoke requestImage with a deincrement.
-        this.btnPrev.onclick = () => this.requestImage(-1);
+        this.btnPrev.onclick = (e: MouseEvent) => this.requestImage(-1);
 
         // Set the callback of btnPrev to invoke requestImage with an increment.
-        this.btnNext.onclick =()=> this.requestImage(1);
+        this.btnNext.onclick = (e: MouseEvent) => this.requestImage(1);
     }
 
     /*
@@ -112,10 +112,10 @@ class FullSizeImageModal extends Modal {
         Ajax.getProfileImagesCount(this.profileId,
 
             // When the count arrives.
-            (imageCount: number) => {
+            (imageCount: string) => {
 
                 // Get a handle on the count.
-                this.profileImagesCount = imageCount;
+                this.profileImagesCount = +imageCount;
 
                 // Update the image count (now that we have the current index and total count of the new collection).
                 this.updateImageCount();
@@ -144,7 +144,7 @@ class FullSizeImageModal extends Modal {
         super.open() moves any dropdown to the foreground. This undoes that by moving it to the background.
         This is used so the image dropdown can be used as a pocket for full size image modal and so other dropdowns don't get in the way.
     */
-    private openOverrided() {
+    private openOverrided(): void {
         super.open();
 
         // Move any dropdown to background.
@@ -154,7 +154,7 @@ class FullSizeImageModal extends Modal {
     /*
         Closes after reseting this modal.
     */
-    public close() {
+    public close(): void {
 
         // Reset 
         this.showControls();
@@ -192,10 +192,10 @@ class FullSizeImageModal extends Modal {
             this.updateImageCount();
 
             // Request a list of images with a 1 long range. This is the only way to request by index.
-            Ajax.getProfileImages(this.profileId, this.index, 1, '', () => { },
+            Ajax.getProfileImages(this.profileId, this.index, 1, '', (target: ImageCard) => { },
 
                 // When the array of 1 image card arrives.
-                (imageCards) => {
+                (imageCards: ImageCard[]) => {
                     // Load that image card into the fullsize image container.
                     this.imageCon.load(imageCards[0].image.imageId, null, (target: ImageCard) => this.toggleControls());
                 }
@@ -213,14 +213,14 @@ class FullSizeImageModal extends Modal {
     private toggleControls(): void { this.btnNext.style.display != 'none' ? this.hideControls() : this.showControls(); }
 
     // Show the control elms.
-    private showControls() {
+    private showControls(): void {
         ViewUtil.show(imageDropdown.rootElm);
-        this.imageControls.forEach(c => ViewUtil.show(c));
+        this.imageControls.forEach((control: HTMLElement) => ViewUtil.show(control));
     }
 
     // Hide the control elms.
-    private hideControls() {
+    private hideControls(): void {
         ViewUtil.hide(imageDropdown.rootElm);
-        this.imageControls.forEach(c => ViewUtil.hide(c));
+        this.imageControls.forEach((control: HTMLElement) => ViewUtil.hide(control));
     }
 }
