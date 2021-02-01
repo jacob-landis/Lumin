@@ -4,8 +4,8 @@ var ConfirmPrompt = (function () {
         this.lblPrompt = lblPrompt;
         this.backgroundElm = backgroundElm;
         this.contentElm = contentElm;
-        btnYes.onclick = function () { return _this.respond(true); };
-        btnNo.onclick = function () { return _this.respond(false); };
+        btnYes.onclick = function (e) { return _this.respond(true); };
+        btnNo.onclick = function (e) { return _this.respond(false); };
     }
     ConfirmPrompt.prototype.load = function (message, onUserDecision) {
         this.onUserDecision = onUserDecision;

@@ -41,7 +41,7 @@ class Main {
             document.getElementById('btnConfirmNo')
         );
 
-        // MODALS
+        // MODALS --------------------------------------------------
         Modal.initialize(
             document.getElementById('modalFrameTemplate'),
             document.getElementById('modalFrameContainer'),

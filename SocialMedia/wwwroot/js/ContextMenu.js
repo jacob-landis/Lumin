@@ -4,14 +4,14 @@ var ContextMenu = (function () {
         this.backgroundElm = backgroundElm;
         this.contentElm = contentElm;
         this.optionsBox = new ContentBox(contentElm);
-        window.addEventListener('scroll', function () {
+        window.addEventListener('scroll', function (e) {
             if (_this.optionsBox.rootElm.style.display != "none")
                 _this.close();
         });
-        this.backgroundElm.onclick = function () {
+        this.backgroundElm.onclick = function (e) {
             _this.close();
         };
-        this.optionsBox.rootElm.onclick = function () {
+        this.optionsBox.rootElm.onclick = function (e) {
             _this.close();
         };
     }

@@ -28,11 +28,11 @@ var Main = (function () {
         Dropdown.initialize(document.getElementById('dropdownFrameTemplate'), document.getElementById('dropdownFrameContainer'));
         imageDropdown = new ImageDropdown(document.getElementById('imageDropdown'), document.getElementById('imageDropDownContent'), document.getElementById('selectImages'), document.getElementById('selectImagePrompt'), document.getElementById('imageModalUploadImage'));
         friendDropdown = new FriendDropdown(document.getElementById('friendsDropdown'), document.getElementById('friendDropdownContent'), document.getElementById('txtSearchFriends'), document.getElementById('btnSearchFriends'), document.getElementById('friends'));
-        document.getElementById('btnOpenHelpModal').onclick = function () { return helpModal.open(); };
-        document.getElementById('btnOpenUserProfileModal').onclick = function () { return profileModal.launch(User.profileId); };
-        document.getElementById('btnCreatePost').onclick = function () { return createPostModal.load(); };
-        document.getElementById('btnShowFriends').onclick = function () { return friendDropdown.toggle(); };
-        document.getElementById('btnShowImages').onclick = function () { return imageDropdown.toggle(); };
+        document.getElementById('btnOpenHelpModal').onclick = function (e) { return helpModal.open(); };
+        document.getElementById('btnOpenUserProfileModal').onclick = function (e) { return profileModal.launch(User.profileId); };
+        document.getElementById('btnCreatePost').onclick = function (e) { return createPostModal.load(); };
+        document.getElementById('btnShowFriends').onclick = function (e) { return friendDropdown.toggle(); };
+        document.getElementById('btnShowImages').onclick = function (e) { return imageDropdown.toggle(); };
     };
     return Main;
 }());

@@ -31,19 +31,19 @@
 <script src="~/js/Dropdowns/ImageDropdown.js"></script>
 <script src="~/js/Dropdowns/FriendDropdown.js"></script>
 
-<script src="~/js/TagBuilders/Card.js"></script>
-<script src="~/js/TagBuilders/CommentCard.js"></script>
-<script src="~/js/TagBuilders/LikeCard.js"></script>
-<script src="~/js/TagBuilders/PostCard.js"></script>
-<script src="~/js/TagBuilders/ProfileCard.js"></script>
-<script src="~/js/TagBuilders/ImageCard.js"></script>
-<script src="~/js/TagBuilders/ContextOption.js"></script>
+<script src="~/js/Cards/Card.js"></script>
+<script src="~/js/Cards/CommentCard.js"></script>
+<script src="~/js/Cards/LikeCard.js"></script>
+<script src="~/js/Cards/PostCard.js"></script>
+<script src="~/js/Cards/ProfileCard.js"></script>
+<script src="~/js/Cards/ImageCard.js"></script>
 
 <script src="~/js/Main.js"></script>
 <script src="~/js/User.js"></script>
 <script src="~/js/Ajax.js"></script>
 <script src="~/js/ConfirmPrompt.js"></script>
 <script src="~/js/ContextMenu.js"></script>
+<script src="~/js/ContextOption.js"></script>
 <script src="~/js/PublicPosts.js"></script>
 <script src="~/js/IAppendable.js"></script>
 @* END JS INCLUSION *@
@@ -225,7 +225,6 @@
 </div>
 @* ------------------------------------------/STANDALONE COMPONENTS------------------------------------------ *@
 
-
 @*---------------------------------------------------MODALS----------------------------------------------------*@
 @*
     Every modals content is nested inside two divs.
@@ -351,7 +350,7 @@
 @* FULLSIZE IMAGE MODAL *@
 @* Used for viewing images full screen. Collections of images can be navigated through with the left right buttons. *@
 <div id="fullSizeImageModalContent" class="my-modal-content">
-    
+
     @* Btn previous image. *@
     <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
 

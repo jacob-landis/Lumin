@@ -14,7 +14,8 @@ var __extends = (this && this.__extends) || (function () {
 var CommentCard = (function (_super) {
     __extends(CommentCard, _super);
     function CommentCard(comment) {
-        var _this = _super.call(this, ViewUtil.tag('div', { classList: 'comment' })) || this;
+        var _this = _super.call(this, ViewUtil.copy(CommentCard.commentCardTemplateElm)) || this;
+        _this = _super.call(this, ViewUtil.tag('div', { classList: 'comment' })) || this;
         _this.comment = comment;
         var mainSection = ViewUtil.tag('div', { classList: 'commentMainSection' });
         var optsSection = ViewUtil.tag('div', { classList: 'commentOptsSection' });
@@ -53,6 +54,9 @@ var CommentCard = (function (_super) {
         var commentCards = [];
         comments.forEach(function (comment) { return commentCards.push(new CommentCard(comment)); });
         return commentCards;
+    };
+    CommentCard.initialize = function (commentCardTemplateElm) {
+        this.commentCardTemplateElm = commentCardTemplateElm;
     };
     CommentCard.prototype.remove = function () {
         var _this = this;
