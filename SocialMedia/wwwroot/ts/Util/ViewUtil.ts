@@ -27,6 +27,17 @@
     }
 
 
+//_____ TAG READERS
+
+    public static isDisplayed(element: HTMLElement): boolean {
+        return (
+            element.style.display == 'inline'       ||
+            element.style.display == 'block'        ||
+            element.style.display == 'inline-flex'  ||
+            element.style.display == 'flex'
+        );
+    }
+
 //_____ TAG MANIPULATORS
 
     // Add the provided classList to the provided element.
@@ -65,7 +76,7 @@
         else show it.
     */
     public static toggle(elm: HTMLElement, displayType: string = 'inline'): void {
-        if (elm.style.display != 'none') this.hide(elm);
+        if (ViewUtil.isDisplayed(elm)) this.hide(elm);
         else this.show(elm, displayType);
     }
 }

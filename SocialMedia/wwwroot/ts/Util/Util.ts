@@ -25,7 +25,7 @@
             b.clientHeight, d.clientHeight
         );
     }
-
+    
     public static formatDateTime(dateTime: string): string {
 
         let months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -51,7 +51,7 @@
             return n + 'th';
         }
     }
-
+    
     public static filterNulls(array: any[]): void {
         array.filter((index: any) => index != null);
     }

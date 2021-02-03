@@ -25,7 +25,7 @@ class ContextMenu {
         window.addEventListener('scroll', (e: UIEvent) => {
 
             // When window is scrolled, if this modal is open, close it.
-            if (this.optionsBox.rootElm.style.display != "none") this.close();
+            if (ViewUtil.isDisplayed(this.optionsBox.rootElm)) this.close();
         });
 
         // Click-off to close.
@@ -73,7 +73,7 @@ class ContextMenu {
         ViewUtil.show(this.backgroundElm);
     }
 
-    private close(): void {
+    public close(): void {
 
         // Hide modal.
         ViewUtil.hide(this.backgroundElm);

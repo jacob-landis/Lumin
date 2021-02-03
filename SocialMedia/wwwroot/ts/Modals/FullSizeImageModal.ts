@@ -207,10 +207,10 @@ class FullSizeImageModal extends Modal {
     private updateImageCount(): void { this.imageCount.innerText = `${this.index + 1} / ${this.profileImagesCount}`; }
 
     // Toggle the visibility of the close button.
-    private toggleClose(): void { Modal.btnClose.style.display != 'none' ? ViewUtil.hide(Modal.btnClose) : ViewUtil.show(Modal.btnClose); }
+    private toggleClose(): void { ViewUtil.isDisplayed(Modal.btnClose) ? ViewUtil.hide(Modal.btnClose) : ViewUtil.show(Modal.btnClose); }
 
     // Toggle the visibility of the control elms.
-    private toggleControls(): void { this.btnNext.style.display != 'none' ? this.hideControls() : this.showControls(); }
+    private toggleControls(): void { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); }
 
     // Show the control elms.
     private showControls(): void {

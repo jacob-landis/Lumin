@@ -33,6 +33,21 @@ class CommentCard extends Card {
 
     /*
         Contructs a new comment card JS obj and HTML elm.
+
+        Example:
+        <div class="comment">
+            <div class="commentMainSection">
+                <div class="profileCard"></div>   // ProfileCard root element
+                <div class="commentContentSection">
+                    <div class="editor comment-editor"></div>   // Editor root element (contains caption element)
+                </div>
+                <div class="likeCard"></div>   // LikeCard root element
+            </div>
+            <div class="commentOptsSection">
+                <i class="commentOpts threeDots fa fa-ellipsis-v"></i>
+            </div>
+        </div>
+
     */
     public constructor(comment: CommentRecord) {
         

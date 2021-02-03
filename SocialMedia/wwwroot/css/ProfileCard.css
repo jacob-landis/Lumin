@@ -1,5 +1,11 @@
 ﻿.profileCard {
     cursor: pointer;
+    padding: 4px;
+    border-radius: 100px;
+}
+
+.profileCard:hover {
+    background: lightgray;
 }
 
 .profileCardName {

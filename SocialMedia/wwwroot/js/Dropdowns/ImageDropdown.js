@@ -71,7 +71,7 @@ var ImageDropdown = (function (_super) {
         this.imageBox.clickCallback = function (target) { return callback(target); };
         this.imageBox.content.forEach(function (imageCard) { return imageCard.onImageClick = _this.imageBox.clickCallback; });
         this.prompt.innerText = 'Select an Image';
-        if (this.rootElm.style.display != "inline" && this.rootElm.style.display != "block")
+        if (!ViewUtil.isDisplayed(this.rootElm))
             _super.prototype.open.call(this);
     };
     return ImageDropdown;

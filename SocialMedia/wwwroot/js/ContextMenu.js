@@ -5,7 +5,7 @@ var ContextMenu = (function () {
         this.contentElm = contentElm;
         this.optionsBox = new ContentBox(contentElm);
         window.addEventListener('scroll', function (e) {
-            if (_this.optionsBox.rootElm.style.display != "none")
+            if (ViewUtil.isDisplayed(_this.optionsBox.rootElm))
                 _this.close();
         });
         this.backgroundElm.onclick = function (e) {

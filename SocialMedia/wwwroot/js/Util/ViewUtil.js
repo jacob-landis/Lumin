@@ -30,6 +30,12 @@ var ViewUtil = (function () {
         }
         return newElement;
     };
+    ViewUtil.isDisplayed = function (element) {
+        return (element.style.display == 'inline' ||
+            element.style.display == 'block' ||
+            element.style.display == 'inline-flex' ||
+            element.style.display == 'flex');
+    };
     ViewUtil.addClassList = function (classList, elm) {
         var classListArray = classList.split(' ');
         classListArray.forEach(function (c) { return elm.classList.add(c); });
@@ -55,7 +61,7 @@ var ViewUtil = (function () {
     };
     ViewUtil.toggle = function (elm, displayType) {
         if (displayType === void 0) { displayType = 'inline'; }
-        if (elm.style.display != 'none')
+        if (ViewUtil.isDisplayed(elm))
             this.hide(elm);
         else
             this.show(elm, displayType);

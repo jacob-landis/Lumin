@@ -1,17 +1,8 @@
 ﻿/*
     This class contains logic for creating context menu options.
+    It uses an existing element as it's root element rather than creating it's own, so that icons can be turned into context options.
 */
 class ContextOption implements IAppendable {
-
-    private static rootElmClassList: string;
-
-    public static initialize(rootElmClassList: string) {
-        this.rootElmClassList = rootElmClassList;
-    }
-
-    // /STATIC
-    // ---------------------------------------------------------------------------------------------------------------
-    // NON-STATIC
 
     public rootElm: HTMLElement;
 
@@ -19,7 +10,7 @@ class ContextOption implements IAppendable {
         
         this.rootElm = rootElm;
         
-        this.rootElm.classList.add(ContextOption.rootElmClassList);
+        this.rootElm.classList.add('context-option');
         this.rootElm.onclick = onOptionClick;
     }
 }

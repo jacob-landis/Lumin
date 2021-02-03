@@ -24,6 +24,14 @@
     private countDisplayElm: HTMLElement;
     private btnLike: HTMLElement;
 
+    /*
+        Example:
+        <div class="likeCard">
+            <i class="fa fa-thumbs-up likeIcon hasLiked"></i>
+            <div class="likeCount">1</div>
+            <div class="contentPostDate">Jan 21st, 2021 at 12:10 pm</div>
+        </div>
+    */
     constructor(likes: LikesRecord, dateTime: string) {
         
         super(ViewUtil.tag('div', { classList: 'likeCard' }));

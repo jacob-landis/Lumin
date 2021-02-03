@@ -166,6 +166,6 @@ class ImageDropdown extends Dropdown {
         this.prompt.innerText = 'Select an Image';
 
         // If this is closed, open.
-        if (this.rootElm.style.display != "inline" && this.rootElm.style.display != "block") super.open();
+        if (!ViewUtil.isDisplayed(this.rootElm)) super.open();
     }
 }

@@ -90,6 +90,9 @@ class Dropdown implements IAppendable {
         Show the dropdown after closing the open one.
     */
     public open(): void {
+
+        // Close context menu, even if it's already closed.
+        contextMenu.close();
         
         // If a dropdown is open, close it.
         if (Dropdown.openDropdown != null) Dropdown.openDropdown.close();
@@ -110,6 +113,9 @@ class Dropdown implements IAppendable {
     */ 
     public close(): void {
 
+        // Close context menu, even if it's already closed.
+        contextMenu.close();
+
         // Hide the dropdown's root element.
         ViewUtil.hide(this.rootElm);
         
@@ -122,7 +128,7 @@ class Dropdown implements IAppendable {
     */
     public toggle(): void {
         
-        let closed: boolean = this.rootElm.style.display != 'block';
+        let closed: boolean = !ViewUtil.isDisplayed(this.rootElm);
         let openAndCovered: boolean = !closed && (+this.rootElm.style.zIndex < Modal.highestZIndex);
 
         if      (openAndCovered) Dropdown.moveToForeground();

@@ -28,6 +28,39 @@
     private postHeading: HTMLElement;
     private editIcon: HTMLElement;
 
+    /*
+        Example:
+        <div class="postCard">
+            <div class="postSection">
+                <div class="postHeading">
+                    <div class="profileCardSlot">
+                        <div class="profileCard"></div>   // ProfileCard root element
+                    </div>
+                    <div class="detailsSlot">
+                        <div class="likeCard"></div>   // LikeCard root element
+                    </div>
+                    <div class="postOptsSlot">
+                        <i class="btnPostOpts threeDots fa fa-ellipsis-v"></i>
+                    </div>
+                </div>
+                <div class="captionWrapper noImageCaptionWrapper">
+                    <div class="editor post-caption-editor"></div>   // Editor root element (contains caption element)
+                </div>
+                <div class="postImageWrapper image-box"></div>
+            </div>
+            <div class="commentSection">
+                <div class="commentInputWrapper">
+                    <textarea class="txtComment"></textarea>
+                    <button class="btnComment">Comment</button>
+                </div>
+                <div class="errorSlot"></div>
+                <div class="commentCountSlot">
+                    <div>No Comments</div>
+                </div>
+                <div class="content-box"></div>
+            </div>
+        </div>
+    */
     public constructor(post: PostRecord) {
 
         super(ViewUtil.tag('div', { classList: 'postCard' }));
@@ -50,7 +83,7 @@
         this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
 
-        this.commentsBox = new ContentBox(ViewUtil.tag('div'), 30, (skip: number, take: number) =>
+        this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), 30, (skip: number, take: number) =>
             Ajax.getComments(this.post.postId, skip, take, (comments: CommentCard[]) => {
 
                 // Determine if this is the first batch.
@@ -199,9 +232,9 @@
 
         // The desired height of the comments box.
         let targetHeight: number = contentHeight - inputHeight;
-
-        // Set height of comment box to the target height, or at least 250px.
-        this.commentsBox.height = targetHeight > 250 ? targetHeight : 250;
+        
+        // Set height of comment box to the target height. CSS rule (min-height: 250px;) is applied to this.commentBox.rootElm.
+        this.commentsBox.height = targetHeight;
 
         // If there is an observer (if the post has an image), disconnect the observer.
         if (this.observer != undefined) this.observer.disconnect();

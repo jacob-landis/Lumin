@@ -74,8 +74,8 @@ var FullSizeImageModal = (function (_super) {
         }
     };
     FullSizeImageModal.prototype.updateImageCount = function () { this.imageCount.innerText = this.index + 1 + " / " + this.profileImagesCount; };
-    FullSizeImageModal.prototype.toggleClose = function () { Modal.btnClose.style.display != 'none' ? ViewUtil.hide(Modal.btnClose) : ViewUtil.show(Modal.btnClose); };
-    FullSizeImageModal.prototype.toggleControls = function () { this.btnNext.style.display != 'none' ? this.hideControls() : this.showControls(); };
+    FullSizeImageModal.prototype.toggleClose = function () { ViewUtil.isDisplayed(Modal.btnClose) ? ViewUtil.hide(Modal.btnClose) : ViewUtil.show(Modal.btnClose); };
+    FullSizeImageModal.prototype.toggleControls = function () { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); };
     FullSizeImageModal.prototype.showControls = function () {
         ViewUtil.show(imageDropdown.rootElm);
         this.imageControls.forEach(function (control) { return ViewUtil.show(control); });

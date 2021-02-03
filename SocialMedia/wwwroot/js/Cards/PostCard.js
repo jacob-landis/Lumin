@@ -24,7 +24,7 @@ var PostCard = (function (_super) {
         _this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
         _this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
-        _this.commentsBox = new ContentBox(ViewUtil.tag('div'), 30, function (skip, take) {
+        _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), 30, function (skip, take) {
             return Ajax.getComments(_this.post.postId, skip, take, function (comments) {
                 var isFirstCommentsBatch = _this.commentsBox.content.length == 0;
                 _this.commentsBox.add(comments);
@@ -130,7 +130,7 @@ var PostCard = (function (_super) {
         var inputHeight = this.commentInputWrapper.clientHeight;
         var contentHeight = this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight;
         var targetHeight = contentHeight - inputHeight;
-        this.commentsBox.height = targetHeight > 250 ? targetHeight : 250;
+        this.commentsBox.height = targetHeight;
         if (this.observer != undefined)
             this.observer.disconnect();
     };

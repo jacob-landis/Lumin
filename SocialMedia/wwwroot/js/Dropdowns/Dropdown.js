@@ -20,6 +20,7 @@ var Dropdown = (function () {
             this.openDropdown.rootElm.style.zIndex = "" + (Modal.highestZIndex - 1);
     };
     Dropdown.prototype.open = function () {
+        contextMenu.close();
         if (Dropdown.openDropdown != null)
             Dropdown.openDropdown.close();
         Dropdown.openDropdown = this;
@@ -27,11 +28,12 @@ var Dropdown = (function () {
         ViewUtil.show(this.rootElm, 'block');
     };
     Dropdown.prototype.close = function () {
+        contextMenu.close();
         ViewUtil.hide(this.rootElm);
         Dropdown.openDropdown = null;
     };
     Dropdown.prototype.toggle = function () {
-        var closed = this.rootElm.style.display != 'block';
+        var closed = !ViewUtil.isDisplayed(this.rootElm);
         var openAndCovered = !closed && (+this.rootElm.style.zIndex < Modal.highestZIndex);
         if (openAndCovered)
             Dropdown.moveToForeground();

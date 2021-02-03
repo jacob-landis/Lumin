@@ -35,6 +35,10 @@
         this.rootElm.onclick = (event: MouseEvent) => onImageClick(this);
     }
 
+    /*
+        Example:
+        <img src="{image data}">
+    */
     public constructor(image: ImageRecord, classList?: string, onImageClick?: (target: ImageCard) => void) {
         
         super(ViewUtil.tag('img', {

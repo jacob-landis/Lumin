@@ -89,9 +89,12 @@ class Modal implements IAppendable {
     */
     public open(): void {
 
+        // Close context menu, even if it's already closed.
+        contextMenu.close();
+
         // Refresh modal.
         // If open, close.
-        if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block") this.close();
+        if (ViewUtil.isDisplayed(this.rootElm)) this.close();
 
         // Show modal.
         ViewUtil.show(this.rootElm)
@@ -118,8 +121,11 @@ class Modal implements IAppendable {
     */
     public close(): void {
 
+        // Close context menu, even if it's already closed.
+        contextMenu.close();
+
         // If open.
-        if (this.rootElm.style.display == "inline" || this.rootElm.style.display == "block") {
+        if (ViewUtil.isDisplayed(this.rootElm)) {
 
             // Hide modal.
             ViewUtil.hide(this.rootElm);

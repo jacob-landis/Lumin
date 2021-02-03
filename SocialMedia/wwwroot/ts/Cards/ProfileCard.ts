@@ -42,6 +42,15 @@
 
     private imageBox: ImageBox;
 
+    /*
+        Example:
+        <div class="profileCard">
+            <div class="profileCardThumbWrapper image-box">
+                <img class="sqr" src="{image data}">
+            </div>
+            <span class="profileCardName">Jane Doe</span>
+        </div>
+    */
     public constructor(profile: ProfileRecord) {
 
         super(ViewUtil.tag('div', { classList: 'profileCard' }));
