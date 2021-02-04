@@ -20,8 +20,14 @@ var ContextMenu = (function () {
         this.optionsBox.add(options);
         this.open();
         e.preventDefault();
-        this.optionsBox.rootElm.style.left = "" + (e.clientX - this.optionsBox.width);
-        this.optionsBox.rootElm.style.top = "" + (e.clientY - this.optionsBox.height);
+        if ((e.clientY + this.optionsBox.height) > window.innerHeight)
+            this.optionsBox.rootElm.style.top = "" + (e.clientY - this.optionsBox.height);
+        else
+            this.optionsBox.rootElm.style.top = "" + e.clientY;
+        if ((e.clientX + this.optionsBox.width) > window.innerWidth)
+            this.optionsBox.rootElm.style.left = "" + (e.clientX - this.optionsBox.width);
+        else
+            this.optionsBox.rootElm.style.left = "" + e.clientX;
     };
     ContextMenu.prototype.open = function () {
         ViewUtil.show(this.backgroundElm);

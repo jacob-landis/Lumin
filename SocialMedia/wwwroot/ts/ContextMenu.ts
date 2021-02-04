@@ -62,9 +62,22 @@ class ContextMenu {
         // Prevent the default r-click action.
         e.preventDefault();
 
-        // Reposition this modal tag to the position of the mouse.
-        this.optionsBox.rootElm.style.left = `${e.clientX - this.optionsBox.width}`;
-        this.optionsBox.rootElm.style.top = `${e.clientY - this.optionsBox.height}`;
+        // Reposition menu to cursor position and constrain menu to window bounds.
+        // If click position was too close to bottom.
+        if ((e.clientY + this.optionsBox.height) > window.innerHeight)
+            // Postion menu above cursor.
+            this.optionsBox.rootElm.style.top = `${e.clientY - this.optionsBox.height}`;
+        else
+            // Postion menu below cursor.
+            this.optionsBox.rootElm.style.top = `${e.clientY}`;
+
+        // If click postion was too close to the right.
+        if ((e.clientX + this.optionsBox.width) > window.innerWidth)
+            // Postion menu to the left of the cursor.
+            this.optionsBox.rootElm.style.left = `${e.clientX - this.optionsBox.width}`;
+        else
+            // Postion menu to the right of the cursor.
+            this.optionsBox.rootElm.style.left = `${e.clientX}`;
     }
 
     private open(): void {
