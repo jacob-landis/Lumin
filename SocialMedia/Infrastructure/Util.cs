@@ -98,9 +98,8 @@ namespace SocialMedia.Infrastructure
             new ProfileModel
             {
                 ProfileId = profile.ProfileId,
-
-                // Combine first and last name. Client never needs to distinguish the two.
-                Name = profile.FirstName + " " + profile.LastName,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
 
                 // Prep profile picture for transmission.
                 ProfilePicture = GetRawImage(image, true),

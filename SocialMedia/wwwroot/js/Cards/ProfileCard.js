@@ -19,7 +19,8 @@ var ProfileCard = (function (_super) {
         _this.case = ProfileCard.cases[_this.profile.relationToUser];
         _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, true);
         _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', function (target) { }));
-        _this.rootElm.append(_this.imageBox.rootElm, ViewUtil.tag('span', { classList: 'profileCardName', innerText: _this.profile.name }));
+        _this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: (_this.profile.firstName + " " + _this.profile.lastName) });
+        _this.rootElm.append(_this.imageBox.rootElm, _this.txtName);
         if (_this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me')
             _this.rootElm.onclick = function (e) { return profileModal.launch(_this.profile.profileId); };
         if (_this.profile.relationToUser != 'me') {
@@ -54,6 +55,12 @@ var ProfileCard = (function (_super) {
         ProfileCard.profileCards.forEach(function (profileCard) {
             if (profileCard.profile.profileId == User.profileId)
                 profileCard.imageBox.loadImage(ImageCard.copy(imageCard));
+        });
+    };
+    ProfileCard.changeUserProfileName = function (firstName, lastName) {
+        ProfileCard.profileCards.forEach(function (profileCard) {
+            if (profileCard.profile.profileId == User.profileId)
+                profileCard.txtName.innerText = firstName + " " + lastName;
         });
     };
     ProfileCard.prototype.remove = function () {

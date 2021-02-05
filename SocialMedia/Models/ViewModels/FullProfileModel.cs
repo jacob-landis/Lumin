@@ -8,9 +8,8 @@ namespace SocialMedia.Models.ViewModels
     public class FullProfileModel
     {
         public int ProfileId { get; set; }
-
-        // First and last name of profile.
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Bio { get; set; }
 
         // Prepped image.

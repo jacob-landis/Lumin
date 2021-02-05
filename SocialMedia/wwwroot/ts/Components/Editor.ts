@@ -14,7 +14,7 @@ class Editor implements IAppendable {
     public rootElm: HTMLElement;
 
     // XXX Look into event bubbling. That is why elements are being triggered in the background. XXX
-    private targetHandles: HTMLElement[];
+    protected targetHandles: HTMLElement[];
 
     // Off-click callback. Toggled between a function that does nothing and a function that invokes cancel().
     // It is a function that does nothing when no edit is happening.
@@ -23,16 +23,16 @@ class Editor implements IAppendable {
     private windowClickFunc: (e: MouseEvent) => void = (e: MouseEvent) => { };
 
     // Length limit of text.
-    private maxLength: number;
+    protected maxLength: number;
 
     // A function that handles the edit results.
     private callback: (result: string) => void;
 
     // A content box for error messages.
-    private errorBox: ContentBox;
+    protected errorBox: ContentBox;
 
     // The HTML text elm that display the main text and is edited.
-    private textBox: HTMLElement;
+    protected textBox: HTMLElement;
 
     // A handle on the version of the text at the start of an edit.
     // Used to revert changes if the operation is canceled.
@@ -69,7 +69,7 @@ class Editor implements IAppendable {
         The edit result is sent to the callback.
         The result is meant to be sent to the host in an update request.
     */
-    constructor(btnStart: HTMLElement, text: string, classList: string, maxLength: number, callback: (result: string) => void) {
+    constructor(btnStart: HTMLElement, text: string, classList: string, maxLength: number, callback?: (result: string) => void) {
 
         btnStart.onclick = () => this.start();
         // XXX the functionality of btnStart(() => editor.start()) should be given in here.
@@ -103,8 +103,7 @@ class Editor implements IAppendable {
         // Append control buttons to control button container.
         this.btnSlot.append(this.btnConfirm, this.btnCancel);
 
-        // Append the error box, text box, and control buttons container to this editors main HTML tag.
-        this.rootElm.append(this.errorBox.rootElm, this.textBox, this.btnSlot);
+        this.fillRootElm();
 
         // Imbed functionality in the control buttons.
         this.btnConfirm.onclick = (e: MouseEvent) => this.send()
@@ -126,6 +125,14 @@ class Editor implements IAppendable {
 
         // At this point, this.windowClickFunc is an empty function, but once it's value is replaced by a real function, it can catch the clicks.
         window.addEventListener('click', (e: MouseEvent) => this.windowClickFunc(e));
+    }
+
+    protected fillRootElm(textBox2: HTMLElement = null): void {
+        // Append the error box, text box, and control buttons container to this editors main HTML tag.
+        if (textBox2 == null)
+            this.rootElm.append(this.errorBox.rootElm, this.textBox, this.btnSlot);
+        else
+            this.rootElm.append(this.errorBox.rootElm, this.textBox, textBox2, this.btnSlot);
     }
     
     /* 
@@ -183,13 +190,13 @@ class Editor implements IAppendable {
         XXX should be renamed to confirm() and send and display errors should be other functions!!!!!!!
         Tests length contraint and either sends the message to the callback and ends the edit, or displays an error message.
     */
-    private send(): void {
+    protected send(): void {
 
         // If text does not exceed length,
         if (this.textBox.innerText.length <= this.maxLength) {
 
             // invoke callback with edited text,
-            this.callback(this.textBox.innerText);
+            if (this.callback != null) this.callback(this.textBox.innerText);
 
             // and end the edit process.
             this.end();
@@ -209,7 +216,7 @@ class Editor implements IAppendable {
     /*
         Ends the editing process.
     */
-    private end(): void {
+    protected end(): void {
 
         // Hide control buttons.
         ViewUtil.hide(this.btnSlot);
@@ -228,7 +235,7 @@ class Editor implements IAppendable {
     /*
         Revert innertext before ending editing process.
     */
-    private revert(): void {
+    protected revert(): void {
 
         // Revert inner text.
         this.textBox.innerText = this.currentText;

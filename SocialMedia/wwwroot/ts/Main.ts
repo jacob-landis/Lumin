@@ -73,7 +73,7 @@ class Main {
         profileModal = new ProfileModal(
             document.getElementById('profileModal'),
             document.getElementById('profileModalContent'),
-            document.getElementById('profileModalName'),
+            document.getElementById('profileNameWrapper'),
             document.getElementById('profilePosts'),
             document.getElementById('profileImages'),
             document.getElementById('profileBioWrapper'),
@@ -81,7 +81,8 @@ class Main {
             document.getElementById('profileImagesWrapper'),
             document.getElementById('profileFriends'),
             'profile-picture sqr',
-            'bio'
+            'bio',
+            'name'
         );
 
         uploadImageModal = new UploadImageModal(

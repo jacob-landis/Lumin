@@ -1,6 +1,7 @@
 ﻿class ProfileRecord {
     profileId: number;
-    name: string;
+    firstName: string;
+    lastName: string;
     profilePicture: ImageRecord;
     relationToUser: string;
 }

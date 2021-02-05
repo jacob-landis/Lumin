@@ -58,7 +58,8 @@ namespace SocialMedia.Controllers
             {
                 // Details from profile.
                 ProfileId = profile.ProfileId,
-                Name = profile.FirstName + " " + profile.LastName, // Combine first and last name.
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
                 Bio = profile.Bio,
 
                 // Prep profile picture.
@@ -78,6 +79,27 @@ namespace SocialMedia.Controllers
             Profile profile = profileRepo.ById(id);
             Image image = imageRepo.ById(profile.ProfilePicture);
             return Util.GetProfileModel(profile, image, friendRepo.RelationToUser(currentProfile.id, id));
+        }
+
+        /*
+            Updates the current user's name with the provided string.
+        */
+        [HttpPost("updatename")]
+        public void UpdateName([FromBody] ProfileModel profile)
+        {
+            // If the provided names do not exceed length limit, update names.
+            if (profile.FirstName.Length <= 30 && profile.LastName.Length <= 30)
+            {
+                // Get handle on current user's profile. XXX should use currentProfile.profile.ProfileId so it's the most recent version.
+                Profile newProfile = currentProfile.profile;
+
+                // Set names to sanitized provided names.
+                newProfile.FirstName = Util.Sanitize(profile.FirstName);
+                newProfile.LastName = Util.Sanitize(profile.LastName);
+
+                // Commit profile to database.
+                profileRepo.SaveProfile(newProfile);
+            }
         }
 
         /*

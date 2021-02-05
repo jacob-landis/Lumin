@@ -6,9 +6,6 @@ class ProfileModal extends Modal {
     // XXX This is not used. XXX
     private content;
     
-    // The profile name display elm.
-    private profileModalName: HTMLElement;
-    
     // Container elm for a PostsBox that is below the profile modal header.
     private postWrapper: HTMLElement;
     
@@ -17,10 +14,15 @@ class ProfileModal extends Modal {
     
     // Container elm for an ProfileImagesBox.
     private imageWrapper: HTMLElement;
+
+    // The profile name display wrapper.
+    private profileNameWrapper: HTMLElement;
+    private btnChangeName: HTMLElement;
+    private nameEditor: DoubleEditor;
     
     // Container elm for Editor. Also used to store btnChangeBio.
     private profileBioWrapper: HTMLElement;
-    
+
     // Starts editing process. Added and removed from profileBioWrapper depending on if profile is the current user's.
     private btnChangeBio: HTMLElement;
     
@@ -50,7 +52,7 @@ class ProfileModal extends Modal {
     public constructor(
         rootElm: HTMLElement,
         content: HTMLElement,
-        profileModalName: HTMLElement,
+        profileNameWrapper: HTMLElement,
         postWrapper: HTMLElement,
         imageWrapper: HTMLElement,
         profileBioWrapper: HTMLElement,
@@ -58,29 +60,37 @@ class ProfileModal extends Modal {
         imageScrollBox: HTMLElement,
         friendBoxElm: HTMLElement,
         imageClassList: string,
-        editorClassList: string
+        editorClassList: string,
+        doubleEditorClassList: string
     ) {
         super(rootElm);
 
         // Get handles on modal HTML elms.
         this.content = content;
-        this.profileModalName = profileModalName;
         this.postWrapper = postWrapper;
         this.imageWrapper = imageWrapper;
+        this.profileNameWrapper = profileNameWrapper;
         this.profileBioWrapper = profileBioWrapper;
         this.imageScrollBox = imageScrollBox;
         this.friendBoxElm = friendBoxElm;
+        this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
 
         // Construct an ImageBox for the profile picture and get a handle on it.
         this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
-
+        
+        this.nameEditor = new DoubleEditor(this.btnChangeName, '', '', doubleEditorClassList, 30,
+            (firstName: string, lastName: string) => {
+                ProfileCard.changeUserProfileName(firstName, lastName);
+                Ajax.updateName(JSON.stringify({ FirstName: firstName, LastName: lastName }));
+            });
+        this.profileNameWrapper.append(this.nameEditor.rootElm);
+        
         // Construct an Editor for profile bio and get a handle on it.
         this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, 250, (bio: string) => Ajax.updateBio(bio));
+        this.profileBioWrapper.append(this.bioEditor.rootElm);
 
         this.postBox = new PostsBox(0, this.postWrapper);
-
-        this.profileBioWrapper.append(this.bioEditor.rootElm);
     }
 
     /*
@@ -100,7 +110,7 @@ class ProfileModal extends Modal {
         this.profile = fullProfile;
         
         // Set name display.
-        this.profileModalName.innerText = fullProfile.name;
+        this.nameEditor.setText2(fullProfile.firstName, fullProfile.lastName);
 
         // Set bio display.
         this.bioEditor.setText(fullProfile.bio);
@@ -113,10 +123,8 @@ class ProfileModal extends Modal {
             this.profilePictureBox.heldImageClick = (target: ImageCard) => this.selectProfilePicture()
 
             // give button for user to edit bio,
+            this.profileNameWrapper.append(this.btnChangeName);
             this.profileBioWrapper.append(this.btnChangeBio);
-
-            // and set click callback of that button.
-            this.btnChangeBio.onclick = (e: MouseEvent) => this.bioEditor.start();
         }
 
         // else, this profile is not the current user's so,
@@ -126,6 +134,7 @@ class ProfileModal extends Modal {
             this.profilePictureBox.heldImageClick = (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId);
 
             // and detach the button to edit the bio.
+            ViewUtil.remove(this.btnChangeName);
             ViewUtil.remove(this.btnChangeBio);
         }
 

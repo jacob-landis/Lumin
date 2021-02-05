@@ -12,6 +12,7 @@
     <Content Remove="wwwroot\ts\Components\ContentBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
+    <Content Remove="wwwroot\ts\Components\DoubleEditor.ts" />
     <Content Remove="wwwroot\ts\Components\Editor.ts" />
     <Content Remove="wwwroot\ts\Components\ImageBox.ts" />
     <Content Remove="wwwroot\ts\Dropdowns\Dropdown.ts" />
@@ -66,6 +67,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\DoubleEditor.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\Editor.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ImageBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Dropdowns\Dropdown.ts" />

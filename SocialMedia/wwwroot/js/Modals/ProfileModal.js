@@ -13,20 +13,26 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
-    function ProfileModal(rootElm, content, profileModalName, postWrapper, imageWrapper, profileBioWrapper, imageBoxElm, imageScrollBox, friendBoxElm, imageClassList, editorClassList) {
+    function ProfileModal(rootElm, content, profileNameWrapper, postWrapper, imageWrapper, profileBioWrapper, imageBoxElm, imageScrollBox, friendBoxElm, imageClassList, editorClassList, doubleEditorClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.content = content;
-        _this.profileModalName = profileModalName;
         _this.postWrapper = postWrapper;
         _this.imageWrapper = imageWrapper;
+        _this.profileNameWrapper = profileNameWrapper;
         _this.profileBioWrapper = profileBioWrapper;
         _this.imageScrollBox = imageScrollBox;
         _this.friendBoxElm = friendBoxElm;
+        _this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         _this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
+        _this.nameEditor = new DoubleEditor(_this.btnChangeName, '', '', doubleEditorClassList, 30, function (firstName, lastName) {
+            ProfileCard.changeUserProfileName(firstName, lastName);
+            Ajax.updateName(JSON.stringify({ FirstName: firstName, LastName: lastName }));
+        });
+        _this.profileNameWrapper.append(_this.nameEditor.rootElm);
         _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, 250, function (bio) { return Ajax.updateBio(bio); });
-        _this.postBox = new PostsBox(0, _this.postWrapper);
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
+        _this.postBox = new PostsBox(0, _this.postWrapper);
         return _this;
     }
     ProfileModal.prototype.launch = function (profileId) {
@@ -37,15 +43,16 @@ var ProfileModal = (function (_super) {
         var _this = this;
         this.reset();
         this.profile = fullProfile;
-        this.profileModalName.innerText = fullProfile.name;
+        this.nameEditor.setText2(fullProfile.firstName, fullProfile.lastName);
         this.bioEditor.setText(fullProfile.bio);
         if (this.profile.profileId == User.profileId) {
             this.profilePictureBox.heldImageClick = function (target) { return _this.selectProfilePicture(); };
+            this.profileNameWrapper.append(this.btnChangeName);
             this.profileBioWrapper.append(this.btnChangeBio);
-            this.btnChangeBio.onclick = function (e) { return _this.bioEditor.start(); };
         }
         else {
             this.profilePictureBox.heldImageClick = function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); };
+            ViewUtil.remove(this.btnChangeName);
             ViewUtil.remove(this.btnChangeBio);
         }
         this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));

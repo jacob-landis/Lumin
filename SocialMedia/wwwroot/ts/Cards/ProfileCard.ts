@@ -13,6 +13,12 @@
             if (profileCard.profile.profileId == User.profileId) profileCard.imageBox.loadImage(ImageCard.copy(imageCard));
         });
     }
+
+    public static changeUserProfileName(firstName: string, lastName: string): void {
+        ProfileCard.profileCards.forEach((profileCard: ProfileCard) => {
+            if (profileCard.profile.profileId == User.profileId) profileCard.txtName.innerText = firstName + " " + lastName;
+        });
+    }
     
     private static cases = {
         'friend': {
@@ -41,6 +47,7 @@
     private case: {label, icon, nextCase};
 
     private imageBox: ImageBox;
+    public txtName: HTMLElement;
 
     /*
         Example:
@@ -65,9 +72,11 @@
             true
         );
         this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', (target: ImageCard) => { }));
-        this.rootElm.append(this.imageBox.rootElm,
-            ViewUtil.tag('span', { classList: 'profileCardName', innerText: this.profile.name }));
-        
+
+        this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: (this.profile.firstName + " " + this.profile.lastName) });
+
+        this.rootElm.append(this.imageBox.rootElm, this.txtName);
+
         // card click
         if (this.profile.relationToUser == 'friend' || this.profile.relationToUser == 'me')
             this.rootElm.onclick = e => profileModal.launch(this.profile.profileId)

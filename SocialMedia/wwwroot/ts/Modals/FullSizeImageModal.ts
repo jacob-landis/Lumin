@@ -131,7 +131,7 @@ class FullSizeImageModal extends Modal {
         // Get profile by id and use its name to load image dropdown.
         Ajax.getProfile(profileId, (profileCard: ProfileCard) => {
 
-            let promptMsg: string = (profileId == User.profileId) ? "My images" : `${profileCard.profile.name}'s images`;
+            let promptMsg: string = (profileId == User.profileId) ? "My images" : `${profileCard.profile.firstName + profileCard.profile.lastName}'s images`;
 
             imageDropdown.load(profileId, promptMsg);
         });

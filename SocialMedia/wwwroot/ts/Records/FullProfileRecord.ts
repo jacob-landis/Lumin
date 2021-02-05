@@ -1,6 +1,7 @@
 ﻿class FullProfileRecord {
     profileId: number;
+    firstName: string;
+    lastName: string;
     profilePicture: ImageRecord;
-    name: string;
     bio: string;
 }

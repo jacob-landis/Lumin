@@ -27,6 +27,9 @@ var Ajax = (function () {
     Ajax.getCommentCount = function (postId, onCommentCountResults) {
         this.call("apicomment/commentcount/" + postId, "GET", onCommentCountResults);
     };
+    Ajax.updateName = function (namesJSON) {
+        this.call("apiprofile/updatename", "POST", null, namesJSON);
+    };
     Ajax.updateBio = function (bioText) {
         this.call("apiprofile/updatebio", "POST", null, this.JSONstring(bioText));
     };

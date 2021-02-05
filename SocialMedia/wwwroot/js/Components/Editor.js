@@ -13,7 +13,7 @@ var Editor = (function () {
         this.btnConfirm = Icons.confirm();
         this.btnCancel = Icons.cancel();
         this.btnSlot.append(this.btnConfirm, this.btnCancel);
-        this.rootElm.append(this.errorBox.rootElm, this.textBox, this.btnSlot);
+        this.fillRootElm();
         this.btnConfirm.onclick = function (e) { return _this.send(); };
         this.btnCancel.onclick = function (e) { return _this.revert(); };
         this.targetHandles = [
@@ -26,6 +26,13 @@ var Editor = (function () {
         childNodes.forEach(function (c) { return _this.targetHandles.push(c); });
         window.addEventListener('click', function (e) { return _this.windowClickFunc(e); });
     }
+    Editor.prototype.fillRootElm = function (textBox2) {
+        if (textBox2 === void 0) { textBox2 = null; }
+        if (textBox2 == null)
+            this.rootElm.append(this.errorBox.rootElm, this.textBox, this.btnSlot);
+        else
+            this.rootElm.append(this.errorBox.rootElm, this.textBox, textBox2, this.btnSlot);
+    };
     Editor.prototype.turnOnWindowClickFunc = function () {
         var _this = this;
         this.windowClickFunc = function (event) {
@@ -50,7 +57,8 @@ var Editor = (function () {
     };
     Editor.prototype.send = function () {
         if (this.textBox.innerText.length <= this.maxLength) {
-            this.callback(this.textBox.innerText);
+            if (this.callback != null)
+                this.callback(this.textBox.innerText);
             this.end();
         }
         else

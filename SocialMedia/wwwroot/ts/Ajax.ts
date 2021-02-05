@@ -50,6 +50,10 @@
     }
 
     //PROFILE
+    public static updateName(namesJSON: string): void {
+        this.call("apiprofile/updatename", "POST", null, namesJSON);
+    }
+
     public static updateBio(bioText: string): void {
         this.call("apiprofile/updatebio", "POST", null, this.JSONstring(bioText));
     }
