@@ -5,6 +5,7 @@ var CommentRecord = (function () {
         var recordCopy = new CommentRecord();
         recordCopy.commentId = commentRecord.commentId;
         recordCopy.content = commentRecord.content;
+        recordCopy.hasSeen = commentRecord.hasSeen;
         recordCopy.profile = commentRecord.profile;
         recordCopy.dateTime = commentRecord.dateTime;
         recordCopy.likes = LikesRecord.copy(commentRecord.likes);

@@ -28,6 +28,7 @@
     <Content Remove="wwwroot\ts\Modals\Modal.ts" />
     <Content Remove="wwwroot\ts\Modals\ProfileModal.ts" />
     <Content Remove="wwwroot\ts\Modals\UploadImageModal.ts" />
+    <Content Remove="wwwroot\ts\NavBar.ts" />
     <Content Remove="wwwroot\ts\PublicPosts.ts" />
     <Content Remove="wwwroot\ts\Records\CommentRecord.ts" />
     <Content Remove="wwwroot\ts\Records\FullProfileRecord.ts" />
@@ -83,6 +84,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Modals\Modal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\ProfileModal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\UploadImageModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\NavBar.ts" />
     <TypeScriptCompile Include="wwwroot\ts\PublicPosts.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Records\CommentRecord.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Records\FullProfileRecord.ts" />

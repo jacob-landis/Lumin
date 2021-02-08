@@ -12,16 +12,17 @@ var imageDropdown : ImageDropdown;
 var friendDropdown : FriendDropdown;
 
 class Main {
-
-    static navBar: HTMLElement;
-
+    
     // XXX Translate profile. XXX
     static initialize(profile) {
 
         User.profileId = profile.profileId;
         User.profilePictureId = profile.profilePicture;
-
-        this.navBar = document.getElementById("navBar"); // used to assess height of display port by other classes
+        
+        NavBar.initialize(
+            document.getElementById('navBar'),
+            document.getElementById('postsSection')
+        );
 
         // PUBLIC POST FEED
         publicPosts = new PublicPosts(document.getElementById('publicPosts'));

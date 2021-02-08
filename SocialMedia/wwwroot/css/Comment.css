@@ -16,3 +16,8 @@
     max-width: 100%;
     padding: 5px;
 }
+
+.unseenComment {
+    border-bottom: solid 1px cornflowerblue;
+    border-top: solid 1px cornflowerblue;
+}

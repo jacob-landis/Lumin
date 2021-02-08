@@ -28,6 +28,8 @@ var PostCard = (function (_super) {
             return Ajax.getComments(_this.post.postId, skip, take, function (comments) {
                 var isFirstCommentsBatch = _this.commentsBox.content.length == 0;
                 _this.commentsBox.add(comments);
+                if (_this.post.profile.profileId == User.profileId)
+                    _this.commentsBox.content.forEach(function (comment) { return comment.disputeHasSeen(); });
                 if (isFirstCommentsBatch && !_this.hasImage)
                     _this.resizeCommentBox();
             });

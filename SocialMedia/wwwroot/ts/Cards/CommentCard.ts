@@ -115,6 +115,10 @@ class CommentCard extends Card {
         CommentCard.commentCards.push(this);
     }
 
+    public disputeHasSeen(): void {
+        if (!this.comment.hasSeen) this.rootElm.classList.add("unseenComment");
+    }
+
     /*
         PUBLIC
 

@@ -54,6 +54,10 @@ var CommentCard = (function (_super) {
         comments.forEach(function (comment) { return commentCards.push(new CommentCard(comment)); });
         return commentCards;
     };
+    CommentCard.prototype.disputeHasSeen = function () {
+        if (!this.comment.hasSeen)
+            this.rootElm.classList.add("unseenComment");
+    };
     CommentCard.prototype.remove = function () {
         var _this = this;
         Ajax.deleteComment(this.comment.commentId);

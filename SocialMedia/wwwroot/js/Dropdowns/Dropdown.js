@@ -5,7 +5,7 @@ var Dropdown = (function () {
         this.frameElm = ViewUtil.copy(Dropdown.frameTemplate);
         this.frameElm.append(this.rootElm);
         Dropdown.frameContainer.append(this.frameElm);
-        this.contentElm.style.height = "" + (window.innerHeight - Main.navBar.clientHeight);
+        this.contentElm.style.height = "" + window.innerHeight;
     }
     Dropdown.initialize = function (frameTemplate, frameContainer) {
         this.frameTemplate = frameTemplate;

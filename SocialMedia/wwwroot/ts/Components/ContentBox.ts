@@ -63,8 +63,22 @@ class ContentBox implements IAppendable {
 
         if (requestCallback) this.requestCallback = requestCallback;
 
+        this.rootElm.onscroll = (event: MouseEvent) => this.onScroll();
+
         // Add this instance of ContentBox to contentBoxes.
         ContentBox.contentBoxes.push(this);
+    }
+
+    /*
+         Called when this.rootElm is scrolled. Meant to be overriden to account for unique cases.
+    */
+    protected onScroll(): void {
+        let divHeight: number = this.rootElm.scrollHeight;
+        let offset: number = this.rootElm.scrollTop + this.rootElm.clientHeight;
+
+        if (offset == divHeight) this.request();
+
+        // Update visibleContent list.
     }
 
     /*

@@ -82,8 +82,8 @@ class Dropdown implements IAppendable {
         // Append frame to frame container.
         Dropdown.frameContainer.append(this.frameElm);
 
-        // Constrain hight of dropdown content so it is not underneath the navigation bar.
-        this.contentElm.style.height = `${window.innerHeight - Main.navBar.clientHeight}`;
+        // Constrain hight of dropdown content.
+        this.contentElm.style.height = `${window.innerHeight}`;
     }
 
     /*

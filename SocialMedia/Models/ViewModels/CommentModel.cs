@@ -12,6 +12,9 @@ namespace SocialMedia.Models.ViewModels
         // The text that the user entered.
         public string Content { get; set; }
 
+        // If the owner of the post that this comment belongs to has seen this comment.
+        public bool HasSeen { get; set; }
+
         // Data for a profile card of the comment owner.
         public ProfileModel Profile { get; set; }
 

@@ -1,0 +1,11 @@
+﻿#postsSection {
+    display: grid;
+    grid-template-columns: 25fr 55fr 25fr;
+    overflow: auto;
+    max-height: 100%;
+    padding-top: 90px;
+}
+
+#publicPosts {
+    /*overflow: auto;*/
+}

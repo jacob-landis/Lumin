@@ -1,5 +1,6 @@
 var ContentBox = (function () {
     function ContentBox(rootElm, take, requestCallback) {
+        var _this = this;
         this.loading = false;
         this.moreContent = true;
         this.content = [];
@@ -9,6 +10,7 @@ var ContentBox = (function () {
             this.take = take;
         if (requestCallback)
             this.requestCallback = requestCallback;
+        this.rootElm.onscroll = function (event) { return _this.onScroll(); };
         ContentBox.contentBoxes.push(this);
     }
     Object.defineProperty(ContentBox.prototype, "length", {
@@ -29,6 +31,12 @@ var ContentBox = (function () {
         enumerable: true,
         configurable: true
     });
+    ContentBox.prototype.onScroll = function () {
+        var divHeight = this.rootElm.scrollHeight;
+        var offset = this.rootElm.scrollTop + this.rootElm.clientHeight;
+        if (offset == divHeight)
+            this.request();
+    };
     ContentBox.prototype.request = function (take) {
         if (!this.loading && this.moreContent) {
             if (take)

@@ -1,10 +1,4 @@
-﻿.postsSection {
-    display: grid;
-    /*grid-template-columns: 20% 60% 20%;*/
-    grid-template-columns: 25fr 55fr 25fr;
-}
-
-.postCard {
+﻿.postCard {
     display: grid;
     grid-template-columns: 60% 40%; /* Phi */
     border: 1px solid lightgray;

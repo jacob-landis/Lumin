@@ -92,6 +92,10 @@
 
                 this.commentsBox.add(comments);
 
+                // If this post belongs to current user, indicate which comments have not been seen by the user.
+                if (this.post.profile.profileId == User.profileId)
+                    this.commentsBox.content.forEach((comment: CommentCard) => comment.disputeHasSeen());
+
                 // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
                 if (isFirstCommentsBatch && !this.hasImage) this.resizeCommentBox();
             })
