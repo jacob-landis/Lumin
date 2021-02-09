@@ -13,10 +13,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PostsBox = (function (_super) {
     __extends(PostsBox, _super);
-    function PostsBox(profileId, rootElm) {
+    function PostsBox(profileId, rootElm, scrollElm) {
         var _this = this;
         rootElm.classList.add('post-box');
-        _this = _super.call(this, rootElm, 5, function (skip, take) {
+        _this = _super.call(this, rootElm, scrollElm, 5, function (skip, take) {
             if (profileId != null)
                 Ajax.getProfilePosts(_this.profileId, skip, take, function (postCards) {
                     return _this.add(postCards);

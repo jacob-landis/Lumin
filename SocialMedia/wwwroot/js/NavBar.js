@@ -13,17 +13,18 @@ var NavBar = (function () {
         });
         this.show();
     };
-    NavBar.updatePostsSection = function (navBarHeightChange) {
+    NavBar.updatePostsSection = function () {
         this.postsSectionElm.style.paddingTop = "" + this.navBarElm.clientHeight;
-        this.postsSectionElm.scrollTop += navBarHeightChange;
     };
     NavBar.show = function () {
-        var heightBenchMarker = this.navBarElm.clientHeight;
-        this.updatePostsSection(heightBenchMarker - this.navBarElm.clientHeight);
+        this.navBarElm.style.height = '50px';
+        this.updatePostsSection();
     };
     NavBar.reduceHeight = function (scrollIntensity) {
-        var heightBenchMarker = this.navBarElm.clientHeight;
-        this.updatePostsSection(heightBenchMarker - this.navBarElm.clientHeight);
+        var reductionRate = 0.1;
+        var newHeight = "" + (this.navBarElm.clientHeight - (scrollIntensity * reductionRate));
+        this.navBarElm.style.height = +newHeight > 35 ? newHeight : '0px';
+        this.updatePostsSection();
     };
     return NavBar;
 }());

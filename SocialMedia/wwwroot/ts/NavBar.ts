@@ -17,35 +17,30 @@
         this.show();
     }
 
-    public static updatePostsSection(navBarHeightChange: number): void {
+    public static updatePostsSection(): void {
 
-        // Update padding-top, and scroll position (to counteract the postion change).
-
-        // padding-top = navBar.height
+        // Update padding-top.
         this.postsSectionElm.style.paddingTop = `${this.navBarElm.clientHeight}`;
-
-        // scrollPosition += navBarHeightChange
-        this.postsSectionElm.scrollTop += navBarHeightChange;
     }
 
     public static show(): void {
 
-        let heightBenchMarker = this.navBarElm.clientHeight;
-
         // Restore height of navBar.
+        this.navBarElm.style.height = '50px';
 
-        this.updatePostsSection(heightBenchMarker - this.navBarElm.clientHeight);
+        this.updatePostsSection();
     }
 
     public static reduceHeight(scrollIntensity: number): void {
 
-        let heightBenchMarker = this.navBarElm.clientHeight;
+        let reductionRate: number = 0.1;
 
-        // Reduce height by the scroll intensity times a rate,
-        // then check if it has surpassed a threshold,
-        // in which case close it completely.
+        let newHeight: string = `${this.navBarElm.clientHeight - (scrollIntensity * reductionRate)}`;
 
-        this.updatePostsSection(heightBenchMarker - this.navBarElm.clientHeight);
+        // Reduce height by the scroll intensity times a rate.
+        this.navBarElm.style.height = +newHeight > 35 ? newHeight : '0px';
+        
+        this.updatePostsSection();
     }
 
 }

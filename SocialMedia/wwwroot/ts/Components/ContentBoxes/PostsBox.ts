@@ -19,13 +19,13 @@ class PostsBox extends ContentBox {
         profileId can be null.
         rootElm must be an HTML element.
     */
-    public constructor(profileId?: number, rootElm?: HTMLElement) {
+    public constructor(profileId?: number, rootElm?: HTMLElement, scrollElm?: HTMLElement) {
         
         // Add class attribute to rootElm before sending to base class.
         rootElm.classList.add('post-box');
 
         // Call base class constructor.
-        super(rootElm, 5,
+        super(rootElm, scrollElm, 5,
             // When content box is ready for more content,
             (skip: number, take: number): void => {
                 

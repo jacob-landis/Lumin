@@ -103,96 +103,89 @@
 @*------------------------/NAV-MENU---------------------------*@
 
 @*-----------------------------MAIN-BODY--------------------------*@
-<div id="postsSection">
 
-    @*-------------------------DROPDOWNS-----------------------*@
-    @* These float above (in terms of layer) and beside the main post feed. *@
-    @*
-        Every dropdowns content is nested inside two divs.
-        The first div is the backdrop for the content and controls the windows position and shape.
-        The second div is the border of the content.
-        Together they make a bezel.
-    *@
+@* Container for main post feed. *@
+<div id="publicPosts"></div>
 
-    @* DROPDOWN TEMPLATE (gets copied) *@
-    <div id="dropdownFrameTemplate"></div>
+@*-------------------------DROPDOWNS-----------------------*@
+@* These float above (in terms of layer) and beside the main post feed. *@
+@*
+    Every dropdowns content is nested inside two divs.
+    The first div is the backdrop for the content and controls the windows position and shape.
+    The second div is the border of the content.
+    Together they make a bezel.
+*@
 
-    @* SPECIALIZATIONS CONTAINER *@
-    <div id="dropdownFrameContainer"></div>
+@* DROPDOWN TEMPLATE (gets copied) *@
+<div id="dropdownFrameTemplate"></div>
 
-    @* SPECIALIZATIONS *@
-    <div>
-        @* IMAGE DROPDOWN *@
-        <div id="imageDropdown" class="dropdownBox">
-            <div class="dropdown-content" id="imageDropDownContent">
+@* SPECIALIZATIONS CONTAINER *@
+<div id="dropdownFrameContainer"></div>
 
-                @* Details and funtionality above the images. *@
-                <div id="imageDropdownDetails">
+@* SPECIALIZATIONS *@
+<div>
+    @* IMAGE DROPDOWN *@
+    <div id="imageDropdown" class="dropdownBox">
+        <div class="dropdown-content" id="imageDropDownContent">
 
-                    @* A slot for a message from caller. (ex. Select image for profile picture.) *@
-                    <div id="selectImagePrompt"></div>
+            @* Details and funtionality above the images. *@
+            <div id="imageDropdownDetails">
 
-                    @*
-                        This is normally visible on the page, but has been hidden by a stylesheet. It is
-                        activated when the label below with the id of "btnImageModalUploadImage" is clicked on.
-                    *@
-                    <input type="file" id="imageModalUploadImage" name="file" class="fileInput">
+                @* A slot for a message from caller. (ex. Select image for profile picture.) *@
+                <div id="selectImagePrompt"></div>
 
-                    @*
-                        Btn image upload modal. Effectively...
+                @*
+                    This is normally visible on the page, but has been hidden by a stylesheet. It is
+                    activated when the label below with the id of "btnImageModalUploadImage" is clicked on.
+                *@
+                <input type="file" id="imageModalUploadImage" name="file" class="fileInput">
 
-                        Because of the 'for' attribute, clicking this label triggers file upload process of the file input elm.
+                @*
+                    Btn image upload modal. Effectively...
 
-                        I find this behavior confusing, and I have a feeling it will be confusing to others, so I want to be extra
-                        clear that this behavior is part of HTML.
+                    Because of the 'for' attribute, clicking this label triggers file upload process of the file input elm.
 
-                        The reason for this behavior is that there is a feature of forms where if you click on the label, the
-                        input is selected.
-                        Ex. First Name [___________]
-                        If this were a webpage, and you clicked on "First Name", your cursor would go to the text input (that is, if
-                        the value of the label's 'for' attribute was the id of the text input).
-                        A similar thing happens when it is a file input.
-                    *@
-                    <label for="imageModalUploadImage" id="btnImageModalUploadImage">
-                        @* (compound icon) *@
-                        <i id="plusIcon" class="fa fa-plus"></i>
-                        <i id="imageFileIcon" class="fa fa-file-image-o"></i>
-                    </label>
-                </div>
+                    I find this behavior confusing, and I have a feeling it will be confusing to others, so I want to be extra
+                    clear that this behavior is part of HTML.
 
-                @* Container for images. *@
-                <div id="selectImages"></div>
+                    The reason for this behavior is that there is a feature of forms where if you click on the label, the
+                    input is selected.
+                    Ex. First Name [___________]
+                    If this were a webpage, and you clicked on "First Name", your cursor would go to the text input (that is, if
+                    the value of the label's 'for' attribute was the id of the text input).
+                    A similar thing happens when it is a file input.
+                *@
+                <label for="imageModalUploadImage" id="btnImageModalUploadImage">
+                    @* (compound icon) *@
+                    <i id="plusIcon" class="fa fa-plus"></i>
+                    <i id="imageFileIcon" class="fa fa-file-image-o"></i>
+                </label>
             </div>
-        </div>
 
-        @* FRIEND DROPDOWN *@
-        <div id="friendsDropdown" class="dropdownBox">
-            <div class="dropdown-content" id="friendDropdownContent">
-
-                @* Search bar. *@
-                <input type="text" id="txtSearchFriends" class="myTextBtnPair" />
-
-                @* Btn search. Commences search. *@
-                <button id="btnSearchFriends" class="myBtnTextPair">
-                    <i id="searchIcon" class="fa fa-search"></i>
-                </button>
-
-                @* Container for profile cards. *@
-                <div id="friends"></div>
-            </div>
+            @* Container for images. *@
+            <div id="selectImages"></div>
         </div>
     </div>
-    @*-------------------------/DROPDOWNS----------------------*@
 
-    @* POSTS *@
+    @* FRIEND DROPDOWN *@
+    <div id="friendsDropdown" class="dropdownBox">
+        <div class="dropdown-content" id="friendDropdownContent">
 
-    @* Empty column for gridview. Acts as left padding (right div column is omitted). *@
-    <div></div>
+            @* Search bar. *@
+            <input type="text" id="txtSearchFriends" class="myTextBtnPair" />
 
-    @* Container for main post feed. *@
-    <div id="publicPosts"></div>
+            @* Btn search. Commences search. *@
+            <button id="btnSearchFriends" class="myBtnTextPair">
+                <i id="searchIcon" class="fa fa-search"></i>
+            </button>
 
+            @* Container for profile cards. *@
+            <div id="friends"></div>
+        </div>
+    </div>
 </div>
+@*-------------------------/DROPDOWNS----------------------*@
+
 @*-----------------------------/MAIN-BODY-------------------------*@
 
 @* ------------------------------------------STANDALONE COMPONENTS------------------------------------------ *@

@@ -20,11 +20,11 @@ class ProfileImagesBox extends ContentBox {
         profileId can be null.
         clickCallback is assigned as the onclick event for each profile card.
     */
-    constructor(profileId?: number, clickCallback?: (imageCard: ImageCard) => void) {
+    constructor(profileId?: number, scrollElm?: HTMLElement, clickCallback?: (imageCard: ImageCard) => void) {
 
         let rootElm: HTMLElement = ViewUtil.tag('div', { classList: 'images-box' });
 
-        super(rootElm, 20,
+        super(rootElm, scrollElm, 20,
             // When content box is ready for more content,
             (skip: number, take: number) => {
                 // send an images request to the host with the set skip and take values along with the ProfileID of this image box,

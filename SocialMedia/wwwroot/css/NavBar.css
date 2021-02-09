@@ -1,4 +1,11 @@
-﻿.navLogo {
+﻿#navBar {
+    overflow: hidden;
+    min-height: 0px;
+    max-height: 50px;
+    transition: height 0.25s;
+}
+
+.navLogo {
     height: 22px;
     margin-left: 50px;
     margin-top: -10px;

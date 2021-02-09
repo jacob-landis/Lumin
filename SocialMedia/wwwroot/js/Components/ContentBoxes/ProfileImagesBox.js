@@ -13,10 +13,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileImagesBox = (function (_super) {
     __extends(ProfileImagesBox, _super);
-    function ProfileImagesBox(profileId, clickCallback) {
+    function ProfileImagesBox(profileId, scrollElm, clickCallback) {
         var _this = this;
         var rootElm = ViewUtil.tag('div', { classList: 'images-box' });
-        _this = _super.call(this, rootElm, 20, function (skip, take) {
+        _this = _super.call(this, rootElm, scrollElm, 20, function (skip, take) {
             Ajax.getProfileImages(_this.profileId, skip, take, 'listImage sqr', _this.clickCallback, function (imageCards) {
                 _this.addImageCards(imageCards);
             });

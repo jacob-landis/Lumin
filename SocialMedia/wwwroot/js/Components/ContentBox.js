@@ -1,16 +1,39 @@
 var ContentBox = (function () {
-    function ContentBox(rootElm, take, requestCallback) {
+    function ContentBox(rootElm, scrollElm, take, requestCallback) {
         var _this = this;
         this.loading = false;
         this.moreContent = true;
         this.content = [];
+        this.visibleContent = [];
         this.rootElm = rootElm;
         this.rootElm.classList.add('content-box');
+        this.scrollElm = scrollElm ? scrollElm : this.rootElm;
         if (take)
             this.take = take;
         if (requestCallback)
             this.requestCallback = requestCallback;
-        this.rootElm.onscroll = function (event) { return _this.onScroll(); };
+        this.scrollElm.addEventListener("wheel", function (event) {
+            var divHeight = _this.scrollElm.scrollHeight;
+            var offset = _this.scrollElm.scrollTop + _this.scrollElm.clientHeight;
+            if ((offset + 500) > divHeight)
+                _this.request();
+            _this.visibleContent = [];
+            var portTop = _this.scrollElm.scrollTop;
+            var portBottom = portTop + _this.scrollElm.parentElement.clientHeight;
+            _this.content.forEach(function (contentItem) {
+                var item = contentItem.rootElm.getBoundingClientRect();
+                var topIsInLocalViewport = item.top < portBottom && item.top > portTop;
+                var bottomIsInLocalViewport = item.bottom < portBottom && item.bottom > portTop;
+                var topIsInGlobalViewport = item.top < window.innerHeight && item.top > 0;
+                var bottomIsInGlobalViewport = item.bottom < window.innerHeight && item.bottom > 0;
+                var partiallyInLocalViewport = topIsInLocalViewport || bottomIsInLocalViewport;
+                var partiallyInGlobalViewport = topIsInGlobalViewport || bottomIsInGlobalViewport;
+                if (partiallyInLocalViewport && partiallyInGlobalViewport) {
+                    _this.visibleContent.push(contentItem);
+                }
+            });
+            console.log(_this.visibleContent);
+        });
         ContentBox.contentBoxes.push(this);
     }
     Object.defineProperty(ContentBox.prototype, "length", {
@@ -32,10 +55,6 @@ var ContentBox = (function () {
         configurable: true
     });
     ContentBox.prototype.onScroll = function () {
-        var divHeight = this.rootElm.scrollHeight;
-        var offset = this.rootElm.scrollTop + this.rootElm.clientHeight;
-        if (offset == divHeight)
-            this.request();
     };
     ContentBox.prototype.request = function (take) {
         if (!this.loading && this.moreContent) {

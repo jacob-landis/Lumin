@@ -11,6 +11,9 @@ class ContentBox implements IAppendable {
     // A global collection of ContentBox instances.
     public static contentBoxes: ContentBox[] = [];
 
+    // Defaults to this.rootElm if not specified in the constructor.
+    public scrollElm: HTMLElement;
+
     // Whether or not a request is pending. XXX rename awaiting?
     // It is assumed that a new content box has not yet sent a request.
     public loading: boolean = false;
@@ -21,6 +24,8 @@ class ContentBox implements IAppendable {
 
     // The "box" in "content box".
     public content: IAppendable[] = [];
+
+    public visibleContent: IAppendable[] = [];
 
     // The callback for a request.
     // This is called here so that pre-request logic can be consolidated and performed here. See request().
@@ -50,7 +55,7 @@ class ContentBox implements IAppendable {
         take can be an int or null.
         requestFunc can be a function or null.
     */
-    public constructor(rootElm: HTMLElement, take?: number, requestCallback?: (skip: number, take: number) => void) {
+    public constructor(rootElm: HTMLElement, scrollElm?: HTMLElement, take?: number, requestCallback?: (skip: number, take: number) => void) {
 
         // Get a handle on the provided tag.
         this.rootElm = rootElm;
@@ -58,12 +63,50 @@ class ContentBox implements IAppendable {
         // Add 'content-box' to the classList attribute.
         this.rootElm.classList.add('content-box');
 
+        this.scrollElm = scrollElm? scrollElm : this.rootElm;
+
         // If a non-null take parameter value was provided, get a handle on it.
         if (take) this.take = take;
 
         if (requestCallback) this.requestCallback = requestCallback;
+        
+        this.scrollElm.addEventListener("wheel", (event: MouseWheelEvent) => {
+            
+            let divHeight: number = this.scrollElm.scrollHeight;
+            let offset: number = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
+        
+            if ((offset + 500) > divHeight) this.request();
 
-        this.rootElm.onscroll = (event: MouseEvent) => this.onScroll();
+
+            // Determine which content items are in view.
+
+            this.visibleContent = [];
+
+            let portTop: number = this.scrollElm.scrollTop;
+            let portBottom: number = portTop + this.scrollElm.parentElement.clientHeight;
+
+            // For each content item, check if it's root element is in the viewport.
+            this.content.forEach((contentItem: IAppendable) => {
+
+                let item: (ClientRect | DOMRect) = contentItem.rootElm.getBoundingClientRect();
+                
+                let topIsInLocalViewport: boolean = item.top < portBottom && item.top > portTop;
+                let bottomIsInLocalViewport: boolean = item.bottom < portBottom && item.bottom > portTop;
+
+                let topIsInGlobalViewport: boolean = item.top < window.innerHeight && item.top > 0;
+                let bottomIsInGlobalViewport: boolean = item.bottom < window.innerHeight && item.bottom > 0;
+
+                let partiallyInLocalViewport: boolean = topIsInLocalViewport || bottomIsInLocalViewport;
+                let partiallyInGlobalViewport: boolean = topIsInGlobalViewport || bottomIsInGlobalViewport;
+
+                // If item is visible.
+                if (partiallyInLocalViewport && partiallyInGlobalViewport) {
+                    this.visibleContent.push(contentItem);
+                }
+
+            });
+            console.log(this.visibleContent);
+        });
 
         // Add this instance of ContentBox to contentBoxes.
         ContentBox.contentBoxes.push(this);
@@ -73,10 +116,7 @@ class ContentBox implements IAppendable {
          Called when this.rootElm is scrolled. Meant to be overriden to account for unique cases.
     */
     protected onScroll(): void {
-        let divHeight: number = this.rootElm.scrollHeight;
-        let offset: number = this.rootElm.scrollTop + this.rootElm.clientHeight;
-
-        if (offset == divHeight) this.request();
+        
 
         // Update visibleContent list.
     }

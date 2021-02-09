@@ -15,7 +15,7 @@ var Main = (function () {
     Main.initialize = function (profile) {
         User.profileId = profile.profileId;
         User.profilePictureId = profile.profilePicture;
-        NavBar.initialize(document.getElementById('navBar'), document.getElementById('postsSection'));
+        NavBar.initialize(document.getElementById('navBar'), document.getElementById('publicPosts'));
         publicPosts = new PublicPosts(document.getElementById('publicPosts'));
         contextMenu = new ContextMenu(document.getElementById('contextMenu'), document.getElementById('contextContent'));
         confirmPrompt = new ConfirmPrompt(document.getElementById('confirmPrompt'), document.getElementById('confirmContent'), document.getElementById('promptMessage'), document.getElementById('btnConfirmYes'), document.getElementById('btnConfirmNo'));

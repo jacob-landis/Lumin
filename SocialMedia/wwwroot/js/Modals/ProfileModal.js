@@ -32,7 +32,7 @@ var ProfileModal = (function (_super) {
         _this.profileNameWrapper.append(_this.nameEditor.rootElm);
         _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, 250, function (bio) { return Ajax.updateBio(bio); });
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
-        _this.postBox = new PostsBox(0, _this.postWrapper);
+        _this.postBox = new PostsBox(0, _this.postWrapper, _this.rootElm);
         return _this;
     }
     ProfileModal.prototype.launch = function (profileId) {
@@ -56,7 +56,7 @@ var ProfileModal = (function (_super) {
             ViewUtil.remove(this.btnChangeBio);
         }
         this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
-        this.imagesBox = new ProfileImagesBox(this.profile.profileId, function (target) {
+        this.imagesBox = new ProfileImagesBox(this.profile.profileId, this.imageScrollBox, function (target) {
             return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), _this.profile.profileId);
         });
         this.imageWrapper.append(this.imagesBox.rootElm);

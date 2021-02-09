@@ -83,7 +83,7 @@
         this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
 
-        this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), 30, (skip: number, take: number) =>
+        this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 30, (skip: number, take: number) =>
             Ajax.getComments(this.post.postId, skip, take, (comments: CommentCard[]) => {
 
                 // Determine if this is the first batch.

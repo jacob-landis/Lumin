@@ -90,7 +90,7 @@ class ProfileModal extends Modal {
         this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, 250, (bio: string) => Ajax.updateBio(bio));
         this.profileBioWrapper.append(this.bioEditor.rootElm);
 
-        this.postBox = new PostsBox(0, this.postWrapper);
+        this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);
     }
 
     /*
@@ -143,7 +143,7 @@ class ProfileModal extends Modal {
 
         // IMAGES BOX
         // Construct new ProfileImageBox and set up profile images display.
-        this.imagesBox = new ProfileImagesBox(this.profile.profileId, (target: ImageCard) =>
+        this.imagesBox = new ProfileImagesBox(this.profile.profileId, this.imageScrollBox, (target: ImageCard) =>
             
             // Set click callback of each image to open a collection in fullzise image modal.
             fullSizeImageModal.load(this.imagesBox.content.indexOf(target), this.profile.profileId));

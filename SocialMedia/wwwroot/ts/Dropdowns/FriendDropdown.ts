@@ -38,7 +38,7 @@ class FriendDropdown extends Dropdown {
         this.btnSearch = btnSearch;
 
         // Create a new content box using a dropdown HTML component and get a handle on it.
-        this.friendsBox = new ContentBox(friendBoxElm);
+        this.friendsBox = new ContentBox(friendBoxElm, this.contentElm);
 
         // Set up the event listeners for invoking a search either by clicking on btnSearch or pressing the Enter key.
         this.btnSearch.onclick = (e: MouseEvent) => this.requestFriendables()

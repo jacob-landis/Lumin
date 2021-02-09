@@ -17,7 +17,7 @@ var ImageDropdown = (function (_super) {
         var _this = _super.call(this, rootElm, contentElm) || this;
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;
-        _this.imageBox = new ProfileImagesBox(null, function (target) {
+        _this.imageBox = new ProfileImagesBox(null, _this.contentElm, function (target) {
             return fullSizeImageModal.load(_this.imageBox.content.indexOf(target));
         });
         _this.imageWrapper.append(_this.imageBox.rootElm);
