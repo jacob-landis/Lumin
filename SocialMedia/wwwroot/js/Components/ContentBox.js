@@ -21,15 +21,22 @@ var ContentBox = (function () {
             var portTop = _this.scrollElm.scrollTop;
             var portBottom = portTop + _this.scrollElm.parentElement.clientHeight;
             _this.content.forEach(function (contentItem) {
+                var isTestPost = contentItem.post.postId == 50013;
                 var item = contentItem.rootElm.getBoundingClientRect();
                 var topIsInLocalViewport = item.top < portBottom && item.top > portTop;
                 var bottomIsInLocalViewport = item.bottom < portBottom && item.bottom > portTop;
-                var topIsInGlobalViewport = item.top < window.innerHeight && item.top > 0;
-                var bottomIsInGlobalViewport = item.bottom < window.innerHeight && item.bottom > 0;
+                var topIsInGlobalViewport = item.top < (window.innerHeight + portBottom) && item.top > 0;
+                var bottomIsInGlobalViewport = item.bottom < (window.innerHeight + portBottom) && item.bottom > 0;
                 var partiallyInLocalViewport = topIsInLocalViewport || bottomIsInLocalViewport;
                 var partiallyInGlobalViewport = topIsInGlobalViewport || bottomIsInGlobalViewport;
-                if (partiallyInLocalViewport && partiallyInGlobalViewport) {
+                if (partiallyInLocalViewport && isTestPost) {
                     _this.visibleContent.push(contentItem);
+                }
+                if (isTestPost) {
+                    console.log(item.top);
+                    console.log(item.bottom);
+                    console.log(portTop);
+                    console.log(portBottom);
                 }
             });
             console.log(_this.visibleContent);

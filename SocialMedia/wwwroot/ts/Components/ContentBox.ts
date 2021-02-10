@@ -71,7 +71,7 @@ class ContentBox implements IAppendable {
         if (requestCallback) this.requestCallback = requestCallback;
         
         this.scrollElm.addEventListener("wheel", (event: MouseWheelEvent) => {
-            
+
             let divHeight: number = this.scrollElm.scrollHeight;
             let offset: number = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
         
@@ -84,25 +84,40 @@ class ContentBox implements IAppendable {
 
             let portTop: number = this.scrollElm.scrollTop;
             let portBottom: number = portTop + this.scrollElm.parentElement.clientHeight;
-
+            
+            //console.log(window.innerHeight + portBottom);
             // For each content item, check if it's root element is in the viewport.
             this.content.forEach((contentItem: IAppendable) => {
+                
+                let isTestPost: boolean = (<PostCard><unknown>contentItem).post.postId == 50013;
 
                 let item: (ClientRect | DOMRect) = contentItem.rootElm.getBoundingClientRect();
                 
                 let topIsInLocalViewport: boolean = item.top < portBottom && item.top > portTop;
                 let bottomIsInLocalViewport: boolean = item.bottom < portBottom && item.bottom > portTop;
 
-                let topIsInGlobalViewport: boolean = item.top < window.innerHeight && item.top > 0;
-                let bottomIsInGlobalViewport: boolean = item.bottom < window.innerHeight && item.bottom > 0;
+                let topIsInGlobalViewport: boolean = item.top < (window.innerHeight + portBottom) && item.top > 0;
+                let bottomIsInGlobalViewport: boolean = item.bottom < (window.innerHeight + portBottom) && item.bottom > 0;
 
                 let partiallyInLocalViewport: boolean = topIsInLocalViewport || bottomIsInLocalViewport;
                 let partiallyInGlobalViewport: boolean = topIsInGlobalViewport || bottomIsInGlobalViewport;
 
                 // If item is visible.
-                if (partiallyInLocalViewport && partiallyInGlobalViewport) {
+                if (partiallyInLocalViewport && isTestPost /*&& partiallyInGlobalViewport*/) {
                     this.visibleContent.push(contentItem);
                 }
+
+                if (isTestPost) {
+                    console.log(item.top);
+                    console.log(item.bottom);
+                    console.log(portTop);
+                    console.log(portBottom);
+
+                }
+
+                //console.log('ITEM CHECK');
+                //if (partiallyInLocalViewport) console.log('partially in LOCAL viewport');
+                //if (partiallyInGlobalViewport) console.log('partially in GLOBAL viewport');
 
             });
             console.log(this.visibleContent);

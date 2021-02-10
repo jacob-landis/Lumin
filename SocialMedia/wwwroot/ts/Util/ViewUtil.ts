@@ -38,6 +38,13 @@
         );
     }
 
+    public static translateLocalTop(element: HTMLElement): number {
+
+        // TODO: subtract local DOMRect.top from parent container's DOMRect.top.
+
+        return 0;
+    }
+
 //_____ TAG MANIPULATORS
 
     // Add the provided classList to the provided element.
