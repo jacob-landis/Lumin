@@ -14,6 +14,9 @@ var Ajax = (function () {
     Ajax.updateComment = function (commentId, commentText) {
         this.call("apicomment/updatecomment/" + commentId, "POST", null, this.JSONstring(commentText));
     };
+    Ajax.updateCommentHasSeen = function (commentId) {
+        this.call("apicomment/updatecommenthasseen/" + commentId, "POST");
+    };
     Ajax.postComment = function (commentForm, onCopyResults) {
         this.call("apicomment", "POST", function (commentResults) { return onCopyResults(commentResults); }, commentForm);
     };

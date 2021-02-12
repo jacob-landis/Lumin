@@ -27,9 +27,9 @@ var PostCard = (function (_super) {
         _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 30, function (skip, take) {
             return Ajax.getComments(_this.post.postId, skip, take, function (comments) {
                 var isFirstCommentsBatch = _this.commentsBox.content.length == 0;
-                _this.commentsBox.add(comments);
                 if (_this.post.profile.profileId == User.profileId)
-                    _this.commentsBox.content.forEach(function (comment) { return comment.disputeHasSeen(); });
+                    comments.forEach(function (comment) { return comment.disputeHasSeen(); });
+                _this.commentsBox.add(comments);
                 if (isFirstCommentsBatch && !_this.hasImage)
                     _this.resizeCommentBox();
             });
@@ -155,6 +155,9 @@ var PostCard = (function (_super) {
             _this.setCommentCount(+commentCount);
             _this.commentCountSlot.append(_this.commentCountText);
         });
+    };
+    PostCard.prototype.alertVisible = function () {
+        this.commentsBox.getVisibleContent().forEach(function (commentCard) { return commentCard.alertVisible(); });
     };
     PostCard.prototype.remove = function () {
         var _this = this;

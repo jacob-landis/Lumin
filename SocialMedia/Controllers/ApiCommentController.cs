@@ -17,6 +17,7 @@ namespace SocialMedia.Controllers
         private IImageRepository imageRepo;
         private IFriendRepository friendRepo;
         private ILikeRepository likeRepo;
+        private IPostRepository postRepo;
         private CurrentProfile currentProfile;
 
         public ApiCommentController(
@@ -25,6 +26,7 @@ namespace SocialMedia.Controllers
             IImageRepository imageRepo,
             IFriendRepository friendRepo,
             ILikeRepository likeRepo,
+            IPostRepository postRepo,
             CurrentProfile currentProfile)
         {
             this.commentRepo = commentRepo;
@@ -32,6 +34,7 @@ namespace SocialMedia.Controllers
             this.imageRepo = imageRepo;
             this.friendRepo = friendRepo;
             this.likeRepo = likeRepo;
+            this.postRepo = postRepo;
             this.currentProfile = currentProfile;
         }
 
@@ -76,6 +79,19 @@ namespace SocialMedia.Controllers
             {
                 comment.Content = Util.Sanitize(content.str); // replace comment text with sanitized text
                 commentRepo.SaveComment(comment); // override comment in database
+            }
+        }
+
+        [HttpPost("updatecommenthasseen/{commentId}")]
+        public void UpdateCommentHasSeen(int commentId)
+        {
+            Comment comment = commentRepo.ById(commentId);
+            Post post = postRepo.ById(comment.PostId);
+
+            if (post.ProfileId == currentProfile.id)
+            {
+                comment.HasSeen = true;
+                commentRepo.SaveComment(comment);
             }
         }
 

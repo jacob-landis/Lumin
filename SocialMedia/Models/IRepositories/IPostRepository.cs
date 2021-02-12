@@ -18,7 +18,7 @@ namespace SocialMedia.Models
         // START SHORTCUTS
 
         // Get a single record of the type that this class is dedicated to by it's ID.
-        Post ById(int id);
+        Post ById(int? id);
 
         // Get posts belonging to a profile by the ProfileID.
         IEnumerable<Post> ByProfileId(int id);

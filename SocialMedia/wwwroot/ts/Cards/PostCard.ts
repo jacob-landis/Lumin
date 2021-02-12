@@ -90,11 +90,11 @@
                 // This is used after the comments have been added, but it must be determined before they are added.
                 let isFirstCommentsBatch: boolean = this.commentsBox.content.length == 0;
 
-                this.commentsBox.add(comments);
-
                 // If this post belongs to current user, indicate which comments have not been seen by the user.
                 if (this.post.profile.profileId == User.profileId)
-                    this.commentsBox.content.forEach((comment: CommentCard) => comment.disputeHasSeen());
+                    comments.forEach((comment: CommentCard) => comment.disputeHasSeen());
+
+                this.commentsBox.add(comments);
 
                 // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
                 if (isFirstCommentsBatch && !this.hasImage) this.resizeCommentBox();
@@ -261,6 +261,10 @@
 
             this.commentCountSlot.append(this.commentCountText);
         });
+    }
+
+    public alertVisible() {
+        this.commentsBox.getVisibleContent().forEach((commentCard: Card) => commentCard.alertVisible());
     }
 
     public remove(): void {

@@ -58,6 +58,18 @@ var CommentCard = (function (_super) {
         if (!this.comment.hasSeen)
             this.rootElm.classList.add("unseenComment");
     };
+    CommentCard.prototype.alertVisible = function () {
+        var _this = this;
+        Ajax.updateCommentHasSeen(this.comment.commentId);
+        CommentCard.commentCards.forEach(function (commentCard) {
+            if (commentCard.comment.commentId == _this.comment.commentId) {
+                setTimeout(function () {
+                    commentCard.rootElm.classList.remove("unseenComment");
+                }, 1000);
+                commentCard.comment.hasSeen = false;
+            }
+        });
+    };
     CommentCard.prototype.remove = function () {
         var _this = this;
         Ajax.deleteComment(this.comment.commentId);

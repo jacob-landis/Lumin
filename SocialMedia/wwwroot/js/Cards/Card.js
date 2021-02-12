@@ -2,6 +2,7 @@ var Card = (function () {
     function Card(rootElm) {
         this.rootElm = rootElm;
     }
+    Card.prototype.alertVisible = function () { };
     return Card;
 }());
 //# sourceMappingURL=Card.js.map

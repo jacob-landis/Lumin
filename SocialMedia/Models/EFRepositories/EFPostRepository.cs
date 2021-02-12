@@ -30,7 +30,7 @@ namespace SocialMedia.Models
         /*
             Get a single record of the type that this class is dedicated to by it's ID.
         */
-        public Post ById(int id) => context.Posts.First(p => p.PostId == id);
+        public Post ById(int? id) => context.Posts.First(p => p.PostId == id);
 
         /*
             Get posts belonging to a profile by the ProfileID.

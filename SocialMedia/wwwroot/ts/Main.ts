@@ -22,7 +22,6 @@ class Main {
         NavBar.initialize(
             document.getElementById('navBar'),
             document.getElementById('publicPosts')
-            //document.getElementById('postsSection')
         );
 
         // PUBLIC POST FEED

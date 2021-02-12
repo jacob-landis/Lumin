@@ -24,9 +24,7 @@ class ContentBox implements IAppendable {
 
     // The "box" in "content box".
     public content: IAppendable[] = [];
-
-    public visibleContent: IAppendable[] = [];
-
+    
     // The callback for a request.
     // This is called here so that pre-request logic can be consolidated and performed here. See request().
     private requestCallback: (skip: number, take: number) => void;
@@ -55,7 +53,12 @@ class ContentBox implements IAppendable {
         take can be an int or null.
         requestFunc can be a function or null.
     */
-    public constructor(rootElm: HTMLElement, scrollElm?: HTMLElement, take?: number, requestCallback?: (skip: number, take: number) => void) {
+    public constructor(
+        rootElm: HTMLElement,
+        scrollElm?: HTMLElement,
+        take?: number,
+        requestCallback?: (skip: number, take: number) => void
+    ) {
 
         // Get a handle on the provided tag.
         this.rootElm = rootElm;
@@ -67,73 +70,49 @@ class ContentBox implements IAppendable {
 
         // If a non-null take parameter value was provided, get a handle on it.
         if (take) this.take = take;
-
+        
         if (requestCallback) this.requestCallback = requestCallback;
         
         this.scrollElm.addEventListener("wheel", (event: MouseWheelEvent) => {
-
-            let divHeight: number = this.scrollElm.scrollHeight;
-            let offset: number = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
-        
-            if ((offset + 500) > divHeight) this.request();
-
-
-            // Determine which content items are in view.
-
-            this.visibleContent = [];
-
-            let portTop: number = this.scrollElm.scrollTop;
-            let portBottom: number = portTop + this.scrollElm.parentElement.clientHeight;
-            
-            //console.log(window.innerHeight + portBottom);
-            // For each content item, check if it's root element is in the viewport.
-            this.content.forEach((contentItem: IAppendable) => {
-                
-                let isTestPost: boolean = (<PostCard><unknown>contentItem).post.postId == 50013;
-
-                let item: (ClientRect | DOMRect) = contentItem.rootElm.getBoundingClientRect();
-                
-                let topIsInLocalViewport: boolean = item.top < portBottom && item.top > portTop;
-                let bottomIsInLocalViewport: boolean = item.bottom < portBottom && item.bottom > portTop;
-
-                let topIsInGlobalViewport: boolean = item.top < (window.innerHeight + portBottom) && item.top > 0;
-                let bottomIsInGlobalViewport: boolean = item.bottom < (window.innerHeight + portBottom) && item.bottom > 0;
-
-                let partiallyInLocalViewport: boolean = topIsInLocalViewport || bottomIsInLocalViewport;
-                let partiallyInGlobalViewport: boolean = topIsInGlobalViewport || bottomIsInGlobalViewport;
-
-                // If item is visible.
-                if (partiallyInLocalViewport && isTestPost /*&& partiallyInGlobalViewport*/) {
-                    this.visibleContent.push(contentItem);
-                }
-
-                if (isTestPost) {
-                    console.log(item.top);
-                    console.log(item.bottom);
-                    console.log(portTop);
-                    console.log(portBottom);
-
-                }
-
-                //console.log('ITEM CHECK');
-                //if (partiallyInLocalViewport) console.log('partially in LOCAL viewport');
-                //if (partiallyInGlobalViewport) console.log('partially in GLOBAL viewport');
-
-            });
-            console.log(this.visibleContent);
+            this.lazyLoad();    
+            this.getVisibleContent().forEach((card: Card) => card.alertVisible());
         });
 
         // Add this instance of ContentBox to contentBoxes.
         ContentBox.contentBoxes.push(this);
     }
 
-    /*
-         Called when this.rootElm is scrolled. Meant to be overriden to account for unique cases.
-    */
-    protected onScroll(): void {
+    public lazyLoad() {
+        let divHeight: number = this.scrollElm.scrollHeight;
+        let offset: number = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
         
+        if ((offset + 500) > divHeight) this.request();
+    }
 
-        // Update visibleContent list.
+    public getVisibleContent(): IAppendable[] {
+
+        let visibleContent: IAppendable[] = [];
+
+        let scrollPort: (ClientRect | DOMRect) = this.scrollElm.getBoundingClientRect();
+
+        // For each content item, check if it's root element is in the viewport.
+        this.content.forEach((contentItem: IAppendable) => {
+
+            let item: (ClientRect | DOMRect) = contentItem.rootElm.getBoundingClientRect();
+
+            let topIsInLocalViewport: boolean = item.top < scrollPort.bottom && item.top > scrollPort.top;
+            let bottomIsInLocalViewport: boolean = item.bottom < scrollPort.bottom && item.bottom > scrollPort.top;
+
+            let topIsInGlobalViewport: boolean = item.top < window.innerHeight && item.top > 0;
+            let bottomIsInGlobalViewport: boolean = item.bottom < window.innerHeight && item.bottom > 0;
+
+            let partiallyInLocalViewport: boolean = topIsInLocalViewport || bottomIsInLocalViewport;
+            let partiallyInGlobalViewport: boolean = topIsInGlobalViewport || bottomIsInGlobalViewport;
+
+            // If item is visible.
+            if (partiallyInLocalViewport && partiallyInGlobalViewport) visibleContent.push(contentItem);
+        });
+        return visibleContent;
     }
 
     /*

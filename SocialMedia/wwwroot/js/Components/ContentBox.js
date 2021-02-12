@@ -4,7 +4,6 @@ var ContentBox = (function () {
         this.loading = false;
         this.moreContent = true;
         this.content = [];
-        this.visibleContent = [];
         this.rootElm = rootElm;
         this.rootElm.classList.add('content-box');
         this.scrollElm = scrollElm ? scrollElm : this.rootElm;
@@ -13,33 +12,8 @@ var ContentBox = (function () {
         if (requestCallback)
             this.requestCallback = requestCallback;
         this.scrollElm.addEventListener("wheel", function (event) {
-            var divHeight = _this.scrollElm.scrollHeight;
-            var offset = _this.scrollElm.scrollTop + _this.scrollElm.clientHeight;
-            if ((offset + 500) > divHeight)
-                _this.request();
-            _this.visibleContent = [];
-            var portTop = _this.scrollElm.scrollTop;
-            var portBottom = portTop + _this.scrollElm.parentElement.clientHeight;
-            _this.content.forEach(function (contentItem) {
-                var isTestPost = contentItem.post.postId == 50013;
-                var item = contentItem.rootElm.getBoundingClientRect();
-                var topIsInLocalViewport = item.top < portBottom && item.top > portTop;
-                var bottomIsInLocalViewport = item.bottom < portBottom && item.bottom > portTop;
-                var topIsInGlobalViewport = item.top < (window.innerHeight + portBottom) && item.top > 0;
-                var bottomIsInGlobalViewport = item.bottom < (window.innerHeight + portBottom) && item.bottom > 0;
-                var partiallyInLocalViewport = topIsInLocalViewport || bottomIsInLocalViewport;
-                var partiallyInGlobalViewport = topIsInGlobalViewport || bottomIsInGlobalViewport;
-                if (partiallyInLocalViewport && isTestPost) {
-                    _this.visibleContent.push(contentItem);
-                }
-                if (isTestPost) {
-                    console.log(item.top);
-                    console.log(item.bottom);
-                    console.log(portTop);
-                    console.log(portBottom);
-                }
-            });
-            console.log(_this.visibleContent);
+            _this.lazyLoad();
+            _this.getVisibleContent().forEach(function (card) { return card.alertVisible(); });
         });
         ContentBox.contentBoxes.push(this);
     }
@@ -61,7 +35,27 @@ var ContentBox = (function () {
         enumerable: true,
         configurable: true
     });
-    ContentBox.prototype.onScroll = function () {
+    ContentBox.prototype.lazyLoad = function () {
+        var divHeight = this.scrollElm.scrollHeight;
+        var offset = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
+        if ((offset + 500) > divHeight)
+            this.request();
+    };
+    ContentBox.prototype.getVisibleContent = function () {
+        var visibleContent = [];
+        var scrollPort = this.scrollElm.getBoundingClientRect();
+        this.content.forEach(function (contentItem) {
+            var item = contentItem.rootElm.getBoundingClientRect();
+            var topIsInLocalViewport = item.top < scrollPort.bottom && item.top > scrollPort.top;
+            var bottomIsInLocalViewport = item.bottom < scrollPort.bottom && item.bottom > scrollPort.top;
+            var topIsInGlobalViewport = item.top < window.innerHeight && item.top > 0;
+            var bottomIsInGlobalViewport = item.bottom < window.innerHeight && item.bottom > 0;
+            var partiallyInLocalViewport = topIsInLocalViewport || bottomIsInLocalViewport;
+            var partiallyInGlobalViewport = topIsInGlobalViewport || bottomIsInGlobalViewport;
+            if (partiallyInLocalViewport && partiallyInGlobalViewport)
+                visibleContent.push(contentItem);
+        });
+        return visibleContent;
     };
     ContentBox.prototype.request = function (take) {
         if (!this.loading && this.moreContent) {

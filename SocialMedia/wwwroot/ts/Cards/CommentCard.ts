@@ -119,6 +119,22 @@ class CommentCard extends Card {
         if (!this.comment.hasSeen) this.rootElm.classList.add("unseenComment");
     }
 
+    public alertVisible(): void {
+
+        Ajax.updateCommentHasSeen(this.comment.commentId);
+
+        CommentCard.commentCards.forEach((commentCard: CommentCard) => {
+            if (commentCard.comment.commentId == this.comment.commentId) {
+
+                setTimeout(() => {
+                    commentCard.rootElm.classList.remove("unseenComment");
+                }, 1000);
+
+                commentCard.comment.hasSeen = false;             
+            }
+        });
+    }
+
     /*
         PUBLIC
 
