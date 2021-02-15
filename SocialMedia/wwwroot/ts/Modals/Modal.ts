@@ -36,12 +36,12 @@ class Modal implements IAppendable {
     protected static btnClose: HTMLElement; // provided in initialize
 
     public static initialize(frameTemplate: HTMLElement, frameContainer: HTMLElement, btnClose: HTMLElement): void {
-        
+
         // Get a handle on the frame template.
         this.frameTemplate = frameTemplate;
         this.frameContainer = frameContainer;
         this.btnClose = btnClose;
-        
+
         // Set event listener on btnCloseModal to invoke closeHighestModal.
         this.btnClose.onclick = (e: MouseEvent) => this.closeTopModal();
         

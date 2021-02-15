@@ -24,7 +24,7 @@ class ProfileImagesBox extends ContentBox {
 
         let rootElm: HTMLElement = ViewUtil.tag('div', { classList: 'images-box' });
 
-        super(rootElm, scrollElm, 20,
+        super(rootElm, scrollElm, 400, 20,
             // When content box is ready for more content,
             (skip: number, take: number) => {
                 // send an images request to the host with the set skip and take values along with the ProfileID of this image box,

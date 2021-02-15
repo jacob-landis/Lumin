@@ -72,17 +72,6 @@ class ImageDropdown extends Dropdown {
                         if (p.profileId == User.profileId) p.addImageCard(ImageCard.copy(imageCard), true);
                     })
             );
-
-        // LAZY LOADING
-        // When content is scrolled,
-        this.contentElm.onscroll = (e: UIEvent) => {
-
-            // take a scroll measurement,
-            let offset = this.contentElm.scrollTop + window.innerHeight;
-
-            // and if it surpasses the threshold, request more content.
-            if (offset >= this.imageBox.height) this.imageBox.request(15);
-        }
     }
 
     /*

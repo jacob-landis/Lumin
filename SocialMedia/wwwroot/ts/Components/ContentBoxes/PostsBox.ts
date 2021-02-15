@@ -25,7 +25,7 @@ class PostsBox extends ContentBox {
         rootElm.classList.add('post-box');
 
         // Call base class constructor.
-        super(rootElm, scrollElm, 5,
+        super(rootElm, scrollElm, 1500, 5,
             // When content box is ready for more content,
             (skip: number, take: number): void => {
                 

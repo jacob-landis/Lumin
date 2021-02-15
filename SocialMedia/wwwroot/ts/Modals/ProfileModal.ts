@@ -150,20 +150,6 @@ class ProfileModal extends Modal {
 
         // Append new profile images box to container elm.
         this.imageWrapper.append(this.imagesBox.rootElm);
-        
-        // LAZY LOADING IMAGES
-        // On image box scroll,
-        this.imageScrollBox.onscroll = (e: UIEvent) => {
-
-            // create shortcut,
-            let divHeight: number = Util.getElmHeight(this.imageScrollBox);
-
-            // take measurement,
-            let offset: number = this.imageScrollBox.scrollTop + divHeight - 50;
-
-            // and if threshold is surpassed, request more images.
-            if (offset >= divHeight) this.imagesBox.request(5);
-        }
 
         // FRIENDS BOX
         // Construct new Content box and set of friends display.
@@ -182,21 +168,7 @@ class ProfileModal extends Modal {
 
         // Start post feed to make first request.
         this.postBox.start();
-
-        // LAZY LOADING POSTS
-        // Set scroll callback for modalCon.
-        this.rootElm.onscroll = (e: UIEvent) => {
-
-            // Make shortcut.
-            let divHeight: number = Util.getDocumentHeight();
-
-            // Take measurment.
-            let offset: number = this.rootElm.scrollTop + window.innerHeight + 2000;
-
-            // If threshold was surpassed, request more posts.
-            if (offset >= divHeight) this.postBox.request();
-        }
-
+        
         // Open this modal.
         super.open();
     }

@@ -14,6 +14,8 @@ class ContentBox implements IAppendable {
     // Defaults to this.rootElm if not specified in the constructor.
     public scrollElm: HTMLElement;
 
+    public loadThreshold: number;
+
     // Whether or not a request is pending. XXX rename awaiting?
     // It is assumed that a new content box has not yet sent a request.
     public loading: boolean = false;
@@ -56,6 +58,7 @@ class ContentBox implements IAppendable {
     public constructor(
         rootElm: HTMLElement,
         scrollElm?: HTMLElement,
+        loadThreshold?: number,
         take?: number,
         requestCallback?: (skip: number, take: number) => void
     ) {
@@ -66,7 +69,9 @@ class ContentBox implements IAppendable {
         // Add 'content-box' to the classList attribute.
         this.rootElm.classList.add('content-box');
 
-        this.scrollElm = scrollElm? scrollElm : this.rootElm;
+        this.scrollElm = scrollElm ? scrollElm : this.rootElm;
+
+        this.loadThreshold = loadThreshold ? loadThreshold : 350;
 
         // If a non-null take parameter value was provided, get a handle on it.
         if (take) this.take = take;
@@ -86,7 +91,7 @@ class ContentBox implements IAppendable {
         let divHeight: number = this.scrollElm.scrollHeight;
         let offset: number = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
         
-        if ((offset + 500) > divHeight) this.request();
+        if ((offset + this.loadThreshold) > divHeight) this.request();
     }
 
     public getVisibleContent(): IAppendable[] {

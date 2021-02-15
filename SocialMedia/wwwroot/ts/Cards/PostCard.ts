@@ -83,7 +83,7 @@
         this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
 
-        this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 30, (skip: number, take: number) =>
+        this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, (skip: number, take: number) =>
             Ajax.getComments(this.post.postId, skip, take, (comments: CommentCard[]) => {
 
                 // Determine if this is the first batch.
@@ -159,14 +159,6 @@
         // Load comments
         this.commentsBox.request(15);
         this.requestCommentCount();
-
-        // On scroll
-        this.commentsBox.rootElm.onscroll = (e: MouseEvent) => {
-            let divHeight: number = this.commentsBox.rootElm.scrollHeight;
-            let offset: number = this.commentsBox.rootElm.scrollTop + this.commentsBox.rootElm.clientHeight; // XXX can ContentBox.Height be used? XXX
-
-            if (offset == divHeight) this.commentsBox.request();
-        }
 
         // PRIVATE OPTIONS
         if (post.profile.relationToUser == 'me') {
