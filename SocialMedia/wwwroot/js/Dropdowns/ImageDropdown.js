@@ -29,11 +29,6 @@ var ImageDropdown = (function (_super) {
                 });
             });
         };
-        _this.contentElm.onscroll = function (e) {
-            var offset = _this.contentElm.scrollTop + window.innerHeight;
-            if (offset >= _this.imageBox.height)
-                _this.imageBox.request(15);
-        };
         return _this;
     }
     ImageDropdown.prototype.open = function () {

@@ -13,6 +13,8 @@
             if (event.deltaY > 0) this.reduceHeight(event.deltaY);
             else this.show();
         });
+        
+        window.onmousemove = (event: MouseEvent) => { if (event.pageY < 50) this.show(); }
 
         this.show();
     }
@@ -37,10 +39,15 @@
 
         let newHeight: string = `${this.navBarElm.clientHeight - (scrollIntensity * reductionRate)}`;
 
-        // Reduce height by the scroll intensity times a rate.
-        this.navBarElm.style.height = +newHeight > 35 ? newHeight : '0px';
+        // Reduce height by the scroll intensity times a rate or hide it completely once it has been reduced enough (reduced to 35px).
+        if (+newHeight > 35) this.navBarElm.style.height = newHeight;
+        else this.hide();
         
         this.updatePostsSection();
+    }
+
+    public static hide(): void {
+        this.navBarElm.style.height = '0';
     }
 
 }

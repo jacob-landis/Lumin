@@ -3,8 +3,9 @@
     border: none;
     box-shadow: none;
 
-    margin: 40px auto;
-    padding: 0;
+    margin: 0 auto;
+    padding-top: 0;
+    padding-bottom: 0;
 
     position: fixed;
     display: flex;

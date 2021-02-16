@@ -60,24 +60,12 @@ var ProfileModal = (function (_super) {
             return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), _this.profile.profileId);
         });
         this.imageWrapper.append(this.imagesBox.rootElm);
-        this.imageScrollBox.onscroll = function (e) {
-            var divHeight = Util.getElmHeight(_this.imageScrollBox);
-            var offset = _this.imageScrollBox.scrollTop + divHeight - 50;
-            if (offset >= divHeight)
-                _this.imagesBox.request(5);
-        };
         this.friendBox = new ContentBox(this.friendBoxElm);
         this.friendBox.clear();
         Ajax.getFriends(this.profile.profileId, null, function (profileCards) { return _this.friendBox.add(profileCards); });
         this.postBox.profileId = this.profile.profileId;
         this.postBox.clear();
         this.postBox.start();
-        this.rootElm.onscroll = function (e) {
-            var divHeight = Util.getDocumentHeight();
-            var offset = _this.rootElm.scrollTop + window.innerHeight + 2000;
-            if (offset >= divHeight)
-                _this.postBox.request();
-        };
         _super.prototype.open.call(this);
     };
     ProfileModal.prototype.selectProfilePicture = function () {

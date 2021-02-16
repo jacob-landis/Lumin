@@ -1,5 +1,5 @@
 var ContentBox = (function () {
-    function ContentBox(rootElm, scrollElm, take, requestCallback) {
+    function ContentBox(rootElm, scrollElm, loadThreshold, take, requestCallback) {
         var _this = this;
         this.loading = false;
         this.moreContent = true;
@@ -7,6 +7,7 @@ var ContentBox = (function () {
         this.rootElm = rootElm;
         this.rootElm.classList.add('content-box');
         this.scrollElm = scrollElm ? scrollElm : this.rootElm;
+        this.loadThreshold = loadThreshold ? loadThreshold : 350;
         if (take)
             this.take = take;
         if (requestCallback)
@@ -38,7 +39,7 @@ var ContentBox = (function () {
     ContentBox.prototype.lazyLoad = function () {
         var divHeight = this.scrollElm.scrollHeight;
         var offset = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
-        if ((offset + 500) > divHeight)
+        if ((offset + this.loadThreshold) > divHeight)
             this.request();
     };
     ContentBox.prototype.getVisibleContent = function () {

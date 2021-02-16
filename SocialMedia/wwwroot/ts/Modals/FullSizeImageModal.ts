@@ -147,6 +147,8 @@ class FullSizeImageModal extends Modal {
     private openOverrided(): void {
         super.open();
 
+        NavBar.hide();
+
         // Move any dropdown to background.
         Dropdown.moveToBackground();
     }
@@ -220,6 +222,7 @@ class FullSizeImageModal extends Modal {
 
     // Hide the control elms.
     private hideControls(): void {
+        NavBar.hide();
         ViewUtil.hide(imageDropdown.rootElm);
         this.imageControls.forEach((control: HTMLElement) => ViewUtil.hide(control));
     }

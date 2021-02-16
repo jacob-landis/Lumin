@@ -53,6 +53,7 @@ var FullSizeImageModal = (function (_super) {
     };
     FullSizeImageModal.prototype.openOverrided = function () {
         _super.prototype.open.call(this);
+        NavBar.hide();
         Dropdown.moveToBackground();
     };
     FullSizeImageModal.prototype.close = function () {
@@ -81,6 +82,7 @@ var FullSizeImageModal = (function (_super) {
         this.imageControls.forEach(function (control) { return ViewUtil.show(control); });
     };
     FullSizeImageModal.prototype.hideControls = function () {
+        NavBar.hide();
         ViewUtil.hide(imageDropdown.rootElm);
         this.imageControls.forEach(function (control) { return ViewUtil.hide(control); });
     };

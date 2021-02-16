@@ -2,7 +2,6 @@ var Modal = (function () {
     function Modal(contentElm) {
         this.rootElm = ViewUtil.copy(Modal.frameTemplate);
         this.rootElm.append(contentElm);
-        document.onkeypress = function (event) { console.log('esc'); };
         Modal.frameContainer.append(this.rootElm);
     }
     Object.defineProperty(Modal, "highestZIndex", {

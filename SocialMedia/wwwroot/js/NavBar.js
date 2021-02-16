@@ -11,6 +11,8 @@ var NavBar = (function () {
             else
                 _this.show();
         });
+        window.onmousemove = function (event) { if (event.pageY < 50)
+            _this.show(); };
         this.show();
     };
     NavBar.updatePostsSection = function () {
@@ -23,8 +25,14 @@ var NavBar = (function () {
     NavBar.reduceHeight = function (scrollIntensity) {
         var reductionRate = 0.1;
         var newHeight = "" + (this.navBarElm.clientHeight - (scrollIntensity * reductionRate));
-        this.navBarElm.style.height = +newHeight > 35 ? newHeight : '0px';
+        if (+newHeight > 35)
+            this.navBarElm.style.height = newHeight;
+        else
+            this.hide();
         this.updatePostsSection();
+    };
+    NavBar.hide = function () {
+        this.navBarElm.style.height = '0';
     };
     return NavBar;
 }());

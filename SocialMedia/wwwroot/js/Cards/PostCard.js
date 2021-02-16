@@ -24,7 +24,7 @@ var PostCard = (function (_super) {
         _this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
         _this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
-        _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 30, function (skip, take) {
+        _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, function (skip, take) {
             return Ajax.getComments(_this.post.postId, skip, take, function (comments) {
                 var isFirstCommentsBatch = _this.commentsBox.content.length == 0;
                 if (_this.post.profile.profileId == User.profileId)
@@ -64,12 +64,6 @@ var PostCard = (function (_super) {
         likeCardSlot.append(new LikeCard(LikesRecord.copy(_this.post.likes), _this.post.dateTime).rootElm);
         _this.commentsBox.request(15);
         _this.requestCommentCount();
-        _this.commentsBox.rootElm.onscroll = function (e) {
-            var divHeight = _this.commentsBox.rootElm.scrollHeight;
-            var offset = _this.commentsBox.rootElm.scrollTop + _this.commentsBox.rootElm.clientHeight;
-            if (offset == divHeight)
-                _this.commentsBox.request();
-        };
         if (post.profile.relationToUser == 'me') {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
