@@ -44,6 +44,8 @@
         else this.hide();
         
         this.updatePostsSection();
+
+        Dropdown.closeAny();
     }
 
     public static hide(): void {

@@ -32,7 +32,6 @@ var CreatePostModal = (function (_super) {
     }
     CreatePostModal.prototype.load = function (imageCard) {
         this.loadPaperClip();
-        this.convertImageDropdown();
         if (imageCard)
             this.selectedImageBox.load(imageCard.image.imageId);
         this.open();
@@ -45,14 +44,12 @@ var CreatePostModal = (function (_super) {
     };
     CreatePostModal.prototype.selectImage = function () {
         var _this = this;
-        imageDropdown.load(User.profileId, "Select an image", function (imageCard) {
-            _this.selectedImageBox.load(imageCard.image.imageId);
-        });
-    };
-    CreatePostModal.prototype.convertImageDropdown = function () {
-        var _this = this;
         imageDropdown.convert(function (imageCard) {
             _this.selectedImageBox.load(imageCard.image.imageId);
+        });
+        imageDropdown.load(User.profileId, "Select an image", function (imageCard) {
+            _this.selectedImageBox.load(imageCard.image.imageId);
+            imageDropdown.close();
         });
     };
     CreatePostModal.prototype.submit = function () {

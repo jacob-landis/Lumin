@@ -146,11 +146,7 @@ class FullSizeImageModal extends Modal {
     */
     private openOverrided(): void {
         super.open();
-
         NavBar.hide();
-
-        // Move any dropdown to background.
-        Dropdown.moveToBackground();
     }
     
     /*
@@ -167,6 +163,8 @@ class FullSizeImageModal extends Modal {
 
         // Clear full size image slot.
         this.imageCon.unload();
+
+        imageDropdown.close();
 
         super.close();
     }

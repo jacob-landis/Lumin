@@ -61,6 +61,14 @@ class Dropdown implements IAppendable {
         if (this.openDropdown != null) this.openDropdown.rootElm.style.zIndex = `${Modal.highestZIndex - 1}`;
     }
 
+    /*
+        Close any open dropdown. 
+    */
+    public static closeAny(): void {
+        imageDropdown.close();
+        friendDropdown.close();
+    }
+
     // /STATIC
     // -----------------------------------------------------------------------------------------
     // NON-STATIC

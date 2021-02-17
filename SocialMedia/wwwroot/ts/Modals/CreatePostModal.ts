@@ -91,13 +91,7 @@ class CreatePostModal extends Modal {
 
         // Clear selected image container.
         this.loadPaperClip();
-
-        // If the image dropdown is closed, open it.
-        //if (imageDropdown.rootElm.style.display == "none" || imageDropdown.rootElm.style.display == "") this.selectImage();
-
-        // Change image onclicks in image dropdown.
-        this.convertImageDropdown();
-
+        
         // If an image card was provided, load it into the selected image container.
         if (imageCard) this.selectedImageBox.load(imageCard.image.imageId);
 
@@ -132,6 +126,17 @@ class CreatePostModal extends Modal {
     */
     public selectImage(): void {
 
+        // Send new callback to image dropdown.
+        imageDropdown.convert(
+
+            // When the selected image card returns,
+            (imageCard: ImageCard) => {
+
+                // load image into selected image container by id so the fullsize verision is requested and displayed,
+                this.selectedImageBox.load(imageCard.image.imageId);
+            }
+        );
+
         // Load the image dropdown.
         imageDropdown.load(
 
@@ -146,26 +151,10 @@ class CreatePostModal extends Modal {
                 // XXX if the image container were forced into certain dimensions, a stretched out thumbnail could be a
                 // XXX placeholder until the fullsize version arrived.
 
-                // and load image into selected image container by id so the fullsize verision is requested and displayed.
+                // and load image into selected image container by id so the fullsize version is requested and displayed.
                 this.selectedImageBox.load(imageCard.image.imageId);
-            }
-        );
-    }
 
-    /*
-        Changes the callback in the already open image dropdown to return the selected image.
-        XXX Move to only used spot XXX
-    */
-    public convertImageDropdown(): void {
-
-        // Send new callback to image dropdown.
-        imageDropdown.convert(
-            
-            // When the selected image card returns,
-            (imageCard: ImageCard) => {
-
-                // load image into selected image container by id so the fullsize verision is requested and displayed,
-                this.selectedImageBox.load(imageCard.image.imageId);
+                imageDropdown.close();
             }
         );
     }

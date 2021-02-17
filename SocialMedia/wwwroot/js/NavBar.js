@@ -30,6 +30,7 @@ var NavBar = (function () {
         else
             this.hide();
         this.updatePostsSection();
+        Dropdown.closeAny();
     };
     NavBar.hide = function () {
         this.navBarElm.style.height = '0';

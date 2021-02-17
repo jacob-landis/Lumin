@@ -20,14 +20,7 @@ class ContextMenu {
 
         // Create a new content box using a modal HTML component and get a handle on it.
         this.optionsBox = new ContentBox(contentElm);
-
-        // Set up scroll event listener for window. Close on scroll.
-        window.addEventListener('scroll', (e: UIEvent) => {
-
-            // When window is scrolled, if this modal is open, close it.
-            if (ViewUtil.isDisplayed(this.optionsBox.rootElm)) this.close();
-        });
-
+        
         // Click-off to close.
         this.backgroundElm.onclick = (e: MouseEvent) => {
             this.close();

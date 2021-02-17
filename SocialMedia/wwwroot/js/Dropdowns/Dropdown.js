@@ -19,6 +19,10 @@ var Dropdown = (function () {
         if (this.openDropdown != null)
             this.openDropdown.rootElm.style.zIndex = "" + (Modal.highestZIndex - 1);
     };
+    Dropdown.closeAny = function () {
+        imageDropdown.close();
+        friendDropdown.close();
+    };
     Dropdown.prototype.open = function () {
         contextMenu.close();
         if (Dropdown.openDropdown != null)
