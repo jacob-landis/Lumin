@@ -17,8 +17,9 @@ class Main {
     static initialize(profile) {
 
         User.profileId = profile.profileId;
-        User.profilePictureId = profile.profilePicture;
-        
+        User.profilePictureId = profile.profilePicture
+        new ImageBox(document.getElementById('btnOpenUserProfileModal'), '', null, true).load(User.profilePictureId);
+
         NavBar.initialize(
             document.getElementById('navBar'),
             document.getElementById('publicPosts')

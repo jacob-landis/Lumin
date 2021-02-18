@@ -15,6 +15,7 @@ var Main = (function () {
     Main.initialize = function (profile) {
         User.profileId = profile.profileId;
         User.profilePictureId = profile.profilePicture;
+        new ImageBox(document.getElementById('btnOpenUserProfileModal'), '', null, true).load(User.profilePictureId);
         NavBar.initialize(document.getElementById('navBar'), document.getElementById('publicPosts'));
         publicPosts = new PublicPosts(document.getElementById('publicPosts'));
         contextMenu = new ContextMenu(document.getElementById('contextMenu'), document.getElementById('contextContent'));

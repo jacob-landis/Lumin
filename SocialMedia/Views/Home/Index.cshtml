@@ -88,14 +88,14 @@
     <div class="pull-right">
 
         @* Btn open user profile modal. Opens the profile modal of current profile. *@
-        <i id="btnOpenUserProfileModal" class="fa fa-user navIcon" alt="my profile"></i>
+        <div id="btnOpenUserProfileModal" class="navicon" alt="my profile"></div>
 
         @* Btn open help modal. Opens help modal. *@
         <i id="btnOpenHelpModal" class="fa fa-question navIcon" alt="help"></i>
 
         @* Logs user out, in turn redirecting them to login page. *@
-        <a class="" asp-controller="Account" asp-action="Logout">
-            <i id="btnOpenUserProfileModal" class="fa fa-sign-out navIcon" alt="sign out"></i>
+        <a asp-controller="Account" asp-action="Logout">
+            <i id="btnLogout" class="fa fa-sign-out navIcon" alt="sign out"></i>
         </a>
     </div>
     @* -------------------/RIGHT-SIDE--------------------- *@
