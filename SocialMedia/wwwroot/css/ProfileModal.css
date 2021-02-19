@@ -45,7 +45,7 @@
     display: inline;
 }
 
-#btnChangeProfilePicture:hover {
+#btnChangeProfilePicture:hover, #btnChangeName:hover {
     cursor: pointer;
 }
 
@@ -56,19 +56,21 @@
     word-break: break-word;
 }
 
-#profileDetailSection:hover > #profileBioWrapper > #btnChangeBio {
-    display: block;
+#profileDetailSection:hover > #profileBioWrapper > #btnChangeBio,
+#profileDetailSection:hover > #profileNameWrapper > #btnChangeName {
+    opacity: 1;
 }
 
-#btnChangeBio {
-    display: none;
+#btnChangeBio, #btnChangeName {
+    opacity: 0;
     background: none;
     border: none;
     font-size: 20px;
     outline: none;
 }
 
-#profileBio:focus + #btnChangeBio {
+/*XXX Does not work. XXX*/
+#profileBio:focus #btnChangeBio {
     display: none;
 }
 

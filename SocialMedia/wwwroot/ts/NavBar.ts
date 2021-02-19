@@ -1,12 +1,31 @@
 ﻿class NavBar {
 
-    public static navBarElm: HTMLElement;
-    public static postsSectionElm: HTMLElement;
+    public navBarElm: HTMLElement;
+    public postsSectionElm: HTMLElement;
 
-    public static initialize(navBarElm: HTMLElement, postsSectionElm: HTMLElement): void {
-
+    public btnOpenUserProfileModalImageBox: ImageBox;
+    
+    public constructor(navBarElm: HTMLElement, postsSectionElm: HTMLElement, btnOpenUserProfileModal: HTMLElement) {
         this.navBarElm = navBarElm;
         this.postsSectionElm = postsSectionElm;
+
+        this.btnOpenUserProfileModalImageBox = new ImageBox(btnOpenUserProfileModal, '', null, true);
+        this.btnOpenUserProfileModalImageBox.load(User.profilePictureId);
+
+        // OPEN HELP MODAL
+        document.getElementById('btnOpenHelpModal').onclick = (e: MouseEvent) => helpModal.open();
+
+        // OPEN USER PROFILE MODAL
+        document.getElementById('btnOpenUserProfileModal').onclick = (e: MouseEvent) => profileModal.launch(User.profileId);
+
+        // CREATE POST
+        document.getElementById('btnCreatePost').onclick = (e: MouseEvent) => createPostModal.load();
+
+        // SHOW FRIENDS
+        document.getElementById('btnShowFriends').onclick = (e: MouseEvent) => friendDropdown.toggle();
+
+        // SHOW IMAGES
+        document.getElementById('btnShowImages').onclick = (e: MouseEvent) => imageDropdown.toggle();
 
         this.postsSectionElm.addEventListener('wheel', (event: MouseWheelEvent) => {
             
@@ -19,13 +38,13 @@
         this.show();
     }
 
-    public static updatePostsSection(): void {
+    public updatePostsSection(): void {
 
         // Update padding-top.
         this.postsSectionElm.style.paddingTop = `${this.navBarElm.clientHeight}`;
     }
 
-    public static show(): void {
+    public show(): void {
 
         // Restore height of navBar.
         this.navBarElm.style.height = '50px';
@@ -33,7 +52,7 @@
         this.updatePostsSection();
     }
 
-    public static reduceHeight(scrollIntensity: number): void {
+    public reduceHeight(scrollIntensity: number): void {
 
         let reductionRate: number = 0.1;
 
@@ -48,7 +67,7 @@
         Dropdown.closeAny();
     }
 
-    public static hide(): void {
+    public hide(): void {
         this.navBarElm.style.height = '0';
     }
 

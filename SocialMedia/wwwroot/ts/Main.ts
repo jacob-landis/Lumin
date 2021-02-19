@@ -1,13 +1,14 @@
-﻿var contextMenu: ContextMenu;
+﻿var navBar: NavBar;
+var contextMenu: ContextMenu;
 var confirmPrompt: ConfirmPrompt;
 
-var modal: Modal;
 var createPostModal: CreatePostModal;
 var fullSizeImageModal : FullSizeImageModal;
 var profileModal : ProfileModal;
 var uploadImageModal : UploadImageModal;
 var publicPosts : PublicPosts;
-var helpModal : HelpModal;
+var helpModal: HelpModal;
+
 var imageDropdown : ImageDropdown;
 var friendDropdown : FriendDropdown;
 
@@ -17,12 +18,12 @@ class Main {
     static initialize(profile) {
 
         User.profileId = profile.profileId;
-        User.profilePictureId = profile.profilePicture
-        new ImageBox(document.getElementById('btnOpenUserProfileModal'), '', null, true).load(User.profilePictureId);
+        User.profilePictureId = profile.profilePicture;
 
-        NavBar.initialize(
+        navBar = new NavBar(
             document.getElementById('navBar'),
-            document.getElementById('publicPosts')
+            document.getElementById('publicPosts'),
+            document.getElementById('btnOpenUserProfileModal')
         );
 
         // PUBLIC POST FEED
@@ -119,22 +120,5 @@ class Main {
             document.getElementById('btnSearchFriends'),
             document.getElementById('friends')
         );
-
-        // ----------------------------- SET UP ON-CLICKS -------------------------
-
-        // OPEN HELP MODAL
-        document.getElementById('btnOpenHelpModal').onclick = (e: MouseEvent) => helpModal.open();
-
-        // OPEN USER PROFILE MODAL
-        document.getElementById('btnOpenUserProfileModal').onclick = (e: MouseEvent) => profileModal.launch(User.profileId)
-
-        // CREATE POST
-        document.getElementById('btnCreatePost').onclick = (e: MouseEvent) => createPostModal.load()
-
-        // SHOW FRIENDS
-        document.getElementById('btnShowFriends').onclick = (e: MouseEvent) => friendDropdown.toggle()
-
-        // SHOW IMAGES
-        document.getElementById('btnShowImages').onclick = (e: MouseEvent) => imageDropdown.toggle()
     }
 }

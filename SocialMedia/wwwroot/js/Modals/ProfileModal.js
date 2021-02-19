@@ -75,7 +75,8 @@ var ProfileModal = (function (_super) {
             imageDropdown.rootElm.style.zIndex = '0';
             ProfileCard.changeUserProfilePicture(target);
             User.profilePictureId = target.image.imageId;
-            _this.profilePictureBox.loadImage(target);
+            navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target));
+            _this.profilePictureBox.loadImage(ImageCard.copy(target));
             Ajax.updateProfilePicture(target.image.imageId, null, null, function (imageCard) {
                 return _this.profilePictureBox.loadImage(imageCard);
             });

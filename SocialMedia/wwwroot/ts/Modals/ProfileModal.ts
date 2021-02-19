@@ -193,8 +193,10 @@ class ProfileModal extends Modal {
             // Update stored shorcut to profile picture.
             User.profilePictureId = target.image.imageId;
 
+            navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target));
+
             // Inserts the low res thumbnail as a placeholder until the fullsize version is returned.
-            this.profilePictureBox.loadImage(target);
+            this.profilePictureBox.loadImage(ImageCard.copy(target));
 
             // Send an update request to the host to change the profile picture in the profile record.
             Ajax.updateProfilePicture(target.image.imageId, null, null,
