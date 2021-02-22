@@ -35,7 +35,7 @@ class FullSizeImageModal extends Modal {
 
     // Singular flag/switch. false == plural.
     private singular: boolean = null;
-
+    
     /*
         Sudo-inherits from the sudo-base class.
         Gets handles on all necessary components.
@@ -67,10 +67,10 @@ class FullSizeImageModal extends Modal {
         this.imageCon = new ImageBox(imageBoxElm, imageClassList, (target: ImageCard) => this.toggleControls());
         
         // Set the callback of btnPrev to invoke requestImage with a deincrement.
-        this.btnPrev.onclick = (e: MouseEvent) => this.requestImage(-1);
+        this.btnPrev.onclick = (e: MouseEvent) => this.requestImage(this.index - 1);
 
         // Set the callback of btnPrev to invoke requestImage with an increment.
-        this.btnNext.onclick = (e: MouseEvent) => this.requestImage(1);
+        this.btnNext.onclick = (e: MouseEvent) => this.requestImage(this.index + 1);
     }
 
     /*
@@ -121,7 +121,7 @@ class FullSizeImageModal extends Modal {
                 this.updateImageCount();
 
                 // Invoke request with a neutral increment.
-                this.requestImage(0);
+                this.requestImage(this.index);
             }
         );
         
@@ -133,8 +133,10 @@ class FullSizeImageModal extends Modal {
 
             let promptMsg: string = (profileId == User.profileId) ? "My images" : `${profileCard.profile.firstName + profileCard.profile.lastName}'s images`;
 
-            imageDropdown.load(profileId, promptMsg);
+            imageDropdown.load(profileId, promptMsg, (target: ImageCard) => this.requestImage(imageDropdown.indexOf(target)));
         });
+
+        this.showControls();
 
         this.singular = false;
     }
@@ -153,9 +155,6 @@ class FullSizeImageModal extends Modal {
         Closes after reseting this modal.
     */
     public close(): void {
-
-        // Reset 
-        this.showControls();
 
         // If singular, hide image dropdown.
         // (prevents incorrect showing in this.showControls())
@@ -177,16 +176,17 @@ class FullSizeImageModal extends Modal {
             0 = load current image. (kicks off the process)
             1 = next image.
     */
-    private requestImage(increment: (-1|0|1)): void {
+    //private requestImage(increment: (-1|0|1)): void {
+    private requestImage(targetIndex: number): void {
 
         // Get a handle on the target index.
-        let indexToBe: number = this.index + increment; // XXX rename this to targetIndex.
+        //let indexToBe: number = this.index + increment; // XXX rename this to targetIndex.
 
         // If target index is within range of the collection.
-        if (indexToBe >= 0 && indexToBe < this.profileImagesCount) {
+        if (targetIndex >= 0 && targetIndex < this.profileImagesCount) {
 
             // Set index to the target index.
-            this.index = indexToBe;
+            this.index = targetIndex;
 
             // Update the image count elm.
             this.updateImageCount();

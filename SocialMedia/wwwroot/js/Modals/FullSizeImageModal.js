@@ -24,8 +24,8 @@ var FullSizeImageModal = (function (_super) {
         _this.imageClassList = imageClassList;
         _this.imageControls = [_this.imageCount, _this.btnNext, _this.btnPrev, Modal.btnClose];
         _this.imageCon = new ImageBox(imageBoxElm, imageClassList, function (target) { return _this.toggleControls(); });
-        _this.btnPrev.onclick = function (e) { return _this.requestImage(-1); };
-        _this.btnNext.onclick = function (e) { return _this.requestImage(1); };
+        _this.btnPrev.onclick = function (e) { return _this.requestImage(_this.index - 1); };
+        _this.btnNext.onclick = function (e) { return _this.requestImage(_this.index + 1); };
         return _this;
     }
     FullSizeImageModal.prototype.loadSingle = function (imageId) {
@@ -42,13 +42,14 @@ var FullSizeImageModal = (function (_super) {
         Ajax.getProfileImagesCount(this.profileId, function (imageCount) {
             _this.profileImagesCount = +imageCount;
             _this.updateImageCount();
-            _this.requestImage(0);
+            _this.requestImage(_this.index);
         });
         this.openOverrided();
         Ajax.getProfile(profileId, function (profileCard) {
             var promptMsg = (profileId == User.profileId) ? "My images" : profileCard.profile.firstName + profileCard.profile.lastName + "'s images";
-            imageDropdown.load(profileId, promptMsg);
+            imageDropdown.load(profileId, promptMsg, function (target) { return _this.requestImage(imageDropdown.indexOf(target)); });
         });
+        this.showControls();
         this.singular = false;
     };
     FullSizeImageModal.prototype.openOverrided = function () {
@@ -56,18 +57,16 @@ var FullSizeImageModal = (function (_super) {
         navBar.hide();
     };
     FullSizeImageModal.prototype.close = function () {
-        this.showControls();
         if (this.singular == true)
             ViewUtil.hide(imageDropdown.rootElm);
         this.imageCon.unload();
         imageDropdown.close();
         _super.prototype.close.call(this);
     };
-    FullSizeImageModal.prototype.requestImage = function (increment) {
+    FullSizeImageModal.prototype.requestImage = function (targetIndex) {
         var _this = this;
-        var indexToBe = this.index + increment;
-        if (indexToBe >= 0 && indexToBe < this.profileImagesCount) {
-            this.index = indexToBe;
+        if (targetIndex >= 0 && targetIndex < this.profileImagesCount) {
+            this.index = targetIndex;
             this.updateImageCount();
             Ajax.getProfileImages(this.profileId, this.index, 1, '', function (target) { }, function (imageCards) {
                 _this.imageCon.load(imageCards[0].image.imageId, null, function (target) { return _this.toggleControls(); });

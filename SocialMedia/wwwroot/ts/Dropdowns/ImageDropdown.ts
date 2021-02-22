@@ -46,7 +46,7 @@ class ImageDropdown extends Dropdown {
         this.imageBox = new ProfileImagesBox(null, this.contentElm, (target: ImageCard) =>
 
             // Load album into fullsize image modal starting at the index of the clicked image card.
-            fullSizeImageModal.load(this.imageBox.content.indexOf(target))
+            fullSizeImageModal.load(this.indexOf(target))
         );
 
         // Append ProfileImagesBox to this imageWrapper.
@@ -114,7 +114,7 @@ class ImageDropdown extends Dropdown {
                 this.convert((target: ImageCard) => {
 
                     // Open the image in fullsize image modal that is selected.
-                    fullSizeImageModal.load(this.imageBox.content.indexOf(<IAppendable>target), profileId);
+                    fullSizeImageModal.load(this.indexOf(target), profileId);
                 });
             }
             else {
@@ -123,7 +123,7 @@ class ImageDropdown extends Dropdown {
                 this.imageBox.load(profileId, (target: ImageCard) => {
 
                     // Open the image in fullsize image modal that is selected.
-                    fullSizeImageModal.load(this.imageBox.content.indexOf(<IAppendable>target), profileId);
+                    fullSizeImageModal.load(this.indexOf(target), profileId);
                 });
             } 
         }
@@ -156,5 +156,9 @@ class ImageDropdown extends Dropdown {
 
         // If this is closed, open.
         if (!ViewUtil.isDisplayed(this.rootElm)) super.open();
+    }
+
+    public indexOf(imageCard: ImageCard): number {
+        return this.imageBox.content.indexOf(<IAppendable>imageCard);
     }
 }

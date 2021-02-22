@@ -18,7 +18,7 @@ var ImageDropdown = (function (_super) {
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;
         _this.imageBox = new ProfileImagesBox(null, _this.contentElm, function (target) {
-            return fullSizeImageModal.load(_this.imageBox.content.indexOf(target));
+            return fullSizeImageModal.load(_this.indexOf(target));
         });
         _this.imageWrapper.append(_this.imageBox.rootElm);
         btnUploadImageModal.onchange = function (e) {
@@ -49,12 +49,12 @@ var ImageDropdown = (function (_super) {
         else {
             if (profileId == this.imageBox.profileId) {
                 this.convert(function (target) {
-                    fullSizeImageModal.load(_this.imageBox.content.indexOf(target), profileId);
+                    fullSizeImageModal.load(_this.indexOf(target), profileId);
                 });
             }
             else {
                 this.imageBox.load(profileId, function (target) {
-                    fullSizeImageModal.load(_this.imageBox.content.indexOf(target), profileId);
+                    fullSizeImageModal.load(_this.indexOf(target), profileId);
                 });
             }
         }
@@ -68,6 +68,9 @@ var ImageDropdown = (function (_super) {
         this.prompt.innerText = 'Select an Image';
         if (!ViewUtil.isDisplayed(this.rootElm))
             _super.prototype.open.call(this);
+    };
+    ImageDropdown.prototype.indexOf = function (imageCard) {
+        return this.imageBox.content.indexOf(imageCard);
     };
     return ImageDropdown;
 }(Dropdown));
