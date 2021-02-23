@@ -4,6 +4,9 @@
     public postsSectionElm: HTMLElement;
 
     public btnOpenUserProfileModalImageBox: ImageBox;
+
+    // A benchmark used to distinguish a scroll event on a child element from a scroll event on a parent element.
+    public lastScrollTop: number = 0;
     
     public constructor(navBarElm: HTMLElement, postsSectionElm: HTMLElement, btnOpenUserProfileModal: HTMLElement) {
         this.navBarElm = navBarElm;
@@ -28,9 +31,17 @@
         document.getElementById('btnShowImages').onclick = (e: MouseEvent) => imageDropdown.toggle();
 
         this.postsSectionElm.addEventListener('wheel', (event: MouseWheelEvent) => {
-            
-            if (event.deltaY > 0) this.reduceHeight(event.deltaY);
-            else this.show();
+
+            // If the public post section was actually scrolled. 
+            // (Scrolling in a child element like the comment box also triggers this event listener.)
+            if (this.postsSectionElm.scrollTop != this.lastScrollTop) {
+
+                // If the user scrolled down, reduce the height of (or hide) the nav bar, else show it.
+                event.deltaY > 0 ? this.reduceHeight(event.deltaY) : this.show();
+
+                // Update the scroll benchmark.
+                this.lastScrollTop = this.postsSectionElm.scrollTop;
+            }
         });
         
         window.onmousemove = (event: MouseEvent) => { if (event.pageY < 50) this.show(); }

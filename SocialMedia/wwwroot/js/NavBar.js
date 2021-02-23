@@ -1,6 +1,7 @@
 var NavBar = (function () {
     function NavBar(navBarElm, postsSectionElm, btnOpenUserProfileModal) {
         var _this = this;
+        this.lastScrollTop = 0;
         this.navBarElm = navBarElm;
         this.postsSectionElm = postsSectionElm;
         this.btnOpenUserProfileModalImageBox = new ImageBox(btnOpenUserProfileModal, '', null, true);
@@ -11,10 +12,10 @@ var NavBar = (function () {
         document.getElementById('btnShowFriends').onclick = function (e) { return friendDropdown.toggle(); };
         document.getElementById('btnShowImages').onclick = function (e) { return imageDropdown.toggle(); };
         this.postsSectionElm.addEventListener('wheel', function (event) {
-            if (event.deltaY > 0)
-                _this.reduceHeight(event.deltaY);
-            else
-                _this.show();
+            if (_this.postsSectionElm.scrollTop != _this.lastScrollTop) {
+                event.deltaY > 0 ? _this.reduceHeight(event.deltaY) : _this.show();
+                _this.lastScrollTop = _this.postsSectionElm.scrollTop;
+            }
         });
         window.onmousemove = function (event) { if (event.pageY < 50)
             _this.show(); };

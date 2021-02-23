@@ -15,6 +15,7 @@ var ImageDropdown = (function (_super) {
     __extends(ImageDropdown, _super);
     function ImageDropdown(rootElm, contentElm, imagesWrapper, prompt, btnUploadImageModal) {
         var _this = _super.call(this, rootElm, contentElm) || this;
+        _this.highLitImage = null;
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;
         _this.imageBox = new ProfileImagesBox(null, _this.contentElm, function (target) {
@@ -71,6 +72,15 @@ var ImageDropdown = (function (_super) {
     };
     ImageDropdown.prototype.indexOf = function (imageCard) {
         return this.imageBox.content.indexOf(imageCard);
+    };
+    ImageDropdown.prototype.highlightAtIndex = function (targetIndex) {
+        this.clearHighlight();
+        this.highLitImage = this.imageBox.content[targetIndex];
+        this.highLitImage.rootElm.classList.add('highlighted');
+    };
+    ImageDropdown.prototype.clearHighlight = function () {
+        if (this.highLitImage != null)
+            this.highLitImage.rootElm.classList.remove('highlighted');
     };
     return ImageDropdown;
 }(Dropdown));

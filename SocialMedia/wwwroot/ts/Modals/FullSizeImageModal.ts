@@ -163,6 +163,7 @@ class FullSizeImageModal extends Modal {
         // Clear full size image slot.
         this.imageCon.unload();
 
+        imageDropdown.clearHighlight();
         imageDropdown.close();
 
         super.close();
@@ -200,6 +201,8 @@ class FullSizeImageModal extends Modal {
                     this.imageCon.load(imageCards[0].image.imageId, null, (target: ImageCard) => this.toggleControls());
                 }
             );
+
+            imageDropdown.highlightAtIndex(targetIndex);
         }
     }
 

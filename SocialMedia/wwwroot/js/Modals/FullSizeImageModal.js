@@ -60,6 +60,7 @@ var FullSizeImageModal = (function (_super) {
         if (this.singular == true)
             ViewUtil.hide(imageDropdown.rootElm);
         this.imageCon.unload();
+        imageDropdown.clearHighlight();
         imageDropdown.close();
         _super.prototype.close.call(this);
     };
@@ -71,6 +72,7 @@ var FullSizeImageModal = (function (_super) {
             Ajax.getProfileImages(this.profileId, this.index, 1, '', function (target) { }, function (imageCards) {
                 _this.imageCon.load(imageCards[0].image.imageId, null, function (target) { return _this.toggleControls(); });
             });
+            imageDropdown.highlightAtIndex(targetIndex);
         }
     };
     FullSizeImageModal.prototype.updateImageCount = function () { this.imageCount.innerText = this.index + 1 + " / " + this.profileImagesCount; };

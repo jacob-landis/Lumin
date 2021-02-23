@@ -23,6 +23,8 @@ class ImageDropdown extends Dropdown {
     // Holds an onClick callback. Set when image onClicks are converted. Used for newly uploaded images so they can fit in.
     private heldOnClick: (target: ImageCard) => void;
 
+    private highLitImage: ImageCard = null;
+
     /*
         Gets handles on all necessary components.
         Sets up event listeners for image upload and lazy loading.
@@ -160,5 +162,21 @@ class ImageDropdown extends Dropdown {
 
     public indexOf(imageCard: ImageCard): number {
         return this.imageBox.content.indexOf(<IAppendable>imageCard);
+    }
+
+    public highlightAtIndex(targetIndex: number) {
+
+        // un-highlight any highlit images
+        this.clearHighlight();
+
+        // Get handle on the image at the given target index.
+        this.highLitImage = <ImageCard>this.imageBox.content[targetIndex];
+
+        // Highlight the target image.
+        this.highLitImage.rootElm.classList.add('highlighted');
+    }
+
+    public clearHighlight() {
+        if (this.highLitImage != null) this.highLitImage.rootElm.classList.remove('highlighted');
     }
 }
