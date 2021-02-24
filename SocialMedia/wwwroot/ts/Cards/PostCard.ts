@@ -127,7 +127,7 @@
 
         // must have a handle on editIcon to exclude it from the window onclick event listener in Editor
         this.editIcon = Icons.edit();
-        this.captionEditor = new Editor(this.editIcon, this.post.caption, 'post-caption-editor', 1000,
+        this.captionEditor = new Editor(this.editIcon, this.post.caption, 'post-caption-editor', this.hasImage, 1000,
             (caption: string) => {
 
                 Ajax.updatePost(this.post.postId, caption)

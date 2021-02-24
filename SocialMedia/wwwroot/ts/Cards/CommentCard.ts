@@ -64,7 +64,7 @@ class CommentCard extends Card {
         let editIcon: HTMLElement = Icons.edit();
 
         // Create an Editor for the comment text.
-        this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', 125, // XXX 'comment-editor' should be provided from main. XXX
+        this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', false, 125, // XXX 'comment-editor' should be provided from main. XXX
             (content: string) => {
 
                 // Send update request to server.

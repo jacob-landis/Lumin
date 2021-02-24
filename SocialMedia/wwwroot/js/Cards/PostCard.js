@@ -48,7 +48,7 @@ var PostCard = (function (_super) {
         _this.postHeading = ViewUtil.tag('div', { classList: 'postHeading' });
         postSection.append(_this.postHeading, _this.captionWrapper, _this.postImageWrapper.rootElm);
         _this.editIcon = Icons.edit();
-        _this.captionEditor = new Editor(_this.editIcon, _this.post.caption, 'post-caption-editor', 1000, function (caption) {
+        _this.captionEditor = new Editor(_this.editIcon, _this.post.caption, 'post-caption-editor', _this.hasImage, 1000, function (caption) {
             Ajax.updatePost(_this.post.postId, caption);
             PostCard.postCards.forEach(function (p) {
                 if (p.post.postId == _this.post.postId)

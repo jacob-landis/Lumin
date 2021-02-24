@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 var DoubleEditor = (function (_super) {
     __extends(DoubleEditor, _super);
     function DoubleEditor(btnStart, text, text2, classList, maxLength, doubleCallback) {
-        var _this = _super.call(this, btnStart, text, classList, maxLength, null) || this;
+        var _this = _super.call(this, btnStart, text, classList, false, maxLength, null) || this;
         _this.doubleCallback = doubleCallback;
         _this.textBox2 = ViewUtil.tag('div', { classList: 'editable-text2', innerText: text2 });
         _this.fillRootElm(_this.textBox2);

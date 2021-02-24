@@ -87,7 +87,7 @@ class ProfileModal extends Modal {
         this.profileNameWrapper.append(this.nameEditor.rootElm);
         
         // Construct an Editor for profile bio and get a handle on it.
-        this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, 250, (bio: string) => Ajax.updateBio(bio));
+        this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, true, 250, (bio: string) => Ajax.updateBio(bio));
         this.profileBioWrapper.append(this.bioEditor.rootElm);
 
         this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);

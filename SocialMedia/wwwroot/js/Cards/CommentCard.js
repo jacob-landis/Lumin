@@ -21,7 +21,7 @@ var CommentCard = (function (_super) {
         var contentSection = ViewUtil.tag('div', { classList: 'commentContentSection' });
         var btnOpts = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
         var editIcon = Icons.edit();
-        _this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', 125, function (content) {
+        _this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', false, 125, function (content) {
             Ajax.updateComment(_this.comment.commentId, content);
             CommentCard.commentCards.forEach(function (c) {
                 if (c.comment.commentId == _this.comment.commentId)

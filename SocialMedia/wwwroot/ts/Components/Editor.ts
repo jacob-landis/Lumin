@@ -25,6 +25,8 @@ class Editor implements IAppendable {
     // Length limit of text.
     protected maxLength: number;
 
+    private canBeEmpty: boolean;
+
     // A function that handles the edit results.
     private callback: (result: string) => void;
 
@@ -69,14 +71,15 @@ class Editor implements IAppendable {
         The edit result is sent to the callback.
         The result is meant to be sent to the host in an update request.
     */
-    constructor(btnStart: HTMLElement, text: string, classList: string, maxLength: number, callback?: (result: string) => void) {
+    constructor(btnStart: HTMLElement, text: string, classList: string, canBeEmpty: boolean, maxLength: number, callback?: (result: string) => void) {
 
         btnStart.onclick = () => this.start();
         // XXX the functionality of btnStart(() => editor.start()) should be given in here.
 
         // XXX in CommentCard.js the callback could very well be assigned to the context option beforehand, unless it would be overwitten...
 
-        // Get handles on maxLength and callback.
+        // Get handles on inputs.
+        this.canBeEmpty = canBeEmpty;
         this.maxLength = maxLength;
         this.callback = callback;
 
@@ -124,15 +127,18 @@ class Editor implements IAppendable {
         childNodes.forEach((c: ChildNode) => this.targetHandles.push(<HTMLElement> c));
 
         // At this point, this.windowClickFunc is an empty function, but once it's value is replaced by a real function, it can catch the clicks.
-        window.addEventListener('click', (e: MouseEvent) => this.windowClickFunc(e));
+        window.addEventListener('mouseup', (e: MouseEvent) => this.windowClickFunc(e));
     }
 
+    /*
+        Accommodates DoubleEditor. XXX This is bad code for several reasons. Find a way of inserting textBox2 after the fact. XXX
+    */
     protected fillRootElm(textBox2: HTMLElement = null): void {
         // Append the error box, text box, and control buttons container to this editors main HTML tag.
         if (textBox2 == null)
-            this.rootElm.append(this.errorBox.rootElm, this.textBox, this.btnSlot);
+            this.rootElm.append(this.textBox, this.errorBox.rootElm, this.btnSlot);
         else
-            this.rootElm.append(this.errorBox.rootElm, this.textBox, textBox2, this.btnSlot);
+            this.rootElm.append(this.textBox, textBox2, this.errorBox.rootElm, this.btnSlot);
     }
     
     /* 
@@ -142,7 +148,7 @@ class Editor implements IAppendable {
 
         // Replace empty function.
         this.windowClickFunc = (event: MouseEvent) => {
-
+            
             // Initialize hit flag as down.
             let hit: boolean = false;
 
@@ -192,8 +198,11 @@ class Editor implements IAppendable {
     */
     protected send(): void {
 
+        let tooLong: boolean = this.textBox.innerText.length > this.maxLength;
+        let incorrectlyEmpty: boolean = !this.canBeEmpty && this.textBox.innerText.length == 0;
+
         // If text does not exceed length,
-        if (this.textBox.innerText.length <= this.maxLength) {
+        if (!tooLong && !incorrectlyEmpty) {
 
             // invoke callback with edited text,
             if (this.callback != null) this.callback(this.textBox.innerText);
@@ -205,12 +214,24 @@ class Editor implements IAppendable {
         // else display error message.
         // Add new tag with error message in it to error box.
         // XXX make ErrorCard XXX
-        else this.errorBox.add({
-            rootElm: ViewUtil.tag('div', {
-                classList: 'errorMsg',
-                innerText: `- Must be less than ${this.maxLength} characters`
-            })
-        });
+        else {
+
+            this.errorBox.clear();
+
+            if (tooLong) this.errorBox.add({
+                rootElm: ViewUtil.tag('div', {
+                    classList: 'errorMsg',
+                    innerText: `- Must be less than ${this.maxLength} characters`
+                })
+            });
+
+            if (incorrectlyEmpty) this.errorBox.add({
+                rootElm: ViewUtil.tag('div', {
+                    classList: 'errorMsg',
+                    innerText: `- Cannot be empty`
+                })
+            });
+        }
     }
 
     /*
@@ -237,10 +258,26 @@ class Editor implements IAppendable {
     */
     protected revert(): void {
 
-        // Revert inner text.
-        this.textBox.innerText = this.currentText;
+        // Turn off window click func until the prompt is answered.
+        // (Clicking on the prompt caused the prompt to immediately reappear.)
+        this.windowClickFunc = (e: MouseEvent) => { };
 
-        // End editing process.
-        this.end();
+        confirmPrompt.load("Are you sure you want to revert changes?", (answer: boolean) => {
+            if (answer == true) {
+
+                // Revert inner text.
+                this.textBox.innerText = this.currentText;
+
+                // End editing process.
+                this.end();
+            }
+            else {
+                // Put cursor back in text box.
+                this.textBox.focus();
+
+                // Turn on window click func now that it is safe to do so.
+                this.turnOnWindowClickFunc();
+            }
+        });
     }   
 }

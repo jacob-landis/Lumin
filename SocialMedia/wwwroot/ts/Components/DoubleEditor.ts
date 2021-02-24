@@ -13,7 +13,7 @@
         doubleCallback: (result1: string, result2: string) => void
     ) {
 
-        super(btnStart, text, classList, maxLength, null);
+        super(btnStart, text, classList, false, maxLength, null);
 
         this.doubleCallback = doubleCallback;
 

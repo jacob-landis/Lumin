@@ -30,7 +30,7 @@ var ProfileModal = (function (_super) {
             Ajax.updateName(JSON.stringify({ FirstName: firstName, LastName: lastName }));
         });
         _this.profileNameWrapper.append(_this.nameEditor.rootElm);
-        _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, 250, function (bio) { return Ajax.updateBio(bio); });
+        _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, true, 250, function (bio) { return Ajax.updateBio(bio); });
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
         _this.postBox = new PostsBox(0, _this.postWrapper, _this.rootElm);
         return _this;
