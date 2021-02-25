@@ -76,7 +76,16 @@ var FullSizeImageModal = (function (_super) {
         }
     };
     FullSizeImageModal.prototype.updateImageCount = function () { this.imageCount.innerText = this.index + 1 + " / " + this.profileImagesCount; };
-    FullSizeImageModal.prototype.toggleClose = function () { ViewUtil.isDisplayed(Modal.btnClose) ? ViewUtil.hide(Modal.btnClose) : ViewUtil.show(Modal.btnClose); };
+    FullSizeImageModal.prototype.toggleClose = function () {
+        if (ViewUtil.isDisplayed(Modal.btnClose)) {
+            ViewUtil.hide(Modal.btnClose);
+            navBar.hide();
+        }
+        else {
+            ViewUtil.show(Modal.btnClose);
+            navBar.show();
+        }
+    };
     FullSizeImageModal.prototype.toggleControls = function () { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); };
     FullSizeImageModal.prototype.showControls = function () {
         ViewUtil.show(imageDropdown.rootElm);

@@ -51,6 +51,8 @@
             <div class="commentSection">
                 <div class="commentInputWrapper">
                     <textarea class="txtComment"></textarea>
+                    <div class="icon"><i class="fa fa-check"></i></div>
+                    <div class="icon"><i class="fa fa-times"></i></div>
                     <button class="btnComment">Comment</button>
                 </div>
                 <div class="errorSlot"></div>
@@ -101,11 +103,13 @@
             })
         );
 
-        let txtComment: HTMLInputElement = <HTMLInputElement> ViewUtil.tag('textarea', { classList: 'txtComment' });
-        let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
+        let txtComment: HTMLInputElement = <HTMLInputElement>ViewUtil.tag('textarea', { classList: 'txtComment' });
+        let btnConfirm: HTMLElement = Icons.confirm();
+        let btnCancel: HTMLElement = Icons.cancel();
+        let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
 
         commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentCountSlot, this.commentsBox.rootElm);
-        this.commentInputWrapper.append(txtComment, btnComment);
+        this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
 
         // __________________________________ 
 
@@ -176,7 +180,7 @@
         }
 
         // submit comment
-        btnComment.onclick = (e: MouseEvent) => {
+        btnConfirm.onclick = (e: MouseEvent) => {
             let error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
             
             if (txtComment.value.length <= 125) {
@@ -196,6 +200,22 @@
                 txtComment.value = "";
             }
             else this.errorSlot.append(error);
+        }
+
+        btnCancel.onclick = (event: MouseEvent) => {
+            // Prompt for confirmation, then clear txtComment and swap CSS classes around.
+            confirmPrompt.load("Are you sure you want to discard this comment?", (answer: boolean) => {
+                if (answer == true) {
+                    txtComment.value = '';
+                    this.commentInputWrapper.classList.remove('activeInput');
+                }
+            });
+        }
+
+        btnComment.onclick = (event: MouseEvent) => {
+            // Swap out CSS classes.
+            this.commentInputWrapper.classList.add('activeInput');
+            txtComment.focus();
         }
 
         // If post has image.

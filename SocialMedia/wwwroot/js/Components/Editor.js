@@ -37,7 +37,6 @@ var Editor = (function () {
     Editor.prototype.turnOnWindowClickFunc = function () {
         var _this = this;
         this.windowClickFunc = function (event) {
-            console.log(event.target);
             var hit = false;
             _this.targetHandles.forEach(function (targetHandle) {
                 if (event.target == targetHandle)

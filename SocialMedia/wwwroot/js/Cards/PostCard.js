@@ -35,9 +35,11 @@ var PostCard = (function (_super) {
             });
         });
         var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
-        var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Comment' });
+        var btnConfirm = Icons.confirm();
+        var btnCancel = Icons.cancel();
+        var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
         commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentCountSlot, _this.commentsBox.rootElm);
-        _this.commentInputWrapper.append(txtComment, btnComment);
+        _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
         _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
         if (_this.hasImage) {
             _this.postImageWrapper.load(_this.post.image.imageId);
@@ -78,7 +80,7 @@ var PostCard = (function (_super) {
                 })
             ]); };
         }
-        btnComment.onclick = function (e) {
+        btnConfirm.onclick = function (e) {
             var error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
             if (txtComment.value.length <= 125) {
                 Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentResults) {
@@ -95,6 +97,18 @@ var PostCard = (function (_super) {
             }
             else
                 _this.errorSlot.append(error);
+        };
+        btnCancel.onclick = function (event) {
+            confirmPrompt.load("Are you sure you want to discard this comment?", function (answer) {
+                if (answer == true) {
+                    txtComment.value = '';
+                    _this.commentInputWrapper.classList.remove('activeInput');
+                }
+            });
+        };
+        btnComment.onclick = function (event) {
+            _this.commentInputWrapper.classList.add('activeInput');
+            txtComment.focus();
         };
         if (_this.hasImage) {
             _this.observer = new MutationObserver(function () { return _this.resizeCommentBox(); });
