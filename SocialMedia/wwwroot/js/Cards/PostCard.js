@@ -80,31 +80,48 @@ var PostCard = (function (_super) {
                 })
             ]); };
         }
+        var deactivateInput = function () {
+            txtComment.value = '';
+            _this.commentInputWrapper.classList.remove('activeInput');
+        };
         btnConfirm.onclick = function (e) {
-            var error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
-            if (txtComment.value.length <= 125) {
-                Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentResults) {
-                    PostCard.postCards.forEach(function (p) {
-                        if (p.post.postId == commentResults.postId) {
-                            p.commentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
-                            p.resizeCommentBox();
-                            p.setCommentCount(_this.totalCommentCount + 1);
-                        }
-                    });
+            var tooLong = txtComment.value.length > 125;
+            var tooShort = txtComment.value.length == 0;
+            var tooLongError = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
+            var tooShortError = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Comment cannot be empty' });
+            if (!tooLong && !tooShort) {
+                confirmPrompt.load("Are you sure you want to make this comment?", function (answer) {
+                    if (answer == true) {
+                        Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentResults) {
+                            PostCard.postCards.forEach(function (p) {
+                                if (p.post.postId == commentResults.postId) {
+                                    p.commentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
+                                    p.resizeCommentBox();
+                                    p.setCommentCount(_this.totalCommentCount + 1);
+                                }
+                            });
+                        });
+                        ViewUtil.empty(_this.errorSlot);
+                        deactivateInput();
+                    }
                 });
-                ViewUtil.empty(_this.errorSlot);
-                txtComment.value = "";
             }
-            else
-                _this.errorSlot.append(error);
+            else if (tooLong)
+                _this.errorSlot.append(tooLongError);
+            else if (tooShort)
+                _this.errorSlot.append(tooShortError);
         };
         btnCancel.onclick = function (event) {
-            confirmPrompt.load("Are you sure you want to discard this comment?", function (answer) {
-                if (answer == true) {
-                    txtComment.value = '';
-                    _this.commentInputWrapper.classList.remove('activeInput');
-                }
-            });
+            if (txtComment.value.length > 10) {
+                confirmPrompt.load("Are you sure you want to discard this comment?", function (answer) {
+                    if (answer == true)
+                        deactivateInput();
+                    else
+                        txtComment.focus();
+                });
+            }
+            else
+                deactivateInput();
         };
         btnComment.onclick = function (event) {
             _this.commentInputWrapper.classList.add('activeInput');

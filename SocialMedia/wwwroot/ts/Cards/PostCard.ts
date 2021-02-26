@@ -179,41 +179,66 @@
             ]);
         }
 
-        // submit comment
+        // Clear txtComment and remove class to change styling.
+        let deactivateInput: () => void = () => {
+            txtComment.value = '';
+            this.commentInputWrapper.classList.remove('activeInput');
+        }
+
+        // Submit comment.
         btnConfirm.onclick = (e: MouseEvent) => {
-            let error = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
+
+            let tooLong: boolean = txtComment.value.length > 125;
+            let tooShort: boolean = txtComment.value.length == 0;
+
+            let tooLongError: HTMLElement = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
+            let tooShortError: HTMLElement = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Comment cannot be empty' });
             
-            if (txtComment.value.length <= 125) {
-                Ajax.postComment(
-                    JSON.stringify({ Content: txtComment.value, PostId: post.postId }),
-                    (commentResults: CommentRecord) => {
-                        PostCard.postCards.forEach((p: PostCard) => {
-                            if (p.post.postId == commentResults.postId) {
-                                p.commentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
-                                p.resizeCommentBox();
-                                p.setCommentCount(this.totalCommentCount + 1);
+            if (!tooLong && !tooShort) {
+                confirmPrompt.load("Are you sure you want to make this comment?", (answer: boolean) => {
+                    if (answer == true) {
+
+                        Ajax.postComment(
+                            JSON.stringify({ Content: txtComment.value, PostId: post.postId }),
+
+                            (commentResults: CommentRecord) => {
+                                PostCard.postCards.forEach((p: PostCard) => {
+
+                                    if (p.post.postId == commentResults.postId) {
+                                        p.commentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
+                                        p.resizeCommentBox();
+                                        p.setCommentCount(this.totalCommentCount + 1);
+                                    }
+                                });
                             }
-                        });
+                        );
+                        ViewUtil.empty(this.errorSlot);
+                        deactivateInput();
                     }
-                );
-                ViewUtil.empty(this.errorSlot);
-                txtComment.value = "";
+                });
             }
-            else this.errorSlot.append(error);
+            else if (tooLong) this.errorSlot.append(tooLongError);
+            else if (tooShort) this.errorSlot.append(tooShortError);
         }
 
         btnCancel.onclick = (event: MouseEvent) => {
-            // Prompt for confirmation, then clear txtComment and swap CSS classes around.
-            confirmPrompt.load("Are you sure you want to discard this comment?", (answer: boolean) => {
-                if (answer == true) {
-                    txtComment.value = '';
-                    this.commentInputWrapper.classList.remove('activeInput');
-                }
-            });
+            
+            // If the user has entered more than 10 characters.
+            if (txtComment.value.length > 10) {
+
+                // Prompt for confirmation to cancel.
+                confirmPrompt.load("Are you sure you want to discard this comment?", (answer: boolean) => {
+                    if (answer == true) deactivateInput();
+                    else txtComment.focus();
+                });
+            }
+            // Else deactivate input without prompting the user.
+            else deactivateInput();
+
         }
 
         btnComment.onclick = (event: MouseEvent) => {
-            // Swap out CSS classes.
+            // Add class to change styling and put the cursor in the text element.
             this.commentInputWrapper.classList.add('activeInput');
             txtComment.focus();
         }
