@@ -46,7 +46,7 @@ var FullSizeImageModal = (function (_super) {
         });
         this.openOverrided();
         Ajax.getProfile(profileId, function (profileCard) {
-            var promptMsg = (profileId == User.profileId) ? "My images" : profileCard.profile.firstName + profileCard.profile.lastName + "'s images";
+            var promptMsg = (profileId == User.profileId) ? "My images" : profileCard.profile.firstName + " " + profileCard.profile.lastName + "'s images";
             imageDropdown.load(profileId, promptMsg, function (target) { return _this.requestImage(imageDropdown.indexOf(target)); });
         });
         this.showControls();

@@ -21,3 +21,8 @@
 #selectedImageCon > .icon:hover {
     background: none;
 }
+
+#caption {
+    resize: none;
+    height: 150px;
+}

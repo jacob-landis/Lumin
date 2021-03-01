@@ -157,7 +157,10 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     public reload(): void {
 
         // If an image is not loaded,
-        if (!this.isLoaded)
+        if (!this.isLoaded) {
+
+            this.rootElm.classList.add('loadingImage');
+
             // Request an image with the request settings and apply the attribute settings when it returns.
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldImageClick,
 
@@ -178,7 +181,10 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
                     // and if there is an onLoadEnd callback, invoke it.
                     if (this._onLoadEnd) this._onLoadEnd();
+
+                    this.rootElm.classList.remove('loadingImage');
                 }
             );
+        }
     }
 }

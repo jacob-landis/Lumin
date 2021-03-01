@@ -49,7 +49,8 @@ var ImageBox = (function () {
     };
     ImageBox.prototype.reload = function () {
         var _this = this;
-        if (!this.isLoaded)
+        if (!this.isLoaded) {
+            this.rootElm.classList.add('loadingImage');
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldImageClick, function (imageCard) {
                 _this.imageCard = imageCard;
                 ViewUtil.empty(_this.rootElm);
@@ -58,6 +59,7 @@ var ImageBox = (function () {
                 if (_this._onLoadEnd)
                     _this._onLoadEnd();
             });
+        }
     };
     ImageBox.imageBoxes = [];
     return ImageBox;
