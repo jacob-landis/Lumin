@@ -26,25 +26,33 @@ var Modal = (function () {
         this.openModals[this.openModals.length - 1].close();
     };
     Modal.prototype.open = function () {
+        var _this = this;
         contextMenu.close();
-        if (ViewUtil.isDisplayed(this.rootElm))
-            this.close();
-        ViewUtil.show(this.rootElm);
-        ViewUtil.show(Modal.btnClose, 'block');
         this.rootElm.style.zIndex = "" + (Modal.highestZIndex + 1);
-        Modal.openModals.push(this);
-        document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
-        Dropdown.moveToForeground();
+        if (!ViewUtil.isDisplayed(this.rootElm)) {
+            ViewUtil.show(this.rootElm, 'inline', function () {
+                ViewUtil.show(Modal.btnClose, 'block');
+                Modal.openModals.push(_this);
+                document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+                Dropdown.moveToForeground();
+            });
+        }
+        else {
+            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            Modal.openModals.push(this);
+        }
     };
     Modal.prototype.close = function () {
+        var _this = this;
         contextMenu.close();
         if (ViewUtil.isDisplayed(this.rootElm)) {
-            ViewUtil.hide(this.rootElm);
-            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
-            if (Modal.openModals.length == 0) {
-                document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
-                ViewUtil.hide(Modal.btnClose);
-            }
+            ViewUtil.hide(this.rootElm, function () {
+                Modal.openModals.splice(Modal.openModals.indexOf(_this), 1);
+                if (Modal.openModals.length == 0) {
+                    document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
+                    ViewUtil.hide(Modal.btnClose);
+                }
+            });
         }
     };
     Modal.openModals = [];

@@ -91,28 +91,35 @@ class Modal implements IAppendable {
 
         // Close context menu, even if it's already closed.
         contextMenu.close();
-
-        // Refresh modal.
-        // If open, close.
-        if (ViewUtil.isDisplayed(this.rootElm)) this.close();
-
-        // Show modal.
-        ViewUtil.show(this.rootElm)
-
-        // Display close button.
-        ViewUtil.show(Modal.btnClose, 'block');
         
         // Assign this root element the highest zIndex of all the open modals.
         this.rootElm.style.zIndex = `${Modal.highestZIndex + 1}`;
 
-        // Add this to the list of open modals.
-        Modal.openModals.push(this);
+        // If closed.
+        if (!ViewUtil.isDisplayed(this.rootElm)) {
 
-        // Give body elm a class that locks page scrolling.
-        document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
-        
-        // Bring any open dropdown to foreground.
-        Dropdown.moveToForeground();
+            // Show modal (after fade-in).
+            ViewUtil.show(this.rootElm, 'inline', () => {
+
+                // Display close button.
+                ViewUtil.show(Modal.btnClose, 'block');
+
+                // Add this to the list of open modals.
+                Modal.openModals.push(this);
+
+                // Give body elm a class that locks page scrolling.
+                document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+
+                // Bring any open dropdown to foreground.
+                Dropdown.moveToForeground();
+            });
+        }
+        else { // If already open.
+
+            // Move this to the top of list so it's array index matches it's Z index.
+            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            Modal.openModals.push(this);
+        }
     }
     
     /*
@@ -127,21 +134,22 @@ class Modal implements IAppendable {
         // If open.
         if (ViewUtil.isDisplayed(this.rootElm)) {
 
-            // Hide modal.
-            ViewUtil.hide(this.rootElm);
-        
-            // Remove this from list of modals. Start at the index of this and delete 1 item.
-            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            // Hide modal (after fade-out).
+            ViewUtil.hide(this.rootElm, () => {
 
-            // If no modal is open,
-            if (Modal.openModals.length == 0) {
+                // Remove this from list of modals. Start at the index of this and delete 1 item.
+                Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
 
-                // remove the class from body that locks scrolling,
-                document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
+                // If no modal is open,
+                if (Modal.openModals.length == 0) {
 
-                // and hide btnClose.
-                ViewUtil.hide(Modal.btnClose);
-            }
+                    // remove the class from body that locks scrolling,
+                    document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
+
+                    // and hide btnClose.
+                    ViewUtil.hide(Modal.btnClose);
+                }
+            });
         }
     }
 }

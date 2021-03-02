@@ -92,32 +92,31 @@ class ProfileModal extends Modal {
 
         this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);
     }
-
-    /*
-        Request a full profile and send it to load() when it arrives. XXX make this request in load and have the login in there be inside the callback. XXX
-    */
-    public launch(profileId: number): void { Ajax.getFullProfile(profileId, (fullProfile: FullProfileRecord) => this.load(fullProfile)); }
-
+    
     /*
         Loads profile information into the different slots and then opens this modal.
     */
-    public load(fullProfile: FullProfileRecord): void {
-
+    public load(profileId: number): void {
+        
         // Clear out modal.
         this.reset();
 
-        // Get a handle on the new arrival.
-        this.profile = fullProfile;
-        
-        // Set name display.
-        this.nameEditor.setText2(fullProfile.firstName, fullProfile.lastName);
+        Ajax.getFullProfile(profileId, (fullProfile: FullProfileRecord) => {
 
-        // Set bio display.
-        this.bioEditor.setText(fullProfile.bio);
+            // Get a handle on the new profile.
+            this.profile = fullProfile;
+
+            // Set name display.
+            this.nameEditor.setText2(this.profile.firstName, this.profile.lastName); 
+            this.bioEditor.setText(this.profile.bio);
+
+            // Set profile picture display.
+            this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
+        });
 
         // PRIVATE PROFILE OPTIONS
         // If profile is current user's,
-        if (this.profile.profileId == User.profileId) {
+        if (profileId == User.profileId) {
 
             // set click callback of profile picture to invoke select profile picture,
             this.profilePictureBox.heldImageClick = (target: ImageCard) => this.selectProfilePicture()
@@ -138,35 +137,21 @@ class ProfileModal extends Modal {
             ViewUtil.remove(this.btnChangeBio);
         }
 
-        // Set profile picture display.
-        this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
-
         // IMAGES BOX
         // Construct new ProfileImageBox and set up profile images display.
-        this.imagesBox = new ProfileImagesBox(this.profile.profileId, this.imageScrollBox, (target: ImageCard) =>
+        this.imagesBox = new ProfileImagesBox(profileId, this.imageScrollBox, (target: ImageCard) => 
             
             // Set click callback of each image to open a collection in fullzise image modal.
-            fullSizeImageModal.load(this.imagesBox.content.indexOf(target), this.profile.profileId));
+            fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
 
         // Append new profile images box to container elm.
         this.imageWrapper.append(this.imagesBox.rootElm);
 
-        // FRIENDS BOX
-        // Construct new Content box and set of friends display.
-        this.friendBox = new ContentBox(this.friendBoxElm);
-
-        // Clear friends box. Even though this was just constructed it reused an existing elm that could still have profile cards in it.
-        this.friendBox.clear();
-
         // Request friends by ProfileID and load them into friendBox when they arrive as profile cards.
-        Ajax.getFriends(this.profile.profileId, null, (profileCards: ProfileCard[]) => this.friendBox.add(profileCards));
-
-        // POSTS BOX
-        this.postBox.profileId = this.profile.profileId;
-
-        this.postBox.clear();
-
-        // Start post feed to make first request.
+        Ajax.getFriends(profileId, null, (profileCards: ProfileCard[]) => this.friendBox.add(profileCards));
+        
+        // Create post box and start feed.
+        this.postBox.profileId = profileId;
         this.postBox.start();
         
         // Open this modal.
@@ -219,5 +204,22 @@ class ProfileModal extends Modal {
         // Delete the components that are reconstructed on load.
         delete this.imagesBox;
         //delete this.postBox;
+
+
+        // ADD RESET
+        this.nameEditor.setText2('', '');
+
+        // ADD RESET
+        this.bioEditor.setText('');
+
+        // FRIENDS BOX
+        // Construct new Content box and set of friends display.
+        this.friendBox = new ContentBox(this.friendBoxElm); // RESET
+
+        // Clear friends box. Even though this was just constructed it reused an existing elm that could still have profile cards in it.
+        this.friendBox.clear(); // RESET
+
+        this.postBox.clear(); // RESET
+
     }
 }

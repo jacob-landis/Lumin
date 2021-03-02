@@ -52,12 +52,28 @@ var ViewUtil = (function () {
             while (elm.firstChild)
                 elm.removeChild(elm.firstChild);
     };
-    ViewUtil.hide = function (elm) {
-        elm.style.display = 'none';
+    ViewUtil.hide = function (elm, onHideEnd) {
+        if (onHideEnd == null)
+            elm.style.display = 'none';
+        else {
+            elm.style.opacity = '0';
+            setTimeout(function () {
+                elm.style.display = 'none';
+                onHideEnd();
+            }, 150);
+        }
     };
-    ViewUtil.show = function (elm, displayType) {
+    ViewUtil.show = function (elm, displayType, onShowEnd) {
         if (displayType === void 0) { displayType = 'inline'; }
-        elm.style.display = displayType;
+        if (onShowEnd == null)
+            elm.style.display = displayType;
+        else {
+            elm.style.display = displayType;
+            setTimeout(function () {
+                elm.style.opacity = '1';
+                onShowEnd();
+            }, 10);
+        }
     };
     ViewUtil.toggle = function (elm, displayType) {
         if (displayType === void 0) { displayType = 'inline'; }

@@ -19,7 +19,7 @@
         document.getElementById('btnOpenHelpModal').onclick = (e: MouseEvent) => helpModal.open();
 
         // OPEN USER PROFILE MODAL
-        document.getElementById('btnOpenUserProfileModal').onclick = (e: MouseEvent) => profileModal.launch(User.profileId);
+        document.getElementById('btnOpenUserProfileModal').onclick = (e: MouseEvent) => profileModal.load(User.profileId);
 
         // CREATE POST
         document.getElementById('btnCreatePost').onclick = (e: MouseEvent) => createPostModal.load();

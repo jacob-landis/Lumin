@@ -58,6 +58,7 @@ var ImageBox = (function () {
                 _this.isLoaded = true;
                 if (_this._onLoadEnd)
                     _this._onLoadEnd();
+                _this.rootElm.classList.remove('loadingImage');
             });
         }
     };

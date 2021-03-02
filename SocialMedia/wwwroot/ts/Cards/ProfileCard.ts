@@ -79,7 +79,7 @@
 
         // card click
         if (this.profile.relationToUser == 'friend' || this.profile.relationToUser == 'me')
-            this.rootElm.onclick = e => profileModal.launch(this.profile.profileId)
+            this.rootElm.onclick = e => profileModal.load(this.profile.profileId);
 
         if (this.profile.relationToUser != 'me') {
             this.rootElm.oncontextmenu = (e: MouseEvent) => contextMenu.load(e, [

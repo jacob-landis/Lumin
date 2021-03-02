@@ -35,17 +35,16 @@ var ProfileModal = (function (_super) {
         _this.postBox = new PostsBox(0, _this.postWrapper, _this.rootElm);
         return _this;
     }
-    ProfileModal.prototype.launch = function (profileId) {
-        var _this = this;
-        Ajax.getFullProfile(profileId, function (fullProfile) { return _this.load(fullProfile); });
-    };
-    ProfileModal.prototype.load = function (fullProfile) {
+    ProfileModal.prototype.load = function (profileId) {
         var _this = this;
         this.reset();
-        this.profile = fullProfile;
-        this.nameEditor.setText2(fullProfile.firstName, fullProfile.lastName);
-        this.bioEditor.setText(fullProfile.bio);
-        if (this.profile.profileId == User.profileId) {
+        Ajax.getFullProfile(profileId, function (fullProfile) {
+            _this.profile = fullProfile;
+            _this.nameEditor.setText2(_this.profile.firstName, _this.profile.lastName);
+            _this.bioEditor.setText(_this.profile.bio);
+            _this.profilePictureBox.loadImage(new ImageCard(_this.profile.profilePicture));
+        });
+        if (profileId == User.profileId) {
             this.profilePictureBox.heldImageClick = function (target) { return _this.selectProfilePicture(); };
             this.profileNameWrapper.append(this.btnChangeName);
             this.profileBioWrapper.append(this.btnChangeBio);
@@ -55,16 +54,12 @@ var ProfileModal = (function (_super) {
             ViewUtil.remove(this.btnChangeName);
             ViewUtil.remove(this.btnChangeBio);
         }
-        this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
-        this.imagesBox = new ProfileImagesBox(this.profile.profileId, this.imageScrollBox, function (target) {
-            return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), _this.profile.profileId);
+        this.imagesBox = new ProfileImagesBox(profileId, this.imageScrollBox, function (target) {
+            return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
         });
         this.imageWrapper.append(this.imagesBox.rootElm);
-        this.friendBox = new ContentBox(this.friendBoxElm);
-        this.friendBox.clear();
-        Ajax.getFriends(this.profile.profileId, null, function (profileCards) { return _this.friendBox.add(profileCards); });
-        this.postBox.profileId = this.profile.profileId;
-        this.postBox.clear();
+        Ajax.getFriends(profileId, null, function (profileCards) { return _this.friendBox.add(profileCards); });
+        this.postBox.profileId = profileId;
         this.postBox.start();
         _super.prototype.open.call(this);
     };
@@ -85,6 +80,11 @@ var ProfileModal = (function (_super) {
     ProfileModal.prototype.reset = function () {
         ViewUtil.empty(this.imageWrapper);
         delete this.imagesBox;
+        this.nameEditor.setText2('', '');
+        this.bioEditor.setText('');
+        this.friendBox = new ContentBox(this.friendBoxElm);
+        this.friendBox.clear();
+        this.postBox.clear();
     };
     return ProfileModal;
 }(Modal));

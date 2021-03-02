@@ -62,13 +62,31 @@
     }
 
     // Set display attribute to 'none' on the provided element.
-    public static hide(elm: HTMLElement): void {
-        elm.style.display = 'none';
+    public static hide(elm: HTMLElement, onHideEnd?: () => void): void {
+
+        if (onHideEnd == null) elm.style.display = 'none';
+
+        else {
+            elm.style.opacity = '0';
+            setTimeout(() => {
+                elm.style.display = 'none';
+                onHideEnd();
+            }, 150);
+        }
     }
 
     // Set display attribute to 'inline'(default) or the provided string on the provided element.
-    public static show(elm: HTMLElement, displayType: string = 'inline'): void {
-        elm.style.display = displayType;
+    public static show(elm: HTMLElement, displayType: string = 'inline', onShowEnd?: () => void): void {
+
+        if (onShowEnd == null) elm.style.display = displayType;
+
+        else {
+            elm.style.display = displayType;
+            setTimeout(() => {
+                elm.style.opacity = '1';
+                onShowEnd();
+            }, 10);
+        }
     }
 
     /*

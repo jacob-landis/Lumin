@@ -22,7 +22,7 @@ var ProfileCard = (function (_super) {
         _this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: (_this.profile.firstName + " " + _this.profile.lastName) });
         _this.rootElm.append(_this.imageBox.rootElm, _this.txtName);
         if (_this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me')
-            _this.rootElm.onclick = function (e) { return profileModal.launch(_this.profile.profileId); };
+            _this.rootElm.onclick = function (e) { return profileModal.load(_this.profile.profileId); };
         if (_this.profile.relationToUser != 'me') {
             _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, [
                 new ContextOption(_this.case.icon, function (e) {

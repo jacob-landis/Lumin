@@ -7,7 +7,7 @@ var NavBar = (function () {
         this.btnOpenUserProfileModalImageBox = new ImageBox(btnOpenUserProfileModal, '', null, true);
         this.btnOpenUserProfileModalImageBox.load(User.profilePictureId);
         document.getElementById('btnOpenHelpModal').onclick = function (e) { return helpModal.open(); };
-        document.getElementById('btnOpenUserProfileModal').onclick = function (e) { return profileModal.launch(User.profileId); };
+        document.getElementById('btnOpenUserProfileModal').onclick = function (e) { return profileModal.load(User.profileId); };
         document.getElementById('btnCreatePost').onclick = function (e) { return createPostModal.load(); };
         document.getElementById('btnShowFriends').onclick = function (e) { return friendDropdown.toggle(); };
         document.getElementById('btnShowImages').onclick = function (e) { return imageDropdown.toggle(); };
