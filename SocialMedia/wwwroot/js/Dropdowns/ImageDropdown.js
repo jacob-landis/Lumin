@@ -34,7 +34,6 @@ var ImageDropdown = (function (_super) {
     }
     ImageDropdown.prototype.open = function () {
         this.load(User.profileId, "My images");
-        _super.prototype.open.call(this);
     };
     ImageDropdown.prototype.load = function (profileId, promptMsg, onImageClick) {
         var _this = this;
@@ -67,8 +66,6 @@ var ImageDropdown = (function (_super) {
         this.imageBox.clickCallback = function (target) { return callback(target); };
         this.imageBox.content.forEach(function (imageCard) { return imageCard.onImageClick = _this.imageBox.clickCallback; });
         this.prompt.innerText = 'Select an Image';
-        if (!ViewUtil.isDisplayed(this.rootElm))
-            _super.prototype.open.call(this);
     };
     ImageDropdown.prototype.indexOf = function (imageCard) {
         return this.imageBox.content.indexOf(imageCard);

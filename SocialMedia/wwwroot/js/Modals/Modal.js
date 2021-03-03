@@ -1,5 +1,6 @@
 var Modal = (function () {
     function Modal(contentElm) {
+        this.isTransitioning = false;
         this.rootElm = ViewUtil.copy(Modal.frameTemplate);
         this.rootElm.append(contentElm);
         Modal.frameContainer.append(this.rootElm);
@@ -31,6 +32,7 @@ var Modal = (function () {
         this.rootElm.style.zIndex = "" + (Modal.highestZIndex + 1);
         if (!ViewUtil.isDisplayed(this.rootElm)) {
             ViewUtil.show(this.rootElm, 'inline', function () {
+                _this.rootElm.style.opacity = '1';
                 ViewUtil.show(Modal.btnClose, 'block');
                 Modal.openModals.push(_this);
                 document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
@@ -43,16 +45,15 @@ var Modal = (function () {
         }
     };
     Modal.prototype.close = function () {
-        var _this = this;
         contextMenu.close();
         if (ViewUtil.isDisplayed(this.rootElm)) {
-            ViewUtil.hide(this.rootElm, function () {
-                Modal.openModals.splice(Modal.openModals.indexOf(_this), 1);
-                if (Modal.openModals.length == 0) {
-                    document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
-                    ViewUtil.hide(Modal.btnClose);
-                }
-            });
+            ViewUtil.hide(this.rootElm, 150);
+            this.rootElm.style.opacity = '0';
+            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            if (Modal.openModals.length == 0) {
+                document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
+                ViewUtil.hide(Modal.btnClose);
+            }
         }
     };
     Modal.openModals = [];

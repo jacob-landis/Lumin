@@ -82,7 +82,6 @@ class ImageDropdown extends Dropdown {
     */
     public open() {
         this.load(User.profileId, "My images");
-        super.open();
     }
 
     /*
@@ -155,9 +154,6 @@ class ImageDropdown extends Dropdown {
 
         // Prompt the user to select an image.
         this.prompt.innerText = 'Select an Image';
-
-        // If this is closed, open.
-        if (!ViewUtil.isDisplayed(this.rootElm)) super.open();
     }
 
     public indexOf(imageCard: ImageCard): number {

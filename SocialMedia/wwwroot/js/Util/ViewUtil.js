@@ -52,26 +52,23 @@ var ViewUtil = (function () {
             while (elm.firstChild)
                 elm.removeChild(elm.firstChild);
     };
-    ViewUtil.hide = function (elm, onHideEnd) {
-        if (onHideEnd == null)
+    ViewUtil.hide = function (elm, delay, onHideEnd) {
+        if (delay === void 0) { delay = 0; }
+        if (onHideEnd === void 0) { onHideEnd = null; }
+        setTimeout(function () {
             elm.style.display = 'none';
-        else {
-            elm.style.opacity = '0';
-            setTimeout(function () {
-                elm.style.display = 'none';
+            if (onHideEnd != null)
                 onHideEnd();
-            }, 150);
-        }
+        }, delay);
     };
-    ViewUtil.show = function (elm, displayType, onShowEnd) {
+    ViewUtil.show = function (elm, displayType, onShow) {
         if (displayType === void 0) { displayType = 'inline'; }
-        if (onShowEnd == null)
+        if (onShow == null)
             elm.style.display = displayType;
         else {
             elm.style.display = displayType;
             setTimeout(function () {
-                elm.style.opacity = '1';
-                onShowEnd();
+                onShow();
             }, 10);
         }
     };

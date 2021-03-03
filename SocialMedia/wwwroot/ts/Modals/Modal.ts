@@ -68,6 +68,9 @@ class Modal implements IAppendable {
     // Frame template clone.
     public rootElm: HTMLElement;
 
+    // Raised at start of transition and lowered at end.
+    private isTransitioning: boolean = false;
+
     /*
         Only usable by derived classes.
     */
@@ -84,8 +87,7 @@ class Modal implements IAppendable {
     }
     
     /*
-        Opens a modal, closing it first if it needs to.
-        Can be overridden.
+        Opens a modal, or brings it to the foreground if it's already open.
     */
     public open(): void {
 
@@ -100,6 +102,9 @@ class Modal implements IAppendable {
 
             // Show modal (after fade-in).
             ViewUtil.show(this.rootElm, 'inline', () => {
+
+                // Target opacity. Starts fade-in.
+                this.rootElm.style.opacity = '1';
 
                 // Display close button.
                 ViewUtil.show(Modal.btnClose, 'block');
@@ -131,25 +136,27 @@ class Modal implements IAppendable {
         // Close context menu, even if it's already closed.
         contextMenu.close();
 
-        // If open.
+        // If open and not transitioning.
         if (ViewUtil.isDisplayed(this.rootElm)) {
 
             // Hide modal (after fade-out).
-            ViewUtil.hide(this.rootElm, () => {
+            ViewUtil.hide(this.rootElm, 150);
+            
+            // Change style to start transition animation.
+            this.rootElm.style.opacity = '0';
 
-                // Remove this from list of modals. Start at the index of this and delete 1 item.
-                Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            // Remove this from list of modals. Start at the index of this and delete 1 item.
+            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
 
-                // If no modal is open,
-                if (Modal.openModals.length == 0) {
+            // If no modal is open,
+            if (Modal.openModals.length == 0) {
 
-                    // remove the class from body that locks scrolling,
-                    document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
+                // remove the class from body that locks scrolling,
+                document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
 
-                    // and hide btnClose.
-                    ViewUtil.hide(Modal.btnClose);
-                }
-            });
+                // and hide btnClose.
+                ViewUtil.hide(Modal.btnClose);
+            }
         }
     }
 }

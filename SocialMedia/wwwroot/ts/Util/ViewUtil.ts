@@ -62,29 +62,25 @@
     }
 
     // Set display attribute to 'none' on the provided element.
-    public static hide(elm: HTMLElement, onHideEnd?: () => void): void {
-
-        if (onHideEnd == null) elm.style.display = 'none';
-
-        else {
-            elm.style.opacity = '0';
-            setTimeout(() => {
-                elm.style.display = 'none';
-                onHideEnd();
-            }, 150);
-        }
+    // Delay used to wait for animation to finish.
+    public static hide(elm: HTMLElement, delay: number = 0, onHideEnd: () => void = null): void {
+        setTimeout(() => {
+            elm.style.display = 'none';
+            if (onHideEnd != null) onHideEnd();
+        }, delay);
     }
 
     // Set display attribute to 'inline'(default) or the provided string on the provided element.
-    public static show(elm: HTMLElement, displayType: string = 'inline', onShowEnd?: () => void): void {
+    // Include argument(s) in onShow that set style properties to begin a transition animation.
+    // (Timeout is used because changing the display property without a delay makes the transition instant)
+    public static show(elm: HTMLElement, displayType: string = 'inline', onShow?: () => void): void {
 
-        if (onShowEnd == null) elm.style.display = displayType;
+        if (onShow == null) elm.style.display = displayType;
 
         else {
             elm.style.display = displayType;
             setTimeout(() => {
-                elm.style.opacity = '1';
-                onShowEnd();
+                onShow();
             }, 10);
         }
     }

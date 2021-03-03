@@ -102,18 +102,22 @@ class Dropdown implements IAppendable {
         // Close context menu, even if it's already closed.
         contextMenu.close();
         
-        // If a dropdown is open, close it.
-        if (Dropdown.openDropdown != null) Dropdown.openDropdown.close();
-
-        // Put this in openDropdown slot. In effect raising the flag.
-        Dropdown.openDropdown = this;
-        
         // Put the dropdown in the foreground in case a modal is open.
         // Otherwise it is covered by the modal backdrop and that backdrop will dim the dropdown and intercept any click intended for the dropdown.
         this.rootElm.style.zIndex = `${Modal.highestZIndex + 1}`;
 
         // Show the dropdown's root element.
-        ViewUtil.show(this.rootElm, 'block');
+        ViewUtil.show(this.rootElm, 'block', () => {
+
+            // Change style to start transition animation.
+            this.contentElm.style.opacity = '1';
+
+            // If a dropdown is open, close it.
+            if (Dropdown.openDropdown != null) Dropdown.openDropdown.close();
+
+            // Put this in openDropdown slot. In effect raising the flag.
+            Dropdown.openDropdown = this;
+        });
     }
 
     /*
@@ -124,18 +128,21 @@ class Dropdown implements IAppendable {
         // Close context menu, even if it's already closed.
         contextMenu.close();
 
-        // Hide the dropdown's root element.
-        ViewUtil.hide(this.rootElm);
-        
+        // Change style to start transition animation.
+        this.contentElm.style.opacity = '0';
+
         // Clear this from openDropdown slot. In effect lowering the flag.
         Dropdown.openDropdown = null;
+
+        // Hide the dropdown's root element after waiting 150ms for transition animation.
+        ViewUtil.hide(this.rootElm, 150);
     }
 
     /*
         Either open, close, or move to foreground.
     */
     public toggle(): void {
-        
+
         let closed: boolean = !ViewUtil.isDisplayed(this.rootElm);
         let openAndCovered: boolean = !closed && (+this.rootElm.style.zIndex < Modal.highestZIndex);
 

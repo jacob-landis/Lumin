@@ -20,21 +20,25 @@ var Dropdown = (function () {
             this.openDropdown.rootElm.style.zIndex = "" + (Modal.highestZIndex - 1);
     };
     Dropdown.closeAny = function () {
-        imageDropdown.close();
         friendDropdown.close();
+        imageDropdown.close();
     };
     Dropdown.prototype.open = function () {
+        var _this = this;
         contextMenu.close();
-        if (Dropdown.openDropdown != null)
-            Dropdown.openDropdown.close();
-        Dropdown.openDropdown = this;
         this.rootElm.style.zIndex = "" + (Modal.highestZIndex + 1);
-        ViewUtil.show(this.rootElm, 'block');
+        ViewUtil.show(this.rootElm, 'block', function () {
+            _this.contentElm.style.opacity = '1';
+            if (Dropdown.openDropdown != null)
+                Dropdown.openDropdown.close();
+            Dropdown.openDropdown = _this;
+        });
     };
     Dropdown.prototype.close = function () {
         contextMenu.close();
-        ViewUtil.hide(this.rootElm);
+        this.contentElm.style.opacity = '0';
         Dropdown.openDropdown = null;
+        ViewUtil.hide(this.rootElm, 150);
     };
     Dropdown.prototype.toggle = function () {
         var closed = !ViewUtil.isDisplayed(this.rootElm);
