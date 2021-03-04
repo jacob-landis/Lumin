@@ -48,6 +48,8 @@ class ContentBox implements IAppendable {
         this.rootElm.style.height = `${height}`;
     }
 
+    public onLoadEnd: () => void = null;
+
     /*
         PARAMETERS:
         tagOrId can be a string, an HTML tag, or null.
@@ -149,6 +151,8 @@ class ContentBox implements IAppendable {
     */
     public add(content: (IAppendable | IAppendable[]), prepend?: boolean): void {
 
+        let isFirstBatch: boolean = this.content.length == 0;
+
         // If content is singulare, convert it to an array of one.
         if (!Array.isArray(content)) content = [content];
 
@@ -183,6 +187,10 @@ class ContentBox implements IAppendable {
 
             // and lower the loading flag now that we don't need it for any more checks.
             this.loading = false;
+
+            // If the first content has arrived and an event callback was given, invoke callback.
+            // Used for staging content.
+            if (isFirstBatch && this.onLoadEnd != null) this.onLoadEnd();
         }
     }
 

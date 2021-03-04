@@ -45,6 +45,7 @@
     <Content Remove="wwwroot\ts\Cards\PostCard.ts" />
     <Content Remove="wwwroot\ts\Cards\ProfileCard.ts" />
     <Content Remove="wwwroot\ts\User.ts" />
+    <Content Remove="wwwroot\ts\Util\StageFlag.ts" />
     <Content Remove="wwwroot\ts\Util\Util.ts" />
     <Content Remove="wwwroot\ts\Util\ViewUtil.ts" />
   </ItemGroup>
@@ -101,6 +102,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Cards\PostCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cards\ProfileCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\User.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Util\StageFlag.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Util\Util.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Util\ViewUtil.ts" />
   </ItemGroup>

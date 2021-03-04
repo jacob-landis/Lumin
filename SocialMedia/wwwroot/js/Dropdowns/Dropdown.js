@@ -20,8 +20,8 @@ var Dropdown = (function () {
             this.openDropdown.rootElm.style.zIndex = "" + (Modal.highestZIndex - 1);
     };
     Dropdown.closeAny = function () {
-        friendDropdown.close();
         imageDropdown.close();
+        friendDropdown.close();
     };
     Dropdown.prototype.open = function () {
         var _this = this;

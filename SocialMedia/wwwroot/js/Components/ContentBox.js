@@ -4,6 +4,7 @@ var ContentBox = (function () {
         this.loading = false;
         this.moreContent = true;
         this.content = [];
+        this.onLoadEnd = null;
         this.rootElm = rootElm;
         this.rootElm.classList.add('content-box');
         this.scrollElm = scrollElm ? scrollElm : this.rootElm;
@@ -68,6 +69,7 @@ var ContentBox = (function () {
     };
     ContentBox.prototype.add = function (content, prepend) {
         var _this = this;
+        var isFirstBatch = this.content.length == 0;
         if (!Array.isArray(content))
             content = [content];
         if (this.loading && content.length < this.take)
@@ -87,6 +89,8 @@ var ContentBox = (function () {
         if (this.requestCallback) {
             this.moreContent = this.take == content.length;
             this.loading = false;
+            if (isFirstBatch && this.onLoadEnd != null)
+                this.onLoadEnd();
         }
     };
     ContentBox.prototype.clear = function () {

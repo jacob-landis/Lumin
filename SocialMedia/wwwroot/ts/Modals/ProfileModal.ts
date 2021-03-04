@@ -44,7 +44,16 @@ class ProfileModal extends Modal {
     
     // A PostsBox for displaying a profile's posts.
     private postBox: PostsBox;
-    
+
+    // STAGE FLAGS
+    private fullProfileStaged: StageFlag = new StageFlag();
+    private imagesBoxStaged: StageFlag = new StageFlag();
+    private friendsStaged: StageFlag = new StageFlag();
+
+    private stageFlags: StageFlag[];
+
+    private stageContainers: HTMLElement[];
+
     /*
         Sudo-inherits from the sudo-base class.
         Gets handles on all necessary components.
@@ -76,6 +85,9 @@ class ProfileModal extends Modal {
         this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
 
+        // Populate stage flags array.
+        this.stageFlags = [this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged];
+        
         // Construct an ImageBox for the profile picture and get a handle on it.
         this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         
@@ -91,6 +103,11 @@ class ProfileModal extends Modal {
         this.profileBioWrapper.append(this.bioEditor.rootElm);
 
         this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);
+
+        this.stageContainers = [
+            this.profilePictureBox.rootElm, this.profileNameWrapper,
+            this.profileBioWrapper, this.friendBoxElm, this.imageScrollBox
+        ];
     }
     
     /*
@@ -112,11 +129,13 @@ class ProfileModal extends Modal {
 
             // Set profile picture display.
             this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
+
+            this.updateStage(this.fullProfileStaged);
         });
 
         // PRIVATE PROFILE OPTIONS
         // If profile is current user's,
-        if (profileId == User.profileId) {
+        if (profileId == User.profileId) { // AWAIT
 
             // set click callback of profile picture to invoke select profile picture,
             this.profilePictureBox.heldImageClick = (target: ImageCard) => this.selectProfilePicture()
@@ -138,24 +157,52 @@ class ProfileModal extends Modal {
         }
 
         // IMAGES BOX
+        // Hide images box.
+
         // Construct new ProfileImageBox and set up profile images display.
-        this.imagesBox = new ProfileImagesBox(profileId, this.imageScrollBox, (target: ImageCard) => 
+        this.imagesBox = new ProfileImagesBox(profileId, this.imageScrollBox, (target: ImageCard) =>  // AWAIT. Use ContentBox.loading
             
             // Set click callback of each image to open a collection in fullzise image modal.
             fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
+
+        this.imagesBox.onLoadEnd = () => this.updateStage(this.imagesBoxStaged);
 
         // Append new profile images box to container elm.
         this.imageWrapper.append(this.imagesBox.rootElm);
 
         // Request friends by ProfileID and load them into friendBox when they arrive as profile cards.
-        Ajax.getFriends(profileId, null, (profileCards: ProfileCard[]) => this.friendBox.add(profileCards));
-        
+        Ajax.getFriends(profileId, null, (profileCards: ProfileCard[]) => {
+            this.friendBox.add(profileCards);
+            this.updateStage(this.friendsStaged);
+        });
+    
         // Create post box and start feed.
         this.postBox.profileId = profileId;
         this.postBox.start();
         
         // Open this modal.
         super.open();
+    }
+
+    private updateStage(stageFlag: StageFlag) {
+
+        stageFlag.raise();
+
+        let hit: boolean = false;
+        this.stageFlags.forEach((flag: StageFlag) => {
+            if (!flag.isRaised) hit = true;
+        });
+
+        // All stage flags were raised.
+        // Display results.
+        if (!hit) {
+
+            this.stageContainers.forEach((container: HTMLElement) => {
+                ViewUtil.show(container, null, () => {
+                    container.style.opacity = '1';
+                });
+            });
+        }
     }
 
     /*
@@ -199,27 +246,28 @@ class ProfileModal extends Modal {
 
         // Emptie out the containers that are refilled on load.
         ViewUtil.empty(this.imageWrapper);
-        //ViewUtil.empty(this.postWrapper);
 
         // Delete the components that are reconstructed on load.
         delete this.imagesBox;
-        //delete this.postBox;
 
-
-        // ADD RESET
+        // Clear name and bio.
         this.nameEditor.setText2('', '');
-
-        // ADD RESET
         this.bioEditor.setText('');
 
         // FRIENDS BOX
         // Construct new Content box and set of friends display.
-        this.friendBox = new ContentBox(this.friendBoxElm); // RESET
+        this.friendBox = new ContentBox(this.friendBoxElm);
 
-        // Clear friends box. Even though this was just constructed it reused an existing elm that could still have profile cards in it.
-        this.friendBox.clear(); // RESET
+        // Clear friends box and posts box. Even though these were just constructed, they reused an existing elm that could still have cards in it.
+        this.friendBox.clear();
+        this.postBox.clear();
 
-        this.postBox.clear(); // RESET
+        // Change style to 'blank' state.
+        this.stageContainers.forEach((container: HTMLElement) => {
+            container.style.opacity = '0';
+            ViewUtil.hide(container);
+        });
 
+        this.stageFlags.forEach((flag: StageFlag) => flag.lower());
     }
 }

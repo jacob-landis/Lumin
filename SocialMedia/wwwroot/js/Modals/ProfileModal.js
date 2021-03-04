@@ -15,6 +15,10 @@ var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
     function ProfileModal(rootElm, content, profileNameWrapper, postWrapper, imageWrapper, profileBioWrapper, imageBoxElm, imageScrollBox, friendBoxElm, imageClassList, editorClassList, doubleEditorClassList) {
         var _this = _super.call(this, rootElm) || this;
+        _this.fullProfileStaged = new StageFlag();
+        _this.imagesBoxStaged = new StageFlag();
+        _this.friendsStaged = new StageFlag();
+        _this.postsStaged = new StageFlag();
         _this.content = content;
         _this.postWrapper = postWrapper;
         _this.imageWrapper = imageWrapper;
@@ -24,6 +28,7 @@ var ProfileModal = (function (_super) {
         _this.friendBoxElm = friendBoxElm;
         _this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         _this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
+        _this.stageFlags = [_this.fullProfileStaged, _this.imagesBoxStaged, _this.friendsStaged];
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         _this.nameEditor = new DoubleEditor(_this.btnChangeName, '', '', doubleEditorClassList, 30, function (firstName, lastName) {
             ProfileCard.changeUserProfileName(firstName, lastName);
@@ -33,6 +38,11 @@ var ProfileModal = (function (_super) {
         _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, true, 250, function (bio) { return Ajax.updateBio(bio); });
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
         _this.postBox = new PostsBox(0, _this.postWrapper, _this.rootElm);
+        _this.stageContainers = [
+            _this.profilePictureBox.rootElm, _this.postWrapper,
+            _this.profileNameWrapper, _this.profileBioWrapper,
+            _this.friendBoxElm, _this.imageScrollBox
+        ];
         return _this;
     }
     ProfileModal.prototype.load = function (profileId) {
@@ -43,6 +53,7 @@ var ProfileModal = (function (_super) {
             _this.nameEditor.setText2(_this.profile.firstName, _this.profile.lastName);
             _this.bioEditor.setText(_this.profile.bio);
             _this.profilePictureBox.loadImage(new ImageCard(_this.profile.profilePicture));
+            _this.updateStage(_this.fullProfileStaged);
         });
         if (profileId == User.profileId) {
             this.profilePictureBox.heldImageClick = function (target) { return _this.selectProfilePicture(); };
@@ -57,11 +68,33 @@ var ProfileModal = (function (_super) {
         this.imagesBox = new ProfileImagesBox(profileId, this.imageScrollBox, function (target) {
             return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
         });
+        this.imagesBox.onLoadEnd = function () {
+            _this.updateStage(_this.imagesBoxStaged);
+        };
         this.imageWrapper.append(this.imagesBox.rootElm);
-        Ajax.getFriends(profileId, null, function (profileCards) { return _this.friendBox.add(profileCards); });
+        Ajax.getFriends(profileId, null, function (profileCards) {
+            _this.friendBox.add(profileCards);
+            _this.updateStage(_this.friendsStaged);
+        });
         this.postBox.profileId = profileId;
         this.postBox.start();
+        this.postBox.onLoadEnd = function () { return _this.updateStage(_this.postsStaged); };
         _super.prototype.open.call(this);
+    };
+    ProfileModal.prototype.updateStage = function (stageFlag) {
+        stageFlag.raise();
+        var hit = false;
+        this.stageFlags.forEach(function (flag) {
+            if (!flag.isRaised)
+                hit = true;
+        });
+        if (!hit) {
+            this.stageContainers.forEach(function (container) {
+                ViewUtil.show(container, null, function () {
+                    container.style.opacity = '1';
+                });
+            });
+        }
     };
     ProfileModal.prototype.selectProfilePicture = function () {
         var _this = this;
@@ -85,6 +118,11 @@ var ProfileModal = (function (_super) {
         this.friendBox = new ContentBox(this.friendBoxElm);
         this.friendBox.clear();
         this.postBox.clear();
+        this.stageContainers.forEach(function (container) {
+            container.style.opacity = '0';
+            ViewUtil.hide(container);
+        });
+        this.stageFlags.forEach(function (flag) { return flag.lower(); });
     };
     return ProfileModal;
 }(Modal));
