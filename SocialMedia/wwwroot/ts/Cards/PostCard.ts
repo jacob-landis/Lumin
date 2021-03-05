@@ -28,6 +28,14 @@
     private postHeading: HTMLElement;
     private editIcon: HTMLElement;
 
+    public allStaged: StageFlag = new StageFlag();
+    public onStagingEnd: () => void;
+
+    private commentsStaged: StageFlag = new StageFlag();
+    private imageStaged: StageFlag = new StageFlag();
+
+    public stage: Stage;
+
     /*
         Example:
         <div class="postCard">
@@ -70,7 +78,9 @@
         this.post = post;
 
         if (this.post.image) this.hasImage = true;
-        
+
+        this.stage = new Stage([this.rootElm], [this.imageStaged, this.commentsStaged]);
+
         // POST CONSTRUCTION
         // __________________________________ TAG
         
@@ -85,8 +95,13 @@
         this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
 
-        this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, (skip: number, take: number) =>
+        this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, (skip: number, take: number) => 
             Ajax.getComments(this.post.postId, skip, take, (comments: CommentCard[]) => {
+
+                if (comments == null) {
+                    this.stage.updateStaging(this.commentsStaged);
+                    return;
+                }
 
                 // Determine if this is the first batch.
                 // This is used after the comments have been added, but it must be determined before they are added.
@@ -99,7 +114,10 @@
                 this.commentsBox.add(comments);
 
                 // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
-                if (isFirstCommentsBatch && !this.hasImage) this.resizeCommentBox();
+                if (isFirstCommentsBatch) {
+                    if (!this.hasImage) this.resizeCommentBox();
+                    this.stage.updateStaging(this.commentsStaged);
+                }
             })
         );
 
@@ -123,7 +141,10 @@
             this.postImageWrapper.load(this.post.image.imageId);
             this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });
         }
-        else this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper noImageCaptionWrapper' });
+        else {
+            this.stage.updateStaging(this.imageStaged);
+            this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper noImageCaptionWrapper' });
+        }
 
         this.postHeading = ViewUtil.tag('div', { classList: 'postHeading' });
 
@@ -249,7 +270,10 @@
             // triggered when image is done loading
             this.observer = new MutationObserver(() => this.resizeCommentBox());
             this.observer.observe(this.rootElm, { attributes: true });
-            this.postImageWrapper.onLoadEnd = () => this.mutate();
+            this.postImageWrapper.onLoadEnd = () => {
+                this.mutate();
+                this.stage.updateStaging(this.imageStaged);
+            }
         }
 
         // unload or reload posts above and below the position of the viewport

@@ -52,7 +52,7 @@
     public updatePostsSection(): void {
 
         // Update padding-top.
-        this.postsSectionElm.style.paddingTop = `${this.navBarElm.clientHeight}`;
+        this.postsSectionElm.style.paddingTop = `${this.navBarElm.clientHeight + 20}px`;
     }
 
     public show(): void {
@@ -60,7 +60,10 @@
         // Restore height of navBar.
         this.navBarElm.style.height = '50px';
 
-        this.updatePostsSection();
+        setTimeout(() => {
+            this.updatePostsSection();
+        }, 200);
+
     }
 
     public reduceHeight(scrollIntensity: number): void {

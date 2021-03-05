@@ -15,9 +15,13 @@ var PostCard = (function (_super) {
     __extends(PostCard, _super);
     function PostCard(post) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'postCard' })) || this;
+        _this.allStaged = new StageFlag();
+        _this.commentsStaged = new StageFlag();
+        _this.imageStaged = new StageFlag();
         _this.post = post;
         if (_this.post.image)
             _this.hasImage = true;
+        _this.stage = new Stage([_this.rootElm], [_this.imageStaged, _this.commentsStaged]);
         var postSection = ViewUtil.tag('div', { classList: 'postSection' });
         var commentSection = ViewUtil.tag('div', { classList: 'commentSection' });
         _this.rootElm.append(postSection, commentSection);
@@ -26,12 +30,19 @@ var PostCard = (function (_super) {
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, function (skip, take) {
             return Ajax.getComments(_this.post.postId, skip, take, function (comments) {
+                if (comments == null) {
+                    _this.stage.updateStaging(_this.commentsStaged);
+                    return;
+                }
                 var isFirstCommentsBatch = _this.commentsBox.content.length == 0;
                 if (_this.post.profile.profileId == User.profileId)
                     comments.forEach(function (comment) { return comment.disputeHasSeen(); });
                 _this.commentsBox.add(comments);
-                if (isFirstCommentsBatch && !_this.hasImage)
-                    _this.resizeCommentBox();
+                if (isFirstCommentsBatch) {
+                    if (!_this.hasImage)
+                        _this.resizeCommentBox();
+                    _this.stage.updateStaging(_this.commentsStaged);
+                }
             });
         });
         var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
@@ -45,8 +56,10 @@ var PostCard = (function (_super) {
             _this.postImageWrapper.load(_this.post.image.imageId);
             _this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });
         }
-        else
+        else {
+            _this.stage.updateStaging(_this.imageStaged);
             _this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper noImageCaptionWrapper' });
+        }
         _this.postHeading = ViewUtil.tag('div', { classList: 'postHeading' });
         postSection.append(_this.postHeading, _this.captionWrapper, _this.postImageWrapper.rootElm);
         _this.editIcon = Icons.edit();
@@ -130,7 +143,10 @@ var PostCard = (function (_super) {
         if (_this.hasImage) {
             _this.observer = new MutationObserver(function () { return _this.resizeCommentBox(); });
             _this.observer.observe(_this.rootElm, { attributes: true });
-            _this.postImageWrapper.onLoadEnd = function () { return _this.mutate(); };
+            _this.postImageWrapper.onLoadEnd = function () {
+                _this.mutate();
+                _this.stage.updateStaging(_this.imageStaged);
+            };
         }
         window.addEventListener('scroll', function (e) {
             var offset = _this.rootElm.offsetTop - window.pageYOffset;

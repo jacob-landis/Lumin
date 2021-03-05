@@ -21,7 +21,7 @@
     height: 300px;
 }
 
-#profileModalPictureWrapper, #profileNameWrapper, #profileBioWrapper, #profileImagesWrapper, #profileFriends, #profilePosts {
+#profileModalPictureWrapper, #profileNameWrapper, #profileBioWrapper, #profileImagesWrapper, #profileFriends {
     transition: opacity 0.25s;
     opacity: 0;
 }

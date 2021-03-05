@@ -17,6 +17,7 @@ class CommentCard extends Card {
         Converts an array of comments into an array of comment cards.
     */
     public static list(comments: CommentRecord[]): CommentCard[] {
+        if (comments == null) return null;
         let commentCards: CommentCard[] = [];
         comments.forEach(comment => commentCards.push(new CommentCard(comment)));
         return commentCards;

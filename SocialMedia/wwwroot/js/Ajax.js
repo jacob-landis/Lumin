@@ -22,8 +22,6 @@ var Ajax = (function () {
     };
     Ajax.getComments = function (postId, skip, take, onCommentResults) {
         this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take, "GET", function (commentResults) {
-            if (commentResults == null)
-                return;
             onCommentResults(CommentCard.list(commentResults));
         });
     };

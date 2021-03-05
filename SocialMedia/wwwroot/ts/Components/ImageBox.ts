@@ -47,7 +47,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
     // Set callback that is invoked at the end of reload().
     // Used by PostCard to make adjustments.
-    set onLoadEnd(onLoadEnd: () => void) { this._onLoadEnd = () => onLoadEnd() }
+    set onLoadEnd(onLoadEnd: () => void) { this._onLoadEnd = onLoadEnd; }
 
     /*
          PARAMETERS:

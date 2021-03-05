@@ -50,9 +50,7 @@ class ProfileModal extends Modal {
     private imagesBoxStaged: StageFlag = new StageFlag();
     private friendsStaged: StageFlag = new StageFlag();
 
-    private stageFlags: StageFlag[];
-
-    private stageContainers: HTMLElement[];
+    private stage: Stage;
 
     /*
         Sudo-inherits from the sudo-base class.
@@ -85,9 +83,6 @@ class ProfileModal extends Modal {
         this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
 
-        // Populate stage flags array.
-        this.stageFlags = [this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged];
-        
         // Construct an ImageBox for the profile picture and get a handle on it.
         this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         
@@ -104,10 +99,22 @@ class ProfileModal extends Modal {
 
         this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);
 
-        this.stageContainers = [
-            this.profilePictureBox.rootElm, this.profileNameWrapper,
-            this.profileBioWrapper, this.friendBoxElm, this.imageScrollBox
-        ];
+        this.stage = new Stage(
+            [
+                this.profilePictureBox.rootElm, this.profileNameWrapper,
+                this.profileBioWrapper, this.friendBoxElm, this.imageScrollBox
+            ],
+            [
+                this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged
+            ],
+            () => {
+                this.stage.stageContainers.forEach((container: HTMLElement) => {
+                    ViewUtil.show(container, null, () => {
+                        container.style.opacity = '1';
+                    });
+                });
+            }
+        );
     }
     
     /*
@@ -130,12 +137,12 @@ class ProfileModal extends Modal {
             // Set profile picture display.
             this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
 
-            this.updateStage(this.fullProfileStaged);
+            this.stage.updateStaging(this.fullProfileStaged);
         });
 
         // PRIVATE PROFILE OPTIONS
         // If profile is current user's,
-        if (profileId == User.profileId) { // AWAIT
+        if (profileId == User.profileId) {
 
             // set click callback of profile picture to invoke select profile picture,
             this.profilePictureBox.heldImageClick = (target: ImageCard) => this.selectProfilePicture()
@@ -155,17 +162,14 @@ class ProfileModal extends Modal {
             ViewUtil.remove(this.btnChangeName);
             ViewUtil.remove(this.btnChangeBio);
         }
-
-        // IMAGES BOX
-        // Hide images box.
-
+        
         // Construct new ProfileImageBox and set up profile images display.
-        this.imagesBox = new ProfileImagesBox(profileId, this.imageScrollBox, (target: ImageCard) =>  // AWAIT. Use ContentBox.loading
+        this.imagesBox = new ProfileImagesBox(profileId, this.imageScrollBox, (target: ImageCard) =>
             
             // Set click callback of each image to open a collection in fullzise image modal.
             fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
 
-        this.imagesBox.onLoadEnd = () => this.updateStage(this.imagesBoxStaged);
+        this.imagesBox.onLoadEnd = () => this.stage.updateStaging(this.imagesBoxStaged);
 
         // Append new profile images box to container elm.
         this.imageWrapper.append(this.imagesBox.rootElm);
@@ -173,7 +177,7 @@ class ProfileModal extends Modal {
         // Request friends by ProfileID and load them into friendBox when they arrive as profile cards.
         Ajax.getFriends(profileId, null, (profileCards: ProfileCard[]) => {
             this.friendBox.add(profileCards);
-            this.updateStage(this.friendsStaged);
+            this.stage.updateStaging(this.friendsStaged);
         });
     
         // Create post box and start feed.
@@ -182,27 +186,6 @@ class ProfileModal extends Modal {
         
         // Open this modal.
         super.open();
-    }
-
-    private updateStage(stageFlag: StageFlag) {
-
-        stageFlag.raise();
-
-        let hit: boolean = false;
-        this.stageFlags.forEach((flag: StageFlag) => {
-            if (!flag.isRaised) hit = true;
-        });
-
-        // All stage flags were raised.
-        // Display results.
-        if (!hit) {
-
-            this.stageContainers.forEach((container: HTMLElement) => {
-                ViewUtil.show(container, null, () => {
-                    container.style.opacity = '1';
-                });
-            });
-        }
     }
 
     /*
@@ -263,11 +246,11 @@ class ProfileModal extends Modal {
         this.postBox.clear();
 
         // Change style to 'blank' state.
-        this.stageContainers.forEach((container: HTMLElement) => {
+        this.stage.stageContainers.forEach((container: HTMLElement) => {
             container.style.opacity = '0';
             ViewUtil.hide(container);
         });
 
-        this.stageFlags.forEach((flag: StageFlag) => flag.lower());
+        this.stage.stageFlags.forEach((flag: StageFlag) => flag.lower());
     }
 }

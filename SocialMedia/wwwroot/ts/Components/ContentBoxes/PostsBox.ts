@@ -13,6 +13,8 @@ class PostsBox extends ContentBox {
     // The profile who's post feed will be loaded.
     // If profileId is false this will ask the host for the public feed.
     public profileId: number;
+
+    private stage: Stage;
     
     /*
         PARAMETERS:
@@ -38,7 +40,7 @@ class PostsBox extends ContentBox {
                         // and when the posts return as post cards,
                         (postCards: PostCard[]) => 
                             // add them to the content box of this post box.
-                            this.add(postCards)
+                            this.addPost(postCards)
                     )
                 else
                     // or else send a publicPosts request to the server with the set skip and take values of this post box,
@@ -48,7 +50,7 @@ class PostsBox extends ContentBox {
                         (postCards: PostCard[]) =>
 
                             // add them to the content box of this post box.
-                            this.add(postCards));
+                            this.addPost(postCards));
             }
         );
         
@@ -63,7 +65,26 @@ class PostsBox extends ContentBox {
     /*
         Shortcut for adding posts to this post box's content box.
     */
-    public addPost(postCard: (PostCard | PostCard[])): void { this.add(postCard, true); }
+    public addPost(postCard: (PostCard | PostCard[])): void {
+
+        this.onLoadEnd = () => {
+
+            let stageFlags: StageFlag[] = [];
+
+            this.content.forEach((c: IAppendable) => {
+                let post = <PostCard>c;
+
+                stageFlags.push(post.allStaged);
+                post.stage.onStagingEnd = () => this.stage.updateStaging(post.allStaged);
+            });
+
+            this.stage = new Stage([this.rootElm], stageFlags, () => {
+                this.rootElm.style.opacity = '1';
+            });
+        }
+
+        this.add(postCard, !Array.isArray(postCard));
+    }
 
     /*
         Send first request to host. 

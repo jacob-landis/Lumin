@@ -50,6 +50,8 @@ var CommentCard = (function (_super) {
         return new CommentCard(commentCard.comment);
     };
     CommentCard.list = function (comments) {
+        if (comments == null)
+            return null;
         var commentCards = [];
         comments.forEach(function (comment) { return commentCards.push(new CommentCard(comment)); });
         return commentCards;

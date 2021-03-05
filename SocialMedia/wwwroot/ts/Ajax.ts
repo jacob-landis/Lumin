@@ -43,7 +43,6 @@
             `apicomment/postcomments/${postId}/${skip}/${take}`,
             "GET",
             (commentResults: string) => {
-                if (commentResults == null) return;
                 onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults))
             }
         );

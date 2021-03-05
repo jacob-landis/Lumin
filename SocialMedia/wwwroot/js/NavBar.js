@@ -22,11 +22,14 @@ var NavBar = (function () {
         this.show();
     }
     NavBar.prototype.updatePostsSection = function () {
-        this.postsSectionElm.style.paddingTop = "" + this.navBarElm.clientHeight;
+        this.postsSectionElm.style.paddingTop = this.navBarElm.clientHeight + 20 + "px";
     };
     NavBar.prototype.show = function () {
+        var _this = this;
         this.navBarElm.style.height = '50px';
-        this.updatePostsSection();
+        setTimeout(function () {
+            _this.updatePostsSection();
+        }, 200);
     };
     NavBar.prototype.reduceHeight = function (scrollIntensity) {
         var reductionRate = 0.1;

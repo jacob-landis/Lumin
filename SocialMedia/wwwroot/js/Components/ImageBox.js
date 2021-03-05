@@ -20,7 +20,7 @@ var ImageBox = (function () {
         configurable: true
     });
     Object.defineProperty(ImageBox.prototype, "onLoadEnd", {
-        set: function (onLoadEnd) { this._onLoadEnd = function () { return onLoadEnd(); }; },
+        set: function (onLoadEnd) { this._onLoadEnd = onLoadEnd; },
         enumerable: true,
         configurable: true
     });
