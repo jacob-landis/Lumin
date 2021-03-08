@@ -13,7 +13,7 @@
 #profileSummary {
     background-color: rgb(58, 101, 178);
     display: grid;
-    grid-template-columns: 8fr 8fr 11fr 8fr 1fr;
+    grid-template-columns: 12fr 9fr 9fr;
     padding: 5px;
     margin: -21px;
     margin-bottom: 20px;
@@ -26,11 +26,15 @@
     opacity: 0;
 }
 
-/*________ PROFILE PICTURE */
+#profileBioAndProfilePicture {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
 
+/*________ PROFILE PICTURE */
 .profile-picture {
-    width: 220px;
-    height: 220px;
+    width: 200px;
+    height: 200px;
     /*object-fit: cover;*/
     border-radius: 100%;
 }
@@ -54,15 +58,27 @@
     cursor: pointer;
 }
 
-/*________ PROFILE BIO */
+/*________ PROFILE NAME */
 
+#profileNameWrapper {
+    padding-top: 20px;
+}
+
+.editor.name > .editable-text,
+.editor.name > .editable-text2 {
+    display: inline;
+    font-size: 16pt;
+    padding-left: 5px;
+}
+
+/*________ PROFILE BIO */
 #profileBio {
     outline: none;
     word-break: break-word;
 }
 
-#profileDetailSection:hover > #profileBioWrapper > #btnChangeBio,
-#profileDetailSection:hover > #profileNameWrapper > #btnChangeName {
+#profileBioWrapper:hover > #btnChangeBio,
+#profileNameWrapper:hover > #btnChangeName {
     opacity: 1;
 }
 
