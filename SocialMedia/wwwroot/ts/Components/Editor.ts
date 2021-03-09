@@ -40,6 +40,8 @@ class Editor implements IAppendable {
     // Used to revert changes if the operation is canceled.
     private currentText: string;
 
+    private btnStart: HTMLElement;
+
     // A container elm for btnConfirm and btnCancel.
     private btnSlot: HTMLElement;
 
@@ -73,9 +75,6 @@ class Editor implements IAppendable {
     */
     constructor(btnStart: HTMLElement, text: string, classList: string, canBeEmpty: boolean, maxLength: number, callback?: (result: string) => void) {
 
-        btnStart.onclick = () => this.start();
-        // XXX the functionality of btnStart(() => editor.start()) should be given in here.
-
         // XXX in CommentCard.js the callback could very well be assigned to the context option beforehand, unless it would be overwitten...
 
         // Get handles on inputs.
@@ -96,6 +95,8 @@ class Editor implements IAppendable {
         // Get a handle on the current version of text. XXX this does not need to be done here!!!
         this.currentText = this.textBox.innerText;
 
+        this.btnStart = btnStart;
+
         // Create and get a handle on the container elm for the edit control buttons.
         this.btnSlot = ViewUtil.tag('div', { classList: 'editor-btn-slot' });
 
@@ -109,6 +110,7 @@ class Editor implements IAppendable {
         this.fillRootElm();
 
         // Imbed functionality in the control buttons.
+        this.btnStart.onclick = (e: MouseEvent) => this.start();
         this.btnConfirm.onclick = (e: MouseEvent) => this.send()
         this.btnCancel.onclick = (e: MouseEvent) => this.revert()
         
@@ -117,15 +119,9 @@ class Editor implements IAppendable {
         this.targetHandles = [
             this.rootElm,   this.errorBox.rootElm,
             this.btnSlot,   this.btnConfirm,
-            this.btnCancel, this.textBox,
-            btnStart
+            this.btnCancel, this.textBox
         ];
-
-        // Include all child tags of the start button as off-click exceptions.
-        // Currently, no other exceptions are compound elms.
-        let childNodes: NodeListOf<ChildNode> = btnStart.childNodes;
-        childNodes.forEach((c: ChildNode) => this.targetHandles.push(<HTMLElement> c));
-
+        
         // At this point, this.windowClickFunc is an empty function, but once it's value is replaced by a real function, it can catch the clicks.
         window.addEventListener('mouseup', (e: MouseEvent) => this.windowClickFunc(e));
     }
@@ -179,8 +175,12 @@ class Editor implements IAppendable {
         // Get a handle on the current verion of text.
         this.currentText = this.textBox.innerText;
 
+        this.btnSlot.classList.add('activeEditor');
+
+        ViewUtil.hide(this.btnStart);
+
         // Show confirm and cancel control buttons.
-        ViewUtil.show(this.btnSlot);
+        ViewUtil.show(this.btnSlot, 'grid');
 
         // Make text box editable.
         this.textBox.contentEditable = `${true}`;
@@ -238,6 +238,10 @@ class Editor implements IAppendable {
         Ends the editing process.
     */
     protected end(): void {
+
+        this.btnSlot.classList.remove('activeEditor');
+
+        ViewUtil.show(this.btnStart, 'block');
 
         // Hide control buttons.
         ViewUtil.hide(this.btnSlot);
