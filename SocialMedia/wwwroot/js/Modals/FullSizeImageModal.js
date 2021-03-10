@@ -70,9 +70,11 @@ var FullSizeImageModal = (function (_super) {
             this.index = targetIndex;
             this.updateImageCount();
             Ajax.getProfileImages(this.profileId, this.index, 1, '', function (target) { }, function (imageCards) {
-                _this.imageCon.load(imageCards[0].image.imageId, null, function (target) { return _this.toggleControls(); });
+                Ajax.getImage(imageCards[0].image.imageId, false, null, null, function (imageCard) {
+                    _this.imageCon.loadImage(imageCard);
+                });
             });
-            imageDropdown.highlightAtIndex(targetIndex);
+            imageDropdown.highlightAtIndex(this.index);
         }
     };
     FullSizeImageModal.prototype.updateImageCount = function () { this.imageCount.innerText = this.index + 1 + " / " + this.profileImagesCount; };

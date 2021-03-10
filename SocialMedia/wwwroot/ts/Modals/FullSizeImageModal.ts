@@ -197,12 +197,17 @@ class FullSizeImageModal extends Modal {
 
                 // When the array of 1 image card arrives.
                 (imageCards: ImageCard[]) => {
-                    // Load that image card into the fullsize image container.
-                    this.imageCon.load(imageCards[0].image.imageId, null, (target: ImageCard) => this.toggleControls());
+
+                    // Use imageId of array of 1 to request fullsize image. XXX Add index parameter to fullsize image request. XXX
+                    Ajax.getImage(imageCards[0].image.imageId, false, null, null, (imageCard: ImageCard) => {
+
+                        // Load that image card into the fullsize image container.
+                        this.imageCon.loadImage(imageCard);
+                    });
                 }
             );
 
-            imageDropdown.highlightAtIndex(targetIndex);
+            imageDropdown.highlightAtIndex(this.index);
         }
     }
 
