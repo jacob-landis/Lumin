@@ -13,10 +13,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var FriendDropdown = (function (_super) {
     __extends(FriendDropdown, _super);
-    function FriendDropdown(rootElm, contentElm, txtSearch, btnSearch, friendBoxElm) {
+    function FriendDropdown(rootElm, contentElm, txtSearch, btnSearch, lblPrompt, friendBoxElm) {
         var _this = _super.call(this, rootElm, contentElm) || this;
         _this.txtSearch = txtSearch;
         _this.btnSearch = btnSearch;
+        _this.lblPrompt = lblPrompt;
         _this.friendsBox = new ContentBox(friendBoxElm, _this.contentElm);
         _this.btnSearch.onclick = function (e) { return _this.requestFriendables(); };
         _this.txtSearch.onkeyup = function (e) { if (e.keyCode == 13)
@@ -31,6 +32,7 @@ var FriendDropdown = (function (_super) {
     FriendDropdown.prototype.requestFriends = function () {
         var _this = this;
         this.friendsBox.clear();
+        this.lblPrompt.innerText = "My Friends";
         Ajax.getFriends(null, null, function (profiles) { return _this.friendsBox.add(profiles); });
         Ajax.getFriends(User.profileId, null, function (profiles) { return _this.friendsBox.add(profiles); });
     };
@@ -42,7 +44,12 @@ var FriendDropdown = (function (_super) {
             return;
         }
         this.friendsBox.clear();
-        Ajax.getFriends(null, search, function (profiles) { return _this.friendsBox.add(profiles); });
+        this.lblPrompt.innerText = "Search Results";
+        Ajax.getFriends(null, search, function (profiles) {
+            _this.friendsBox.add(profiles);
+            if (profiles.length == 0)
+                _this.lblPrompt.innerText = "No Results";
+        });
     };
     return FriendDropdown;
 }(Dropdown));

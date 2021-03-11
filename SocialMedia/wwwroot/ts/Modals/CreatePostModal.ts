@@ -125,18 +125,7 @@ class CreatePostModal extends Modal {
         Loads the image dropdown with a callback to return the selected image.
     */
     public selectImage(): void {
-
-        // Send new callback to image dropdown.
-        imageDropdown.convert(
-
-            // When the selected image card returns,
-            (imageCard: ImageCard) => {
-
-                // load image into selected image container by id so the fullsize verision is requested and displayed,
-                this.selectedImageBox.load(imageCard.image.imageId);
-            }
-        );
-
+        
         // Load the image dropdown.
         imageDropdown.load(
 
@@ -146,14 +135,16 @@ class CreatePostModal extends Modal {
             // Prompt Msg
             "Select an image",
 
-            // When the selected image card returns,
+            // When the selected image card returns.
             (imageCard: ImageCard) => {
                 // XXX if the image container were forced into certain dimensions, a stretched out thumbnail could be a
                 // XXX placeholder until the fullsize version arrived.
 
-                // and load image into selected image container by id so the fullsize version is requested and displayed.
-                this.selectedImageBox.load(imageCard.image.imageId);
-
+                // Request fullsize version of the selected image.
+                Ajax.getImage(imageCard.image.imageId, false, null, null, (imageCard: ImageCard) => {
+                    this.selectedImageBox.loadImage(imageCard);
+                });
+               
                 imageDropdown.close();
             }
         );

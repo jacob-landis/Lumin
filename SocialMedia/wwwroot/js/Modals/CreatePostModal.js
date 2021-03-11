@@ -44,11 +44,10 @@ var CreatePostModal = (function (_super) {
     };
     CreatePostModal.prototype.selectImage = function () {
         var _this = this;
-        imageDropdown.convert(function (imageCard) {
-            _this.selectedImageBox.load(imageCard.image.imageId);
-        });
         imageDropdown.load(User.profileId, "Select an image", function (imageCard) {
-            _this.selectedImageBox.load(imageCard.image.imageId);
+            Ajax.getImage(imageCard.image.imageId, false, null, null, function (imageCard) {
+                _this.selectedImageBox.loadImage(imageCard);
+            });
             imageDropdown.close();
         });
     };

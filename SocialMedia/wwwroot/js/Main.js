@@ -27,7 +27,7 @@ var Main = (function () {
         helpModal = new HelpModal(document.getElementById('helpContent'));
         Dropdown.initialize(document.getElementById('dropdownFrameTemplate'), document.getElementById('dropdownFrameContainer'));
         imageDropdown = new ImageDropdown(document.getElementById('imageDropdown'), document.getElementById('imageDropDownContent'), document.getElementById('selectImages'), document.getElementById('selectImagePrompt'), document.getElementById('imageModalUploadImage'));
-        friendDropdown = new FriendDropdown(document.getElementById('friendsDropdown'), document.getElementById('friendDropdownContent'), document.getElementById('txtSearchFriends'), document.getElementById('btnSearchFriends'), document.getElementById('friends'));
+        friendDropdown = new FriendDropdown(document.getElementById('friendsDropdown'), document.getElementById('friendDropdownContent'), document.getElementById('txtSearchFriends'), document.getElementById('btnSearchFriends'), document.getElementById('friendsPrompt'), document.getElementById('friends'));
     };
     return Main;
 }());

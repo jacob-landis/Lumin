@@ -15,6 +15,8 @@ class FriendDropdown extends Dropdown {
     // XXX If this dropdown is used to display someone elses friends the search btn will be hidden!!!
     private btnSearch: HTMLElement;
 
+    private lblPrompt: HTMLElement;
+
     // A container elm enhanced by the ContentBox class used to store profile cards from search results.
     private friendsBox: ContentBox;
 
@@ -28,6 +30,7 @@ class FriendDropdown extends Dropdown {
         contentElm: HTMLElement,
         txtSearch: HTMLInputElement,
         btnSearch: HTMLElement,
+        lblPrompt: HTMLElement,
         friendBoxElm: HTMLElement
     ) {
 
@@ -36,6 +39,7 @@ class FriendDropdown extends Dropdown {
         // Get handles on dropdown HTML elms.
         this.txtSearch = txtSearch;
         this.btnSearch = btnSearch;
+        this.lblPrompt = lblPrompt;
 
         // Create a new content box using a dropdown HTML component and get a handle on it.
         this.friendsBox = new ContentBox(friendBoxElm, this.contentElm);
@@ -59,6 +63,8 @@ class FriendDropdown extends Dropdown {
 
         // Clear any previous results from friendsBox.
         this.friendsBox.clear();
+
+        this.lblPrompt.innerText = "My Friends";
 
         // Request unnaccepted friend requests to the current user's profile (requestedUser) and add to friendsBox.
         Ajax.getFriends(null, null, (profiles: ProfileCard[]) => this.friendsBox.add(profiles));
@@ -87,10 +93,17 @@ class FriendDropdown extends Dropdown {
         // else, clear the list,
         this.friendsBox.clear();
 
+        this.lblPrompt.innerText = "Search Results";
+
         // and send a search request.
         Ajax.getFriends(null, search,
 
             // When the results return as profile cards, add them to the friends box.
-            (profiles: ProfileCard[]) => this.friendsBox.add(profiles));
+            (profiles: ProfileCard[]) => {
+                
+                this.friendsBox.add(profiles)
+                if (profiles.length == 0) this.lblPrompt.innerText = "No Results";
+
+            });
     }
 }
