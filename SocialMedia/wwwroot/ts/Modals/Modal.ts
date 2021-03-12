@@ -67,9 +67,10 @@ class Modal implements IAppendable {
 
     // Frame template clone.
     public rootElm: HTMLElement;
-
-    // Raised at start of transition and lowered at end.
-    private isTransitioning: boolean = false;
+    
+    public get hasFocus(): boolean {
+        return Modal.openModals[Modal.openModals.length - 1] == this && ViewUtil.isDisplayed(this.rootElm);
+    }
 
     /*
         Only usable by derived classes.

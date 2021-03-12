@@ -18,7 +18,7 @@ class ImageDropdown extends Dropdown {
     private prompt: HTMLElement;
 
     // Holds image cards.
-    private imageBox: ProfileImagesBox;
+    public imageBox: ProfileImagesBox;
     
     // Holds an onClick callback. Set when image onClicks are converted. Used for newly uploaded images so they can fit in.
     private heldOnClick: (target: ImageCard) => void;

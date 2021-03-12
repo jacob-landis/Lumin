@@ -26,6 +26,13 @@ var Modal = (function () {
     Modal.closeTopModal = function () {
         this.openModals[this.openModals.length - 1].close();
     };
+    Object.defineProperty(Modal.prototype, "hasFocus", {
+        get: function () {
+            return Modal.openModals[Modal.openModals.length - 1] == this && ViewUtil.isDisplayed(this.rootElm);
+        },
+        enumerable: true,
+        configurable: true
+    });
     Modal.prototype.open = function () {
         var _this = this;
         contextMenu.close();

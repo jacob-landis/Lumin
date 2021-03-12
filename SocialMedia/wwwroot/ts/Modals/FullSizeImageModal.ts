@@ -28,13 +28,15 @@ class FullSizeImageModal extends Modal {
     // An integer that tracks the current index of the collection being displayed.
     private index: number;
 
+    private currentImageId: number;
+
     // The total number of images in a collection.
     private profileImagesCount: number;
 
     private imageClassList: string;
 
     // Singular flag/switch. false == plural.
-    private singular: boolean = null;
+    private isSingular: boolean = null;
     
     /*
         Sudo-inherits from the sudo-base class.
@@ -71,6 +73,14 @@ class FullSizeImageModal extends Modal {
 
         // Set the callback of btnPrev to invoke requestImage with an increment.
         this.btnNext.onclick = (e: MouseEvent) => this.requestImage(this.index + 1);
+
+        // Set left and right arrow keys to go to next or previous image.
+        document.addEventListener("keydown", (event: KeyboardEvent) => {
+            if (this.hasFocus && !this.isSingular) {
+                if (event.keyCode == 37) this.btnPrev.click();
+                else if (event.keyCode == 39) this.btnNext.click();
+            }
+        });
     }
 
     /*
@@ -90,7 +100,7 @@ class FullSizeImageModal extends Modal {
         this.openOverrided();
 
         // Raise singular flag.
-        this.singular = true;
+        this.isSingular = true;
     }
 
     /*
@@ -132,13 +142,16 @@ class FullSizeImageModal extends Modal {
         Ajax.getProfile(profileId, (profileCard: ProfileCard) => {
 
             let promptMsg: string = (profileId == User.profileId) ? "My images" : `${profileCard.profile.firstName} ${profileCard.profile.lastName}'s images`;
-
-            imageDropdown.load(profileId, promptMsg, (target: ImageCard) => this.requestImage(imageDropdown.indexOf(target)));
+            
+            imageDropdown.load(profileId, promptMsg, (target: ImageCard) => {
+                //this.currentImageId = target.image.imageId;
+                this.requestImage(imageDropdown.indexOf(target))
+            });
         });
 
         this.showControls();
 
-        this.singular = false;
+        this.isSingular = false;
     }
 
     /*
@@ -158,7 +171,7 @@ class FullSizeImageModal extends Modal {
 
         // If singular, hide image dropdown.
         // (prevents incorrect showing in this.showControls())
-        if (this.singular == true) ViewUtil.hide(imageDropdown.rootElm);
+        if (this.isSingular == true) ViewUtil.hide(imageDropdown.rootElm);
 
         // Clear full size image slot.
         this.imageCon.unload();
@@ -192,6 +205,8 @@ class FullSizeImageModal extends Modal {
             // Update the image count elm.
             this.updateImageCount();
 
+            this.currentImageId = (<ImageCard>imageDropdown.imageBox.content[this.index]).image.imageId;
+
             // Request a list of images with a 1 long range. This is the only way to request by index.
             Ajax.getProfileImages(this.profileId, this.index, 1, '', (target: ImageCard) => { },
 
@@ -201,8 +216,9 @@ class FullSizeImageModal extends Modal {
                     // Use imageId of array of 1 to request fullsize image. XXX Add index parameter to fullsize image request. XXX
                     Ajax.getImage(imageCards[0].image.imageId, false, null, null, (imageCard: ImageCard) => {
 
+                        // If imageCard is the one being waited on. (Prevents errors caused by navigating too fast.)
                         // Load that image card into the fullsize image container.
-                        this.imageCon.loadImage(imageCard);
+                        if (imageCard.image.imageId == this.currentImageId) this.imageCon.loadImage(imageCard);
                     });
                 }
             );

@@ -15,7 +15,7 @@ var FullSizeImageModal = (function (_super) {
     __extends(FullSizeImageModal, _super);
     function FullSizeImageModal(rootElm, btnPrev, btnNext, imageCount, imageBoxElm, imageClassList) {
         var _this = _super.call(this, rootElm) || this;
-        _this.singular = null;
+        _this.isSingular = null;
         rootElm.onclick = function (event) { if (event.target == rootElm)
             _this.close(); };
         _this.btnPrev = btnPrev;
@@ -26,6 +26,14 @@ var FullSizeImageModal = (function (_super) {
         _this.imageCon = new ImageBox(imageBoxElm, imageClassList, function (target) { return _this.toggleControls(); });
         _this.btnPrev.onclick = function (e) { return _this.requestImage(_this.index - 1); };
         _this.btnNext.onclick = function (e) { return _this.requestImage(_this.index + 1); };
+        document.addEventListener("keydown", function (event) {
+            if (_this.hasFocus && !_this.isSingular) {
+                if (event.keyCode == 37)
+                    _this.btnPrev.click();
+                else if (event.keyCode == 39)
+                    _this.btnNext.click();
+            }
+        });
         return _this;
     }
     FullSizeImageModal.prototype.loadSingle = function (imageId) {
@@ -33,7 +41,7 @@ var FullSizeImageModal = (function (_super) {
         this.imageCon.load(imageId, this.imageClassList, function (target) { return _this.toggleClose(); });
         this.hideControls();
         this.openOverrided();
-        this.singular = true;
+        this.isSingular = true;
     };
     FullSizeImageModal.prototype.load = function (clickedImageIndex, profileId) {
         var _this = this;
@@ -47,17 +55,19 @@ var FullSizeImageModal = (function (_super) {
         this.openOverrided();
         Ajax.getProfile(profileId, function (profileCard) {
             var promptMsg = (profileId == User.profileId) ? "My images" : profileCard.profile.firstName + " " + profileCard.profile.lastName + "'s images";
-            imageDropdown.load(profileId, promptMsg, function (target) { return _this.requestImage(imageDropdown.indexOf(target)); });
+            imageDropdown.load(profileId, promptMsg, function (target) {
+                _this.requestImage(imageDropdown.indexOf(target));
+            });
         });
         this.showControls();
-        this.singular = false;
+        this.isSingular = false;
     };
     FullSizeImageModal.prototype.openOverrided = function () {
         _super.prototype.open.call(this);
         navBar.hide();
     };
     FullSizeImageModal.prototype.close = function () {
-        if (this.singular == true)
+        if (this.isSingular == true)
             ViewUtil.hide(imageDropdown.rootElm);
         this.imageCon.unload();
         imageDropdown.clearHighlight();
@@ -69,9 +79,11 @@ var FullSizeImageModal = (function (_super) {
         if (targetIndex >= 0 && targetIndex < this.profileImagesCount) {
             this.index = targetIndex;
             this.updateImageCount();
+            this.currentImageId = imageDropdown.imageBox.content[this.index].image.imageId;
             Ajax.getProfileImages(this.profileId, this.index, 1, '', function (target) { }, function (imageCards) {
                 Ajax.getImage(imageCards[0].image.imageId, false, null, null, function (imageCard) {
-                    _this.imageCon.loadImage(imageCard);
+                    if (imageCard.image.imageId == _this.currentImageId)
+                        _this.imageCon.loadImage(imageCard);
                 });
             });
             imageDropdown.highlightAtIndex(this.index);
