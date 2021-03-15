@@ -59,7 +59,8 @@ var ImageDropdown = (function (_super) {
             }
         }
         this.prompt.innerText = promptMsg;
-        _super.prototype.open.call(this);
+        if (Dropdown.openDropdown != this)
+            _super.prototype.open.call(this);
     };
     ImageDropdown.prototype.convert = function (callback) {
         var _this = this;

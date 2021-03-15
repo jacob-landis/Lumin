@@ -133,8 +133,9 @@ class ImageDropdown extends Dropdown {
         // If the user is selecting something, indicate that clicking on an image selects it for something, 
         // else, indicate that clicking an image will make it go fullscreen.
         this.prompt.innerText = promptMsg;
-        
-        super.open();
+
+        // If this dropdown is not open, open it.
+        if (Dropdown.openDropdown != this) super.open();
     }
 
     /*

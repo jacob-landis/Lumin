@@ -1,6 +1,5 @@
 var Modal = (function () {
     function Modal(contentElm) {
-        this.isTransitioning = false;
         this.rootElm = ViewUtil.copy(Modal.frameTemplate);
         this.rootElm.append(contentElm);
         Modal.frameContainer.append(this.rootElm);
