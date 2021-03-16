@@ -55,10 +55,8 @@ class Main {
             document.getElementById('createPostModal'),
             <HTMLInputElement>document.getElementById('caption'),
             document.getElementById('captionWrapper'),
-            document.getElementById('btnSelectPostImage'),
-            document.getElementById('btnClearPostImage'),
             document.getElementById('btnSubmit'),
-            document.getElementById('btnCancel'),
+            document.getElementById('btnClearAttachment'),
             document.getElementById('selectedImageCon'),
             'selectedPostImage',
             'createPostErrorBox'

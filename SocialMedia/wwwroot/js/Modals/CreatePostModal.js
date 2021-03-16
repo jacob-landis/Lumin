@@ -13,33 +13,36 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var CreatePostModal = (function (_super) {
     __extends(CreatePostModal, _super);
-    function CreatePostModal(rootElm, txtCaption, captionWrapper, btnSelectImage, btnClearImage, btnSubmit, btnCancel, imageBoxElm, imageClassList, contentBoxElmId) {
+    function CreatePostModal(rootElm, txtCaption, captionWrapper, btnSubmit, btnClearAttachment, imageBoxElm, imageClassList, contentBoxElmId) {
         var _this = _super.call(this, rootElm) || this;
         _this.txtCaption = txtCaption;
         _this.captionWrapper = captionWrapper;
-        _this.btnSelectImage = btnSelectImage;
-        _this.btnClearImage = btnClearImage;
         _this.btnSubmit = btnSubmit;
-        _this.btnCancel = btnCancel;
+        _this.btnClearAttachment = btnClearAttachment;
         _this.errorBox = new ContentBox(document.getElementById(contentBoxElmId));
         _this.captionWrapper.append(_this.errorBox.rootElm);
         _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, function (targetImageCard) { return _this.selectImage(); });
-        _this.btnSelectImage.onclick = function (e) { return _this.selectImage(); };
-        _this.btnClearImage.onclick = function (e) { return _this.loadPaperClip(); };
+        _this.btnClearAttachment.onclick = function (e) { return _this.loadPaperClip(); };
         _this.btnSubmit.onclick = function (e) { return _this.submit(); };
-        _this.btnCancel.onclick = function (e) { return _this.close(); };
+        _this.loadPaperClip();
         return _this;
     }
     CreatePostModal.prototype.load = function (imageCard) {
-        this.loadPaperClip();
-        if (imageCard)
-            this.selectedImageBox.load(imageCard.image.imageId);
+        var _this = this;
+        if (imageCard != null)
+            Ajax.getImage(imageCard.image.imageId, false, null, null, function (imageCard) {
+                _this.selectedImageBox.loadImage(imageCard);
+                ViewUtil.show(_this.btnClearAttachment, "inline");
+            });
         this.open();
     };
     CreatePostModal.prototype.loadPaperClip = function () {
+        var _this = this;
+        ViewUtil.hide(this.btnClearAttachment);
         ViewUtil.empty(this.selectedImageBox.rootElm);
         this.selectedImageBox.isLoaded = false;
         var paperClip = Icons.paperClip();
+        paperClip.onclick = function () { return _this.selectImage(); };
         this.selectedImageBox.rootElm.append(paperClip);
     };
     CreatePostModal.prototype.selectImage = function () {
@@ -47,6 +50,7 @@ var CreatePostModal = (function (_super) {
         imageDropdown.load(User.profileId, "Select an image", function (imageCard) {
             Ajax.getImage(imageCard.image.imageId, false, null, null, function (imageCard) {
                 _this.selectedImageBox.loadImage(imageCard);
+                ViewUtil.show(_this.btnClearAttachment);
             });
             imageDropdown.close();
         });

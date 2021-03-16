@@ -418,15 +418,17 @@
 @* CREATE POST MODAL *@
 <div id="createPostModal" class="my-modal-content modal-content-med fixedContent">
 
+    @* Clear image button *@
+    <div id="btnClearAttachment" title="Clear Attachment" alt="clear attachment">
+        @* (compound icon) *@
+        <i id="btnClearAttachmentMinusIcon" class="fa fa-minus"></i>
+        <i id="btnClearAttachmentImageIcon" class="fa fa-image"></i>
+    </div>
+
     @* Container for the post image the user selected. *@
     <div id="selectedImageCon"></div>
 
     <br />
-    @* Btn select post image. Opens profile images dropdown for user to select from. *@
-    <button id="btnSelectPostImage" class="myBtnDefault">Select an Image</button>
-
-    @* Btn clear post image. The post will no longer contain an image. *@
-    <button id="btnClearPostImage" class="myBtnDefault">Clear Image</button>
 
     @* Caption area. *@
     <div class="form-group" id="captionWrapper">
@@ -440,9 +442,6 @@
 
     @* Btn submit. Send to server if the post passed client side validation. *@
     <button id="btnSubmit" class="btn btn-primary">Post</button>
-
-    @* Btn cancle. Clears image and caption and closes modal. *@
-    <button id="btnCancel" class="btn btn-primary">Cancel</button>
 
     @* Container for post creation errors. *@
     <div id="createPostErrorBox"></div>

@@ -12,17 +12,11 @@ class CreatePostModal extends Modal {
     // A content box for error messages.
     private errorBox: ContentBox;
     
-    // A button that opens the image dropdown for the user to select an image from.
-    private btnSelectImage: HTMLElement;
-    
-    // A button that removes the image that is attached to the post.
-    private btnClearImage: HTMLElement;
-    
     // A button that sends the post in a post request to the host.
     private btnSubmit: HTMLElement;
-    
-    // A button that closes this modal.
-    private btnCancel: HTMLElement;
+
+    // A button that clears the attached image. It only appears on hover and when an image is staged.
+    private btnClearAttachment: HTMLElement;
     
     // An ImageBox that displays the image the user attaches to the post.
     private selectedImageBox: ImageBox;
@@ -35,10 +29,8 @@ class CreatePostModal extends Modal {
         rootElm: HTMLElement,
         txtCaption: HTMLInputElement,
         captionWrapper: HTMLElement,
-        btnSelectImage: HTMLElement,
-        btnClearImage: HTMLElement,
         btnSubmit: HTMLElement,
-        btnCancel: HTMLElement,
+        btnClearAttachment: HTMLElement,
         imageBoxElm: HTMLElement,
         imageClassList: string,
         contentBoxElmId: string
@@ -48,10 +40,8 @@ class CreatePostModal extends Modal {
         // Get handles on modal HTML elms.
         this.txtCaption = txtCaption;
         this.captionWrapper = captionWrapper;
-        this.btnSelectImage = btnSelectImage;
-        this.btnClearImage = btnClearImage;
         this.btnSubmit = btnSubmit;
-        this.btnCancel = btnCancel;
+        this.btnClearAttachment = btnClearAttachment;
 
         // Construct a content box for errors and get a handle on it.
         this.errorBox = new ContentBox(document.getElementById(contentBoxElmId));
@@ -62,24 +52,17 @@ class CreatePostModal extends Modal {
         // Construct an image box with an existing elm and get a handle on it.
         // (Any image that is selected for this post can be clicked on to pick a different image, because of the click parameter value)
         this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList,
-
-            // Returns the following callback.
-            //() =>
-                // When the image is clicked, invoke selectImage().
-                (targetImageCard: ImageCard) => this.selectImage()
+            
+            // When the image is clicked.
+            (targetImageCard: ImageCard) => this.selectImage()
         );
 
-        // Set btnSelectImage to invoke selectImage().
-        this.btnSelectImage.onclick = (e: MouseEvent) => this.selectImage();
-
-        // Set btnClearImage to invoke loadPaperClip().
-        this.btnClearImage.onclick = (e: MouseEvent) => this.loadPaperClip();
+        this.btnClearAttachment.onclick = (e: MouseEvent) => this.loadPaperClip();
 
         // Set btnSubmit to invoke submit().
         this.btnSubmit.onclick = (e: MouseEvent) => this.submit();
-
-        // Set btnCancel to invoke close().
-        this.btnCancel.onclick = (e: MouseEvent) => this.close();
+        
+        this.loadPaperClip();
     }
 
     /*
@@ -90,10 +73,17 @@ class CreatePostModal extends Modal {
     public load(imageCard?: ImageCard): void {
 
         // Clear selected image container.
-        this.loadPaperClip();
+        //this.loadPaperClip();
         
         // If an image card was provided, load it into the selected image container.
-        if (imageCard) this.selectedImageBox.load(imageCard.image.imageId);
+        //if (imageCard) this.selectedImageBox.load(imageCard.image.imageId);
+
+        // Wait for fullsize image.
+        if (imageCard != null) Ajax.getImage(imageCard.image.imageId, false, null, null, (imageCard: ImageCard) => {
+
+            this.selectedImageBox.loadImage(imageCard);
+            ViewUtil.show(this.btnClearAttachment, "inline");
+        });
 
         // Open this modal.
         this.open();
@@ -108,6 +98,9 @@ class CreatePostModal extends Modal {
     */
     private loadPaperClip(): void {
 
+        // Hide btnClearAttachment.
+        ViewUtil.hide(this.btnClearAttachment);
+
         // Clear selected image container.
         ViewUtil.empty(this.selectedImageBox.rootElm); // XXX this should be this.selectedImageCon.unload();
 
@@ -116,6 +109,8 @@ class CreatePostModal extends Modal {
 
         // Get handle on new paper clip icon.
         let paperClip = Icons.paperClip();
+
+        paperClip.onclick = () => this.selectImage();
 
         // Append paper clip icon to selected image container.
         this.selectedImageBox.rootElm.append(paperClip);
@@ -137,12 +132,11 @@ class CreatePostModal extends Modal {
 
             // When the selected image card returns.
             (imageCard: ImageCard) => {
-                // XXX if the image container were forced into certain dimensions, a stretched out thumbnail could be a
-                // XXX placeholder until the fullsize version arrived.
 
                 // Request fullsize version of the selected image.
                 Ajax.getImage(imageCard.image.imageId, false, null, null, (imageCard: ImageCard) => {
                     this.selectedImageBox.loadImage(imageCard);
+                    ViewUtil.show(this.btnClearAttachment);
                 });
                
                 imageDropdown.close();
