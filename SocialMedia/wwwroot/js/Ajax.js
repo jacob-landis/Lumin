@@ -34,8 +34,8 @@ var Ajax = (function () {
     Ajax.updateBio = function (bioText) {
         this.call("apiprofile/updatebio", "POST", null, this.JSONstring(bioText));
     };
-    Ajax.updateProfilePicture = function (imageId, imageClassList, onImageClick, onCopyResults) {
-        this.call("apiprofile/updateprofilepicture/" + imageId, "POST", function (imageResults) { return onCopyResults(new ImageCard(imageResults, imageClassList, onImageClick)); });
+    Ajax.updateProfilePicture = function (imageId, imageClassList, tooltipMsg, onImageClick, onCopyResults) {
+        this.call("apiprofile/updateprofilepicture/" + imageId, "POST", function (imageResults) { return onCopyResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick)); });
     };
     Ajax.getProfile = function (profileId, onProfileResults) {
         this.call("apiprofile/" + profileId, "GET", function (profileResults) { return onProfileResults(new ProfileCard(profileResults)); });
@@ -68,14 +68,14 @@ var Ajax = (function () {
     Ajax.postImage = function (imageAsString, onCopyResults) {
         this.call("apiimage", "POST", function (imageCopy) { return onCopyResults(new ImageCard(imageCopy)); }, imageAsString);
     };
-    Ajax.getProfileImages = function (profileId, skip, take, imageClassList, onImageClick, onImageResults) {
-        this.call("apiimage/profileimages/" + profileId + "/" + skip + "/" + take, "GET", function (imageResults) { return onImageResults(ImageCard.list(imageResults, imageClassList, onImageClick)); });
+    Ajax.getProfileImages = function (profileId, skip, take, imageClassList, tooltipMsg, onImageClick, onImageResults) {
+        this.call("apiimage/profileimages/" + profileId + "/" + skip + "/" + take, "GET", function (imageResults) { return onImageResults(ImageCard.list(imageResults, imageClassList, tooltipMsg, onImageClick)); });
     };
     Ajax.getProfileImagesCount = function (profileId, onCountResults) {
         this.call("apiimage/profileimagescount/" + profileId, "GET", onCountResults);
     };
-    Ajax.getImage = function (imageId, thumb, imageClassList, onImageClick, onImageResults) {
-        this.call("apiimage/" + imageId + "/" + (thumb ? 1 : 0), "GET", function (imageResults) { return onImageResults(new ImageCard(imageResults, imageClassList, onImageClick)); });
+    Ajax.getImage = function (imageId, thumb, imageClassList, tooltipMsg, onImageClick, onImageResults) {
+        this.call("apiimage/" + imageId + "/" + (thumb ? 1 : 0), "GET", function (imageResults) { return onImageResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick)); });
     };
     Ajax.deletePost = function (postId) {
         this.call("apipost/deletepost/" + postId, "POST");

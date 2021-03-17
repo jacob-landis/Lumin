@@ -17,8 +17,8 @@ var ProfileCard = (function (_super) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'profileCard' })) || this;
         _this.profile = profile;
         _this.case = ProfileCard.cases[_this.profile.relationToUser];
-        _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, true);
-        _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', function (target) { }));
+        _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, true);
+        _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', null, function (target) { }));
         _this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: (_this.profile.firstName + " " + _this.profile.lastName) });
         _this.rootElm.append(_this.imageBox.rootElm, _this.txtName);
         if (_this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me')

@@ -64,13 +64,14 @@
     public static updateProfilePicture(
         imageId: number,
         imageClassList?: string,
+        tooltipMsg?: string,
         onImageClick?: (targetImageCard: ImageCard) => void,
         onCopyResults?: (fullsizeImageCard: ImageCard) => void
     ): void {
         this.call(
             `apiprofile/updateprofilepicture/${imageId}`,
             "POST",
-            (imageResults: string) => onCopyResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, onImageClick))
+            (imageResults: string) => onCopyResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, tooltipMsg, onImageClick))
         );
     }
 
@@ -146,13 +147,14 @@
         skip: number,
         take: number,
         imageClassList: string,
+        tooltipMsg: string,
         onImageClick: (targetImageCard: ImageCard) => void,
         onImageResults: (imageCards: ImageCard[]) => void
     ): void {
         this.call(
             `apiimage/profileimages/${profileId}/${skip}/${take}`, 
             "GET",
-            (imageResults: string) => onImageResults(ImageCard.list(<ImageRecord[]><unknown>imageResults, imageClassList, onImageClick))
+            (imageResults: string) => onImageResults(ImageCard.list(<ImageRecord[]><unknown>imageResults, imageClassList, tooltipMsg, onImageClick))
         );
     }
 
@@ -164,13 +166,14 @@
         imageId: number,
         thumb: boolean,
         imageClassList: string,
+        tooltipMsg: string,
         onImageClick: (target: ImageCard) => void,
         onImageResults: (imageCard: ImageCard) => void
     ): void {
         this.call(
             `apiimage/${imageId}/${thumb ? 1 : 0}`, 
             "GET",
-            (imageResults: string) => onImageResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, onImageClick))
+            (imageResults: string) => onImageResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, tooltipMsg, onImageClick))
         );
     }
 

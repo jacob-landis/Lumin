@@ -9,6 +9,8 @@ class ProfileImagesBox extends ContentBox {
     // A global collection of ImageBox instances.
     public static profileImageBoxes: ProfileImagesBox[] = [];
 
+    public tooltipMsg: string;
+
     // The click action that gets imbedded in every image in this image box's content box.
     public clickCallback: (target: ImageCard) => void;
 
@@ -20,7 +22,7 @@ class ProfileImagesBox extends ContentBox {
         profileId can be null.
         clickCallback is assigned as the onclick event for each profile card.
     */
-    constructor(profileId?: number, scrollElm?: HTMLElement, clickCallback?: (imageCard: ImageCard) => void) {
+    constructor(profileId?: number, tooltipMsg?: string, scrollElm?: HTMLElement, clickCallback?: (imageCard: ImageCard) => void) {
 
         let rootElm: HTMLElement = ViewUtil.tag('div', { classList: 'images-box' });
 
@@ -28,7 +30,7 @@ class ProfileImagesBox extends ContentBox {
             // When content box is ready for more content,
             (skip: number, take: number) => {
                 // send an images request to the host with the set skip and take values along with the ProfileID of this image box,
-                Ajax.getProfileImages(this.profileId, skip, take, 'listImage sqr', this.clickCallback,
+                Ajax.getProfileImages(this.profileId, skip, take, 'listImage sqr', this.tooltipMsg, this.clickCallback,
                     // and when they return as image cards with the click value that was just provided,
                     (imageCards: ImageCard[]) => {
                         // add them to this image box.
@@ -41,6 +43,8 @@ class ProfileImagesBox extends ContentBox {
         // Get handle on ProfileID.
         // If a ProfileID was provided, this.profileID is profileId, else this.profileId is the current user's ProfileID.
         this.profileId = profileId ? profileId : User.profileId;
+
+        this.tooltipMsg = tooltipMsg;
 
         // Get handle on click action.
         this.clickCallback = clickCallback;
@@ -55,10 +59,11 @@ class ProfileImagesBox extends ContentBox {
     /*
         Restart image loading with new profileId and onImageClick callback. 
     */
-    public load(profileId: number, onImageClick: (target: ImageCard) => void): void {
+    public load(profileId: number, tooltipMsg: string, onImageClick: (target: ImageCard) => void): void {
 
         // Change stored values to parameter values.
         this.profileId = profileId;
+        this.tooltipMsg = tooltipMsg;
         this.clickCallback = onImageClick;
 
         // Clear array and root element.
@@ -79,6 +84,7 @@ class ProfileImagesBox extends ContentBox {
 
         // Imbed click action stored in this image box to image card.
         imageCard.onImageClick = this.clickCallback;
+        imageCard.tooltipMsg = this.tooltipMsg;
 
         // Update classList of image card so it is square and fits in the grid.
         imageCard.rootElm.classList.add('listImage');

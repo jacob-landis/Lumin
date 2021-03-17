@@ -134,6 +134,7 @@
         this.postImageWrapper = new ImageBox(
             ViewUtil.tag('div', { classList: 'postImageWrapper' }),
             'postImage',
+            'Fullscreen',
             (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId)
         );
 

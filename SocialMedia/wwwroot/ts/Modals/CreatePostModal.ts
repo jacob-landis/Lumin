@@ -51,7 +51,7 @@ class CreatePostModal extends Modal {
 
         // Construct an image box with an existing elm and get a handle on it.
         // (Any image that is selected for this post can be clicked on to pick a different image, because of the click parameter value)
-        this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList,
+        this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image',
             
             // When the image is clicked.
             (targetImageCard: ImageCard) => this.selectImage()
@@ -71,15 +71,9 @@ class CreatePostModal extends Modal {
         imageCard must be an ImageCard.
     */
     public load(imageCard?: ImageCard): void {
-
-        // Clear selected image container.
-        //this.loadPaperClip();
         
-        // If an image card was provided, load it into the selected image container.
-        //if (imageCard) this.selectedImageBox.load(imageCard.image.imageId);
-
         // Wait for fullsize image.
-        if (imageCard != null) Ajax.getImage(imageCard.image.imageId, false, null, null, (imageCard: ImageCard) => {
+        if (imageCard != null) Ajax.getImage(imageCard.image.imageId, false, null, "Attach image", null, (imageCard: ImageCard) => {
 
             this.selectedImageBox.loadImage(imageCard);
             ViewUtil.show(this.btnClearAttachment, "inline");
@@ -129,12 +123,13 @@ class CreatePostModal extends Modal {
 
             // Prompt Msg
             "Select an image",
+            'Attach image to post',
 
             // When the selected image card returns.
             (imageCard: ImageCard) => {
 
                 // Request fullsize version of the selected image.
-                Ajax.getImage(imageCard.image.imageId, false, null, null, (imageCard: ImageCard) => {
+                Ajax.getImage(imageCard.image.imageId, false, null, 'Attach to post', null, (imageCard: ImageCard) => {
                     this.selectedImageBox.loadImage(imageCard);
                     ViewUtil.show(this.btnClearAttachment);
                 });
@@ -224,18 +219,8 @@ class CreatePostModal extends Modal {
         // If there is nothing in the caption,
         if (this.txtCaption.value.length < 1) {
 
-            // Clear error box.
-            this.errorBox.clear();
+            this.clear();
 
-            // Clear caption.
-            this.txtCaption.value = '';
-
-            // Close the image dropdown.
-            imageDropdown.close();
-
-            // Return image dropdown to it's 
-            imageDropdown.rootElm.style.zIndex = '0';
-            
             // Proceed with default close function.
             super.close();
         }
@@ -252,8 +237,7 @@ class CreatePostModal extends Modal {
                     // if they decided not to cancel, do nothing,
                     if (!confirmation) return;
 
-                    // else carry on and clear the caption,
-                    this.txtCaption.value = '';
+                    this.clear();
 
                     // then call close again.
                     // Doing so will cause this method to be called again,
@@ -262,5 +246,22 @@ class CreatePostModal extends Modal {
                 }
             );
         }
+    }
+
+    private clear(): void {
+
+        // Clear error box.
+        this.errorBox.clear();
+
+        // Clear caption.
+        this.txtCaption.value = '';
+
+        this.loadPaperClip();
+
+        // Close the image dropdown.
+        imageDropdown.close();
+
+        // Return image dropdown to it's 
+        imageDropdown.rootElm.style.zIndex = '0';
     }
 }

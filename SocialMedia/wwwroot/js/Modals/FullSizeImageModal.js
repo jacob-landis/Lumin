@@ -23,7 +23,7 @@ var FullSizeImageModal = (function (_super) {
         _this.imageCount = imageCount;
         _this.imageClassList = imageClassList;
         _this.imageControls = [_this.imageCount, _this.btnNext, _this.btnPrev, Modal.btnClose];
-        _this.imageCon = new ImageBox(imageBoxElm, imageClassList, function (target) { return _this.toggleControls(); });
+        _this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', function (target) { return _this.toggleControls(); });
         _this.btnPrev.onclick = function (e) { return _this.requestImage(_this.index - 1); };
         _this.btnNext.onclick = function (e) { return _this.requestImage(_this.index + 1); };
         document.addEventListener("keydown", function (event) {
@@ -38,7 +38,7 @@ var FullSizeImageModal = (function (_super) {
     }
     FullSizeImageModal.prototype.loadSingle = function (imageId) {
         var _this = this;
-        this.imageCon.load(imageId, this.imageClassList, function (target) { return _this.toggleClose(); });
+        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', function (target) { return _this.toggleClose(); });
         this.hideControls();
         this.openOverrided();
         this.isSingular = true;
@@ -55,7 +55,7 @@ var FullSizeImageModal = (function (_super) {
         this.openOverrided();
         Ajax.getProfile(profileId, function (profileCard) {
             var promptMsg = (profileId == User.profileId) ? "My images" : profileCard.profile.firstName + " " + profileCard.profile.lastName + "'s images";
-            imageDropdown.load(profileId, promptMsg, function (target) {
+            imageDropdown.load(profileId, promptMsg, 'Fullscreen', function (target) {
                 _this.requestImage(imageDropdown.indexOf(target));
             });
         });
@@ -80,8 +80,8 @@ var FullSizeImageModal = (function (_super) {
             this.index = targetIndex;
             this.updateImageCount();
             this.currentImageId = imageDropdown.imageBox.content[this.index].image.imageId;
-            Ajax.getProfileImages(this.profileId, this.index, 1, '', function (target) { }, function (imageCards) {
-                Ajax.getImage(imageCards[0].image.imageId, false, null, null, function (imageCard) {
+            Ajax.getProfileImages(this.profileId, this.index, 1, '', null, function (target) { }, function (imageCards) {
+                Ajax.getImage(imageCards[0].image.imageId, false, null, 'Toggle controls', null, function (imageCard) {
                     if (imageCard.image.imageId == _this.currentImageId)
                         _this.imageCon.loadImage(imageCard);
                 });

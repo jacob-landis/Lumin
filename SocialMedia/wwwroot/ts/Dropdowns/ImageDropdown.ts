@@ -45,7 +45,7 @@ class ImageDropdown extends Dropdown {
         this.prompt = prompt;
 
         // Create ProfileImagesBox to hold dropdown images. Load current users images.
-        this.imageBox = new ProfileImagesBox(null, this.contentElm, (target: ImageCard) =>
+        this.imageBox = new ProfileImagesBox(null, 'Fullscreen', this.contentElm, (target: ImageCard) =>
 
             // Load album into fullsize image modal starting at the index of the clicked image card.
             fullSizeImageModal.load(this.indexOf(target))
@@ -89,7 +89,7 @@ class ImageDropdown extends Dropdown {
         give the user a prompt,
         and bring this dropdown to the foreground.
     */
-    public load(profileId: number, promptMsg: string = "", onImageClick?: (target: ImageCard) => void): void {
+    public load(profileId: number, promptMsg: string = "", tooltipMsg: string = null, onImageClick?: (target: ImageCard) => void): void {
 
         // If a callback was provided.
         if (onImageClick != null) {
@@ -98,12 +98,12 @@ class ImageDropdown extends Dropdown {
             if (profileId == this.imageBox.profileId) {
 
                 // Convert the onclick of the currently loaded images to the one provided.
-                this.convert(onImageClick);
+                this.convert(tooltipMsg, onImageClick);
             }
             else {
 
                 // Start over image loading with new profile and onclick.
-                this.imageBox.load(profileId, onImageClick);
+                this.imageBox.load(profileId, tooltipMsg, onImageClick);
             }
         }
         else {
@@ -112,7 +112,7 @@ class ImageDropdown extends Dropdown {
             if (profileId == this.imageBox.profileId) {
 
                 // Convert the onclick of the currently loaded images to the defualt onclick.
-                this.convert((target: ImageCard) => {
+                this.convert('Fullscreen', (target: ImageCard) => {
 
                     // Open the image in fullsize image modal that is selected.
                     fullSizeImageModal.load(this.indexOf(target), profileId);
@@ -121,7 +121,7 @@ class ImageDropdown extends Dropdown {
             else {
 
                 // Start over image loading with new profile and defualt onclick.
-                this.imageBox.load(profileId, (target: ImageCard) => {
+                this.imageBox.load(profileId, 'Fullscreen', (target: ImageCard) => {
 
                     // Open the image in fullsize image modal that is selected.
                     fullSizeImageModal.load(this.indexOf(target), profileId);
@@ -145,13 +145,16 @@ class ImageDropdown extends Dropdown {
 
         This is used if the image dropdown is already open and the user needs to select an image.
     */
-    public convert(callback: (imageCard: ImageCard) => void): void {
+    public convert(tooltipMsg: string, callback: (imageCard: ImageCard) => void): void {
 
         // Save callback in ProfileImagesBox for newly uploaded images that come in to get their callback from.
-        this.imageBox.clickCallback = (target: ImageCard) => callback(target);
+        this.imageBox.clickCallback = (target: ImageCard) => callback(target); // XXX just assign callback XXX
 
         // Loop through each image card in the image box and change it's callback to the one provided.
-        this.imageBox.content.forEach((imageCard: IAppendable) => (<ImageCard> imageCard).onImageClick = this.imageBox.clickCallback);
+        this.imageBox.content.forEach((imageCard: IAppendable) => {
+            (<ImageCard>imageCard).onImageClick = this.imageBox.clickCallback;
+            (<ImageCard>imageCard).tooltipMsg = tooltipMsg;
+        });
 
         // Prompt the user to select an image.
         this.prompt.innerText = 'Select an Image';

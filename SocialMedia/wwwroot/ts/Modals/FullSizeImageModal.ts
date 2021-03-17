@@ -66,7 +66,7 @@ class FullSizeImageModal extends Modal {
         this.imageControls = [this.imageCount, this.btnNext, this.btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
-        this.imageCon = new ImageBox(imageBoxElm, imageClassList, (target: ImageCard) => this.toggleControls());
+        this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', (target: ImageCard) => this.toggleControls());
         
         // Set the callback of btnPrev to invoke requestImage with a deincrement.
         this.btnPrev.onclick = (e: MouseEvent) => this.requestImage(this.index - 1);
@@ -91,7 +91,7 @@ class FullSizeImageModal extends Modal {
     public loadSingle(imageId: number): void {
 
         // Load image into imageCon by ImageID.
-        this.imageCon.load(imageId, this.imageClassList, (target: ImageCard) => this.toggleClose());
+        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', (target: ImageCard) => this.toggleClose());
 
         // Hides all controls.
         this.hideControls();
@@ -143,7 +143,7 @@ class FullSizeImageModal extends Modal {
 
             let promptMsg: string = (profileId == User.profileId) ? "My images" : `${profileCard.profile.firstName} ${profileCard.profile.lastName}'s images`;
             
-            imageDropdown.load(profileId, promptMsg, (target: ImageCard) => {
+            imageDropdown.load(profileId, promptMsg, 'Fullscreen', (target: ImageCard) => {
                 //this.currentImageId = target.image.imageId;
                 this.requestImage(imageDropdown.indexOf(target))
             });
@@ -208,13 +208,13 @@ class FullSizeImageModal extends Modal {
             this.currentImageId = (<ImageCard>imageDropdown.imageBox.content[this.index]).image.imageId;
 
             // Request a list of images with a 1 long range. This is the only way to request by index.
-            Ajax.getProfileImages(this.profileId, this.index, 1, '', (target: ImageCard) => { },
+            Ajax.getProfileImages(this.profileId, this.index, 1, '', null, (target: ImageCard) => { },
 
                 // When the array of 1 image card arrives.
                 (imageCards: ImageCard[]) => {
 
                     // Use imageId of array of 1 to request fullsize image. XXX Add index parameter to fullsize image request. XXX
-                    Ajax.getImage(imageCards[0].image.imageId, false, null, null, (imageCard: ImageCard) => {
+                    Ajax.getImage(imageCards[0].image.imageId, false, null, 'Toggle controls', null, (imageCard: ImageCard) => {
 
                         // If imageCard is the one being waited on. (Prevents errors caused by navigating too fast.)
                         // Load that image card into the fullsize image container.

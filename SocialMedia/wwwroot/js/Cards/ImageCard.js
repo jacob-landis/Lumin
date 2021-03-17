@@ -13,12 +13,14 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ImageCard = (function (_super) {
     __extends(ImageCard, _super);
-    function ImageCard(image, classList, onImageClick) {
+    function ImageCard(image, classList, tooltipMsg, onImageClick) {
         var _this = _super.call(this, ViewUtil.tag('img', {
             src: image.imageAsByteArray,
             classList: classList
         })) || this;
+        _this._tooltipMsg = null;
         _this.image = image;
+        _this.tooltipMsg = tooltipMsg;
         _this.onImageClick = onImageClick ? onImageClick : function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); };
         if (image.profileId == User.profileId)
             _this.rootElm.oncontextmenu = function (event) {
@@ -38,18 +40,31 @@ var ImageCard = (function (_super) {
         ImageCard.imageCards.push(_this);
         return _this;
     }
-    ImageCard.copy = function (imageCard, newClassList, newOnImageClick) {
+    ImageCard.copy = function (imageCard, newClassList, newTooltipMsg, newOnImageClick) {
         if (newClassList === void 0) { newClassList = imageCard.rootElm.classList.value; }
+        if (newTooltipMsg === void 0) { newTooltipMsg = imageCard.tooltipMsg; }
         if (newOnImageClick === void 0) { newOnImageClick = function (target) { return imageCard.rootElm.onclick; }; }
-        return new ImageCard(imageCard.image, newClassList, newOnImageClick);
+        return new ImageCard(imageCard.image, newClassList, newTooltipMsg, newOnImageClick);
     };
-    ImageCard.list = function (images, classList, onImageClick) {
+    ImageCard.list = function (images, classList, toolTip, onImageClick) {
         if (!images)
             return null;
         var imageCards = [];
-        images.forEach(function (i) { return imageCards.push(new ImageCard(i, classList, onImageClick)); });
+        images.forEach(function (i) { return imageCards.push(new ImageCard(i, classList, toolTip, onImageClick)); });
         return imageCards;
     };
+    Object.defineProperty(ImageCard.prototype, "tooltipMsg", {
+        get: function () { return this._tooltipMsg; },
+        set: function (msg) {
+            this._tooltipMsg = msg;
+            if (msg != null) {
+                this.rootElm.title = msg;
+                this.rootElm.setAttribute('alt', msg);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(ImageCard.prototype, "onImageClick", {
         get: function () { return this._onImageClick; },
         set: function (onImageClick) {
@@ -71,10 +86,10 @@ var ImageCard = (function (_super) {
             p.removeImageCard(_this);
         });
         if (this.image.imageId == User.profilePictureId) {
-            Ajax.getImage(0, true, 'sqr', function (target) { }, function (imageCard) {
+            Ajax.getImage(0, true, 'sqr', null, function (target) { }, function (imageCard) {
                 return ProfileCard.changeUserProfilePicture(imageCard);
             });
-            Ajax.getImage(0, false, 'sqr', function (target) { }, function (imageCard) {
+            Ajax.getImage(0, false, 'sqr', 'Change profile picture', function (target) { }, function (imageCard) {
                 return profileModal.profilePictureBox.loadImage(imageCard);
             });
         }

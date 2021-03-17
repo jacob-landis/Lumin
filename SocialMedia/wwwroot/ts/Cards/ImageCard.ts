@@ -5,16 +5,23 @@
     public static copy(
         imageCard: ImageCard,
         newClassList: string = imageCard.rootElm.classList.value,
-        // XXX Shouldn't this just be "...d) => void = imageCard.rootElm.onclick"? XXX
+        newTooltipMsg: string = imageCard.tooltipMsg,
         newOnImageClick: (target: ImageCard) => void = (target: ImageCard) => imageCard.rootElm.onclick
     ): ImageCard {
-        return new ImageCard(imageCard.image, newClassList, newOnImageClick);
+
+        return new ImageCard(imageCard.image, newClassList, newTooltipMsg, newOnImageClick);
     }
 
-    public static list(images: ImageRecord[], classList: string, onImageClick?: (targetImageCard: ImageCard) => void): ImageCard[] {
+    public static list(
+        images: ImageRecord[],
+        classList: string,
+        toolTip: string,
+        onImageClick?: (targetImageCard: ImageCard) => void
+    ): ImageCard[] {
+
         if (!images) return null;
         let imageCards: ImageCard[] = [];
-        images.forEach((i: ImageRecord) => imageCards.push(new ImageCard(i, classList, onImageClick)));
+        images.forEach((i: ImageRecord) => imageCards.push(new ImageCard(i, classList, toolTip, onImageClick)));
         return imageCards;
     }
 
@@ -23,7 +30,18 @@
     // NON-STATIC
 
     public image: ImageRecord;
-    
+
+    private _tooltipMsg: string = null;
+    set tooltipMsg(msg: string) {
+        this._tooltipMsg = msg;
+
+        if (msg != null) {
+            this.rootElm.title = msg;
+            this.rootElm.setAttribute('alt', msg);
+        }
+    }
+    get tooltipMsg() { return this._tooltipMsg; }
+
     // ON IMAGE CLICK
     private _onImageClick:         (target: ImageCard) => void;
     get onImageClick():            (target: ImageCard) => void  { return this._onImageClick; }
@@ -39,7 +57,12 @@
         Example:
         <img src="{image data}">
     */
-    public constructor(image: ImageRecord, classList?: string, onImageClick?: (target: ImageCard) => void) {
+    public constructor(
+        image: ImageRecord,
+        classList?: string,
+        tooltipMsg?: string,
+        onImageClick?: (target: ImageCard) => void
+    ) {
         
         super(ViewUtil.tag('img', {
             src: image.imageAsByteArray,
@@ -48,6 +71,8 @@
 
         // Store the image record in this instance.
         this.image = image;
+
+        this.tooltipMsg = tooltipMsg;
 
         // L-Click on imageCard action.
         this.onImageClick = onImageClick ? onImageClick : (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId);
@@ -92,10 +117,10 @@
         // If the user deleted the image that was their profile picture, change all occurances of their profile picture to the defualt.
         if (this.image.imageId == User.profilePictureId) {
 
-            Ajax.getImage(0, true, 'sqr', (target: ImageCard) => { }, (imageCard: ImageCard) =>
+            Ajax.getImage(0, true, 'sqr', null, (target: ImageCard) => { }, (imageCard: ImageCard) =>
                 ProfileCard.changeUserProfilePicture(imageCard));
 
-            Ajax.getImage(0, false, 'sqr', (target: ImageCard) => { }, (imageCard: ImageCard) =>
+            Ajax.getImage(0, false, 'sqr', 'Change profile picture', (target: ImageCard) => { }, (imageCard: ImageCard) =>
                 profileModal.profilePictureBox.loadImage(imageCard));
         }
 

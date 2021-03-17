@@ -13,22 +13,24 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileImagesBox = (function (_super) {
     __extends(ProfileImagesBox, _super);
-    function ProfileImagesBox(profileId, scrollElm, clickCallback) {
+    function ProfileImagesBox(profileId, tooltipMsg, scrollElm, clickCallback) {
         var _this = this;
         var rootElm = ViewUtil.tag('div', { classList: 'images-box' });
         _this = _super.call(this, rootElm, scrollElm, 400, 20, function (skip, take) {
-            Ajax.getProfileImages(_this.profileId, skip, take, 'listImage sqr', _this.clickCallback, function (imageCards) {
+            Ajax.getProfileImages(_this.profileId, skip, take, 'listImage sqr', _this.tooltipMsg, _this.clickCallback, function (imageCards) {
                 _this.addImageCards(imageCards);
             });
         }) || this;
         _this.profileId = profileId ? profileId : User.profileId;
+        _this.tooltipMsg = tooltipMsg;
         _this.clickCallback = clickCallback;
         _super.prototype.request.call(_this, 40);
         ProfileImagesBox.profileImageBoxes.push(_this);
         return _this;
     }
-    ProfileImagesBox.prototype.load = function (profileId, onImageClick) {
+    ProfileImagesBox.prototype.load = function (profileId, tooltipMsg, onImageClick) {
         this.profileId = profileId;
+        this.tooltipMsg = tooltipMsg;
         this.clickCallback = onImageClick;
         _super.prototype.clear.call(this);
         _super.prototype.request.call(this, 40);
@@ -39,6 +41,7 @@ var ProfileImagesBox = (function (_super) {
     };
     ProfileImagesBox.prototype.addImageCard = function (imageCard, prepend) {
         imageCard.onImageClick = this.clickCallback;
+        imageCard.tooltipMsg = this.tooltipMsg;
         imageCard.rootElm.classList.add('listImage');
         imageCard.rootElm.classList.add('sqr');
         _super.prototype.add.call(this, imageCard, prepend);

@@ -1,7 +1,9 @@
 var ImageBox = (function () {
-    function ImageBox(rootElm, imageClassList, click, getThumbNail) {
+    function ImageBox(rootElm, imageClassList, tooltipMsg, click, getThumbNail) {
+        this.heldTooltipMsg = null;
         this.isLoaded = false;
         this.getThumbNail = getThumbNail;
+        this.heldTooltipMsg = tooltipMsg;
         this.heldImageClassList = imageClassList;
         this.heldImageClick = click ? click : function (target) { };
         this.rootElm = rootElm;
@@ -24,17 +26,21 @@ var ImageBox = (function () {
         enumerable: true,
         configurable: true
     });
-    ImageBox.prototype.load = function (imageId, classList, click) {
+    ImageBox.prototype.load = function (imageId, classList, toolTipMsg, click) {
         this.heldImageId = imageId;
         this.heldImageClassList = classList ? classList : this.heldImageClassList;
+        this.heldTooltipMsg = toolTipMsg ? toolTipMsg : this.heldTooltipMsg;
         this.heldImageClick = click ? click : this.heldImageClick;
         this.unload();
         this.reload();
     };
     ImageBox.prototype.loadImage = function (imageCard) {
+        this.imageCard = imageCard;
         ViewUtil.empty(this.rootElm);
         if (this.heldImageClassList)
             ViewUtil.addClassList(this.heldImageClassList, imageCard.rootElm);
+        if (this.heldTooltipMsg)
+            imageCard.tooltipMsg = this.heldTooltipMsg;
         if (this.heldImageClick)
             imageCard.onImageClick = this.heldImageClick;
         this.rootElm.append(imageCard.rootElm);
@@ -51,7 +57,7 @@ var ImageBox = (function () {
         var _this = this;
         if (!this.isLoaded) {
             this.rootElm.classList.add('loadingImage');
-            Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldImageClick, function (imageCard) {
+            Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
                 _this.imageCard = imageCard;
                 ViewUtil.empty(_this.rootElm);
                 _this.rootElm.append(_this.imageCard.rootElm);

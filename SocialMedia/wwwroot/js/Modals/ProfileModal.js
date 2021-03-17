@@ -62,15 +62,17 @@ var ProfileModal = (function (_super) {
         });
         if (profileId == User.profileId) {
             this.profilePictureBox.heldImageClick = function (target) { return _this.selectProfilePicture(); };
+            this.profilePictureBox.heldTooltipMsg = 'Change profile picture';
             this.profileNameWrapper.append(this.btnChangeName);
             this.profileBioWrapper.append(this.btnChangeBio);
         }
         else {
             this.profilePictureBox.heldImageClick = function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); };
+            this.profilePictureBox.heldTooltipMsg = 'Fullscreen';
             ViewUtil.remove(this.btnChangeName);
             ViewUtil.remove(this.btnChangeBio);
         }
-        this.imagesBox = new ProfileImagesBox(profileId, this.imageScrollBox, function (target) {
+        this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', this.imageScrollBox, function (target) {
             return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
         });
         this.imagesBox.onLoadEnd = function () { return _this.stage.updateStaging(_this.imagesBoxStaged); };
@@ -85,14 +87,14 @@ var ProfileModal = (function (_super) {
     };
     ProfileModal.prototype.selectProfilePicture = function () {
         var _this = this;
-        imageDropdown.load(User.profileId, "Select a profile picture", function (target) {
+        imageDropdown.load(User.profileId, "Select a profile picture", "Set profile picture", function (target) {
             imageDropdown.close();
             imageDropdown.rootElm.style.zIndex = '0';
             ProfileCard.changeUserProfilePicture(target);
             User.profilePictureId = target.image.imageId;
             navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target));
-            _this.profilePictureBox.loadImage(ImageCard.copy(target));
-            Ajax.updateProfilePicture(target.image.imageId, null, null, function (imageCard) {
+            _this.profilePictureBox.loadImage(ImageCard.copy(target, null, 'Change profile picture'));
+            Ajax.updateProfilePicture(target.image.imageId, null, 'Change profile picture', null, function (imageCard) {
                 return _this.profilePictureBox.loadImage(imageCard);
             });
         });

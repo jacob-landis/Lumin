@@ -18,7 +18,7 @@ var ImageDropdown = (function (_super) {
         _this.highLitImage = null;
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;
-        _this.imageBox = new ProfileImagesBox(null, _this.contentElm, function (target) {
+        _this.imageBox = new ProfileImagesBox(null, 'Fullscreen', _this.contentElm, function (target) {
             return fullSizeImageModal.load(_this.indexOf(target));
         });
         _this.imageWrapper.append(_this.imageBox.rootElm);
@@ -35,25 +35,26 @@ var ImageDropdown = (function (_super) {
     ImageDropdown.prototype.open = function () {
         this.load(User.profileId, "My images");
     };
-    ImageDropdown.prototype.load = function (profileId, promptMsg, onImageClick) {
+    ImageDropdown.prototype.load = function (profileId, promptMsg, tooltipMsg, onImageClick) {
         var _this = this;
         if (promptMsg === void 0) { promptMsg = ""; }
+        if (tooltipMsg === void 0) { tooltipMsg = null; }
         if (onImageClick != null) {
             if (profileId == this.imageBox.profileId) {
-                this.convert(onImageClick);
+                this.convert(tooltipMsg, onImageClick);
             }
             else {
-                this.imageBox.load(profileId, onImageClick);
+                this.imageBox.load(profileId, tooltipMsg, onImageClick);
             }
         }
         else {
             if (profileId == this.imageBox.profileId) {
-                this.convert(function (target) {
+                this.convert('Fullscreen', function (target) {
                     fullSizeImageModal.load(_this.indexOf(target), profileId);
                 });
             }
             else {
-                this.imageBox.load(profileId, function (target) {
+                this.imageBox.load(profileId, 'Fullscreen', function (target) {
                     fullSizeImageModal.load(_this.indexOf(target), profileId);
                 });
             }
@@ -62,10 +63,13 @@ var ImageDropdown = (function (_super) {
         if (Dropdown.openDropdown != this)
             _super.prototype.open.call(this);
     };
-    ImageDropdown.prototype.convert = function (callback) {
+    ImageDropdown.prototype.convert = function (tooltipMsg, callback) {
         var _this = this;
         this.imageBox.clickCallback = function (target) { return callback(target); };
-        this.imageBox.content.forEach(function (imageCard) { return imageCard.onImageClick = _this.imageBox.clickCallback; });
+        this.imageBox.content.forEach(function (imageCard) {
+            imageCard.onImageClick = _this.imageBox.clickCallback;
+            imageCard.tooltipMsg = tooltipMsg;
+        });
         this.prompt.innerText = 'Select an Image';
     };
     ImageDropdown.prototype.indexOf = function (imageCard) {

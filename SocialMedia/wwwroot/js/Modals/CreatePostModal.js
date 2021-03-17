@@ -21,7 +21,7 @@ var CreatePostModal = (function (_super) {
         _this.btnClearAttachment = btnClearAttachment;
         _this.errorBox = new ContentBox(document.getElementById(contentBoxElmId));
         _this.captionWrapper.append(_this.errorBox.rootElm);
-        _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, function (targetImageCard) { return _this.selectImage(); });
+        _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image', function (targetImageCard) { return _this.selectImage(); });
         _this.btnClearAttachment.onclick = function (e) { return _this.loadPaperClip(); };
         _this.btnSubmit.onclick = function (e) { return _this.submit(); };
         _this.loadPaperClip();
@@ -30,7 +30,7 @@ var CreatePostModal = (function (_super) {
     CreatePostModal.prototype.load = function (imageCard) {
         var _this = this;
         if (imageCard != null)
-            Ajax.getImage(imageCard.image.imageId, false, null, null, function (imageCard) {
+            Ajax.getImage(imageCard.image.imageId, false, null, "Attach image", null, function (imageCard) {
                 _this.selectedImageBox.loadImage(imageCard);
                 ViewUtil.show(_this.btnClearAttachment, "inline");
             });
@@ -47,8 +47,8 @@ var CreatePostModal = (function (_super) {
     };
     CreatePostModal.prototype.selectImage = function () {
         var _this = this;
-        imageDropdown.load(User.profileId, "Select an image", function (imageCard) {
-            Ajax.getImage(imageCard.image.imageId, false, null, null, function (imageCard) {
+        imageDropdown.load(User.profileId, "Select an image", 'Attach image to post', function (imageCard) {
+            Ajax.getImage(imageCard.image.imageId, false, null, 'Attach to post', null, function (imageCard) {
                 _this.selectedImageBox.loadImage(imageCard);
                 ViewUtil.show(_this.btnClearAttachment);
             });
@@ -85,20 +85,24 @@ var CreatePostModal = (function (_super) {
     CreatePostModal.prototype.close = function () {
         var _this = this;
         if (this.txtCaption.value.length < 1) {
-            this.errorBox.clear();
-            this.txtCaption.value = '';
-            imageDropdown.close();
-            imageDropdown.rootElm.style.zIndex = '0';
+            this.clear();
             _super.prototype.close.call(this);
         }
         else {
             confirmPrompt.load('Are you sure you want to cancel?', function (confirmation) {
                 if (!confirmation)
                     return;
-                _this.txtCaption.value = '';
+                _this.clear();
                 _super.prototype.close.call(_this);
             });
         }
+    };
+    CreatePostModal.prototype.clear = function () {
+        this.errorBox.clear();
+        this.txtCaption.value = '';
+        this.loadPaperClip();
+        imageDropdown.close();
+        imageDropdown.rootElm.style.zIndex = '0';
     };
     return CreatePostModal;
 }(Modal));
