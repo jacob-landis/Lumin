@@ -13,8 +13,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var FriendDropdown = (function (_super) {
     __extends(FriendDropdown, _super);
-    function FriendDropdown(rootElm, contentElm, txtSearch, btnSearch, lblPrompt, friendBoxElm) {
-        var _this = _super.call(this, rootElm, contentElm) || this;
+    function FriendDropdown(rootElm, contentElm, txtSearch, btnSearch, lblPrompt, friendBoxElm, btnOpen) {
+        var _this = _super.call(this, rootElm, contentElm, btnOpen) || this;
         _this.txtSearch = txtSearch;
         _this.btnSearch = btnSearch;
         _this.lblPrompt = lblPrompt;

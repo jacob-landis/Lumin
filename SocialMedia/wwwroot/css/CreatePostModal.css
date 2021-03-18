@@ -1,12 +1,13 @@
-﻿.selectedPostImage {
+﻿#createPostModal {
+    width: 35%;
+}
+
+.selectedPostImage {
     width: 100%;
     object-fit: cover;
 }
 
-.selectedPostImage:hover { 
-    opacity: 0.9;
-}
-
+/* Paperclip Icon */
 #selectedImageCon > .icon:hover {
     background-color: lightgray;
 }
@@ -16,13 +17,14 @@
 }
 
 #selectedImageCon > .icon > i {
-    font-size: 400pt;
+    font-size: 300pt;
     color: lightgray;
 }
 
 #selectedImageCon > .icon {
     text-align: center;
     margin: auto;
+    cursor: pointer;
 }
 
 #btnClearAttachment {

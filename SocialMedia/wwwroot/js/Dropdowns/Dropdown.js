@@ -1,7 +1,8 @@
 var Dropdown = (function () {
-    function Dropdown(rootElm, contentElm) {
+    function Dropdown(rootElm, contentElm, btnOpen) {
         this.rootElm = rootElm;
         this.contentElm = contentElm;
+        this.btnOpen = btnOpen;
         this.frameElm = ViewUtil.copy(Dropdown.frameTemplate);
         this.frameElm.append(this.rootElm);
         Dropdown.frameContainer.append(this.frameElm);
@@ -28,6 +29,7 @@ var Dropdown = (function () {
         contextMenu.close();
         this.rootElm.style.zIndex = "" + (Modal.highestZIndex + 1);
         ViewUtil.show(this.rootElm, 'block', function () {
+            _this.btnOpen.classList.add('openDropdownBtn');
             _this.contentElm.style.opacity = '1';
             if (Dropdown.openDropdown != null)
                 Dropdown.openDropdown.close();
@@ -36,6 +38,7 @@ var Dropdown = (function () {
     };
     Dropdown.prototype.close = function () {
         contextMenu.close();
+        this.btnOpen.classList.remove('openDropdownBtn');
         this.contentElm.style.opacity = '0';
         Dropdown.openDropdown = null;
         ViewUtil.hide(this.rootElm, 150);

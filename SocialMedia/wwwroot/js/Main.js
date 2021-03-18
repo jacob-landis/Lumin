@@ -26,8 +26,8 @@ var Main = (function () {
         uploadImageModal = new UploadImageModal(document.getElementById('imageUploadModal'), document.getElementById('stagedUploadCon'), document.getElementById('btnConfirmImageUpload'), document.getElementById('uploadImageModalUploadImage'), 'stagedUpload', 'errorMsg uploadImageError');
         helpModal = new HelpModal(document.getElementById('helpContent'));
         Dropdown.initialize(document.getElementById('dropdownFrameTemplate'), document.getElementById('dropdownFrameContainer'));
-        imageDropdown = new ImageDropdown(document.getElementById('imageDropdown'), document.getElementById('imageDropDownContent'), document.getElementById('selectImages'), document.getElementById('selectImagePrompt'), document.getElementById('imageModalUploadImage'));
-        friendDropdown = new FriendDropdown(document.getElementById('friendsDropdown'), document.getElementById('friendDropdownContent'), document.getElementById('txtSearchFriends'), document.getElementById('btnSearchFriends'), document.getElementById('friendsPrompt'), document.getElementById('friends'));
+        imageDropdown = new ImageDropdown(document.getElementById('imageDropdown'), document.getElementById('imageDropDownContent'), document.getElementById('selectImages'), document.getElementById('selectImagePrompt'), document.getElementById('imageModalUploadImage'), document.getElementById('btnShowImages'));
+        friendDropdown = new FriendDropdown(document.getElementById('friendsDropdown'), document.getElementById('friendDropdownContent'), document.getElementById('txtSearchFriends'), document.getElementById('btnSearchFriends'), document.getElementById('friendsPrompt'), document.getElementById('friends'), document.getElementById('btnShowFriends'));
     };
     return Main;
 }());

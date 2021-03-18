@@ -74,30 +74,30 @@
     <i id="btnShowImages" class="fa fa-image navIcon" alt="images"></i>
 
     @* Btn creat post. Opens create post modal. *@
-    <div id="btnCreatePost">
+    <i id="btnCreatePost" class="navIcon fa">
         @* (compound icon) *@
         <i id="createPostPlusIcon" class="fa fa-plus navIcon" alt="create post"></i>
         <i id="createPostNoteIcon" class="fa fa-sticky-note navIcon" alt="create post"></i>
-    </div>
+    </i>
     @* --------------------/LEFT-SIDE--------------------- *@
 
     @* CENTER *@
     @* Refreshes page.  *@
-    <a href="/"><img src="~/ImgStatic/LuminLogoSource.png" class="navLogo" /></a>
+    <a href="/" id="luminLogo"><img src="~/ImgStatic/LuminLogoSource.png" class="navLogo" /></a>
 
 
     @* --------------------RIGHT-SIDE--------------------- *@
     <div class="pull-right">
 
         @* Btn open user profile modal. Opens the profile modal of current profile. *@
-        <div id="btnOpenUserProfileModal" class="navicon" alt="my profile"></div>
+        <div id="btnOpenUserProfileModal" class="navIcon" alt="my profile"></div>
 
         @* Btn open help modal. Opens help modal. *@
         <i id="btnOpenHelpModal" class="fa fa-question navIcon" alt="help"></i>
 
         @* Logs user out, in turn redirecting them to login page. *@
-        <a asp-controller="Account" asp-action="Logout">
-            <i id="btnLogout" class="fa fa-sign-out navIcon" alt="sign out"></i>
+        <a id="btnLogout" asp-controller="Account" asp-action="Logout">
+            <i class="fa fa-sign-out navIcon" alt="sign out"></i>
         </a>
     </div>
     @* -------------------/RIGHT-SIDE--------------------- *@
@@ -346,11 +346,11 @@
 @* Used for viewing images full screen. Collections of images can be navigated through with the left right buttons. *@
 <div id="fullSizeImageModalContent" class="my-modal-content">
 
-    @* Btn previous image. *@
-    <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
-
     @* Full size image container. *@
     <div id="fullsizeImageBox"></div>
+
+    @* Btn previous image. *@
+    <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
 
     @* Btn next image. *@
     <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>

@@ -31,10 +31,11 @@ class FriendDropdown extends Dropdown {
         txtSearch: HTMLInputElement,
         btnSearch: HTMLElement,
         lblPrompt: HTMLElement,
-        friendBoxElm: HTMLElement
+        friendBoxElm: HTMLElement,
+        btnOpen: HTMLElement
     ) {
 
-        super(rootElm, contentElm);
+        super(rootElm, contentElm, btnOpen);
 
         // Get handles on dropdown HTML elms.
         this.txtSearch = txtSearch;

@@ -11,6 +11,7 @@
     background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
     transition: opacity 0.15s;
     opacity: 0;
+    cursor: pointer;
 }
 
 .my-modal-content {
@@ -19,6 +20,7 @@
     padding: 20px;
     border: 1px solid #888;
     width: 62%;
+    cursor: default;
 }
 
 .modal-content-sm { width: 15%; }

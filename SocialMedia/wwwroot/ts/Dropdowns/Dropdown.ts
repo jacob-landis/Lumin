@@ -76,10 +76,12 @@ class Dropdown implements IAppendable {
     public rootElm: HTMLElement;
     protected contentElm: HTMLElement;
     private frameElm: HTMLElement;
+    private btnOpen: HTMLElement;
 
-    protected constructor(rootElm: HTMLElement, contentElm: HTMLElement) {
+    protected constructor(rootElm: HTMLElement, contentElm: HTMLElement, btnOpen: HTMLElement) {
         this.rootElm = rootElm;
         this.contentElm = contentElm;
+        this.btnOpen = btnOpen;
         
         // Clone frame template.
         this.frameElm = ViewUtil.copy(Dropdown.frameTemplate);
@@ -109,6 +111,8 @@ class Dropdown implements IAppendable {
         // Show the dropdown's root element.
         ViewUtil.show(this.rootElm, 'block', () => {
 
+            this.btnOpen.classList.add('openDropdownBtn');
+
             // Change style to start transition animation.
             this.contentElm.style.opacity = '1';
 
@@ -127,6 +131,8 @@ class Dropdown implements IAppendable {
 
         // Close context menu, even if it's already closed.
         contextMenu.close();
+
+        this.btnOpen.classList.remove('openDropdownBtn');
 
         // Change style to start transition animation.
         this.contentElm.style.opacity = '0';

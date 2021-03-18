@@ -108,7 +108,8 @@ class Main {
             document.getElementById('imageDropDownContent'),
             document.getElementById('selectImages'),
             document.getElementById('selectImagePrompt'),
-            document.getElementById('imageModalUploadImage')
+            document.getElementById('imageModalUploadImage'),
+            document.getElementById('btnShowImages')
         );
 
         friendDropdown = new FriendDropdown(
@@ -117,7 +118,8 @@ class Main {
             <HTMLInputElement> document.getElementById('txtSearchFriends'),
             document.getElementById('btnSearchFriends'),
             document.getElementById('friendsPrompt'),
-            document.getElementById('friends')
+            document.getElementById('friends'),
+            document.getElementById('btnShowFriends')
         );
     }
 }

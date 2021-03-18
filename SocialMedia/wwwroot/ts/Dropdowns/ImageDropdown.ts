@@ -35,10 +35,11 @@ class ImageDropdown extends Dropdown {
         contentElm: HTMLElement,
         imagesWrapper: HTMLElement,
         prompt: HTMLElement,
-        btnUploadImageModal: HTMLElement
+        btnUploadImageModal: HTMLElement,
+        btnOpen: HTMLElement
     ) {
 
-        super(rootElm, contentElm);
+        super(rootElm, contentElm, btnOpen);
 
         // Get handles on dropdown HTML elms.
         this.imageWrapper = imagesWrapper;

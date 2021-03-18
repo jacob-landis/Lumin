@@ -4,11 +4,11 @@
     max-height: 50px;
     height: 0;
     transition: height 0.25s;
+    margin-top: -5px;
 }
 
 .navLogo {
     height: 22px;
-    margin-left: 50px;
     margin-top: -10px;
 }
 
@@ -23,9 +23,41 @@
     cursor: pointer;
 }
 
-#btnCreatePost {
-    display: inline;
+#btnShowFriends,
+#btnShowImages,
+#btnCreatePost,
+#luminLogo,
+#btnOpenHelpModal,
+#btnLogout > i {
+    margin: 0;
+    padding: 0;
+    height: 50px;
+    width: 55px;
+    text-align: center;
+    line-height: 200%;
 }
+
+#btnShowFriends:hover, 
+#btnShowImages:hover, 
+#btnCreatePost:hover,
+#btnOpenHelpModal:hover, 
+#btnLogout > i:hover {
+    background-color: rgb(64, 64, 64);
+}
+
+.openDropdownBtn {
+    background-color: rgb(96, 96, 96);
+}
+
+#btnCreatePost > i {
+    padding: 0;
+    margin: 0;
+}
+
+#luminLogo {
+    padding-left: 50px;
+}
+
 #btnCreatePost:hover {
     cursor: pointer;
 }

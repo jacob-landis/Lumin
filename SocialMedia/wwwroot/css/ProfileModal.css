@@ -54,7 +54,7 @@
     display: inline;
 }
 
-#btnChangeProfilePicture:hover, #btnChangeName:hover {
+#btnChangeProfilePicture:hover, #btnChangeName:hover, #btnChangeBio:hover {
     cursor: pointer;
 }
 

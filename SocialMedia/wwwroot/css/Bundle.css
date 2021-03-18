@@ -6,7 +6,8 @@
 @import "ConfirmPrompt.css";
 @import "ContentBox.css";
 @import "ContextMenu.css";
-@import "ImageModal.css";
+@import "ImageCard.css";
+@import "ImageDropdown.css";
 @import "ImageBox.css";
 @import "LikeCard.css";
 @import "Post.css";

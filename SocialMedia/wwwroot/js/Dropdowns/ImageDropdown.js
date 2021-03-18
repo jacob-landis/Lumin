@@ -13,8 +13,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ImageDropdown = (function (_super) {
     __extends(ImageDropdown, _super);
-    function ImageDropdown(rootElm, contentElm, imagesWrapper, prompt, btnUploadImageModal) {
-        var _this = _super.call(this, rootElm, contentElm) || this;
+    function ImageDropdown(rootElm, contentElm, imagesWrapper, prompt, btnUploadImageModal, btnOpen) {
+        var _this = _super.call(this, rootElm, contentElm, btnOpen) || this;
         _this.highLitImage = null;
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;

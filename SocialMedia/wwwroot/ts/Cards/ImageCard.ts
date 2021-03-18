@@ -38,6 +38,7 @@
         if (msg != null) {
             this.rootElm.title = msg;
             this.rootElm.setAttribute('alt', msg);
+            this.rootElm.classList.add('imageCardHover');
         }
     }
     get tooltipMsg() { return this._tooltipMsg; }
