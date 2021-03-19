@@ -21,7 +21,7 @@ var PostCard = (function (_super) {
         _this.post = post;
         if (_this.post.image)
             _this.hasImage = true;
-        _this.stage = new Stage([_this.rootElm], [_this.imageStaged, _this.commentsStaged]);
+        _this.stage = new Stage([_this.imageStaged, _this.commentsStaged]);
         var postSection = ViewUtil.tag('div', { classList: 'postSection' });
         var commentSection = ViewUtil.tag('div', { classList: 'commentSection' });
         _this.rootElm.append(postSection, commentSection);
@@ -71,12 +71,14 @@ var PostCard = (function (_super) {
             });
         });
         _this.captionWrapper.append(_this.captionEditor.rootElm);
+        _this.likeCard = new LikeCard(LikesRecord.copy(_this.post.likes), _this.post.dateTime);
+        _this.refreshPostDetailsMessage = ViewUtil.tag('div', { classList: 'postDetailsRefreshMessage' });
         var profileCardSlot = ViewUtil.tag('div', { classList: 'profileCardSlot' });
         var likeCardSlot = ViewUtil.tag('div', { classList: 'detailsSlot' });
         var postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
         _this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
         profileCardSlot.append(new ProfileCard(_this.post.profile).rootElm);
-        likeCardSlot.append(new LikeCard(LikesRecord.copy(_this.post.likes), _this.post.dateTime).rootElm);
+        likeCardSlot.append(_this.likeCard.rootElm, _this.refreshPostDetailsMessage);
         _this.commentsBox.request(15);
         _this.requestCommentCount();
         if (post.profile.relationToUser == 'me') {
@@ -90,8 +92,14 @@ var PostCard = (function (_super) {
                             return;
                         _this.remove();
                     });
-                })
+                }),
+                new ContextOption(Icons.refresh(), function (event) { return _this.refreshPostDetails(); })
             ]); };
+        }
+        else {
+            var btnRefreshPostDetails = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-refresh' });
+            btnRefreshPostDetails.onclick = function (event) { return _this.refreshPostDetails(); };
+            postOptsSlot.append(btnRefreshPostDetails);
         }
         var deactivateInput = function () {
             txtComment.value = '';
@@ -168,6 +176,25 @@ var PostCard = (function (_super) {
             posts.forEach(function (p) { return postCards.push(new PostCard(p)); });
             return postCards;
         }
+    };
+    PostCard.prototype.refreshPostDetails = function () {
+        var _this = this;
+        Ajax.getPost(this.post.postId, function (postCard) {
+            if (postCard == null) {
+                _this.refreshPostDetailsMessage.innerText = 'This post could not be found.';
+            }
+            else if (postCard.post.caption == _this.post.caption &&
+                postCard.post.likes.count == _this.post.likes.count) {
+                _this.refreshPostDetailsMessage.innerText = 'These post details have not changed.';
+            }
+            else {
+                _this.refreshPostDetailsMessage.innerText = '';
+                _this.likeCard.setLikeCount(postCard.post.likes.count);
+                _this.post.likes.count = postCard.post.likes.count;
+                _this.captionEditor.setText(postCard.post.caption);
+                _this.post.caption = postCard.post.caption;
+            }
+        });
     };
     PostCard.prototype.resizeCommentBox = function () {
         var inputHeight = this.commentInputWrapper.clientHeight;

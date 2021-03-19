@@ -1,7 +1,6 @@
 ﻿class Stage {
     
     constructor(
-        public stageContainers: HTMLElement[],
         public stageFlags: StageFlag[],
         public onStagingEnd?: () => void
     ) { }

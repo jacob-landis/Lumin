@@ -34,12 +34,17 @@ var LikeCard = (function (_super) {
         this.likeCards.forEach(function (likeCard) {
             if (likeCard.likesRecord.contentId == referenceLikesRecord.contentId
                 && likeCard.likesRecord.contentType == referenceLikesRecord.contentType) {
-                likeCard.likesRecord.count += likeCard.likesRecord.hasLiked ? -1 : 1;
-                likeCard.countDisplayElm.innerText = "" + likeCard.likesRecord.count;
+                likeCard.setLikeCount(likeCard.likesRecord.count + (likeCard.likesRecord.hasLiked ? -1 : 1));
                 likeCard.btnLike.classList.toggle('hasLiked');
                 likeCard.likesRecord.hasLiked = !likeCard.likesRecord.hasLiked;
             }
         });
+    };
+    LikeCard.prototype.setLikeCount = function (newCount) {
+        if (newCount > -1) {
+            this.likesRecord.count = newCount;
+            this.countDisplayElm.innerText = "" + newCount;
+        }
     };
     LikeCard.likeCards = [];
     return LikeCard;

@@ -39,7 +39,7 @@ var PostsBox = (function (_super) {
                 stageFlags.push(post.allStaged);
                 post.stage.onStagingEnd = function () { return _this.stage.updateStaging(post.allStaged); };
             });
-            _this.stage = new Stage([_this.rootElm], stageFlags, function () {
+            _this.stage = new Stage(stageFlags, function () {
                 _this.rootElm.style.opacity = '1';
             });
         };

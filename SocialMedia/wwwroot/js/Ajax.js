@@ -20,6 +20,11 @@ var Ajax = (function () {
     Ajax.postComment = function (commentForm, onCopyResults) {
         this.call("apicomment", "POST", function (commentResults) { return onCopyResults(commentResults); }, commentForm);
     };
+    Ajax.getComment = function (commentId, onCommentResult) {
+        this.call("apicomment/" + commentId, "GET", function (commentResult) {
+            onCommentResult(new CommentCard(commentResult));
+        });
+    };
     Ajax.getComments = function (postId, skip, take, onCommentResults) {
         this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take, "GET", function (commentResults) {
             onCommentResults(CommentCard.list(commentResults));
@@ -85,6 +90,9 @@ var Ajax = (function () {
     };
     Ajax.submitPost = function (postForm, onCopyResults) {
         this.call("apipost", "POST", function (copyResults) { return onCopyResults(copyResults); }, postForm);
+    };
+    Ajax.getPost = function (postId, onPostResult) {
+        this.call("apipost/" + postId, "GET", function (postResult) { return onPostResult(new PostCard(postResult)); });
     };
     Ajax.getPublicPosts = function (skip, take, onPostResults) {
         this.call("apipost/publicposts/" + skip + "/" + take, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });

@@ -18,6 +18,7 @@
     private commentsBox: ContentBox;
     private postImageWrapper: ImageBox;
     private captionEditor: Editor;
+    private likeCard: LikeCard;
     private observer: MutationObserver;
 
     private commentInputWrapper: HTMLElement;
@@ -27,6 +28,7 @@
     private captionWrapper: HTMLElement;
     private postHeading: HTMLElement;
     private editIcon: HTMLElement;
+    private refreshPostDetailsMessage: HTMLElement;
 
     public allStaged: StageFlag = new StageFlag();
     public onStagingEnd: () => void;
@@ -46,9 +48,12 @@
                     </div>
                     <div class="detailsSlot">
                         <div class="likeCard"></div>   // LikeCard root element
+                        <div class="postDetailsRefreshMessage"></div>
                     </div>
                     <div class="postOptsSlot">
                         <i class="btnPostOpts threeDots fa fa-ellipsis-v"></i>
+                        OR
+                        <i class="btnRefreshPostDetails threeDots fa fa-refresh"></i>
                     </div>
                 </div>
                 <div class="captionWrapper noImageCaptionWrapper">
@@ -79,7 +84,7 @@
 
         if (this.post.image) this.hasImage = true;
 
-        this.stage = new Stage([this.rootElm], [this.imageStaged, this.commentsStaged]);
+        this.stage = new Stage([this.imageStaged, this.commentsStaged]);
 
         // POST CONSTRUCTION
         // __________________________________ TAG
@@ -171,13 +176,16 @@
 
         //------------------------------------------------------------------------------------------
 
+        this.likeCard = new LikeCard(LikesRecord.copy(this.post.likes), this.post.dateTime);
+        this.refreshPostDetailsMessage = ViewUtil.tag('div', { classList: 'postDetailsRefreshMessage' });
+
         let profileCardSlot: HTMLElement = ViewUtil.tag('div', { classList: 'profileCardSlot' });
         let likeCardSlot: HTMLElement = ViewUtil.tag('div', { classList: 'detailsSlot' });
         let postOptsSlot: HTMLElement = ViewUtil.tag('div', { classList: 'postOptsSlot' });
 
         this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
         profileCardSlot.append(new ProfileCard(this.post.profile).rootElm);
-        likeCardSlot.append(new LikeCard(LikesRecord.copy(this.post.likes), this.post.dateTime).rootElm);
+        likeCardSlot.append(this.likeCard.rootElm, this.refreshPostDetailsMessage);
 
         //------------------------------------------------------------------------------------------
         // END POST CONSTRUCTION
@@ -197,8 +205,14 @@
                     confirmPrompt.load('Are you sure you want to delete this post?', (confirmation: boolean) => {
                         if (!confirmation) return;
                         this.remove();
-                    }))
+                    })),
+                new ContextOption(Icons.refresh(), (event: MouseEvent) => this.refreshPostDetails())
             ]);
+        }
+        else {
+            let btnRefreshPostDetails: HTMLElement = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-refresh' });
+            btnRefreshPostDetails.onclick = (event: MouseEvent) => this.refreshPostDetails();
+            postOptsSlot.append(btnRefreshPostDetails);
         }
 
         // Clear txtComment and remove class to change styling.
@@ -290,6 +304,38 @@
         });
 
         PostCard.postCards.push(this);
+    }
+
+    private refreshPostDetails(): void {
+        Ajax.getPost(this.post.postId, (postCard: PostCard) => {
+
+            // If nothing was found.
+            if (postCard == null) {
+                this.refreshPostDetailsMessage.innerText = 'This post could not be found.';
+            }
+            // If nothing was changed.
+            else if (
+                postCard.post.caption == this.post.caption &&
+                postCard.post.likes.count == this.post.likes.count
+            ) {
+                this.refreshPostDetailsMessage.innerText = 'These post details have not changed.';
+            }
+            // If there were changes.
+            else {
+
+                // Clear refresh message.
+                this.refreshPostDetailsMessage.innerText = '';
+
+                // Update like count.
+                this.likeCard.setLikeCount(postCard.post.likes.count);
+                this.post.likes.count = postCard.post.likes.count;
+
+                // Update caption.
+                this.captionEditor.setText(postCard.post.caption);
+                this.post.caption = postCard.post.caption;
+            }
+
+        });
     }
     
     private resizeCommentBox(): void {

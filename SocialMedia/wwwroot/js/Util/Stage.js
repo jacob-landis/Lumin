@@ -1,6 +1,5 @@
 var Stage = (function () {
-    function Stage(stageContainers, stageFlags, onStagingEnd) {
-        this.stageContainers = stageContainers;
+    function Stage(stageFlags, onStagingEnd) {
         this.stageFlags = stageFlags;
         this.onStagingEnd = onStagingEnd;
     }

@@ -18,8 +18,10 @@ var CommentCard = (function (_super) {
         _this.comment = comment;
         var mainSection = ViewUtil.tag('div', { classList: 'commentMainSection' });
         var optsSection = ViewUtil.tag('div', { classList: 'commentOptsSection' });
+        _this.refreshMessageSection = ViewUtil.tag('div', { classList: 'commentRefreshMessageSection' });
         var contentSection = ViewUtil.tag('div', { classList: 'commentContentSection' });
         var btnOpts = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
+        var btnRefresh = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-refresh' });
         var editIcon = Icons.edit();
         _this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', false, 125, function (content) {
             Ajax.updateComment(_this.comment.commentId, content);
@@ -28,8 +30,9 @@ var CommentCard = (function (_super) {
                     c.commentEditor.setText(content);
             });
         });
+        _this.likeCard = new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime);
         contentSection.append(_this.commentEditor.rootElm);
-        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime).rootElm);
+        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, _this.likeCard.rootElm, _this.refreshMessageSection);
         _this.rootElm.append(mainSection, optsSection);
         if (comment.profile.relationToUser == 'me') {
             optsSection.append(btnOpts);
@@ -40,8 +43,14 @@ var CommentCard = (function (_super) {
                         return;
                     else
                         _this.remove();
-                }); })
+                }); }),
+                new ContextOption(Icons.refresh(), function (event) { return _this.refresh(); })
             ]); };
+        }
+        else {
+            optsSection.append(btnRefresh);
+            btnRefresh.onclick = function (event) { return _this.refresh(); };
+            btnRefresh.classList.add('btnRefreshCommentCard');
         }
         CommentCard.commentCards.push(_this);
         return _this;
@@ -55,6 +64,25 @@ var CommentCard = (function (_super) {
         var commentCards = [];
         comments.forEach(function (comment) { return commentCards.push(new CommentCard(comment)); });
         return commentCards;
+    };
+    CommentCard.prototype.refresh = function () {
+        var _this = this;
+        Ajax.getComment(this.comment.commentId, function (commentCard) {
+            if (commentCard == null) {
+                _this.refreshMessageSection.innerText = 'This comment could not be found.';
+            }
+            else if (commentCard.comment.content == _this.comment.content &&
+                commentCard.comment.likes.count == _this.comment.likes.count) {
+                _this.refreshMessageSection.innerText = 'This comment has not changed.';
+            }
+            else {
+                _this.refreshMessageSection.innerText = '';
+                _this.likeCard.setLikeCount(commentCard.comment.likes.count);
+                _this.comment.likes.count = commentCard.comment.likes.count;
+                _this.commentEditor.setText(_this.comment.content);
+                _this.comment.content = commentCard.comment.content;
+            }
+        });
     };
     CommentCard.prototype.disputeHasSeen = function () {
         if (!this.comment.hasSeen)

@@ -19,6 +19,7 @@ var Icons = (function () {
     Icons.confirm = function () { return Icons.buildIcon(['check']); };
     Icons.cancel = function () { return Icons.buildIcon(['times']); };
     Icons.edit = function () { return Icons.buildIcon(['edit']); };
+    Icons.refresh = function () { return Icons.buildIcon(['refresh']); };
     return Icons;
 }());
 //# sourceMappingURL=Icons.js.map

@@ -36,13 +36,12 @@ var ProfileModal = (function (_super) {
         _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, true, 250, function (bio) { return Ajax.updateBio(bio); });
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
         _this.postBox = new PostsBox(0, _this.postWrapper, _this.rootElm);
-        _this.stage = new Stage([
+        _this.stageContainers = [
             _this.profilePictureBox.rootElm, _this.profileNameWrapper,
             _this.profileBioWrapper, _this.friendBoxElm, _this.imageScrollBox
-        ], [
-            _this.fullProfileStaged, _this.imagesBoxStaged, _this.friendsStaged
-        ], function () {
-            _this.stage.stageContainers.forEach(function (container) {
+        ];
+        _this.stage = new Stage([_this.fullProfileStaged, _this.imagesBoxStaged, _this.friendsStaged], function () {
+            _this.stageContainers.forEach(function (container) {
                 ViewUtil.show(container, null, function () {
                     container.style.opacity = '1';
                 });
@@ -107,7 +106,7 @@ var ProfileModal = (function (_super) {
         this.friendBox = new ContentBox(this.friendBoxElm);
         this.friendBox.clear();
         this.postBox.clear();
-        this.stage.stageContainers.forEach(function (container) {
+        this.stageContainers.forEach(function (container) {
             container.style.opacity = '0';
             ViewUtil.hide(container);
         });

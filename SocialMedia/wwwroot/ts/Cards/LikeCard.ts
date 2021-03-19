@@ -10,8 +10,10 @@
                 likeCard.likesRecord.contentId == referenceLikesRecord.contentId
                 && likeCard.likesRecord.contentType == referenceLikesRecord.contentType
             ) {
-                likeCard.likesRecord.count += likeCard.likesRecord.hasLiked ? -1 : 1;
-                likeCard.countDisplayElm.innerText = `${likeCard.likesRecord.count}`;
+                //likeCard.likesRecord.count += likeCard.likesRecord.hasLiked ? -1 : 1;
+                //likeCard.countDisplayElm.innerText = `${likeCard.likesRecord.count}`;
+
+                likeCard.setLikeCount(likeCard.likesRecord.count + (likeCard.likesRecord.hasLiked ? -1 : 1));
 
                 likeCard.btnLike.classList.toggle('hasLiked');
 
@@ -55,5 +57,12 @@
         }
 
         LikeCard.likeCards.push(this);
+    }
+
+    public setLikeCount(newCount: number): void {
+        if (newCount > -1) {
+            this.likesRecord.count = newCount;
+            this.countDisplayElm.innerText = `${newCount}`;
+        }
     }
 }

@@ -34,4 +34,6 @@
     public static cancel(): HTMLElement        { return Icons.buildIcon(['times']) }
 
     public static edit(): HTMLElement          { return Icons.buildIcon(['edit']) }
+
+    public static refresh(): HTMLElement       { return Icons.buildIcon(['refresh']) }
 }

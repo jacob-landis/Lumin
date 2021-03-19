@@ -78,7 +78,7 @@ class PostsBox extends ContentBox {
                 post.stage.onStagingEnd = () => this.stage.updateStaging(post.allStaged);
             });
 
-            this.stage = new Stage([this.rootElm], stageFlags, () => {
+            this.stage = new Stage(stageFlags, () => {
                 this.rootElm.style.opacity = '1';
             });
         }

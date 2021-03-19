@@ -52,6 +52,8 @@ class ProfileModal extends Modal {
 
     private stage: Stage;
 
+    private stageContainers: HTMLElement[];
+
     /*
         Sudo-inherits from the sudo-base class.
         Gets handles on all necessary components.
@@ -99,16 +101,14 @@ class ProfileModal extends Modal {
 
         this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);
 
-        this.stage = new Stage(
-            [
-                this.profilePictureBox.rootElm, this.profileNameWrapper,
-                this.profileBioWrapper, this.friendBoxElm, this.imageScrollBox
-            ],
-            [
-                this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged
-            ],
+        this.stageContainers = [
+            this.profilePictureBox.rootElm, this.profileNameWrapper,
+            this.profileBioWrapper, this.friendBoxElm, this.imageScrollBox
+        ]
+
+        this.stage = new Stage([this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged],
             () => {
-                this.stage.stageContainers.forEach((container: HTMLElement) => {
+                this.stageContainers.forEach((container: HTMLElement) => {
                     ViewUtil.show(container, null, () => {
                         container.style.opacity = '1';
                     });
@@ -248,7 +248,7 @@ class ProfileModal extends Modal {
         this.postBox.clear();
 
         // Change style to 'blank' state.
-        this.stage.stageContainers.forEach((container: HTMLElement) => {
+        this.stageContainers.forEach((container: HTMLElement) => {
             container.style.opacity = '0';
             ViewUtil.hide(container);
         });

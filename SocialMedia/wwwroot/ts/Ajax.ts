@@ -38,6 +38,16 @@
         );
     }
 
+    public static getComment(commentId: number, onCommentResult: (commentCard: CommentCard) => void): void {
+        this.call(
+            `apicomment/${commentId}`,
+            "GET",
+            (commentResult: string) => {
+                onCommentResult(new CommentCard(<CommentRecord><unknown>commentResult));
+            }
+        );
+    }
+
     public static getComments(postId: number, skip: number, take: number, onCommentResults: (commentCards: CommentCard[]) => void): void {
         this.call(
             `apicomment/postcomments/${postId}/${skip}/${take}`,
@@ -193,6 +203,14 @@
             "POST",
             (copyResults: string) => onCopyResults(<PostRecord><unknown>copyResults),
             postForm
+        );
+    }
+
+    public static getPost(postId: number, onPostResult: (postCard: PostCard) => void) {
+        this.call(
+            `apipost/${postId}`,
+            "GET",
+            (postResult: string) => onPostResult(new PostCard(<PostRecord><unknown>postResult))
         );
     }
 

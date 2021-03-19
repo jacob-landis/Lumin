@@ -31,6 +31,9 @@ class CommentCard extends Card {
     public comment: CommentRecord;
 
     public commentEditor: Editor;
+    private refreshMessageSection: HTMLElement;
+
+    private likeCard: LikeCard;
 
     /*
         Contructs a new comment card JS obj and HTML elm.
@@ -43,9 +46,12 @@ class CommentCard extends Card {
                     <div class="editor comment-editor"></div>   // Editor root element (contains caption element)
                 </div>
                 <div class="likeCard"></div>   // LikeCard root element
+                <div class="commentRefreshMessageSection"></div>
             </div>
             <div class="commentOptsSection">
                 <i class="commentOpts threeDots fa fa-ellipsis-v"></i>
+                OR
+                <i class="commentOpts threeDots fa fa-refresh"></i>
             </div>
         </div>
 
@@ -60,8 +66,10 @@ class CommentCard extends Card {
         // Sibling to OptsSection. Contains all but btnOpts.
         let mainSection: HTMLElement = ViewUtil.tag('div', { classList: 'commentMainSection' });
         let optsSection: HTMLElement = ViewUtil.tag('div', { classList: 'commentOptsSection' });
+        this.refreshMessageSection = ViewUtil.tag('div', { classList: 'commentRefreshMessageSection' });
         let contentSection: HTMLElement = ViewUtil.tag('div', { classList: 'commentContentSection' });
         let btnOpts: HTMLElement = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
+        let btnRefresh: HTMLElement = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-refresh' });
         let editIcon: HTMLElement = Icons.edit();
 
         // Create an Editor for the comment text.
@@ -78,14 +86,12 @@ class CommentCard extends Card {
                 });
             }
         );
-        
+
+        this.likeCard = new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime);
+
         // Append the comment editor.
         contentSection.append(this.commentEditor.rootElm);
-        mainSection.append(
-            new ProfileCard(comment.profile).rootElm,
-            contentSection,
-            new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime).rootElm
-        );
+        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, this.likeCard.rootElm, this.refreshMessageSection);
         this.rootElm.append(mainSection, optsSection);
 
         // If the user owns this comment, provide an options button.
@@ -108,12 +114,46 @@ class CommentCard extends Card {
                             else this.remove(); // Delete comment.
                         }
                     )
-                )
+                ),
+                new ContextOption(Icons.refresh(), (event: MouseEvent) => this.refresh())
             ]);
+        }
+        else {
+
+            //let btnRefresh = Icons.refresh();
+            optsSection.append(btnRefresh);
+
+            btnRefresh.onclick = (event: MouseEvent) => this.refresh();
+            btnRefresh.classList.add('btnRefreshCommentCard');
         }
 
         // Add this comment to the collection.
         CommentCard.commentCards.push(this);
+    }
+
+    private refresh(): void {
+        Ajax.getComment(this.comment.commentId, (commentCard: CommentCard) => {
+
+            if (commentCard == null) {
+                this.refreshMessageSection.innerText = 'This comment could not be found.';
+                
+            }
+            else if (
+                commentCard.comment.content == this.comment.content &&
+                commentCard.comment.likes.count == this.comment.likes.count
+            ) {
+                this.refreshMessageSection.innerText = 'This comment has not changed.';
+            }
+            else {
+                this.refreshMessageSection.innerText = '';
+
+                this.likeCard.setLikeCount(commentCard.comment.likes.count);
+                this.comment.likes.count = commentCard.comment.likes.count;
+
+                this.commentEditor.setText(this.comment.content);
+                this.comment.content = commentCard.comment.content;
+            }
+        });
     }
 
     public disputeHasSeen(): void {
