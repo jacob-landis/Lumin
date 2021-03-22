@@ -81,6 +81,7 @@ class Main {
             document.getElementById('profileModalPictureWrapper'),
             document.getElementById('profileImagesWrapper'),
             document.getElementById('profileFriends'),
+            document.getElementById('btnTogglePostFeedFilter'),
             'profile-picture sqr',
             'bio',
             'name'

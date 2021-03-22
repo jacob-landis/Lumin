@@ -41,7 +41,10 @@ class ProfileModal extends Modal {
     // A ContentBox used to show a profile's friends.
     private friendBox: ContentBox;
     private friendBoxElm: HTMLElement;
-    
+
+    private btnTogglePostFeedFilter: HTMLElement;
+    private feedFilter: 'recent' | 'likes' | 'comments' = 'recent';
+
     // A PostsBox for displaying a profile's posts.
     private postBox: PostsBox;
 
@@ -68,6 +71,7 @@ class ProfileModal extends Modal {
         imageBoxElm: HTMLElement,
         imageScrollBox: HTMLElement,
         friendBoxElm: HTMLElement,
+        btnTogglePostFeedFilter: HTMLElement,
         imageClassList: string,
         editorClassList: string,
         doubleEditorClassList: string
@@ -82,6 +86,7 @@ class ProfileModal extends Modal {
         this.profileBioWrapper = profileBioWrapper;
         this.imageScrollBox = imageScrollBox;
         this.friendBoxElm = friendBoxElm;
+        this.btnTogglePostFeedFilter = btnTogglePostFeedFilter;
         this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
 
@@ -98,6 +103,8 @@ class ProfileModal extends Modal {
         // Construct an Editor for profile bio and get a handle on it.
         this.bioEditor = new Editor(this.btnChangeBio, '', editorClassList, true, 250, (bio: string) => Ajax.updateBio(bio));
         this.profileBioWrapper.append(this.bioEditor.rootElm);
+
+        this.btnTogglePostFeedFilter.onclick = (event: MouseEvent) => this.togglePostFeedFilter();
 
         this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);
 
@@ -188,6 +195,46 @@ class ProfileModal extends Modal {
         
         // Open this modal.
         super.open();
+    }
+
+    private togglePostFeedFilter(): void {
+
+        let feedFilterSecondIcon = this.btnTogglePostFeedFilter.children[1];
+        
+        switch (this.feedFilter) {
+            case 'recent': { // Switch to likes. Next: comments
+                this.feedFilter = 'likes';
+                this.btnTogglePostFeedFilter.title = 'Sort by comment popularity';
+                feedFilterSecondIcon.classList.remove('fa-thumbs-up');
+                feedFilterSecondIcon.classList.add('fa-comments');
+                break;
+            }
+            case 'likes': { // Switch to comments. Next: recent
+                this.feedFilter = 'comments';
+                this.btnTogglePostFeedFilter.title = 'Sort by recent';
+                feedFilterSecondIcon.classList.remove('fa-comments');
+                feedFilterSecondIcon.classList.add('fa-calendar');
+                break;
+            }
+            case 'comments': { // Switch to recent. Next: likes
+                this.feedFilter = 'recent';
+                this.btnTogglePostFeedFilter.title = 'Sort by like popularity';
+                feedFilterSecondIcon.classList.remove('fa-calendar');
+                feedFilterSecondIcon.classList.add('fa-thumbs-up');
+                break;
+            }
+        }
+
+        this.postBox.clear();
+        this.postBox.requestCallback = (skip: number, take: number) => {
+            Ajax.getProfilePosts(this.profile.profileId, skip, take, this.feedFilter, (postCards: PostCard[]) => {
+
+                if (postCards == null) return;
+                this.postBox.add(postCards);
+            });
+        }
+
+        this.postBox.start();
     }
 
     /*

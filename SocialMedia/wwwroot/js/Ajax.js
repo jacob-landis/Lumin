@@ -25,8 +25,8 @@ var Ajax = (function () {
             onCommentResult(new CommentCard(commentResult));
         });
     };
-    Ajax.getComments = function (postId, skip, take, onCommentResults) {
-        this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take, "GET", function (commentResults) {
+    Ajax.getComments = function (postId, skip, take, feedFilter, onCommentResults) {
+        this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take + "/" + feedFilter, "GET", function (commentResults) {
             onCommentResults(CommentCard.list(commentResults));
         });
     };
@@ -97,8 +97,8 @@ var Ajax = (function () {
     Ajax.getPublicPosts = function (skip, take, onPostResults) {
         this.call("apipost/publicposts/" + skip + "/" + take, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
     };
-    Ajax.getProfilePosts = function (profileId, skip, take, onPostResults) {
-        this.call("apipost/profileposts/" + profileId + "/" + skip + "/" + take, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
+    Ajax.getProfilePosts = function (profileId, skip, take, feedFilter, onPostResults) {
+        this.call("apipost/profileposts/" + profileId + "/" + skip + "/" + take + "/" + feedFilter, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
     };
     Ajax.call = function (path, method, onResults, data) {
         var _this = this;

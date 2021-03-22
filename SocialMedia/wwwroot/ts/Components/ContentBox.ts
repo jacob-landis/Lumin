@@ -29,7 +29,7 @@ class ContentBox implements IAppendable {
     
     // The callback for a request.
     // This is called here so that pre-request logic can be consolidated and performed here. See request().
-    private requestCallback: (skip: number, take: number) => void;
+    public requestCallback: (skip: number, take: number) => void;
 
     // The length of the segment to request from host.
     private take: number;

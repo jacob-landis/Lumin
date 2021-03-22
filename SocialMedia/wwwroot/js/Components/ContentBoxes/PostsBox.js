@@ -18,7 +18,7 @@ var PostsBox = (function (_super) {
         rootElm.classList.add('post-box');
         _this = _super.call(this, rootElm, scrollElm, 1500, 5, function (skip, take) {
             if (profileId != null)
-                Ajax.getProfilePosts(_this.profileId, skip, take, function (postCards) {
+                Ajax.getProfilePosts(_this.profileId, skip, take, 'recent', function (postCards) {
                     return _this.addPost(postCards);
                 });
             else

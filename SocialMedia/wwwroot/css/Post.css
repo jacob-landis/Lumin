@@ -93,3 +93,21 @@
     width: 100%;
     height: 40px;
 }
+
+.commentBoxDetails {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.commentBoxFeedControls, .btnToggleCommentFeedFilter, .commentCountSlot, .commentCountSlot > div {
+    display: inline;
+}
+
+.btnToggleCommentFeedFilter {
+    padding: 4px;
+    margin-bottom: 5px;
+    border-radius: 2px;
+    float: right;
+    font-size: 14pt;
+    color: gray;
+}

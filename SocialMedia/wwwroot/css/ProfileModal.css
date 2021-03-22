@@ -31,6 +31,15 @@
     grid-template-columns: 1fr 1fr;
 }
 
+#btnTogglePostFeedFilter {
+    display: inline;
+    padding: 4px;
+    margin-bottom: 5px;
+    border-radius: 2px;
+    font-size: 14pt;
+    color: gray;
+}
+
 /*________ PROFILE PICTURE */
 .profile-picture {
     width: 200px;

@@ -35,7 +35,7 @@ class PostsBox extends ContentBox {
                 if (profileId != null)
 
                     // send a profilePosts request to the server,
-                    Ajax.getProfilePosts(this.profileId, skip, take,
+                    Ajax.getProfilePosts(this.profileId, skip, take, 'recent', 
 
                         // and when the posts return as post cards,
                         (postCards: PostCard[]) => 

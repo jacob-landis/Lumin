@@ -48,9 +48,15 @@
         );
     }
 
-    public static getComments(postId: number, skip: number, take: number, onCommentResults: (commentCards: CommentCard[]) => void): void {
+    public static getComments(
+        postId: number,
+        skip: number,
+        take: number,
+        feedFilter: 'recent' | 'likes',
+        onCommentResults: (commentCards: CommentCard[]) => void
+    ): void {
         this.call(
-            `apicomment/postcomments/${postId}/${skip}/${take}`,
+            `apicomment/postcomments/${postId}/${skip}/${take}/${feedFilter}`,
             "GET",
             (commentResults: string) => {
                 onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults))
@@ -222,9 +228,15 @@
         );
     }
 
-    public static getProfilePosts(profileId: number, skip: number, take: number, onPostResults: (postCards: PostCard[]) => void): void {
+    public static getProfilePosts(
+        profileId: number,
+        skip: number,
+        take: number,
+        feedFilter: 'recent' | 'likes' | 'comments',
+        onPostResults: (postCards: PostCard[]) => void
+    ): void {
         this.call(
-            `apipost/profileposts/${profileId}/${skip}/${take}`, 
+            `apipost/profileposts/${profileId}/${skip}/${take}/${feedFilter}`, 
             "GET",
             (postResults: string) => onPostResults(PostCard.list(<PostRecord[]><unknown>postResults))
         );

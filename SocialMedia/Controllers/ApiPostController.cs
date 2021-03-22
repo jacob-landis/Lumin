@@ -114,10 +114,51 @@ namespace SocialMedia.Controllers
         /*
              Returns a portion of a profile's posts. Used for lazy loading.
         */
-        [HttpGet("profileposts/{id}/{postCount}/{amount}")]
-        public List<PostModel> ProfilePosts(int id, int postCount, int amount) => 
-            // If there are more posts than the user requested, only return the amount requested, or else return none. XXX this logic smells funny.
-            postCount < postRepo.CountByProfileId(id) ? PostRange(GetProfilePosts(id), postCount, amount) : null;
+        [HttpGet("profileposts/{id}/{postCount}/{amount}/{feedFilter}")]
+        public List<PostModel> ProfilePosts(int id, int postCount, int amount, string feedFilter)
+        {
+            // If there are more posts than the user requested, only return the amount requested, or else return none.
+            if (postCount < postRepo.CountByProfileId(id))
+            {
+                IEnumerable<Post> postRecords = new List<Post>();
+
+                switch (feedFilter)
+                {
+                    case "recent": return PostRange(GetProfilePosts(id), postCount, amount);
+
+                    case "likes":
+                        postRecords = postRepo.Posts
+                            .Where(p => p.ProfileId == id)
+                            .OrderByDescending(p => p.DateTime)
+                            .OrderByDescending(p => likeRepo.CountByContentId(1, p.PostId))
+                            .Skip(postCount)
+                            .Take(amount)
+                            .ToList();
+                        break;
+
+                    case "comments":
+                        postRecords = postRepo.Posts
+                            .Where(p => p.ProfileId == id)
+                            .OrderByDescending(p => p.DateTime)
+                            .OrderByDescending(p => commentRepo.CountByPostId(p.PostId))
+                            .Skip(postCount)
+                            .Take(amount)
+                            .ToList();
+                        break;
+                }
+
+                List<PostModel> postModels = new List<PostModel>();
+
+                foreach (Post p in postRecords)
+                {
+                    postModels.Add(GetPostModel(p.PostId));
+                }
+
+                return postModels;
+            }
+            else return null;
+            //return postCount < postRepo.CountByProfileId(id) ? PostRange(GetProfilePosts(id), postCount, amount) : null;
+        }
 
         /*
              Returns a portion of the current user's public post feed. Used for lazy loading.

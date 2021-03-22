@@ -20,6 +20,7 @@ var Icons = (function () {
     Icons.cancel = function () { return Icons.buildIcon(['times']); };
     Icons.edit = function () { return Icons.buildIcon(['edit']); };
     Icons.refresh = function () { return Icons.buildIcon(['refresh']); };
+    Icons.filterByLikes = function () { return Icons.buildIcon(['filter', 'thumbs-up']); };
     return Icons;
 }());
 //# sourceMappingURL=Icons.js.map

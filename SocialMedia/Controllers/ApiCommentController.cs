@@ -96,15 +96,30 @@ namespace SocialMedia.Controllers
         }
 
         // get list of comments by id, skip, take
-        [HttpGet("postcomments/{id}/{commentCount}/{amount}")]
-        public List<CommentModel> PostComments(int id, int commentCount, int amount)
+        [HttpGet("postcomments/{id}/{commentCount}/{amount}/{feedFilter}")]
+        public List<CommentModel> PostComments(int id, int commentCount, int amount, string feedFilter)
         {
             List<CommentModel> comments = new List<CommentModel>(); // prepare list
             if (commentCount < commentRepo.CountByPostId(id)) // if user has not reached end of comments
             {
-                foreach (Comment c in commentRepo.RangeByPostId(id, commentCount, amount)) // get comment results
+                if (feedFilter == "recent")
                 {
-                    comments.Add(GetCommentModel(c.CommentId)); // prep comment and add to returning list
+                    foreach (Comment c in commentRepo.RangeByPostId(id, commentCount, amount)) // get comment results
+                    {
+                        comments.Add(GetCommentModel(c.CommentId)); // prep comment and add to returning list
+                    }
+                }
+                else if (feedFilter == "likes")
+                {
+                    foreach (Comment c in commentRepo.Comments
+                        .Where(c => c.PostId == id)
+                        .OrderByDescending(c => c.DateTime)
+                        .OrderByDescending(c => likeRepo.CountByContentId(2, c.CommentId))
+                        .Skip(commentCount)
+                        .Take(amount))
+                    {
+                        comments.Add(GetCommentModel(c.CommentId));
+                    }
                 }
             }
             else return null; // if user has reached end of comments, return null

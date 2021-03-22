@@ -23,12 +23,19 @@
 
     private commentInputWrapper: HTMLElement;
     private errorSlot: HTMLElement;
+
+    private commentBoxDetails: HTMLElement;
     private commentCountSlot: HTMLElement;
     private commentCountText: HTMLElement;
+    private commentBoxFeedControls: HTMLElement;
+    private btnToggleFeedFilter: HTMLElement;
+
     private captionWrapper: HTMLElement;
     private postHeading: HTMLElement;
     private editIcon: HTMLElement;
     private refreshPostDetailsMessage: HTMLElement;
+
+    private feedFilter: 'recent' | 'likes' = 'recent';
 
     public allStaged: StageFlag = new StageFlag();
     public onStagingEnd: () => void;
@@ -69,8 +76,13 @@
                     <button class="btnComment">Comment</button>
                 </div>
                 <div class="errorSlot"></div>
-                <div class="commentCountSlot">
-                    <div>No Comments</div>
+                <div class="commentBoxDetails">
+                    <div class="commentCountSlot">
+                        <div>No Comments</div>
+                    </div>
+                    <div class="commentBoxFeedControls">
+                        <div class="btnToggleCommentFeedFilter"></div>
+                    </div>
                 </div>
                 <div class="content-box"></div>
             </div>
@@ -98,10 +110,17 @@
 
         this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
         this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
+
+        this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
+        this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
+        
+        this.btnToggleFeedFilter = Icons.filterByLikes();
+        this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
+        this.btnToggleFeedFilter.title = 'Sort by popularity';
 
         this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, (skip: number, take: number) => 
-            Ajax.getComments(this.post.postId, skip, take, (comments: CommentCard[]) => {
+            Ajax.getComments(this.post.postId, skip, take, 'recent', (comments: CommentCard[]) => {
 
                 if (comments == null) {
                     this.stage.updateStaging(this.commentsStaged);
@@ -131,7 +150,9 @@
         let btnCancel: HTMLElement = Icons.cancel();
         let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
 
-        commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentCountSlot, this.commentsBox.rootElm);
+        commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.commentsBox.rootElm);
+        this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls);
+        this.commentBoxFeedControls.append(this.btnToggleFeedFilter);
         this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
 
         // __________________________________ 
@@ -193,6 +214,8 @@
         // Load comments
         this.commentsBox.request(15);
         this.requestCommentCount();
+
+        this.btnToggleFeedFilter.onclick = (event: MouseEvent) => this.toggleFeedFilter();
 
         // PRIVATE OPTIONS
         if (post.profile.relationToUser == 'me') {
@@ -304,6 +327,42 @@
         });
 
         PostCard.postCards.push(this);
+    }
+
+    private toggleFeedFilter(): void {
+
+        let feedFilterSecondIcon = this.btnToggleFeedFilter.children[1];
+
+        this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
+
+        if (this.feedFilter == 'likes') {
+
+            this.btnToggleFeedFilter.title = 'Sort by recent';
+            feedFilterSecondIcon.classList.remove('fa-thumbs-up');
+            feedFilterSecondIcon.classList.add('fa-calendar');
+        }
+        else if (this.feedFilter == 'recent') {
+            
+            this.btnToggleFeedFilter.title = 'Sort by popularity';
+            feedFilterSecondIcon.classList.remove('fa-calendar');
+            feedFilterSecondIcon.classList.add('fa-thumbs-up');
+        }
+
+        this.commentsBox.clear();
+        this.commentsBox.requestCallback = (skip: number, take: number) => {
+            Ajax.getComments(this.post.postId, skip, take, this.feedFilter, (commentCards: CommentCard[]) => {
+
+                if (commentCards == null) return;
+                
+                // If this post belongs to current user, indicate which comments have not been seen by the user.
+                if (this.post.profile.profileId == User.profileId)
+                    commentCards.forEach((comment: CommentCard) => comment.disputeHasSeen());
+
+                this.commentsBox.add(commentCards);
+            });
+        }
+        this.commentsBox.request(15);
+        
     }
 
     private refreshPostDetails(): void {

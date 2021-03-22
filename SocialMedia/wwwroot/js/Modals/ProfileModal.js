@@ -13,8 +13,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
-    function ProfileModal(rootElm, content, profileNameWrapper, postWrapper, imageWrapper, profileBioWrapper, imageBoxElm, imageScrollBox, friendBoxElm, imageClassList, editorClassList, doubleEditorClassList) {
+    function ProfileModal(rootElm, content, profileNameWrapper, postWrapper, imageWrapper, profileBioWrapper, imageBoxElm, imageScrollBox, friendBoxElm, btnTogglePostFeedFilter, imageClassList, editorClassList, doubleEditorClassList) {
         var _this = _super.call(this, rootElm) || this;
+        _this.feedFilter = 'recent';
         _this.fullProfileStaged = new StageFlag();
         _this.imagesBoxStaged = new StageFlag();
         _this.friendsStaged = new StageFlag();
@@ -25,6 +26,7 @@ var ProfileModal = (function (_super) {
         _this.profileBioWrapper = profileBioWrapper;
         _this.imageScrollBox = imageScrollBox;
         _this.friendBoxElm = friendBoxElm;
+        _this.btnTogglePostFeedFilter = btnTogglePostFeedFilter;
         _this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         _this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
@@ -35,6 +37,7 @@ var ProfileModal = (function (_super) {
         _this.profileNameWrapper.append(_this.nameEditor.rootElm);
         _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, true, 250, function (bio) { return Ajax.updateBio(bio); });
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
+        _this.btnTogglePostFeedFilter.onclick = function (event) { return _this.togglePostFeedFilter(); };
         _this.postBox = new PostsBox(0, _this.postWrapper, _this.rootElm);
         _this.stageContainers = [
             _this.profilePictureBox.rootElm, _this.profileNameWrapper,
@@ -83,6 +86,42 @@ var ProfileModal = (function (_super) {
         this.postBox.profileId = profileId;
         this.postBox.start();
         _super.prototype.open.call(this);
+    };
+    ProfileModal.prototype.togglePostFeedFilter = function () {
+        var _this = this;
+        var feedFilterSecondIcon = this.btnTogglePostFeedFilter.children[1];
+        switch (this.feedFilter) {
+            case 'recent': {
+                this.feedFilter = 'likes';
+                this.btnTogglePostFeedFilter.title = 'Sort by comment popularity';
+                feedFilterSecondIcon.classList.remove('fa-thumbs-up');
+                feedFilterSecondIcon.classList.add('fa-comments');
+                break;
+            }
+            case 'likes': {
+                this.feedFilter = 'comments';
+                this.btnTogglePostFeedFilter.title = 'Sort by recent';
+                feedFilterSecondIcon.classList.remove('fa-comments');
+                feedFilterSecondIcon.classList.add('fa-calendar');
+                break;
+            }
+            case 'comments': {
+                this.feedFilter = 'recent';
+                this.btnTogglePostFeedFilter.title = 'Sort by like popularity';
+                feedFilterSecondIcon.classList.remove('fa-calendar');
+                feedFilterSecondIcon.classList.add('fa-thumbs-up');
+                break;
+            }
+        }
+        this.postBox.clear();
+        this.postBox.requestCallback = function (skip, take) {
+            Ajax.getProfilePosts(_this.profile.profileId, skip, take, _this.feedFilter, function (postCards) {
+                if (postCards == null)
+                    return;
+                _this.postBox.add(postCards);
+            });
+        };
+        this.postBox.start();
     };
     ProfileModal.prototype.selectProfilePicture = function () {
         var _this = this;

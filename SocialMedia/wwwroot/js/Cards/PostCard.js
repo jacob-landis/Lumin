@@ -15,6 +15,7 @@ var PostCard = (function (_super) {
     __extends(PostCard, _super);
     function PostCard(post) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'postCard' })) || this;
+        _this.feedFilter = 'recent';
         _this.allStaged = new StageFlag();
         _this.commentsStaged = new StageFlag();
         _this.imageStaged = new StageFlag();
@@ -27,9 +28,14 @@ var PostCard = (function (_super) {
         _this.rootElm.append(postSection, commentSection);
         _this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
         _this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
+        _this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
+        _this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
+        _this.btnToggleFeedFilter = Icons.filterByLikes();
+        _this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
+        _this.btnToggleFeedFilter.title = 'Sort by popularity';
         _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, function (skip, take) {
-            return Ajax.getComments(_this.post.postId, skip, take, function (comments) {
+            return Ajax.getComments(_this.post.postId, skip, take, 'recent', function (comments) {
                 if (comments == null) {
                     _this.stage.updateStaging(_this.commentsStaged);
                     return;
@@ -49,7 +55,9 @@ var PostCard = (function (_super) {
         var btnConfirm = Icons.confirm();
         var btnCancel = Icons.cancel();
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
-        commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentCountSlot, _this.commentsBox.rootElm);
+        commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.commentsBox.rootElm);
+        _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls);
+        _this.commentBoxFeedControls.append(_this.btnToggleFeedFilter);
         _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
         _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
         if (_this.hasImage) {
@@ -81,6 +89,7 @@ var PostCard = (function (_super) {
         likeCardSlot.append(_this.likeCard.rootElm, _this.refreshPostDetailsMessage);
         _this.commentsBox.request(15);
         _this.requestCommentCount();
+        _this.btnToggleFeedFilter.onclick = function (event) { return _this.toggleFeedFilter(); };
         if (post.profile.relationToUser == 'me') {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
@@ -176,6 +185,32 @@ var PostCard = (function (_super) {
             posts.forEach(function (p) { return postCards.push(new PostCard(p)); });
             return postCards;
         }
+    };
+    PostCard.prototype.toggleFeedFilter = function () {
+        var _this = this;
+        var feedFilterSecondIcon = this.btnToggleFeedFilter.children[1];
+        this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
+        if (this.feedFilter == 'likes') {
+            this.btnToggleFeedFilter.title = 'Sort by recent';
+            feedFilterSecondIcon.classList.remove('fa-thumbs-up');
+            feedFilterSecondIcon.classList.add('fa-calendar');
+        }
+        else if (this.feedFilter == 'recent') {
+            this.btnToggleFeedFilter.title = 'Sort by popularity';
+            feedFilterSecondIcon.classList.remove('fa-calendar');
+            feedFilterSecondIcon.classList.add('fa-thumbs-up');
+        }
+        this.commentsBox.clear();
+        this.commentsBox.requestCallback = function (skip, take) {
+            Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, function (commentCards) {
+                if (commentCards == null)
+                    return;
+                if (_this.post.profile.profileId == User.profileId)
+                    commentCards.forEach(function (comment) { return comment.disputeHasSeen(); });
+                _this.commentsBox.add(commentCards);
+            });
+        };
+        this.commentsBox.request(15);
     };
     PostCard.prototype.refreshPostDetails = function () {
         var _this = this;
