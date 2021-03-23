@@ -31,9 +31,13 @@ var PostCard = (function (_super) {
         _this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         _this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
+        _this.commentBoxRefreshMessage = ViewUtil.tag('div', { classList: 'commentBoxRefreshMessage' });
         _this.btnToggleFeedFilter = Icons.filterByLikes();
         _this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
         _this.btnToggleFeedFilter.title = 'Sort by popularity';
+        _this.btnRefreshFeed = Icons.refresh();
+        _this.btnRefreshFeed.classList.add('btnRefreshCommentFeed');
+        _this.btnRefreshFeed.title = 'Refresh comment feed';
         _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, function (skip, take) {
             return Ajax.getComments(_this.post.postId, skip, take, 'recent', function (comments) {
                 if (comments == null) {
@@ -56,8 +60,8 @@ var PostCard = (function (_super) {
         var btnCancel = Icons.cancel();
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
         commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.commentsBox.rootElm);
-        _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls);
-        _this.commentBoxFeedControls.append(_this.btnToggleFeedFilter);
+        _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls, _this.commentBoxRefreshMessage);
+        _this.commentBoxFeedControls.append(_this.btnToggleFeedFilter, _this.btnRefreshFeed);
         _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
         _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
         if (_this.hasImage) {
@@ -90,6 +94,7 @@ var PostCard = (function (_super) {
         _this.commentsBox.request(15);
         _this.requestCommentCount();
         _this.btnToggleFeedFilter.onclick = function (event) { return _this.toggleFeedFilter(); };
+        _this.btnRefreshFeed.onclick = function (event) { return _this.refreshCommentFeed(); };
         if (post.profile.relationToUser == 'me') {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
@@ -202,6 +207,7 @@ var PostCard = (function (_super) {
         }
         this.commentsBox.clear();
         this.commentsBox.requestCallback = function (skip, take) {
+            _this.commentBoxRefreshMessage.innerText = '';
             Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, function (commentCards) {
                 if (commentCards == null)
                     return;
@@ -211,6 +217,27 @@ var PostCard = (function (_super) {
             });
         };
         this.commentsBox.request(15);
+    };
+    PostCard.prototype.refreshCommentFeed = function () {
+        var _this = this;
+        var commentIds = [];
+        var likeCounts = [];
+        var contents = [];
+        this.commentsBox.content.forEach(function (content) {
+            commentIds.push(content.comment.commentId);
+            likeCounts.push(content.comment.likes.count);
+            contents.push(content.comment.content);
+        });
+        Ajax.refreshComments(this.post.postId, commentIds, likeCounts, contents, this.commentsBox.take, this.feedFilter, function (commentCards) {
+            if (commentCards == null) {
+                _this.commentBoxRefreshMessage.innerText = 'No changes have been made.';
+            }
+            else {
+                _this.commentBoxRefreshMessage.innerText = '';
+                _this.commentsBox.clear();
+                _this.commentsBox.add(commentCards);
+            }
+        });
     };
     PostCard.prototype.refreshPostDetails = function () {
         var _this = this;

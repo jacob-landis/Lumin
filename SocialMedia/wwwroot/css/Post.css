@@ -99,11 +99,11 @@
     padding-bottom: 20px;
 }
 
-.commentBoxFeedControls, .btnToggleCommentFeedFilter, .commentCountSlot, .commentCountSlot > div {
+.commentBoxFeedControls, .btnToggleCommentFeedFilter, .btnRefreshCommentFeed, .commentCountSlot, .commentCountSlot > div {
     display: inline;
 }
 
-.btnToggleCommentFeedFilter {
+.btnToggleCommentFeedFilter, .btnRefreshCommentFeed {
     padding: 4px;
     margin-bottom: 5px;
     border-radius: 2px;

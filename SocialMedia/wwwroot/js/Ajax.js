@@ -33,6 +33,16 @@ var Ajax = (function () {
     Ajax.getCommentCount = function (postId, onCommentCountResults) {
         this.call("apicomment/commentcount/" + postId, "GET", onCommentCountResults);
     };
+    Ajax.refreshComments = function (postId, commentIds, likeCounts, contents, take, feedFilter, onRefreshResults) {
+        this.call("apicomment/refreshcomments/" + postId + "/" + take + "/" + feedFilter, "POST", function (commentResults) {
+            onRefreshResults(commentResults == undefined ?
+                null : CommentCard.list(commentResults));
+        }, JSON.stringify({
+            commentIds: commentIds,
+            likeCounts: likeCounts,
+            contents: contents
+        }));
+    };
     Ajax.updateName = function (namesJSON) {
         this.call("apiprofile/updatename", "POST", null, namesJSON);
     };

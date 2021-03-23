@@ -28,7 +28,9 @@
     private commentCountSlot: HTMLElement;
     private commentCountText: HTMLElement;
     private commentBoxFeedControls: HTMLElement;
+    private commentBoxRefreshMessage: HTMLElement;
     private btnToggleFeedFilter: HTMLElement;
+    private btnRefreshFeed: HTMLElement;
 
     private captionWrapper: HTMLElement;
     private postHeading: HTMLElement;
@@ -82,7 +84,9 @@
                     </div>
                     <div class="commentBoxFeedControls">
                         <div class="btnToggleCommentFeedFilter"></div>
+                        <div class="btnRefreshCommentFeed"></div>
                     </div>
+                    <div class="commentBoxRefreshMessage"></div>
                 </div>
                 <div class="content-box"></div>
             </div>
@@ -114,10 +118,15 @@
         this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
+        this.commentBoxRefreshMessage = ViewUtil.tag('div', { classList: 'commentBoxRefreshMessage' });
         
         this.btnToggleFeedFilter = Icons.filterByLikes();
         this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
         this.btnToggleFeedFilter.title = 'Sort by popularity';
+
+        this.btnRefreshFeed = Icons.refresh();
+        this.btnRefreshFeed.classList.add('btnRefreshCommentFeed');
+        this.btnRefreshFeed.title = 'Refresh comment feed';
 
         this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, (skip: number, take: number) => 
             Ajax.getComments(this.post.postId, skip, take, 'recent', (comments: CommentCard[]) => {
@@ -151,8 +160,8 @@
         let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
 
         commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.commentsBox.rootElm);
-        this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls);
-        this.commentBoxFeedControls.append(this.btnToggleFeedFilter);
+        this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls, this.commentBoxRefreshMessage);
+        this.commentBoxFeedControls.append(this.btnToggleFeedFilter, this.btnRefreshFeed);
         this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
 
         // __________________________________ 
@@ -216,6 +225,7 @@
         this.requestCommentCount();
 
         this.btnToggleFeedFilter.onclick = (event: MouseEvent) => this.toggleFeedFilter();
+        this.btnRefreshFeed.onclick = (event: MouseEvent) => this.refreshCommentFeed();
 
         // PRIVATE OPTIONS
         if (post.profile.relationToUser == 'me') {
@@ -350,6 +360,9 @@
 
         this.commentsBox.clear();
         this.commentsBox.requestCallback = (skip: number, take: number) => {
+
+            this.commentBoxRefreshMessage.innerText = '';
+
             Ajax.getComments(this.post.postId, skip, take, this.feedFilter, (commentCards: CommentCard[]) => {
 
                 if (commentCards == null) return;
@@ -363,6 +376,39 @@
         }
         this.commentsBox.request(15);
         
+    }
+
+    private refreshCommentFeed(): void {
+
+        // Collect list of all comment id's in this comment box and this post id and send to server for comparison.
+        let commentIds: number[] = [];
+        let likeCounts: number[] = [];
+        let contents: string[] = [];
+        this.commentsBox.content.forEach((content: IAppendable) => {
+            commentIds.push((<CommentCard>content).comment.commentId);
+            likeCounts.push((<CommentCard>content).comment.likes.count);
+            contents.push((<CommentCard>content).comment.content);
+        });
+
+        Ajax.refreshComments(
+            this.post.postId,
+            commentIds,
+            likeCounts,
+            contents,
+            this.commentsBox.take,
+            this.feedFilter,
+            (commentCards: CommentCard[]) => {
+
+                if (commentCards == null) {
+                    this.commentBoxRefreshMessage.innerText = 'No changes have been made.';
+                }
+                else {
+                    this.commentBoxRefreshMessage.innerText = '';
+                    this.commentsBox.clear();
+                    this.commentsBox.add(commentCards);
+                }
+            }
+        );
     }
 
     private refreshPostDetails(): void {

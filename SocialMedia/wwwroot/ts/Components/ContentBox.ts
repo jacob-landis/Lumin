@@ -32,7 +32,7 @@ class ContentBox implements IAppendable {
     public requestCallback: (skip: number, take: number) => void;
 
     // The length of the segment to request from host.
-    private take: number;
+    public take: number;
 
     // A shortcut for the content count.
     // Acts as the skip paramter in a request.

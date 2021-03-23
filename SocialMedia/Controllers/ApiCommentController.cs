@@ -40,6 +40,27 @@ namespace SocialMedia.Controllers
 
         //-----------------------------------------ROUTING---------------------------------------------//
 
+        [HttpPost("refreshcomments/{postId}/{take}/{feedFilter}")]
+        public List<CommentModel> RefreshComments([FromBody] CommentReferencesModel comments, int postId, int take, string feedFilter)
+        {
+            // Create list to compare to commentIds.
+            List<CommentModel> currentCommentResults = GetCommentModels(postId, 0, comments.commentIds.Length, feedFilter);
+
+            // Loop through currentComentResults and commentIds and compare them.
+            for (int i = 0; i < comments.commentIds.Length; i++)
+            {
+                // If a mismatch is found, the results have change, so return the current comment results.
+                if (currentCommentResults[i].CommentId   != comments.commentIds[i] ||
+                    currentCommentResults[i].Likes.Count != comments.likeCounts[i] || 
+                    currentCommentResults[i].Content     != comments.contents[i]
+                )
+                {
+                    return GetCommentModels(postId, 0, take, feedFilter);
+                }
+            }
+            return null;
+        }
+
         // Get comment count by PostId XXX shouldn't this go in ApiPostController??
         [HttpGet("commentcount/{id}")]
         public int CommentCount(int id) => commentRepo.Comments.Where(c => c.PostId == id).Count();
@@ -99,32 +120,7 @@ namespace SocialMedia.Controllers
         [HttpGet("postcomments/{id}/{commentCount}/{amount}/{feedFilter}")]
         public List<CommentModel> PostComments(int id, int commentCount, int amount, string feedFilter)
         {
-            List<CommentModel> comments = new List<CommentModel>(); // prepare list
-            if (commentCount < commentRepo.CountByPostId(id)) // if user has not reached end of comments
-            {
-                if (feedFilter == "recent")
-                {
-                    foreach (Comment c in commentRepo.RangeByPostId(id, commentCount, amount)) // get comment results
-                    {
-                        comments.Add(GetCommentModel(c.CommentId)); // prep comment and add to returning list
-                    }
-                }
-                else if (feedFilter == "likes")
-                {
-                    foreach (Comment c in commentRepo.Comments
-                        .Where(c => c.PostId == id)
-                        .OrderByDescending(c => c.DateTime)
-                        .OrderByDescending(c => likeRepo.CountByContentId(2, c.CommentId))
-                        .Skip(commentCount)
-                        .Take(amount))
-                    {
-                        comments.Add(GetCommentModel(c.CommentId));
-                    }
-                }
-            }
-            else return null; // if user has reached end of comments, return null
-
-            return comments; // return preped comment results
+            return GetCommentModels(id, commentCount, amount, feedFilter);
         }
 
         // get comment by id
@@ -147,6 +143,36 @@ namespace SocialMedia.Controllers
         }
 
         //-----------------------------------------UTIL---------------------------------------------//
+
+        public List<CommentModel> GetCommentModels(int postId, int skip, int take, string feedFilter)
+        {
+            List<CommentModel> comments = new List<CommentModel>(); // prepare list
+            if (skip < commentRepo.CountByPostId(postId)) // if user has not reached end of comments
+            {
+                if (feedFilter == "recent")
+                {
+                    foreach (Comment c in commentRepo.RangeByPostId(postId, skip, take)) // get comment results
+                    {
+                        comments.Add(GetCommentModel(c.CommentId)); // prep comment and add to returning list
+                    }
+                }
+                else if (feedFilter == "likes")
+                {
+                    foreach (Comment c in commentRepo.Comments
+                        .Where(c => c.PostId == postId)
+                        .OrderByDescending(c => c.DateTime)
+                        .OrderByDescending(c => likeRepo.CountByContentId(2, c.CommentId))
+                        .Skip(skip)
+                        .Take(take))
+                    {
+                        comments.Add(GetCommentModel(c.CommentId));
+                    }
+                }
+            }
+            else return null; // if user has reached end of comments, return null
+
+            return comments; // return preped comment results
+        }
 
         // prep comment to be sent to client
         public CommentModel GetCommentModel(int id)

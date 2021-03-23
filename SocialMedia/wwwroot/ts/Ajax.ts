@@ -68,6 +68,32 @@
         this.call(`apicomment/commentcount/${postId}`, "GET", onCommentCountResults);
     }
 
+    public static refreshComments(
+        postId: number,
+        commentIds: number[],
+        likeCounts: number[],
+        contents: string[],
+        take,
+        feedFilter: 'recent' | 'likes',
+        onRefreshResults: (commentCards: CommentCard[]) => void
+    ): void {
+        this.call(
+            `apicomment/refreshcomments/${postId}/${take}/${feedFilter}`,
+            "POST",
+            (commentResults: string) => {
+                onRefreshResults(
+                    commentResults == undefined ?
+                        null : CommentCard.list(<CommentRecord[]><unknown>commentResults)
+                );
+            },
+            JSON.stringify({
+                commentIds: commentIds,
+                likeCounts: likeCounts,
+                contents: contents
+            })
+        )
+    }
+
     //PROFILE
     public static updateName(namesJSON: string): void {
         this.call("apiprofile/updatename", "POST", null, namesJSON);
