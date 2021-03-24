@@ -45,6 +45,8 @@ class ProfileModal extends Modal {
     private btnTogglePostFeedFilter: HTMLElement;
     private feedFilter: 'recent' | 'likes' | 'comments' = 'recent';
 
+    private btnRefreshProfilePostFeed: HTMLElement;
+
     // A PostsBox for displaying a profile's posts.
     private postBox: PostsBox;
 
@@ -72,6 +74,7 @@ class ProfileModal extends Modal {
         imageScrollBox: HTMLElement,
         friendBoxElm: HTMLElement,
         btnTogglePostFeedFilter: HTMLElement,
+        btnRefreshProfilePostFeed: HTMLElement,
         imageClassList: string,
         editorClassList: string,
         doubleEditorClassList: string
@@ -87,6 +90,7 @@ class ProfileModal extends Modal {
         this.imageScrollBox = imageScrollBox;
         this.friendBoxElm = friendBoxElm;
         this.btnTogglePostFeedFilter = btnTogglePostFeedFilter;
+        this.btnRefreshProfilePostFeed = btnRefreshProfilePostFeed;
         this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
 
@@ -105,6 +109,7 @@ class ProfileModal extends Modal {
         this.profileBioWrapper.append(this.bioEditor.rootElm);
 
         this.btnTogglePostFeedFilter.onclick = (event: MouseEvent) => this.togglePostFeedFilter();
+        this.btnRefreshProfilePostFeed.onclick = (event: MouseEvent) => this.refreshProfilePostFeed();
 
         this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);
 
@@ -234,6 +239,11 @@ class ProfileModal extends Modal {
             });
         }
 
+        this.postBox.start();
+    }
+
+    private refreshProfilePostFeed() {
+        this.postBox.clear();
         this.postBox.start();
     }
 

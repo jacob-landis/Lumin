@@ -35,6 +35,10 @@
     max-width: 100%;
 }
 
+.fullSizeImage:hover {
+    opacity: 1;
+}
+
 /*full fize image modal button*/
 .fsimb { 
     color: white;

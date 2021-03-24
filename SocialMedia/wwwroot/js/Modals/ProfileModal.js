@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
-    function ProfileModal(rootElm, content, profileNameWrapper, postWrapper, imageWrapper, profileBioWrapper, imageBoxElm, imageScrollBox, friendBoxElm, btnTogglePostFeedFilter, imageClassList, editorClassList, doubleEditorClassList) {
+    function ProfileModal(rootElm, content, profileNameWrapper, postWrapper, imageWrapper, profileBioWrapper, imageBoxElm, imageScrollBox, friendBoxElm, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, imageClassList, editorClassList, doubleEditorClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.feedFilter = 'recent';
         _this.fullProfileStaged = new StageFlag();
@@ -27,6 +27,7 @@ var ProfileModal = (function (_super) {
         _this.imageScrollBox = imageScrollBox;
         _this.friendBoxElm = friendBoxElm;
         _this.btnTogglePostFeedFilter = btnTogglePostFeedFilter;
+        _this.btnRefreshProfilePostFeed = btnRefreshProfilePostFeed;
         _this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         _this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
@@ -38,6 +39,7 @@ var ProfileModal = (function (_super) {
         _this.bioEditor = new Editor(_this.btnChangeBio, '', editorClassList, true, 250, function (bio) { return Ajax.updateBio(bio); });
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
         _this.btnTogglePostFeedFilter.onclick = function (event) { return _this.togglePostFeedFilter(); };
+        _this.btnRefreshProfilePostFeed.onclick = function (event) { return _this.refreshProfilePostFeed(); };
         _this.postBox = new PostsBox(0, _this.postWrapper, _this.rootElm);
         _this.stageContainers = [
             _this.profilePictureBox.rootElm, _this.profileNameWrapper,
@@ -121,6 +123,10 @@ var ProfileModal = (function (_super) {
                 _this.postBox.add(postCards);
             });
         };
+        this.postBox.start();
+    };
+    ProfileModal.prototype.refreshProfilePostFeed = function () {
+        this.postBox.clear();
         this.postBox.start();
     };
     ProfileModal.prototype.selectProfilePicture = function () {
