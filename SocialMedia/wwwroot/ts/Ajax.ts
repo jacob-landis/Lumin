@@ -53,10 +53,11 @@
         skip: number,
         take: number,
         feedFilter: 'recent' | 'likes',
+        feedType: 'myComments' | 'likedComments' | 'mainComments',
         onCommentResults: (commentCards: CommentCard[]) => void
     ): void {
         this.call(
-            `apicomment/postcomments/${postId}/${skip}/${take}/${feedFilter}`,
+            `apicomment/postcomments/${postId}/${skip}/${take}/${feedFilter}/${feedType}`,
             "GET",
             (commentResults: string) => {
                 onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults))
@@ -75,10 +76,11 @@
         contents: string[],
         take,
         feedFilter: 'recent' | 'likes',
+        feedType: 'myComments' | 'likedComments' | 'mainComments',
         onRefreshResults: (commentCards: CommentCard[]) => void
     ): void {
         this.call(
-            `apicomment/refreshcomments/${postId}/${take}/${feedFilter}`,
+            `apicomment/refreshcomments/${postId}/${take}/${feedFilter}/${feedType}`,
             "POST",
             (commentResults: string) => {
                 onRefreshResults(

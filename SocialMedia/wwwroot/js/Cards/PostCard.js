@@ -38,8 +38,17 @@ var PostCard = (function (_super) {
         _this.btnRefreshFeed = Icons.refresh();
         _this.btnRefreshFeed.classList.add('btnRefreshCommentFeed');
         _this.btnRefreshFeed.title = 'Refresh comment feed';
+        _this.btnMyActivity = Icons.history();
+        _this.btnMyActivity.classList.add('btnMyActivity');
+        _this.btnMyActivity.title = 'Show my activity';
+        _this.myCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'myCommentsBox' }), null, 400, 30, function (skip, take) {
+            Ajax.getComments(_this.post.postId, skip, take, 'recent', 'myComments', function (commentCards) { return _this.myCommentsBox.add(commentCards); });
+        });
+        _this.LikedCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'likedCommentsBox' }), null, 400, 30, function (skip, take) {
+            Ajax.getComments(_this.post.postId, skip, take, 'recent', 'likedComments', function (commentCards) { return _this.myCommentsBox.add(commentCards); });
+        });
         _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, function (skip, take) {
-            return Ajax.getComments(_this.post.postId, skip, take, 'recent', function (comments) {
+            return Ajax.getComments(_this.post.postId, skip, take, 'recent', 'mainComments', function (comments) {
                 if (comments == null) {
                     _this.stage.updateStaging(_this.commentsStaged);
                     return;
@@ -55,13 +64,15 @@ var PostCard = (function (_super) {
                 }
             });
         });
+        _this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
+        _this.commentBoxes.add([_this.myCommentsBox, _this.LikedCommentsBox, _this.commentsBox]);
         var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
         var btnConfirm = Icons.confirm();
         var btnCancel = Icons.cancel();
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
-        commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.commentsBox.rootElm);
+        commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.commentBoxes.rootElm);
         _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls, _this.commentBoxRefreshMessage);
-        _this.commentBoxFeedControls.append(_this.btnToggleFeedFilter, _this.btnRefreshFeed);
+        _this.commentBoxFeedControls.append(_this.btnMyActivity, _this.btnToggleFeedFilter, _this.btnRefreshFeed);
         _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
         _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
         if (_this.hasImage) {
@@ -95,6 +106,7 @@ var PostCard = (function (_super) {
         _this.requestCommentCount();
         _this.btnToggleFeedFilter.onclick = function (event) { return _this.toggleFeedFilter(); };
         _this.btnRefreshFeed.onclick = function (event) { return _this.refreshCommentFeed(); };
+        _this.btnMyActivity.onclick = function (event) { return _this.showCommentActivity(); };
         if (post.profile.relationToUser == 'me') {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
@@ -208,7 +220,7 @@ var PostCard = (function (_super) {
         this.commentsBox.clear();
         this.commentsBox.requestCallback = function (skip, take) {
             _this.commentBoxRefreshMessage.innerText = '';
-            Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, function (commentCards) {
+            Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, 'mainComments', function (commentCards) {
                 if (commentCards == null)
                     return;
                 if (_this.post.profile.profileId == User.profileId)
@@ -217,6 +229,10 @@ var PostCard = (function (_super) {
             });
         };
         this.commentsBox.request(15);
+    };
+    PostCard.prototype.showCommentActivity = function () {
+        this.myCommentsBox.request(15);
+        this.LikedCommentsBox.request(15);
     };
     PostCard.prototype.refreshCommentFeed = function () {
         var _this = this;
@@ -228,7 +244,7 @@ var PostCard = (function (_super) {
             likeCounts.push(content.comment.likes.count);
             contents.push(content.comment.content);
         });
-        Ajax.refreshComments(this.post.postId, commentIds, likeCounts, contents, this.commentsBox.take, this.feedFilter, function (commentCards) {
+        Ajax.refreshComments(this.post.postId, commentIds, likeCounts, contents, this.commentsBox.take, this.feedFilter, 'mainComments', function (commentCards) {
             if (commentCards == null) {
                 _this.commentBoxRefreshMessage.innerText = 'No changes have been made.';
             }

@@ -8,6 +8,9 @@ class ContentBox implements IAppendable {
     // The HTML tag where the content is actually rendered.
     public rootElm: HTMLElement;
 
+    public messageElm: HTMLElement;
+    public contentElm: HTMLElement;
+
     // A global collection of ContentBox instances.
     public static contentBoxes: ContentBox[] = [];
 
@@ -29,7 +32,7 @@ class ContentBox implements IAppendable {
     
     // The callback for a request.
     // This is called here so that pre-request logic can be consolidated and performed here. See request().
-    public requestCallback: (skip: number, take: number) => void;
+    public requestCallback: (skip: number, take: number) => void = null;
 
     // The length of the segment to request from host.
     public take: number;
@@ -51,11 +54,9 @@ class ContentBox implements IAppendable {
     public onLoadEnd: () => void = null;
 
     /*
-        PARAMETERS:
-        tagOrId can be a string, an HTML tag, or null.
-        classList can be a string or null. If tagOrId is an HTML tag, classList might as well be null. Add class attributes before sending tag here.
-        take can be an int or null.
-        requestFunc can be a function or null.
+        <div>
+        
+        </div>
     */
     public constructor(
         rootElm: HTMLElement,
@@ -67,6 +68,11 @@ class ContentBox implements IAppendable {
 
         // Get a handle on the provided tag.
         this.rootElm = rootElm;
+
+        this.messageElm = ViewUtil.tag('div', { classList: 'contentMessage' });
+        this.contentElm = ViewUtil.tag('div', { classList: 'contentContainer' });
+
+        this.rootElm.append(this.messageElm, this.contentElm);
         
         // Add 'content-box' to the classList attribute.
         this.rootElm.classList.add('content-box');
@@ -81,8 +87,10 @@ class ContentBox implements IAppendable {
         if (requestCallback) this.requestCallback = requestCallback;
         
         this.scrollElm.addEventListener("wheel", (event: MouseWheelEvent) => {
-            this.lazyLoad();    
-            this.getVisibleContent().forEach((card: Card) => card.alertVisible());
+            if (this.requestCallback != null) {
+                this.lazyLoad();    
+                this.getVisibleContent().forEach((card: Card) => card.alertVisible());
+            }
         });
 
         // Add this instance of ContentBox to contentBoxes.
@@ -169,11 +177,11 @@ class ContentBox implements IAppendable {
                 // Unshift or push content to this.content and prepend or append its root element to this content box's root element.
                 if (prepend == true) {
                     this.content.unshift(content);
-                    this.rootElm.prepend(content.rootElm);
+                    this.contentElm.prepend(content.rootElm);
                 }
                 else {
                     this.content.push(content);
-                    this.rootElm.append(content.rootElm);
+                    this.contentElm.append(content.rootElm);
                 }
             }
         });
@@ -203,7 +211,7 @@ class ContentBox implements IAppendable {
         this.content = [];
 
         // Clear this rootElm.
-        ViewUtil.empty(this.rootElm);
+        ViewUtil.empty(this.contentElm);
 
         // Reset flags
         this.loading = false;

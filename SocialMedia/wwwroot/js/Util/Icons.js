@@ -21,6 +21,7 @@ var Icons = (function () {
     Icons.edit = function () { return Icons.buildIcon(['edit']); };
     Icons.refresh = function () { return Icons.buildIcon(['refresh']); };
     Icons.filterByLikes = function () { return Icons.buildIcon(['filter', 'thumbs-up']); };
+    Icons.history = function () { return Icons.buildIcon(['history']); };
     return Icons;
 }());
 //# sourceMappingURL=Icons.js.map

@@ -40,11 +40,11 @@ namespace SocialMedia.Controllers
 
         //-----------------------------------------ROUTING---------------------------------------------//
 
-        [HttpPost("refreshcomments/{postId}/{take}/{feedFilter}")]
-        public List<CommentModel> RefreshComments([FromBody] CommentReferencesModel comments, int postId, int take, string feedFilter)
+        [HttpPost("refreshcomments/{postId}/{take}/{feedFilter}/{feedType}")]
+        public List<CommentModel> RefreshComments([FromBody] CommentReferencesModel comments, int postId, int take, string feedFilter, string feedType)
         {
             // Create list to compare to commentIds.
-            List<CommentModel> currentCommentResults = GetCommentModels(postId, 0, comments.commentIds.Length, feedFilter);
+            List<CommentModel> currentCommentResults = GetCommentModels(postId, 0, comments.commentIds.Length, feedFilter, feedType);
 
             // Loop through currentComentResults and commentIds and compare them.
             for (int i = 0; i < comments.commentIds.Length; i++)
@@ -55,7 +55,7 @@ namespace SocialMedia.Controllers
                     currentCommentResults[i].Content     != comments.contents[i]
                 )
                 {
-                    return GetCommentModels(postId, 0, take, feedFilter);
+                    return GetCommentModels(postId, 0, take, feedFilter, feedType);
                 }
             }
             return null;
@@ -117,10 +117,10 @@ namespace SocialMedia.Controllers
         }
 
         // get list of comments by id, skip, take
-        [HttpGet("postcomments/{id}/{commentCount}/{amount}/{feedFilter}")]
-        public List<CommentModel> PostComments(int id, int commentCount, int amount, string feedFilter)
+        [HttpGet("postcomments/{id}/{commentCount}/{amount}/{feedFilter}/{feedType}")]
+        public List<CommentModel> PostComments(int id, int commentCount, int amount, string feedFilter, string feedType)
         {
-            return GetCommentModels(id, commentCount, amount, feedFilter);
+            return GetCommentModels(id, commentCount, amount, feedFilter, feedType);
         }
 
         // get comment by id
@@ -144,34 +144,51 @@ namespace SocialMedia.Controllers
 
         //-----------------------------------------UTIL---------------------------------------------//
 
-        public List<CommentModel> GetCommentModels(int postId, int skip, int take, string feedFilter)
+        public List<CommentModel> GetCommentModels(int postId, int skip, int take, string feedFilter, string feedType)
         {
-            List<CommentModel> comments = new List<CommentModel>(); // prepare list
-            if (skip < commentRepo.CountByPostId(postId)) // if user has not reached end of comments
+            IEnumerable<Comment> comments = new List<Comment>();
+
+            switch (feedType)
+            {
+                case "myComments":
+                    comments = commentRepo.Comments.Where(c => c.PostId == postId && c.CommentId == currentProfile.id);
+                    break;
+                case "likedComments":
+                    comments = commentRepo.Comments.Where(c => c.PostId == postId && likeRepo.HasLiked(2, c.CommentId, currentProfile.id));
+                    break;
+                case "mainComments":
+                    comments = commentRepo.Comments.Where(c => c.PostId == postId);
+                    break;
+            }
+
+            List<CommentModel> commentModels = new List<CommentModel>(); // prepare list
+            if (skip < comments.Count()) // if user has not reached end of comments
             {
                 if (feedFilter == "recent")
                 {
-                    foreach (Comment c in commentRepo.RangeByPostId(postId, skip, take)) // get comment results
+                    foreach (Comment c in comments // get comment results
+                        .OrderByDescending(c => c.DateTime)
+                        .Skip(skip)
+                        .Take(take)) 
                     {
-                        comments.Add(GetCommentModel(c.CommentId)); // prep comment and add to returning list
+                        commentModels.Add(GetCommentModel(c.CommentId)); // prep comment and add to returning list
                     }
                 }
                 else if (feedFilter == "likes")
                 {
-                    foreach (Comment c in commentRepo.Comments
-                        .Where(c => c.PostId == postId)
+                    foreach (Comment c in comments
                         .OrderByDescending(c => c.DateTime)
                         .OrderByDescending(c => likeRepo.CountByContentId(2, c.CommentId))
                         .Skip(skip)
                         .Take(take))
                     {
-                        comments.Add(GetCommentModel(c.CommentId));
+                        commentModels.Add(GetCommentModel(c.CommentId));
                     }
                 }
             }
             else return null; // if user has reached end of comments, return null
 
-            return comments; // return preped comment results
+            return commentModels; // return preped comment results
         }
 
         // prep comment to be sent to client

@@ -99,15 +99,19 @@
     padding-bottom: 20px;
 }
 
-.commentBoxFeedControls, .btnToggleCommentFeedFilter, .btnRefreshCommentFeed, .commentCountSlot, .commentCountSlot > div {
+.commentBoxFeedControls, .btnToggleCommentFeedFilter, .btnRefreshCommentFeed, .btnMyActivity, .commentCountSlot, .commentCountSlot > div {
     display: inline;
 }
 
-.btnToggleCommentFeedFilter, .btnRefreshCommentFeed {
+.btnToggleCommentFeedFilter, .btnRefreshCommentFeed, .btnMyActivity {
     padding: 4px;
     margin-bottom: 5px;
     border-radius: 2px;
     float: right;
     font-size: 14pt;
     color: gray;
+}
+
+.contentContainer > .content-box {
+    overflow: visible;
 }

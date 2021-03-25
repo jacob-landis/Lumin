@@ -4,8 +4,12 @@ var ContentBox = (function () {
         this.loading = false;
         this.moreContent = true;
         this.content = [];
+        this.requestCallback = null;
         this.onLoadEnd = null;
         this.rootElm = rootElm;
+        this.messageElm = ViewUtil.tag('div', { classList: 'contentMessage' });
+        this.contentElm = ViewUtil.tag('div', { classList: 'contentContainer' });
+        this.rootElm.append(this.messageElm, this.contentElm);
         this.rootElm.classList.add('content-box');
         this.scrollElm = scrollElm ? scrollElm : this.rootElm;
         this.loadThreshold = loadThreshold ? loadThreshold : 350;
@@ -14,8 +18,10 @@ var ContentBox = (function () {
         if (requestCallback)
             this.requestCallback = requestCallback;
         this.scrollElm.addEventListener("wheel", function (event) {
-            _this.lazyLoad();
-            _this.getVisibleContent().forEach(function (card) { return card.alertVisible(); });
+            if (_this.requestCallback != null) {
+                _this.lazyLoad();
+                _this.getVisibleContent().forEach(function (card) { return card.alertVisible(); });
+            }
         });
         ContentBox.contentBoxes.push(this);
     }
@@ -78,11 +84,11 @@ var ContentBox = (function () {
             if (content != null) {
                 if (prepend == true) {
                     _this.content.unshift(content);
-                    _this.rootElm.prepend(content.rootElm);
+                    _this.contentElm.prepend(content.rootElm);
                 }
                 else {
                     _this.content.push(content);
-                    _this.rootElm.append(content.rootElm);
+                    _this.contentElm.append(content.rootElm);
                 }
             }
         });
@@ -95,7 +101,7 @@ var ContentBox = (function () {
     };
     ContentBox.prototype.clear = function () {
         this.content = [];
-        ViewUtil.empty(this.rootElm);
+        ViewUtil.empty(this.contentElm);
         this.loading = false;
         this.moreContent = true;
     };

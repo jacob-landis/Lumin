@@ -38,4 +38,6 @@
     public static refresh(): HTMLElement        { return Icons.buildIcon(['refresh']) }
                                                 
     public static filterByLikes(): HTMLElement  { return Icons.buildIcon(['filter', 'thumbs-up']) }
+
+    public static history(): HTMLElement        { return Icons.buildIcon(['history']) }
 }

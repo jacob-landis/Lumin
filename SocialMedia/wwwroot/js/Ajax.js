@@ -25,16 +25,16 @@ var Ajax = (function () {
             onCommentResult(new CommentCard(commentResult));
         });
     };
-    Ajax.getComments = function (postId, skip, take, feedFilter, onCommentResults) {
-        this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take + "/" + feedFilter, "GET", function (commentResults) {
+    Ajax.getComments = function (postId, skip, take, feedFilter, feedType, onCommentResults) {
+        this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take + "/" + feedFilter + "/" + feedType, "GET", function (commentResults) {
             onCommentResults(CommentCard.list(commentResults));
         });
     };
     Ajax.getCommentCount = function (postId, onCommentCountResults) {
         this.call("apicomment/commentcount/" + postId, "GET", onCommentCountResults);
     };
-    Ajax.refreshComments = function (postId, commentIds, likeCounts, contents, take, feedFilter, onRefreshResults) {
-        this.call("apicomment/refreshcomments/" + postId + "/" + take + "/" + feedFilter, "POST", function (commentResults) {
+    Ajax.refreshComments = function (postId, commentIds, likeCounts, contents, take, feedFilter, feedType, onRefreshResults) {
+        this.call("apicomment/refreshcomments/" + postId + "/" + take + "/" + feedFilter + "/" + feedType, "POST", function (commentResults) {
             onRefreshResults(commentResults == undefined ?
                 null : CommentCard.list(commentResults));
         }, JSON.stringify({

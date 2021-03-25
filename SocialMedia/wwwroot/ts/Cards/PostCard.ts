@@ -15,7 +15,10 @@
     private hasImage: boolean;
     public totalCommentCount: number;
 
+    private commentBoxes: ContentBox;
     private commentsBox: ContentBox;
+    private myCommentsBox: ContentBox;
+    private LikedCommentsBox: ContentBox;
     private postImageWrapper: ImageBox;
     private captionEditor: Editor;
     private likeCard: LikeCard;
@@ -31,6 +34,7 @@
     private commentBoxRefreshMessage: HTMLElement;
     private btnToggleFeedFilter: HTMLElement;
     private btnRefreshFeed: HTMLElement;
+    private btnMyActivity: HTMLElement;
 
     private captionWrapper: HTMLElement;
     private postHeading: HTMLElement;
@@ -85,10 +89,18 @@
                     <div class="commentBoxFeedControls">
                         <div class="btnToggleCommentFeedFilter"></div>
                         <div class="btnRefreshCommentFeed"></div>
+                        <div class="btnMyActivity"></div>
                     </div>
                     <div class="commentBoxRefreshMessage"></div>
                 </div>
-                <div class="content-box"></div>
+                <div class="content-box commentBoxes">
+                    <div class="contentMessage"></div>
+                    <div class="contentContainer">
+                        <div class="content-box myComments"></div>
+                        <div class="content-box likedComments"></div>
+                        <div class="content-box mainComments"></div>
+                    </div>
+                </div>
             </div>
         </div>
     */
@@ -128,8 +140,19 @@
         this.btnRefreshFeed.classList.add('btnRefreshCommentFeed');
         this.btnRefreshFeed.title = 'Refresh comment feed';
 
+        this.btnMyActivity = Icons.history();
+        this.btnMyActivity.classList.add('btnMyActivity');
+        this.btnMyActivity.title = 'Show my activity'
+
+        this.myCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'myCommentsBox' }), null, 400, 30, (skip: number, take: number) => {
+            Ajax.getComments(this.post.postId, skip, take, 'recent', 'myComments', (commentCards: CommentCard[]) => this.myCommentsBox.add(commentCards))
+        });
+        this.LikedCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'likedCommentsBox' }), null, 400, 30, (skip: number, take: number) => {
+            Ajax.getComments(this.post.postId, skip, take, 'recent', 'likedComments', (commentCards: CommentCard[]) => this.myCommentsBox.add(commentCards))
+        });
+
         this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, (skip: number, take: number) => 
-            Ajax.getComments(this.post.postId, skip, take, 'recent', (comments: CommentCard[]) => {
+            Ajax.getComments(this.post.postId, skip, take, 'recent', 'mainComments', (comments: CommentCard[]) => {
 
                 if (comments == null) {
                     this.stage.updateStaging(this.commentsStaged);
@@ -154,14 +177,17 @@
             })
         );
 
+        this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
+        this.commentBoxes.add([this.myCommentsBox, this.LikedCommentsBox, this.commentsBox]);
+
         let txtComment: HTMLInputElement = <HTMLInputElement>ViewUtil.tag('textarea', { classList: 'txtComment' });
         let btnConfirm: HTMLElement = Icons.confirm();
         let btnCancel: HTMLElement = Icons.cancel();
         let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
 
-        commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.commentsBox.rootElm);
+        commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.commentBoxes.rootElm);
         this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls, this.commentBoxRefreshMessage);
-        this.commentBoxFeedControls.append(this.btnToggleFeedFilter, this.btnRefreshFeed);
+        this.commentBoxFeedControls.append(this.btnMyActivity, this.btnToggleFeedFilter, this.btnRefreshFeed);
         this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
 
         // __________________________________ 
@@ -226,6 +252,7 @@
 
         this.btnToggleFeedFilter.onclick = (event: MouseEvent) => this.toggleFeedFilter();
         this.btnRefreshFeed.onclick = (event: MouseEvent) => this.refreshCommentFeed();
+        this.btnMyActivity.onclick = (event: MouseEvent) => this.showCommentActivity();
 
         // PRIVATE OPTIONS
         if (post.profile.relationToUser == 'me') {
@@ -363,7 +390,7 @@
 
             this.commentBoxRefreshMessage.innerText = '';
 
-            Ajax.getComments(this.post.postId, skip, take, this.feedFilter, (commentCards: CommentCard[]) => {
+            Ajax.getComments(this.post.postId, skip, take, this.feedFilter, 'mainComments', (commentCards: CommentCard[]) => {
 
                 if (commentCards == null) return;
                 
@@ -376,6 +403,11 @@
         }
         this.commentsBox.request(15);
         
+    }
+
+    private showCommentActivity(): void {
+        this.myCommentsBox.request(15);
+        this.LikedCommentsBox.request(15);
     }
 
     private refreshCommentFeed(): void {
@@ -397,6 +429,7 @@
             contents,
             this.commentsBox.take,
             this.feedFilter,
+            'mainComments',
             (commentCards: CommentCard[]) => {
 
                 if (commentCards == null) {
