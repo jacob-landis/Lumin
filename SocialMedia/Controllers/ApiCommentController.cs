@@ -147,11 +147,11 @@ namespace SocialMedia.Controllers
         public List<CommentModel> GetCommentModels(int postId, int skip, int take, string feedFilter, string feedType)
         {
             IEnumerable<Comment> comments = new List<Comment>();
-
+            
             switch (feedType)
             {
                 case "myComments":
-                    comments = commentRepo.Comments.Where(c => c.PostId == postId && c.CommentId == currentProfile.id);
+                    comments = commentRepo.Comments.Where(c => c.PostId == postId && c.ProfileId == currentProfile.id);
                     break;
                 case "likedComments":
                     comments = commentRepo.Comments.Where(c => c.PostId == postId && likeRepo.HasLiked(2, c.CommentId, currentProfile.id));
@@ -187,7 +187,7 @@ namespace SocialMedia.Controllers
                 }
             }
             else return null; // if user has reached end of comments, return null
-
+            
             return commentModels; // return preped comment results
         }
 

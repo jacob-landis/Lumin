@@ -18,7 +18,7 @@
     private commentBoxes: ContentBox;
     private commentsBox: ContentBox;
     private myCommentsBox: ContentBox;
-    private LikedCommentsBox: ContentBox;
+    private likedCommentsBox: ContentBox;
     private postImageWrapper: ImageBox;
     private captionEditor: Editor;
     private likeCard: LikeCard;
@@ -31,7 +31,6 @@
     private commentCountSlot: HTMLElement;
     private commentCountText: HTMLElement;
     private commentBoxFeedControls: HTMLElement;
-    private commentBoxRefreshMessage: HTMLElement;
     private btnToggleFeedFilter: HTMLElement;
     private btnRefreshFeed: HTMLElement;
     private btnMyActivity: HTMLElement;
@@ -91,7 +90,6 @@
                         <div class="btnRefreshCommentFeed"></div>
                         <div class="btnMyActivity"></div>
                     </div>
-                    <div class="commentBoxRefreshMessage"></div>
                 </div>
                 <div class="content-box commentBoxes">
                     <div class="contentMessage"></div>
@@ -130,7 +128,6 @@
         this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
-        this.commentBoxRefreshMessage = ViewUtil.tag('div', { classList: 'commentBoxRefreshMessage' });
         
         this.btnToggleFeedFilter = Icons.filterByLikes();
         this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
@@ -145,14 +142,31 @@
         this.btnMyActivity.title = 'Show my activity'
 
         this.myCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'myCommentsBox' }), null, 400, 30, (skip: number, take: number) => {
-            Ajax.getComments(this.post.postId, skip, take, 'recent', 'myComments', (commentCards: CommentCard[]) => this.myCommentsBox.add(commentCards))
+            Ajax.getComments(this.post.postId, skip, take, this.feedFilter, 'myComments', (commentCards: CommentCard[]) => {
+                if (commentCards != null) {
+                    this.myCommentsBox.add(commentCards);
+                    this.myCommentsBox.messageElm.innerText = 'My Comments';
+                }
+                else {
+                    this.myCommentsBox.messageElm.innerText = '';
+                }
+            });
         });
-        this.LikedCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'likedCommentsBox' }), null, 400, 30, (skip: number, take: number) => {
-            Ajax.getComments(this.post.postId, skip, take, 'recent', 'likedComments', (commentCards: CommentCard[]) => this.myCommentsBox.add(commentCards))
+
+        this.likedCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'likedCommentsBox' }), null, 400, 30, (skip: number, take: number) => {
+            Ajax.getComments(this.post.postId, skip, take, this.feedFilter, 'likedComments', (commentCards: CommentCard[]) => {
+                if (commentCards != null) {
+                    this.likedCommentsBox.add(commentCards);
+                    this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+                }
+                else {
+                    this.likedCommentsBox.messageElm.innerText = '';
+                }
+            });
         });
 
         this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, (skip: number, take: number) => 
-            Ajax.getComments(this.post.postId, skip, take, 'recent', 'mainComments', (comments: CommentCard[]) => {
+            Ajax.getComments(this.post.postId, skip, take, this.feedFilter, 'mainComments', (comments: CommentCard[]) => {
 
                 if (comments == null) {
                     this.stage.updateStaging(this.commentsStaged);
@@ -169,6 +183,8 @@
 
                 this.commentsBox.add(comments);
 
+                if (this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0) this.commentsBox.messageElm.innerText = 'All Comments';
+
                 // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
                 if (isFirstCommentsBatch) {
                     if (!this.hasImage) this.resizeCommentBox();
@@ -178,7 +194,7 @@
         );
 
         this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
-        this.commentBoxes.add([this.myCommentsBox, this.LikedCommentsBox, this.commentsBox]);
+        this.commentBoxes.add([this.myCommentsBox, this.likedCommentsBox, this.commentsBox]);
 
         let txtComment: HTMLInputElement = <HTMLInputElement>ViewUtil.tag('textarea', { classList: 'txtComment' });
         let btnConfirm: HTMLElement = Icons.confirm();
@@ -186,7 +202,7 @@
         let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
 
         commentSection.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.commentBoxes.rootElm);
-        this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls, this.commentBoxRefreshMessage);
+        this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls);
         this.commentBoxFeedControls.append(this.btnMyActivity, this.btnToggleFeedFilter, this.btnRefreshFeed);
         this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
 
@@ -386,32 +402,28 @@
         }
 
         this.commentsBox.clear();
-        this.commentsBox.requestCallback = (skip: number, take: number) => {
-
-            this.commentBoxRefreshMessage.innerText = '';
-
-            Ajax.getComments(this.post.postId, skip, take, this.feedFilter, 'mainComments', (commentCards: CommentCard[]) => {
-
-                if (commentCards == null) return;
-                
-                // If this post belongs to current user, indicate which comments have not been seen by the user.
-                if (this.post.profile.profileId == User.profileId)
-                    commentCards.forEach((comment: CommentCard) => comment.disputeHasSeen());
-
-                this.commentsBox.add(commentCards);
-            });
-        }
         this.commentsBox.request(15);
-        
+
+        if (this.myCommentsBox.length > 0) {
+            this.myCommentsBox.clear();
+            this.myCommentsBox.request(15);
+        }
+
+        if (this.likedCommentsBox.length > 0) {
+            this.likedCommentsBox.clear();
+            this.likedCommentsBox.request(15)
+        }
     }
 
     private showCommentActivity(): void {
         this.myCommentsBox.request(15);
-        this.LikedCommentsBox.request(15);
+        this.likedCommentsBox.request(15);
+
+        this.commentsBox.messageElm.innerText = 'All Comments';
     }
 
     private refreshCommentFeed(): void {
-
+        
         // Collect list of all comment id's in this comment box and this post id and send to server for comparison.
         let commentIds: number[] = [];
         let likeCounts: number[] = [];
@@ -422,6 +434,7 @@
             contents.push((<CommentCard>content).comment.content);
         });
 
+        // Refresh main comments
         Ajax.refreshComments(
             this.post.postId,
             commentIds,
@@ -433,15 +446,82 @@
             (commentCards: CommentCard[]) => {
 
                 if (commentCards == null) {
-                    this.commentBoxRefreshMessage.innerText = 'No changes have been made.';
+                    if (this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0)
+                        this.commentsBox.messageElm.innerText = 'All Comments - No changes have been made';
+                    else
+                        this.commentsBox.messageElm.innerText = 'No changes have been made';
                 }
-                else {
-                    this.commentBoxRefreshMessage.innerText = '';
+                else if (commentCards != null) {
+                    if (this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0) this.commentsBox.messageElm.innerText = 'All Comments';
                     this.commentsBox.clear();
                     this.commentsBox.add(commentCards);
                 }
             }
         );
+
+        // If the message for my comments box has been set.
+        if (this.myCommentsBox.messageElm.innerText != '') {
+
+            if (this.myCommentsBox.length > 0) {
+
+                // Prepare my comments
+                //let myCommentIds, myLikeCounts: number[] = [];
+                let myCommentIds: number[] = [];
+                let myLikeCounts: number[] = [];
+                let myContents: string[] = [];
+                this.myCommentsBox.content.forEach((content: IAppendable) => {
+                    myCommentIds.push((<CommentCard>content).comment.commentId);
+                    myLikeCounts.push((<CommentCard>content).comment.likes.count);
+                    myContents.push((<CommentCard>content).comment.content);
+                });
+            
+                // Refresh my comments
+                Ajax.refreshComments(this.post.postId, myCommentIds, myLikeCounts, myContents, this.myCommentsBox.take, this.feedFilter, 'myComments',
+                    (commentCards: CommentCard[]) => {
+
+                        if (commentCards == null) {
+                            this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
+                        }
+                        else {
+                            this.myCommentsBox.messageElm.innerText = 'My Comments';
+                            this.myCommentsBox.clear();
+                            this.myCommentsBox.add(commentCards);
+                        }
+                    }
+                );
+            }
+
+            if (this.likedCommentsBox.length > 0) {
+
+                // Prepare liked comments
+                let likedCommentIds: number[] = [];
+                let likedLikeCounts: number[] = [];
+                let likedContents: string[] = [];
+                this.likedCommentsBox.content.forEach((content: IAppendable) => {
+                    likedCommentIds.push((<CommentCard>content).comment.commentId);
+                    likedLikeCounts.push((<CommentCard>content).comment.likes.count);
+                    likedContents.push((<CommentCard>content).comment.content);
+                });
+
+
+                // Refresh liked comments
+                Ajax.refreshComments(this.post.postId, likedCommentIds, likedLikeCounts, likedContents, this.likedCommentsBox.take, this.feedFilter, 
+                    'likedComments',
+                    (commentCards: CommentCard[]) => {
+
+                        if (commentCards == null) {
+                            this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
+                        }
+                        else {
+                            this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+                            this.likedCommentsBox.clear();
+                            this.likedCommentsBox.add(commentCards);
+                        }
+                    }
+                );
+            }
+        }
+        
     }
 
     private refreshPostDetails(): void {

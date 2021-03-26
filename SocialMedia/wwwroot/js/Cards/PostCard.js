@@ -31,7 +31,6 @@ var PostCard = (function (_super) {
         _this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         _this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
-        _this.commentBoxRefreshMessage = ViewUtil.tag('div', { classList: 'commentBoxRefreshMessage' });
         _this.btnToggleFeedFilter = Icons.filterByLikes();
         _this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
         _this.btnToggleFeedFilter.title = 'Sort by popularity';
@@ -42,13 +41,29 @@ var PostCard = (function (_super) {
         _this.btnMyActivity.classList.add('btnMyActivity');
         _this.btnMyActivity.title = 'Show my activity';
         _this.myCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'myCommentsBox' }), null, 400, 30, function (skip, take) {
-            Ajax.getComments(_this.post.postId, skip, take, 'recent', 'myComments', function (commentCards) { return _this.myCommentsBox.add(commentCards); });
+            Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, 'myComments', function (commentCards) {
+                if (commentCards != null) {
+                    _this.myCommentsBox.add(commentCards);
+                    _this.myCommentsBox.messageElm.innerText = 'My Comments';
+                }
+                else {
+                    _this.myCommentsBox.messageElm.innerText = '';
+                }
+            });
         });
-        _this.LikedCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'likedCommentsBox' }), null, 400, 30, function (skip, take) {
-            Ajax.getComments(_this.post.postId, skip, take, 'recent', 'likedComments', function (commentCards) { return _this.myCommentsBox.add(commentCards); });
+        _this.likedCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'likedCommentsBox' }), null, 400, 30, function (skip, take) {
+            Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, 'likedComments', function (commentCards) {
+                if (commentCards != null) {
+                    _this.likedCommentsBox.add(commentCards);
+                    _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+                }
+                else {
+                    _this.likedCommentsBox.messageElm.innerText = '';
+                }
+            });
         });
         _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, function (skip, take) {
-            return Ajax.getComments(_this.post.postId, skip, take, 'recent', 'mainComments', function (comments) {
+            return Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, 'mainComments', function (comments) {
                 if (comments == null) {
                     _this.stage.updateStaging(_this.commentsStaged);
                     return;
@@ -57,6 +72,8 @@ var PostCard = (function (_super) {
                 if (_this.post.profile.profileId == User.profileId)
                     comments.forEach(function (comment) { return comment.disputeHasSeen(); });
                 _this.commentsBox.add(comments);
+                if (_this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0)
+                    _this.commentsBox.messageElm.innerText = 'All Comments';
                 if (isFirstCommentsBatch) {
                     if (!_this.hasImage)
                         _this.resizeCommentBox();
@@ -65,13 +82,13 @@ var PostCard = (function (_super) {
             });
         });
         _this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
-        _this.commentBoxes.add([_this.myCommentsBox, _this.LikedCommentsBox, _this.commentsBox]);
+        _this.commentBoxes.add([_this.myCommentsBox, _this.likedCommentsBox, _this.commentsBox]);
         var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
         var btnConfirm = Icons.confirm();
         var btnCancel = Icons.cancel();
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
         commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.commentBoxes.rootElm);
-        _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls, _this.commentBoxRefreshMessage);
+        _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls);
         _this.commentBoxFeedControls.append(_this.btnMyActivity, _this.btnToggleFeedFilter, _this.btnRefreshFeed);
         _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
         _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
@@ -204,7 +221,6 @@ var PostCard = (function (_super) {
         }
     };
     PostCard.prototype.toggleFeedFilter = function () {
-        var _this = this;
         var feedFilterSecondIcon = this.btnToggleFeedFilter.children[1];
         this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
         if (this.feedFilter == 'likes') {
@@ -218,21 +234,20 @@ var PostCard = (function (_super) {
             feedFilterSecondIcon.classList.add('fa-thumbs-up');
         }
         this.commentsBox.clear();
-        this.commentsBox.requestCallback = function (skip, take) {
-            _this.commentBoxRefreshMessage.innerText = '';
-            Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, 'mainComments', function (commentCards) {
-                if (commentCards == null)
-                    return;
-                if (_this.post.profile.profileId == User.profileId)
-                    commentCards.forEach(function (comment) { return comment.disputeHasSeen(); });
-                _this.commentsBox.add(commentCards);
-            });
-        };
         this.commentsBox.request(15);
+        if (this.myCommentsBox.length > 0) {
+            this.myCommentsBox.clear();
+            this.myCommentsBox.request(15);
+        }
+        if (this.likedCommentsBox.length > 0) {
+            this.likedCommentsBox.clear();
+            this.likedCommentsBox.request(15);
+        }
     };
     PostCard.prototype.showCommentActivity = function () {
         this.myCommentsBox.request(15);
-        this.LikedCommentsBox.request(15);
+        this.likedCommentsBox.request(15);
+        this.commentsBox.messageElm.innerText = 'All Comments';
     };
     PostCard.prototype.refreshCommentFeed = function () {
         var _this = this;
@@ -246,14 +261,60 @@ var PostCard = (function (_super) {
         });
         Ajax.refreshComments(this.post.postId, commentIds, likeCounts, contents, this.commentsBox.take, this.feedFilter, 'mainComments', function (commentCards) {
             if (commentCards == null) {
-                _this.commentBoxRefreshMessage.innerText = 'No changes have been made.';
+                if (_this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0)
+                    _this.commentsBox.messageElm.innerText = 'All Comments - No changes have been made';
+                else
+                    _this.commentsBox.messageElm.innerText = 'No changes have been made';
             }
-            else {
-                _this.commentBoxRefreshMessage.innerText = '';
+            else if (commentCards != null) {
+                if (_this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0)
+                    _this.commentsBox.messageElm.innerText = 'All Comments';
                 _this.commentsBox.clear();
                 _this.commentsBox.add(commentCards);
             }
         });
+        if (this.myCommentsBox.messageElm.innerText != '') {
+            if (this.myCommentsBox.length > 0) {
+                var myCommentIds_1 = [];
+                var myLikeCounts_1 = [];
+                var myContents_1 = [];
+                this.myCommentsBox.content.forEach(function (content) {
+                    myCommentIds_1.push(content.comment.commentId);
+                    myLikeCounts_1.push(content.comment.likes.count);
+                    myContents_1.push(content.comment.content);
+                });
+                Ajax.refreshComments(this.post.postId, myCommentIds_1, myLikeCounts_1, myContents_1, this.myCommentsBox.take, this.feedFilter, 'myComments', function (commentCards) {
+                    if (commentCards == null) {
+                        _this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
+                    }
+                    else {
+                        _this.myCommentsBox.messageElm.innerText = 'My Comments';
+                        _this.myCommentsBox.clear();
+                        _this.myCommentsBox.add(commentCards);
+                    }
+                });
+            }
+            if (this.likedCommentsBox.length > 0) {
+                var likedCommentIds_1 = [];
+                var likedLikeCounts_1 = [];
+                var likedContents_1 = [];
+                this.likedCommentsBox.content.forEach(function (content) {
+                    likedCommentIds_1.push(content.comment.commentId);
+                    likedLikeCounts_1.push(content.comment.likes.count);
+                    likedContents_1.push(content.comment.content);
+                });
+                Ajax.refreshComments(this.post.postId, likedCommentIds_1, likedLikeCounts_1, likedContents_1, this.likedCommentsBox.take, this.feedFilter, 'likedComments', function (commentCards) {
+                    if (commentCards == null) {
+                        _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
+                    }
+                    else {
+                        _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+                        _this.likedCommentsBox.clear();
+                        _this.likedCommentsBox.add(commentCards);
+                    }
+                });
+            }
+        }
     };
     PostCard.prototype.refreshPostDetails = function () {
         var _this = this;

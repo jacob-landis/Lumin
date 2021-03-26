@@ -9,3 +9,13 @@
 .content-box-horizontal > div {
     display: inline;
 }*/
+
+.contentContainer > .content-box {
+    overflow: visible;
+}
+
+.contentMessage {
+    background-color: lightgray;
+    text-align: center;
+    font-weight: bold;
+}

@@ -111,7 +111,3 @@
     font-size: 14pt;
     color: gray;
 }
-
-.contentContainer > .content-box {
-    overflow: visible;
-}
