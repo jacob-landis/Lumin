@@ -123,7 +123,7 @@ var PostCard = (function (_super) {
         _this.requestCommentCount();
         _this.btnToggleFeedFilter.onclick = function (event) { return _this.toggleFeedFilter(); };
         _this.btnRefreshFeed.onclick = function (event) { return _this.refreshCommentFeed(); };
-        _this.btnMyActivity.onclick = function (event) { return _this.showCommentActivity(); };
+        _this.setBtnMyActivity(true);
         if (post.profile.relationToUser == 'me') {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
@@ -247,7 +247,23 @@ var PostCard = (function (_super) {
     PostCard.prototype.showCommentActivity = function () {
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
-        this.commentsBox.messageElm.innerText = 'All Comments';
+        this.setBtnMyActivity(false);
+    };
+    PostCard.prototype.hideCommentActivity = function () {
+        this.myCommentsBox.clear();
+        this.likedCommentsBox.clear();
+        this.myCommentsBox.messageElm.innerText = '';
+        this.likedCommentsBox.messageElm.innerText = '';
+        this.setBtnMyActivity(true);
+    };
+    PostCard.prototype.setBtnMyActivity = function (makeBtnShowActivty) {
+        var _this = this;
+        makeBtnShowActivty ?
+            this.btnMyActivity.classList.remove('showingMyCommentActivity')
+            : this.btnMyActivity.classList.add('showingMyCommentActivity');
+        this.commentsBox.messageElm.innerText = makeBtnShowActivty ? '' : 'All Comments';
+        this.btnMyActivity.title = makeBtnShowActivty ? 'Show my activity' : 'Hide my activity';
+        this.btnMyActivity.onclick = function (event) { return makeBtnShowActivty ? _this.showCommentActivity() : _this.hideCommentActivity(); };
     };
     PostCard.prototype.refreshCommentFeed = function () {
         var _this = this;

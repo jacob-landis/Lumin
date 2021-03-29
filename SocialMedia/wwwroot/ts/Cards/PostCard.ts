@@ -268,7 +268,7 @@
 
         this.btnToggleFeedFilter.onclick = (event: MouseEvent) => this.toggleFeedFilter();
         this.btnRefreshFeed.onclick = (event: MouseEvent) => this.refreshCommentFeed();
-        this.btnMyActivity.onclick = (event: MouseEvent) => this.showCommentActivity();
+        this.setBtnMyActivity(true);
 
         // PRIVATE OPTIONS
         if (post.profile.relationToUser == 'me') {
@@ -411,15 +411,32 @@
 
         if (this.likedCommentsBox.length > 0) {
             this.likedCommentsBox.clear();
-            this.likedCommentsBox.request(15)
+            this.likedCommentsBox.request(15);
         }
     }
 
     private showCommentActivity(): void {
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
+        this.setBtnMyActivity(false);
+    }
 
-        this.commentsBox.messageElm.innerText = 'All Comments';
+    private hideCommentActivity(): void {
+        this.myCommentsBox.clear();
+        this.likedCommentsBox.clear();
+        this.myCommentsBox.messageElm.innerText = '';
+        this.likedCommentsBox.messageElm.innerText = '';
+        this.setBtnMyActivity(true);
+    }
+
+    private setBtnMyActivity(makeBtnShowActivty: boolean) {
+        makeBtnShowActivty ?
+            this.btnMyActivity.classList.remove('showingMyCommentActivity')
+            : this.btnMyActivity.classList.add('showingMyCommentActivity');
+
+        this.commentsBox.messageElm.innerText             = makeBtnShowActivty ? ''                         : 'All Comments';
+        this.btnMyActivity.title                          = makeBtnShowActivty ? 'Show my activity'         : 'Hide my activity';
+        this.btnMyActivity.onclick = (event: MouseEvent) => makeBtnShowActivty ? this.showCommentActivity() : this.hideCommentActivity();
     }
 
     private refreshCommentFeed(): void {
