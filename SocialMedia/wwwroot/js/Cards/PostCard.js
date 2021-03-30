@@ -15,82 +15,16 @@ var PostCard = (function (_super) {
     __extends(PostCard, _super);
     function PostCard(post) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'postCard' })) || this;
-        _this.feedFilter = 'recent';
         _this.allStaged = new StageFlag();
-        _this.commentsStaged = new StageFlag();
         _this.imageStaged = new StageFlag();
         _this.post = post;
         if (_this.post.image)
             _this.hasImage = true;
-        _this.stage = new Stage([_this.imageStaged, _this.commentsStaged]);
         var postSection = ViewUtil.tag('div', { classList: 'postSection' });
-        var commentSection = ViewUtil.tag('div', { classList: 'commentSection' });
-        _this.rootElm.append(postSection, commentSection);
-        _this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
-        _this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
-        _this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
-        _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
-        _this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
-        _this.btnToggleFeedFilter = Icons.filterByLikes();
-        _this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
-        _this.btnToggleFeedFilter.title = 'Sort by popularity';
-        _this.btnRefreshFeed = Icons.refresh();
-        _this.btnRefreshFeed.classList.add('btnRefreshCommentFeed');
-        _this.btnRefreshFeed.title = 'Refresh comment feed';
-        _this.btnMyActivity = Icons.history();
-        _this.btnMyActivity.classList.add('btnMyActivity');
-        _this.btnMyActivity.title = 'Show my activity';
-        _this.myCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'myCommentsBox' }), null, 400, 30, function (skip, take) {
-            Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, 'myComments', function (commentCards) {
-                if (commentCards != null) {
-                    _this.myCommentsBox.add(commentCards);
-                    _this.myCommentsBox.messageElm.innerText = 'My Comments';
-                }
-                else {
-                    _this.myCommentsBox.messageElm.innerText = '';
-                }
-            });
-        });
-        _this.likedCommentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'likedCommentsBox' }), null, 400, 30, function (skip, take) {
-            Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, 'likedComments', function (commentCards) {
-                if (commentCards != null) {
-                    _this.likedCommentsBox.add(commentCards);
-                    _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
-                }
-                else {
-                    _this.likedCommentsBox.messageElm.innerText = '';
-                }
-            });
-        });
-        _this.commentsBox = new ContentBox(ViewUtil.tag('div', { classList: 'commentBox' }), null, 400, 30, function (skip, take) {
-            return Ajax.getComments(_this.post.postId, skip, take, _this.feedFilter, 'mainComments', function (comments) {
-                if (comments == null) {
-                    _this.stage.updateStaging(_this.commentsStaged);
-                    return;
-                }
-                var isFirstCommentsBatch = _this.commentsBox.content.length == 0;
-                if (_this.post.profile.profileId == User.profileId)
-                    comments.forEach(function (comment) { return comment.disputeHasSeen(); });
-                _this.commentsBox.add(comments);
-                if (_this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0)
-                    _this.commentsBox.messageElm.innerText = 'All Comments';
-                if (isFirstCommentsBatch) {
-                    if (!_this.hasImage)
-                        _this.resizeCommentBox();
-                    _this.stage.updateStaging(_this.commentsStaged);
-                }
-            });
-        });
-        _this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
-        _this.commentBoxes.add([_this.myCommentsBox, _this.likedCommentsBox, _this.commentsBox]);
-        var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
-        var btnConfirm = Icons.confirm();
-        var btnCancel = Icons.cancel();
-        var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
-        commentSection.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.commentBoxes.rootElm);
-        _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls);
-        _this.commentBoxFeedControls.append(_this.btnMyActivity, _this.btnToggleFeedFilter, _this.btnRefreshFeed);
-        _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
+        _this.commentsBox = new CommentsBox(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); });
+        _this.commentsBox.commentBoxesStage.onStagingEnd = function () { return _this.stage.updateStaging(_this.commentsBox.allStaged); };
+        _this.stage = new Stage([_this.imageStaged, _this.commentsBox.allStaged]);
+        _this.rootElm.append(postSection, _this.commentsBox.rootElm);
         _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
         if (_this.hasImage) {
             _this.postImageWrapper.load(_this.post.image.imageId);
@@ -119,11 +53,6 @@ var PostCard = (function (_super) {
         _this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
         profileCardSlot.append(new ProfileCard(_this.post.profile).rootElm);
         likeCardSlot.append(_this.likeCard.rootElm, _this.refreshPostDetailsMessage);
-        _this.commentsBox.request(15);
-        _this.requestCommentCount();
-        _this.btnToggleFeedFilter.onclick = function (event) { return _this.toggleFeedFilter(); };
-        _this.btnRefreshFeed.onclick = function (event) { return _this.refreshCommentFeed(); };
-        _this.setBtnMyActivity(true);
         if (post.profile.relationToUser == 'me') {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
@@ -144,55 +73,11 @@ var PostCard = (function (_super) {
             btnRefreshPostDetails.onclick = function (event) { return _this.refreshPostDetails(); };
             postOptsSlot.append(btnRefreshPostDetails);
         }
-        var deactivateInput = function () {
-            txtComment.value = '';
-            _this.commentInputWrapper.classList.remove('activeInput');
-        };
-        btnConfirm.onclick = function (e) {
-            var tooLong = txtComment.value.length > 125;
-            var tooShort = txtComment.value.length == 0;
-            var tooLongError = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Must be less than 125 characters' });
-            var tooShortError = ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Comment cannot be empty' });
-            if (!tooLong && !tooShort) {
-                confirmPrompt.load("Are you sure you want to make this comment?", function (answer) {
-                    if (answer == true) {
-                        Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentResults) {
-                            PostCard.postCards.forEach(function (p) {
-                                if (p.post.postId == commentResults.postId) {
-                                    p.commentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
-                                    p.resizeCommentBox();
-                                    p.setCommentCount(_this.totalCommentCount + 1);
-                                }
-                            });
-                        });
-                        ViewUtil.empty(_this.errorSlot);
-                        deactivateInput();
-                    }
-                });
-            }
-            else if (tooLong)
-                _this.errorSlot.append(tooLongError);
-            else if (tooShort)
-                _this.errorSlot.append(tooShortError);
-        };
-        btnCancel.onclick = function (event) {
-            if (txtComment.value.length > 10) {
-                confirmPrompt.load("Are you sure you want to discard this comment?", function (answer) {
-                    if (answer == true)
-                        deactivateInput();
-                    else
-                        txtComment.focus();
-                });
-            }
-            else
-                deactivateInput();
-        };
-        btnComment.onclick = function (event) {
-            _this.commentInputWrapper.classList.add('activeInput');
-            txtComment.focus();
-        };
         if (_this.hasImage) {
-            _this.observer = new MutationObserver(function () { return _this.resizeCommentBox(); });
+            _this.observer = new MutationObserver(function () {
+                _this.commentsBox.resizeCommentBox();
+                _this.observer.disconnect();
+            });
             _this.observer.observe(_this.rootElm, { attributes: true });
             _this.postImageWrapper.onLoadEnd = function () {
                 _this.mutate();
@@ -220,118 +105,6 @@ var PostCard = (function (_super) {
             return postCards;
         }
     };
-    PostCard.prototype.toggleFeedFilter = function () {
-        var feedFilterSecondIcon = this.btnToggleFeedFilter.children[1];
-        this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
-        if (this.feedFilter == 'likes') {
-            this.btnToggleFeedFilter.title = 'Sort by recent';
-            feedFilterSecondIcon.classList.remove('fa-thumbs-up');
-            feedFilterSecondIcon.classList.add('fa-calendar');
-        }
-        else if (this.feedFilter == 'recent') {
-            this.btnToggleFeedFilter.title = 'Sort by popularity';
-            feedFilterSecondIcon.classList.remove('fa-calendar');
-            feedFilterSecondIcon.classList.add('fa-thumbs-up');
-        }
-        this.commentsBox.clear();
-        this.commentsBox.request(15);
-        if (this.myCommentsBox.length > 0) {
-            this.myCommentsBox.clear();
-            this.myCommentsBox.request(15);
-        }
-        if (this.likedCommentsBox.length > 0) {
-            this.likedCommentsBox.clear();
-            this.likedCommentsBox.request(15);
-        }
-    };
-    PostCard.prototype.showCommentActivity = function () {
-        this.myCommentsBox.request(15);
-        this.likedCommentsBox.request(15);
-        this.setBtnMyActivity(false);
-    };
-    PostCard.prototype.hideCommentActivity = function () {
-        this.myCommentsBox.clear();
-        this.likedCommentsBox.clear();
-        this.myCommentsBox.messageElm.innerText = '';
-        this.likedCommentsBox.messageElm.innerText = '';
-        this.setBtnMyActivity(true);
-    };
-    PostCard.prototype.setBtnMyActivity = function (makeBtnShowActivty) {
-        var _this = this;
-        makeBtnShowActivty ?
-            this.btnMyActivity.classList.remove('showingMyCommentActivity')
-            : this.btnMyActivity.classList.add('showingMyCommentActivity');
-        this.commentsBox.messageElm.innerText = makeBtnShowActivty ? '' : 'All Comments';
-        this.btnMyActivity.title = makeBtnShowActivty ? 'Show my activity' : 'Hide my activity';
-        this.btnMyActivity.onclick = function (event) { return makeBtnShowActivty ? _this.showCommentActivity() : _this.hideCommentActivity(); };
-    };
-    PostCard.prototype.refreshCommentFeed = function () {
-        var _this = this;
-        var commentIds = [];
-        var likeCounts = [];
-        var contents = [];
-        this.commentsBox.content.forEach(function (content) {
-            commentIds.push(content.comment.commentId);
-            likeCounts.push(content.comment.likes.count);
-            contents.push(content.comment.content);
-        });
-        Ajax.refreshComments(this.post.postId, commentIds, likeCounts, contents, this.commentsBox.take, this.feedFilter, 'mainComments', function (commentCards) {
-            if (commentCards == null) {
-                if (_this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0)
-                    _this.commentsBox.messageElm.innerText = 'All Comments - No changes have been made';
-                else
-                    _this.commentsBox.messageElm.innerText = 'No changes have been made';
-            }
-            else if (commentCards != null) {
-                if (_this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0)
-                    _this.commentsBox.messageElm.innerText = 'All Comments';
-                _this.commentsBox.clear();
-                _this.commentsBox.add(commentCards);
-            }
-        });
-        if (this.myCommentsBox.messageElm.innerText != '') {
-            if (this.myCommentsBox.length > 0) {
-                var myCommentIds_1 = [];
-                var myLikeCounts_1 = [];
-                var myContents_1 = [];
-                this.myCommentsBox.content.forEach(function (content) {
-                    myCommentIds_1.push(content.comment.commentId);
-                    myLikeCounts_1.push(content.comment.likes.count);
-                    myContents_1.push(content.comment.content);
-                });
-                Ajax.refreshComments(this.post.postId, myCommentIds_1, myLikeCounts_1, myContents_1, this.myCommentsBox.take, this.feedFilter, 'myComments', function (commentCards) {
-                    if (commentCards == null) {
-                        _this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
-                    }
-                    else {
-                        _this.myCommentsBox.messageElm.innerText = 'My Comments';
-                        _this.myCommentsBox.clear();
-                        _this.myCommentsBox.add(commentCards);
-                    }
-                });
-            }
-            if (this.likedCommentsBox.length > 0) {
-                var likedCommentIds_1 = [];
-                var likedLikeCounts_1 = [];
-                var likedContents_1 = [];
-                this.likedCommentsBox.content.forEach(function (content) {
-                    likedCommentIds_1.push(content.comment.commentId);
-                    likedLikeCounts_1.push(content.comment.likes.count);
-                    likedContents_1.push(content.comment.content);
-                });
-                Ajax.refreshComments(this.post.postId, likedCommentIds_1, likedLikeCounts_1, likedContents_1, this.likedCommentsBox.take, this.feedFilter, 'likedComments', function (commentCards) {
-                    if (commentCards == null) {
-                        _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
-                    }
-                    else {
-                        _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
-                        _this.likedCommentsBox.clear();
-                        _this.likedCommentsBox.add(commentCards);
-                    }
-                });
-            }
-        }
-    };
     PostCard.prototype.refreshPostDetails = function () {
         var _this = this;
         Ajax.getPost(this.post.postId, function (postCard) {
@@ -351,40 +124,8 @@ var PostCard = (function (_super) {
             }
         });
     };
-    PostCard.prototype.resizeCommentBox = function () {
-        var inputHeight = this.commentInputWrapper.clientHeight;
-        var contentHeight = this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight;
-        var targetHeight = contentHeight - inputHeight;
-        this.commentsBox.height = targetHeight;
-        if (this.observer != undefined)
-            this.observer.disconnect();
-    };
-    PostCard.prototype.setCommentCount = function (newCount) {
-        this.totalCommentCount = newCount;
-        switch (newCount) {
-            case 0:
-                this.commentCountText.innerText = 'No Comments';
-                break;
-            case 1:
-                this.commentCountText.innerText = '1 Comment';
-                break;
-            default: this.commentCountText.innerText = newCount + " Comments";
-        }
-    };
-    PostCard.prototype.requestCommentCount = function () {
-        var _this = this;
-        Ajax.getCommentCount(this.post.postId, function (commentCount) {
-            _this.commentCountText = ViewUtil.tag('div');
-            _this.setCommentCount(+commentCount);
-            _this.commentCountSlot.append(_this.commentCountText);
-        });
-    };
-    PostCard.prototype.alertVisible = function () {
-        this.commentsBox.getVisibleContent().forEach(function (commentCard) { return commentCard.alertVisible(); });
-    };
     PostCard.prototype.remove = function () {
         var _this = this;
-        this.setCommentCount(this.totalCommentCount - 1);
         Ajax.deletePost(this.post.postId);
         PostCard.postCards.forEach(function (postCard) {
             if (postCard.post.postId == _this.post.postId) {

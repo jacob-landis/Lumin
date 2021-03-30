@@ -2,6 +2,7 @@ var Stage = (function () {
     function Stage(stageFlags, onStagingEnd) {
         this.stageFlags = stageFlags;
         this.onStagingEnd = onStagingEnd;
+        stageFlags.forEach(function (stageFlag) { return stageFlag.lower(); });
     }
     Stage.prototype.updateStaging = function (stageFlag) {
         stageFlag.raise();

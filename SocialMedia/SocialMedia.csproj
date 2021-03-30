@@ -14,6 +14,7 @@
   <ItemGroup>
     <Content Remove="wwwroot\ts\Ajax.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBox.ts" />
+    <Content Remove="wwwroot\ts\Components\ContentBoxes\CommentsBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
     <Content Remove="wwwroot\ts\Components\DoubleEditor.ts" />
@@ -72,6 +73,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\ts\Ajax.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\CommentsBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\DoubleEditor.ts" />

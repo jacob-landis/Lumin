@@ -112,7 +112,7 @@ var CommentCard = (function (_super) {
         Util.filterNulls(CommentCard.commentCards);
         PostCard.postCards.forEach(function (p) {
             if (p.post.postId == _this.comment.postId) {
-                p.setCommentCount(p.totalCommentCount - 1);
+                p.commentsBox.setCommentCount(p.commentsBox.totalCommentCount - 1);
             }
         });
     };

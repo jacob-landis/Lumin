@@ -3,7 +3,9 @@
     constructor(
         public stageFlags: StageFlag[],
         public onStagingEnd?: () => void
-    ) { }
+    ) {
+        stageFlags.forEach((stageFlag: StageFlag) => stageFlag.lower())
+    }
     
     public updateStaging(stageFlag: StageFlag) {
 

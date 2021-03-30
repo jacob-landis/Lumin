@@ -215,7 +215,7 @@ class CommentCard extends Card {
             if (p.post.postId == this.comment.postId) {
                 
                 // Display the new comment count.
-                p.setCommentCount(p.totalCommentCount - 1);
+                p.commentsBox.setCommentCount(p.commentsBox.totalCommentCount - 1);
             }
         });
     }
