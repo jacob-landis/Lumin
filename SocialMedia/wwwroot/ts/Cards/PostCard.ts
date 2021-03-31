@@ -24,7 +24,7 @@
     private editIcon: HTMLElement;
     private refreshPostDetailsMessage: HTMLElement;
 
-    public commentsBox: CommentsBox;
+    public commentsBox: CommentSectionCard;
     
     // Used by postsBox. Not used in this.stage.
     public allStaged: StageFlag = new StageFlag();
@@ -72,7 +72,7 @@
         
         let postSection: HTMLElement = ViewUtil.tag('div', { classList: 'postSection' });
 
-        this.commentsBox = new CommentsBox(
+        this.commentsBox = new CommentSectionCard(
             this.post,
             () => (this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight)
         );

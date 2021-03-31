@@ -21,7 +21,7 @@ var PostCard = (function (_super) {
         if (_this.post.image)
             _this.hasImage = true;
         var postSection = ViewUtil.tag('div', { classList: 'postSection' });
-        _this.commentsBox = new CommentsBox(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); });
+        _this.commentsBox = new CommentSectionCard(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); });
         _this.commentsBox.commentBoxesStage.onStagingEnd = function () { return _this.stage.updateStaging(_this.commentsBox.allStaged); };
         _this.stage = new Stage([_this.imageStaged, _this.commentsBox.allStaged]);
         _this.rootElm.append(postSection, _this.commentsBox.rootElm);
