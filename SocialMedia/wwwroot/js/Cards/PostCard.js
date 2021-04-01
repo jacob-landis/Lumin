@@ -21,10 +21,10 @@ var PostCard = (function (_super) {
         if (_this.post.image)
             _this.hasImage = true;
         var postSection = ViewUtil.tag('div', { classList: 'postSection' });
-        _this.commentsBox = new CommentSectionCard(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); });
-        _this.commentsBox.commentBoxesStage.onStagingEnd = function () { return _this.stage.updateStaging(_this.commentsBox.allStaged); };
-        _this.stage = new Stage([_this.imageStaged, _this.commentsBox.allStaged]);
-        _this.rootElm.append(postSection, _this.commentsBox.rootElm);
+        _this.commentsSection = new CommentSectionCard(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); });
+        _this.commentsSection.commentBoxesStage.onStagingEnd = function () { return _this.stage.updateStaging(_this.commentsSection.allStaged); };
+        _this.stage = new Stage([_this.imageStaged, _this.commentsSection.allStaged]);
+        _this.rootElm.append(postSection, _this.commentsSection.rootElm);
         _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
         if (_this.hasImage) {
             _this.postImageWrapper.load(_this.post.image.imageId);
@@ -75,7 +75,7 @@ var PostCard = (function (_super) {
         }
         if (_this.hasImage) {
             _this.observer = new MutationObserver(function () {
-                _this.commentsBox.resizeCommentBox();
+                _this.commentsSection.resizeCommentBox();
                 _this.observer.disconnect();
             });
             _this.observer.observe(_this.rootElm, { attributes: true });

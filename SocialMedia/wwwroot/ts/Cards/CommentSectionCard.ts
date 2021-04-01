@@ -28,7 +28,7 @@
     // Used by postCard. Not used in this.commentBoxesStage.
     public allStaged: StageFlag = new StageFlag();
 
-    // onStagingEnd for this stage is set in PostCard.
+    // onStagingEnd for this stage is set in PostCard for the first load. This class may overwrite it.
     public commentBoxesStage: Stage;
     private myCommentsStaged: StageFlag = new StageFlag();
     private likedCommentsStaged: StageFlag = new StageFlag();
@@ -91,7 +91,7 @@
         this.btnMyActivity.title = 'Show my activity'
 
         this.myCommentsBox = new CommentsBox(this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
-
+            
             this.commentBoxesStage.updateStaging(this.myCommentsStaged)
 
             if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
@@ -99,15 +99,15 @@
         });
 
         this.likedCommentsBox = new CommentsBox(this.post.postId, 'likedComments', () => this.feedFilter, (noChanges: boolean) => {
-
+            
             this.commentBoxesStage.updateStaging(this.likedCommentsStaged)
 
             if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
             else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
         });
         
-        this.mainCommentsBox = new CommentsBox(this.post.postId, 'mainComments', () => this.feedFilter, (noChanges: boolean) => {
-
+        this.mainCommentsBox = new CommentsBox(this.post.postId, 'mainComments', () => this.feedFilter, () => {
+            
             if (this.mainCommentsBox.length == 0) {
                 this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
                 return;
@@ -124,9 +124,9 @@
                 this.isFirstCommentsBatch = false;
 
                 if (this.post.image == null) this.resizeCommentBox();
-
-                this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
             }
+
+            this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
         });
 
         this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
@@ -176,9 +176,9 @@
                                 PostCard.postCards.forEach((p: PostCard) => {
 
                                     if (p.post.postId == commentResults.postId) {
-                                        p.commentsBox.mainCommentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
-                                        p.commentsBox.resizeCommentBox();
-                                        p.commentsBox.setCommentCount(this.totalCommentCount + 1);
+                                        p.commentsSection.mainCommentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
+                                        p.commentsSection.resizeCommentBox();
+                                        p.commentsSection.setCommentCount(this.totalCommentCount + 1);
                                     }
                                 });
                             }
@@ -219,7 +219,8 @@
 
     private toggleFeedFilter(): void {
 
-        this.commentBoxesStage = new Stage([this.mainCommentsStaged], this.displayResults);
+        this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
+        ViewUtil.hide(this.commentBoxes.rootElm);
 
         let feedFilterSecondIcon = this.btnToggleFeedFilter.children[1];
 
@@ -256,14 +257,14 @@
     }
 
     private showCommentActivity(): void {
-        this.commentBoxesStage = new Stage([this.mainCommentsStaged, this.myCommentsStaged, this.likedCommentsStaged], this.displayResults);
+        this.commentBoxesStage = new Stage([this.myCommentsStaged, this.likedCommentsStaged], () => this.displayResults());
+        ViewUtil.hide(this.commentBoxes.rootElm);
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
         this.setBtnMyActivity(false);
     }
 
     private hideCommentActivity(): void {
-        this.commentBoxesStage = new Stage([this.mainCommentsStaged], this.displayResults);
         this.myCommentsBox.clear();
         this.likedCommentsBox.clear();
         this.myCommentsBox.messageElm.innerText = '';
@@ -273,7 +274,8 @@
 
     private refreshCommentFeed(): void {
 
-        this.commentBoxesStage = new Stage([this.mainCommentsStaged], this.displayResults);
+        this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
+        ViewUtil.hide(this.commentBoxes.rootElm);
 
         this.mainCommentsBox.refreshComments((noChanges: boolean) => {
 
@@ -284,30 +286,20 @@
                 else this.mainCommentsBox.messageElm.innerText = 'No changes have been made';
             }
             else if (myActivityIsShowing) this.mainCommentsBox.messageElm.innerText = 'All Comments';
+
+            this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
         });
 
         if (this.myCommentsBox.length > 0) {
 
             this.commentBoxesStage.stageFlags.push(this.myCommentsStaged);
-            this.myCommentsBox.refreshComments((noChanges: boolean) => {
-
-                this.commentBoxesStage.updateStaging(this.myCommentsStaged);
-
-                if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
-                else this.myCommentsBox.messageElm.innerText = 'My Comments';
-            });
+            this.myCommentsBox.refreshComments();
         }
 
         if (this.likedCommentsBox.length > 0) {
             
             this.commentBoxesStage.stageFlags.push(this.likedCommentsStaged);
-            this.likedCommentsBox.refreshComments((noChanges: boolean) => {
-
-                this.commentBoxesStage.updateStaging(this.likedCommentsStaged);
-
-                if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
-                else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
-            });
+            this.likedCommentsBox.refreshComments();
         }
 
     }
@@ -323,17 +315,20 @@
     }
 
     private displayResults(): void {
-        // Comment boxes need to be hidden each time a request goes out and controls need to be disabled. XXX
+        ViewUtil.show(this.commentBoxes.rootElm, 'block');
     }
 
     public resizeCommentBox(): void {
-        let inputHeight: number = this.commentInputWrapper.clientHeight;
+        let inputHeight: number = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight;
 
         // The desired height of the comments box.
         let targetHeight: number = this.getContentHeight() - inputHeight;
 
         // Set height of comment box to the target height. CSS rule (min-height: 250px;) is applied to this.commentBox.rootElm.
         this.commentBoxes.height = targetHeight;
+        this.commentBoxes.rootElm.style.maxHeight = `${targetHeight}`;
+        this.rootElm.style.minHeight = `${this.rootElm.offsetHeight}`;
+        this.rootElm.style.maxHeight = `${this.rootElm.offsetHeight}`;
     }
 
     public setCommentCount(newCount: number): void {

@@ -10,7 +10,7 @@
         postId: number,
         feedType: ('myComments' | 'likedComments' | 'mainComments'),
         getFeedFilter: () => ('recent' | 'likes'),
-        onCommentsLoadEnd: (noChange: boolean) => void
+        onCommentsLoadEnd: (noChanges: boolean) => void
     ) {
 
         super(ViewUtil.tag('div', { classList: 'commentsBox' }), null, 400, 30, (skip: number, take: number) => {

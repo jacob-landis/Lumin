@@ -24,7 +24,7 @@
     private editIcon: HTMLElement;
     private refreshPostDetailsMessage: HTMLElement;
 
-    public commentsBox: CommentSectionCard;
+    public commentsSection: CommentSectionCard;
     
     // Used by postsBox. Not used in this.stage.
     public allStaged: StageFlag = new StageFlag();
@@ -72,16 +72,16 @@
         
         let postSection: HTMLElement = ViewUtil.tag('div', { classList: 'postSection' });
 
-        this.commentsBox = new CommentSectionCard(
+        this.commentsSection = new CommentSectionCard(
             this.post,
             () => (this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight)
         );
 
-        this.commentsBox.commentBoxesStage.onStagingEnd = () => this.stage.updateStaging(this.commentsBox.allStaged);
+        this.commentsSection.commentBoxesStage.onStagingEnd = () => this.stage.updateStaging(this.commentsSection.allStaged);
 
-        this.stage = new Stage([this.imageStaged, this.commentsBox.allStaged]);
+        this.stage = new Stage([this.imageStaged, this.commentsSection.allStaged]);
 
-        this.rootElm.append(postSection, this.commentsBox.rootElm);
+        this.rootElm.append(postSection, this.commentsSection.rootElm);
         
         // __________________________________ 
 
@@ -165,7 +165,7 @@
 
             // triggered when image is done loading
             this.observer = new MutationObserver(() => {
-                this.commentsBox.resizeCommentBox();
+                this.commentsSection.resizeCommentBox();
                 this.observer.disconnect();
             });
             this.observer.observe(this.rootElm, { attributes: true });
