@@ -6,6 +6,9 @@
     private getContentHeight: () => number;
 
     public totalCommentCount: number;
+    private inputHeight: number;
+    private targetHeight: number;
+    private rootElmMinHeight: number;
 
     private commentBoxes: ContentBox;
     private mainCommentsBox: CommentsBox;
@@ -22,6 +25,7 @@
     private btnToggleFeedFilter: HTMLElement;
     private btnRefreshFeed: HTMLElement;
     private btnMyActivity: HTMLElement;
+    private btnToggleViewExpansion: HTMLElement;
 
     private feedFilter: 'recent' | 'likes' = 'recent';
 
@@ -61,6 +65,7 @@
                     <div class="content-box mainComments"></div>
                 </div>
             </div>
+            <i class="fa fa-dropdownArrow"></i>
         </div>
     */
 
@@ -137,7 +142,11 @@
         let btnCancel: HTMLElement = Icons.cancel();
         let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
 
-        this.rootElm.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.commentBoxes.rootElm);
+        this.btnToggleViewExpansion = Icons.dropdownArrow();
+        this.btnToggleViewExpansion.classList.add('btnToggleViewExpansion');
+        this.btnToggleViewExpansion.title = 'Expand Comment Section';
+
+        this.rootElm.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.commentBoxes.rootElm, this.btnToggleViewExpansion);
         this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls);
         this.commentBoxFeedControls.append(this.btnMyActivity, this.btnToggleFeedFilter, this.btnRefreshFeed);
         this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
@@ -213,6 +222,8 @@
             this.commentInputWrapper.classList.add('activeInput');
             txtComment.focus();
         }
+
+        this.btnToggleViewExpansion.onclick = (event: MouseEvent) => this.expandCommentSection();
 
         this.commentBoxesStage = new Stage([this.mainCommentsStaged]);
     }
@@ -314,21 +325,60 @@
         this.btnMyActivity.onclick = (event: MouseEvent) => makeBtnShowActivty ? this.showCommentActivity() : this.hideCommentActivity();
     }
 
+    private setBtnToggleViewExpansion(makeBtnExpandView: boolean) {
+
+        let icon: HTMLElement = <HTMLElement>this.btnToggleViewExpansion.childNodes[0];
+
+        if (makeBtnExpandView) {
+            icon.classList.remove('fa-sort-up');
+            icon.classList.add('fa-sort-down');
+            this.btnToggleViewExpansion.title = 'Expand Comment Section';
+            this.btnToggleViewExpansion.onclick = (event: MouseEvent) => this.expandCommentSection();
+        } else {
+            icon.classList.remove('fa-sort-down');
+            icon.classList.add('fa-sort-up');
+            this.btnToggleViewExpansion.title = 'Contract Comment Section';
+            this.btnToggleViewExpansion.onclick = (event: MouseEvent) => this.contractCommentSection();
+        }
+    }
+
     private displayResults(): void {
         ViewUtil.show(this.commentBoxes.rootElm, 'block');
     }
 
+    private expandCommentSection(): void {
+        
+        this.commentBoxes.height = 720;
+        this.commentBoxes.rootElm.style.maxHeight = '720';
+        this.rootElm.style.minHeight = `${720 + this.inputHeight}`;
+        this.rootElm.style.maxHeight = `${720 + this.inputHeight}`;
+        
+        this.setBtnToggleViewExpansion(false);
+    }
+
+    private contractCommentSection(): void {
+
+        this.commentBoxes.height = this.targetHeight;
+        this.commentBoxes.rootElm.style.maxHeight = `${this.targetHeight}`;
+        this.rootElm.style.minHeight = `${this.rootElmMinHeight}`;
+        this.rootElm.style.maxHeight = `${this.rootElmMinHeight}`;
+        
+        this.setBtnToggleViewExpansion(true);
+    }
+
     public resizeCommentBox(): void {
-        let inputHeight: number = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight;
+        this.inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight + this.btnToggleViewExpansion.clientHeight;
 
         // The desired height of the comments box.
-        let targetHeight: number = this.getContentHeight() - inputHeight;
-
+        this.targetHeight = this.getContentHeight() - this.inputHeight;
+        
         // Set height of comment box to the target height. CSS rule (min-height: 250px;) is applied to this.commentBox.rootElm.
-        this.commentBoxes.height = targetHeight;
-        this.commentBoxes.rootElm.style.maxHeight = `${targetHeight}`;
+        this.commentBoxes.height = this.targetHeight;
+        this.commentBoxes.rootElm.style.maxHeight = `${this.targetHeight}`;
         this.rootElm.style.minHeight = `${this.rootElm.offsetHeight}`;
         this.rootElm.style.maxHeight = `${this.rootElm.offsetHeight}`;
+
+        this.rootElmMinHeight = this.rootElm.clientHeight;
     }
 
     public setCommentCount(newCount: number): void {

@@ -38,9 +38,7 @@
 }
 
 .commentSection {
-    padding: 2%;
-    padding-top: 0;
-    padding-right: 0;
+    padding-left: 2%;
 }
 
 .commentBoxes {
@@ -109,6 +107,17 @@
     border-radius: 2px;
     float: right;
     font-size: 14pt;
+    color: gray;
+}
+
+.btnToggleViewExpansion {
+    padding: 0;
+    margin: auto;
+    height: 35px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-size: 20pt;
+    text-align: center;
     color: gray;
 }
 

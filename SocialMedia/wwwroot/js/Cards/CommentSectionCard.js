@@ -73,7 +73,10 @@ var CommentSectionCard = (function (_super) {
         var btnConfirm = Icons.confirm();
         var btnCancel = Icons.cancel();
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
-        _this.rootElm.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.commentBoxes.rootElm);
+        _this.btnToggleViewExpansion = Icons.dropdownArrow();
+        _this.btnToggleViewExpansion.classList.add('btnToggleViewExpansion');
+        _this.btnToggleViewExpansion.title = 'Expand Comment Section';
+        _this.rootElm.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.commentBoxes.rootElm, _this.btnToggleViewExpansion);
         _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls);
         _this.commentBoxFeedControls.append(_this.btnMyActivity, _this.btnToggleFeedFilter, _this.btnRefreshFeed);
         _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
@@ -129,6 +132,7 @@ var CommentSectionCard = (function (_super) {
             _this.commentInputWrapper.classList.add('activeInput');
             txtComment.focus();
         };
+        _this.btnToggleViewExpansion.onclick = function (event) { return _this.expandCommentSection(); };
         _this.commentBoxesStage = new Stage([_this.mainCommentsStaged]);
         return _this;
     }
@@ -211,16 +215,47 @@ var CommentSectionCard = (function (_super) {
         this.btnMyActivity.title = makeBtnShowActivty ? 'Show my activity' : 'Hide my activity';
         this.btnMyActivity.onclick = function (event) { return makeBtnShowActivty ? _this.showCommentActivity() : _this.hideCommentActivity(); };
     };
+    CommentSectionCard.prototype.setBtnToggleViewExpansion = function (makeBtnExpandView) {
+        var _this = this;
+        var icon = this.btnToggleViewExpansion.childNodes[0];
+        if (makeBtnExpandView) {
+            icon.classList.remove('fa-sort-up');
+            icon.classList.add('fa-sort-down');
+            this.btnToggleViewExpansion.title = 'Expand Comment Section';
+            this.btnToggleViewExpansion.onclick = function (event) { return _this.expandCommentSection(); };
+        }
+        else {
+            icon.classList.remove('fa-sort-down');
+            icon.classList.add('fa-sort-up');
+            this.btnToggleViewExpansion.title = 'Contract Comment Section';
+            this.btnToggleViewExpansion.onclick = function (event) { return _this.contractCommentSection(); };
+        }
+    };
     CommentSectionCard.prototype.displayResults = function () {
         ViewUtil.show(this.commentBoxes.rootElm, 'block');
     };
+    CommentSectionCard.prototype.expandCommentSection = function () {
+        this.commentBoxes.height = 720;
+        this.commentBoxes.rootElm.style.maxHeight = '720';
+        this.rootElm.style.minHeight = "" + (720 + this.inputHeight);
+        this.rootElm.style.maxHeight = "" + (720 + this.inputHeight);
+        this.setBtnToggleViewExpansion(false);
+    };
+    CommentSectionCard.prototype.contractCommentSection = function () {
+        this.commentBoxes.height = this.targetHeight;
+        this.commentBoxes.rootElm.style.maxHeight = "" + this.targetHeight;
+        this.rootElm.style.minHeight = "" + this.rootElmMinHeight;
+        this.rootElm.style.maxHeight = "" + this.rootElmMinHeight;
+        this.setBtnToggleViewExpansion(true);
+    };
     CommentSectionCard.prototype.resizeCommentBox = function () {
-        var inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight;
-        var targetHeight = this.getContentHeight() - inputHeight;
-        this.commentBoxes.height = targetHeight;
-        this.commentBoxes.rootElm.style.maxHeight = "" + targetHeight;
+        this.inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight + this.btnToggleViewExpansion.clientHeight;
+        this.targetHeight = this.getContentHeight() - this.inputHeight;
+        this.commentBoxes.height = this.targetHeight;
+        this.commentBoxes.rootElm.style.maxHeight = "" + this.targetHeight;
         this.rootElm.style.minHeight = "" + this.rootElm.offsetHeight;
         this.rootElm.style.maxHeight = "" + this.rootElm.offsetHeight;
+        this.rootElmMinHeight = this.rootElm.clientHeight;
     };
     CommentSectionCard.prototype.setCommentCount = function (newCount) {
         this.totalCommentCount = newCount;
