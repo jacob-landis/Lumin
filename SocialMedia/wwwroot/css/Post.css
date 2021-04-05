@@ -97,11 +97,11 @@
     padding-bottom: 20px;
 }
 
-.commentBoxFeedControls, .btnToggleCommentFeedFilter, .btnRefreshCommentFeed, .btnMyActivity, .commentCountSlot, .commentCountSlot > div {
+.commentBoxFeedControls, .btnSearchComments, .btnToggleCommentFeedFilter, .btnRefreshCommentFeed, .btnMyActivity, .commentCountSlot, .commentCountSlot > div {
     display: inline;
 }
 
-.btnToggleCommentFeedFilter, .btnRefreshCommentFeed, .btnMyActivity {
+.btnSearchComments, .btnToggleCommentFeedFilter, .btnRefreshCommentFeed, .btnMyActivity {
     padding: 4px;
     margin-bottom: 5px;
     border-radius: 2px;
@@ -123,4 +123,17 @@
 
 .showingMyCommentActivity {
     color: cornflowerblue;
+}
+
+.txtSearchComments {
+    margin-bottom: 10px;
+    width: 92%;
+}
+
+.txtSearchComments, .btnConfirmCommentSearch {
+    display: none;
+}
+
+.btnConfirmCommentSearch {
+    padding: 4px;
 }

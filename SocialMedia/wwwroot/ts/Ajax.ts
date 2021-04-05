@@ -65,6 +65,23 @@
         );
     }
 
+    public static searchComments(
+        postId: number,
+        skip: number,
+        take: number,
+        searchText: string,
+        onCommentResults: (commentCards: CommentCard[]) => void
+    ): void {
+        this.call(
+            `apicomment/searchcomments/${postId}/${skip}/${take}`,
+            "POST",
+            (commentResults: string) => {
+                onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults))
+            },
+            this.JSONstring(searchText)
+        )
+    }
+
     public static getCommentCount(postId: number, onCommentCountResults: (commentCount: string) => void): void {
         this.call(`apicomment/commentcount/${postId}`, "GET", onCommentCountResults);
     }

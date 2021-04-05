@@ -18,6 +18,9 @@
     private commentInputWrapper: HTMLElement;
     private errorSlot: HTMLElement;
 
+    private txtSearchComments: HTMLInputElement;
+    private btnConfirmCommentSearch: HTMLElement;
+
     private commentBoxDetails: HTMLElement;
     private commentCountSlot: HTMLElement;
     private commentCountText: HTMLElement;
@@ -26,6 +29,7 @@
     private btnRefreshFeed: HTMLElement;
     private btnMyActivity: HTMLElement;
     private btnToggleViewExpansion: HTMLElement;
+    private btnSearchComments: HTMLElement;
 
     private feedFilter: 'recent' | 'likes' = 'recent';
 
@@ -52,11 +56,22 @@
                     <div>No Comments</div>
                 </div>
                 <div class="commentBoxFeedControls">
+
+                    <div class="btnSearchComments">
+                        <i class="fa fa-search"
+                    </div>
+
                     <div class="btnToggleCommentFeedFilter"></div>
                     <div class="btnRefreshCommentFeed"></div>
                     <div class="btnMyActivity"></div>
                 </div>
             </div>
+
+            <input type="text" class="txtSearchComments myTextBtnPair" />
+            <div class="icon btnSearchFriends myBtnTextPair">
+                <i class="fa fa-search"></i>
+            </div>
+
             <div class="content-box commentBoxes">
                 <div class="contentMessage"></div>
                 <div class="contentContainer">
@@ -83,6 +98,10 @@
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
 
+        this.btnSearchComments = Icons.search();
+        this.btnSearchComments.classList.add('btnSearchComments');
+        this.btnSearchComments.title = 'Search comments';
+
         this.btnToggleFeedFilter = Icons.filterByLikes();
         this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
         this.btnToggleFeedFilter.title = 'Sort by popularity';
@@ -94,6 +113,11 @@
         this.btnMyActivity = Icons.history();
         this.btnMyActivity.classList.add('btnMyActivity');
         this.btnMyActivity.title = 'Show my activity'
+
+        this.txtSearchComments = <HTMLInputElement>ViewUtil.tag('input', { type: 'text', classList: 'txtSearchComments myTextBtnPair' });
+        this.btnConfirmCommentSearch = Icons.search();
+        this.btnConfirmCommentSearch.classList.add('btnConfirmCommentSearch', 'myBtnTextPair');
+        this.btnConfirmCommentSearch.title = 'Search';
 
         this.myCommentsBox = new CommentsBox(this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
             
@@ -146,15 +170,20 @@
         this.btnToggleViewExpansion.classList.add('btnToggleViewExpansion');
         this.btnToggleViewExpansion.title = 'Expand Comment Section';
 
-        this.rootElm.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.commentBoxes.rootElm, this.btnToggleViewExpansion);
+        this.rootElm.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.txtSearchComments,
+            this.btnConfirmCommentSearch, this.commentBoxes.rootElm, this.btnToggleViewExpansion);
         this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls);
-        this.commentBoxFeedControls.append(this.btnMyActivity, this.btnToggleFeedFilter, this.btnRefreshFeed);
+        this.commentBoxFeedControls.append(this.btnMyActivity, this.btnToggleFeedFilter, this.btnRefreshFeed, this.btnSearchComments);
         this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
 
         // Load comments
         this.mainCommentsBox.request(15);
         this.requestCommentCount();
 
+        this.btnConfirmCommentSearch.onclick = (e: MouseEvent) => this.searchComments();
+        this.txtSearchComments.onkeyup = (e: KeyboardEvent) => { if (e.keyCode == 13) this.btnConfirmCommentSearch.click(); }
+
+        this.btnSearchComments.onclick = (event: MouseEvent) => this.showCommentSearchBar();
         this.btnToggleFeedFilter.onclick = (event: MouseEvent) => this.toggleFeedFilter();
         this.btnRefreshFeed.onclick = (event: MouseEvent) => this.refreshCommentFeed();
         this.setBtnMyActivity(true);
@@ -280,6 +309,7 @@
         this.likedCommentsBox.clear();
         this.myCommentsBox.messageElm.innerText = '';
         this.likedCommentsBox.messageElm.innerText = '';
+        this.mainCommentsBox.messageElm.innerText = '';
         this.setBtnMyActivity(true);
     }
 
@@ -344,6 +374,56 @@
 
     private displayResults(): void {
         ViewUtil.show(this.commentBoxes.rootElm, 'block');
+    }
+
+    private searchComments(): void {
+
+        Ajax.searchComments(this.post.postId, 0, 30, this.txtSearchComments.value, (commentCards: CommentCard[]) => {
+
+            this.mainCommentsBox.clear();
+
+            if (commentCards != null) {
+                this.hideCommentActivity();
+                this.mainCommentsBox.add(commentCards);
+                this.mainCommentsBox.messageElm.innerText = 'Search results';
+            }
+            else this.mainCommentsBox.messageElm.innerText = 'Search results - No comments found';
+        });
+    }
+
+    private showCommentSearchBar(): void {
+        ViewUtil.show(this.txtSearchComments);
+        ViewUtil.show(this.btnConfirmCommentSearch);
+        this.setBtnSearchComments(false);
+        this.txtSearchComments.focus();
+    }
+
+    private hideCommentSearchBar(): void {
+        ViewUtil.hide(this.txtSearchComments);
+        ViewUtil.hide(this.btnConfirmCommentSearch);
+        this.txtSearchComments.value = '';
+        this.setBtnSearchComments(true);
+        this.mainCommentsBox.clear();
+        this.mainCommentsBox.request(15);
+        this.mainCommentsBox.messageElm.innerText = '';
+    }
+
+    private setBtnSearchComments(makeBtnShowSearch: boolean): void {
+
+        let icon: HTMLElement = <HTMLElement>this.btnSearchComments.childNodes[0];
+
+        if (makeBtnShowSearch) {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-search');
+            this.btnSearchComments.title = 'Search comments';
+            this.btnSearchComments.onclick = (event: MouseEvent) => this.showCommentSearchBar();
+        }
+        else {
+            icon.classList.remove('fa-search');
+            icon.classList.add('fa-times');
+            this.btnSearchComments.title = 'Close search';
+            this.btnSearchComments.onclick = (event: MouseEvent) => this.hideCommentSearchBar();
+        }
     }
 
     private expandCommentSection(): void {

@@ -23,6 +23,7 @@ var Icons = (function () {
     Icons.filterByLikes = function () { return Icons.buildIcon(['filter', 'thumbs-up']); };
     Icons.history = function () { return Icons.buildIcon(['history']); };
     Icons.dropdownArrow = function () { return Icons.buildIcon(['sort-down']); };
+    Icons.search = function () { return Icons.buildIcon(['search']); };
     return Icons;
 }());
 //# sourceMappingURL=Icons.js.map

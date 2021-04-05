@@ -116,6 +116,67 @@ namespace SocialMedia.Controllers
             }
         }
 
+        [HttpPost("searchcomments/{postId}/{skip}/{take}")]
+        public List<CommentModel> SearchComments(int postId, int skip, int take, [FromBody] StringModel searchText)
+        {
+            if (searchText.str == "NULL") return null;
+
+            // Prep list for matches. Each index contains a key value pair of <ProfileID, searchPoints>.
+            List<KeyValuePair<int, int>> matches = new List<KeyValuePair<int, int>>();
+
+            // Split search terms into array of search terms.
+            string[] searchTerms = searchText.str.Split(' ');
+
+            // Define how many points an exact match is worth.
+            int exactMatchWorth = 3;
+
+            // Loop though all profiles in the database.
+            foreach (Comment c in commentRepo.ByPostId(postId))
+            {
+                // Define points variable and start it at 0.
+                int points = 0;
+
+                string[] contentTerms = c.Content.Split(' ');
+
+                foreach (string contentTerm in contentTerms)
+                {
+                    string lcContentTerm = contentTerm.ToLower();
+
+                    // Loop through search terms.
+                    foreach (string searchTerm in searchTerms)
+                    {
+                        // Convert search term to lowercase.
+                        string lcSearchTerm = searchTerm.ToLower();
+
+                        // If the terms are an exact match, add an exact match worth of points.
+                        if (lcSearchTerm == lcContentTerm) points += exactMatchWorth;
+
+                        // Else if the terms are a partial match, add 1 point.
+                        else if (lcSearchTerm.Contains(lcContentTerm) || lcContentTerm.Contains(lcSearchTerm)) points++;
+                    }
+                }
+
+                // If the comment earned any points, add its id to the list of matches.
+                if (points > 0) matches.Add(new KeyValuePair<int, int>(c.CommentId, points));
+            }
+
+            // Sort match results by points.
+            matches.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+
+            // Prep list for preped results.
+            List<CommentModel> results = new List<CommentModel>();
+
+            // Loop through matches.
+            foreach (KeyValuePair<int, int> match in matches)
+            {
+                // Add preped result to results.
+                results.Add(GetCommentModel(match.Key));
+            }
+
+            // Return search results to user.
+            return results;
+        }
+
         // get list of comments by id, skip, take
         [HttpGet("postcomments/{id}/{commentCount}/{amount}/{feedFilter}/{feedType}")]
         public List<CommentModel> PostComments(int id, int commentCount, int amount, string feedFilter, string feedType)

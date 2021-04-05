@@ -30,6 +30,11 @@ var Ajax = (function () {
             onCommentResults(CommentCard.list(commentResults));
         });
     };
+    Ajax.searchComments = function (postId, skip, take, searchText, onCommentResults) {
+        this.call("apicomment/searchcomments/" + postId + "/" + skip + "/" + take, "POST", function (commentResults) {
+            onCommentResults(CommentCard.list(commentResults));
+        }, this.JSONstring(searchText));
+    };
     Ajax.getCommentCount = function (postId, onCommentCountResults) {
         this.call("apicomment/commentcount/" + postId, "GET", onCommentCountResults);
     };

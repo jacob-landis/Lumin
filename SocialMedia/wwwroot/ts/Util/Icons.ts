@@ -42,4 +42,6 @@
     public static history(): HTMLElement        { return Icons.buildIcon(['history']) }
 
     public static dropdownArrow(): HTMLElement  { return Icons.buildIcon(['sort-down']) }
+
+    public static search(): HTMLElement         { return Icons.buildIcon(['search']) }
 }
