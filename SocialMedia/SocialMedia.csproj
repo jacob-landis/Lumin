@@ -21,6 +21,7 @@
     <Content Remove="wwwroot\ts\Components\DoubleEditor.ts" />
     <Content Remove="wwwroot\ts\Components\Editor.ts" />
     <Content Remove="wwwroot\ts\Components\ImageBox.ts" />
+    <Content Remove="wwwroot\ts\Components\ToggleButton.ts" />
     <Content Remove="wwwroot\ts\Dropdowns\Dropdown.ts" />
     <Content Remove="wwwroot\ts\Dropdowns\FriendDropdown.ts" />
     <Content Remove="wwwroot\ts\Dropdowns\ImageDropdown.ts" />
@@ -81,6 +82,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Components\DoubleEditor.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\Editor.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ImageBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\ToggleButton.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Dropdowns\Dropdown.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Dropdowns\FriendDropdown.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Dropdowns\ImageDropdown.ts" />

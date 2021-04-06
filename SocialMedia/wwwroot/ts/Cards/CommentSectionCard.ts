@@ -25,11 +25,11 @@
     private commentCountSlot: HTMLElement;
     private commentCountText: HTMLElement;
     private commentBoxFeedControls: HTMLElement;
-    private btnToggleFeedFilter: HTMLElement;
     private btnRefreshFeed: HTMLElement;
-    private btnMyActivity: HTMLElement;
-    private btnToggleViewExpansion: HTMLElement;
-    private btnSearchComments: HTMLElement;
+    private btnToggleFeedFilter: ToggleButton;
+    private btnMyActivity: ToggleButton;
+    private btnToggleViewExpansion: ToggleButton;
+    private btnSearchComments: ToggleButton;
 
     private feedFilter: 'recent' | 'likes' = 'recent';
 
@@ -98,21 +98,20 @@
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
 
-        this.btnSearchComments = Icons.search();
-        this.btnSearchComments.classList.add('btnSearchComments');
-        this.btnSearchComments.title = 'Search comments';
+        let btnSearchCommentsIcon: HTMLElement = Icons.search();
+        this.btnSearchComments = new ToggleButton('btnSearchComments', 'fa-search', 'fa-times', 'Search comments', 'Close search',
+            <HTMLElement>btnSearchCommentsIcon.childNodes[0], btnSearchCommentsIcon, () => this.showCommentSearchBar(), () => this.hideCommentSearchBar());
 
-        this.btnToggleFeedFilter = Icons.filterByLikes();
-        this.btnToggleFeedFilter.classList.add('btnToggleCommentFeedFilter');
-        this.btnToggleFeedFilter.title = 'Sort by popularity';
+        let btnToggleFeedFilterIcon: HTMLElement = Icons.filterByLikes();
+        this.btnToggleFeedFilter = new ToggleButton('btnToggleCommentFeedFilter', 'fa-thumbs-up', 'fa-calendar', 'Sort by popularity', 'Sort by recent',
+            <HTMLElement>btnToggleFeedFilterIcon.childNodes[1], btnToggleFeedFilterIcon, () => this.toggleFeedFilter());
 
         this.btnRefreshFeed = Icons.refresh();
         this.btnRefreshFeed.classList.add('btnRefreshCommentFeed');
         this.btnRefreshFeed.title = 'Refresh comment feed';
-
-        this.btnMyActivity = Icons.history();
-        this.btnMyActivity.classList.add('btnMyActivity');
-        this.btnMyActivity.title = 'Show my activity'
+        
+        this.btnMyActivity = new ToggleButton('btnMyActivity', '', 'showingMyCommentActivity', 'Show my activity', 'Hide my activity', null, Icons.history(),
+            () => this.showCommentActivity(), () => this.hideCommentActivity());
 
         this.txtSearchComments = <HTMLInputElement>ViewUtil.tag('input', { type: 'text', classList: 'txtSearchComments myTextBtnPair' });
         this.btnConfirmCommentSearch = Icons.search();
@@ -166,14 +165,14 @@
         let btnCancel: HTMLElement = Icons.cancel();
         let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
 
-        this.btnToggleViewExpansion = Icons.dropdownArrow();
-        this.btnToggleViewExpansion.classList.add('btnToggleViewExpansion');
-        this.btnToggleViewExpansion.title = 'Expand Comment Section';
+        let btnToggleExpanIcon: HTMLElement = Icons.dropdownArrow();
+        this.btnToggleViewExpansion = new ToggleButton('btnToggleViewExpansion', 'fa-sort-down', 'fa-sort-up', 'Expand comments', 'Contract comments',
+            <HTMLElement>btnToggleExpanIcon.childNodes[0], btnToggleExpanIcon, () => this.expandCommentSection(), () => this.contractCommentSection());
 
         this.rootElm.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.txtSearchComments,
-            this.btnConfirmCommentSearch, this.commentBoxes.rootElm, this.btnToggleViewExpansion);
+            this.btnConfirmCommentSearch, this.commentBoxes.rootElm, this.btnToggleViewExpansion.rootElm);
         this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls);
-        this.commentBoxFeedControls.append(this.btnMyActivity, this.btnToggleFeedFilter, this.btnRefreshFeed, this.btnSearchComments);
+        this.commentBoxFeedControls.append(this.btnMyActivity.rootElm, this.btnToggleFeedFilter.rootElm, this.btnRefreshFeed, this.btnSearchComments.rootElm);
         this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
 
         // Load comments
@@ -182,11 +181,8 @@
 
         this.btnConfirmCommentSearch.onclick = (e: MouseEvent) => this.searchComments();
         this.txtSearchComments.onkeyup = (e: KeyboardEvent) => { if (e.keyCode == 13) this.btnConfirmCommentSearch.click(); }
-
-        this.btnSearchComments.onclick = (event: MouseEvent) => this.showCommentSearchBar();
-        this.btnToggleFeedFilter.onclick = (event: MouseEvent) => this.toggleFeedFilter();
+        
         this.btnRefreshFeed.onclick = (event: MouseEvent) => this.refreshCommentFeed();
-        this.setBtnMyActivity(true);
 
         // Clear txtComment and remove class to change styling.
         let deactivateInput: () => void = () => {
@@ -251,9 +247,7 @@
             this.commentInputWrapper.classList.add('activeInput');
             txtComment.focus();
         }
-
-        this.btnToggleViewExpansion.onclick = (event: MouseEvent) => this.expandCommentSection();
-
+        
         this.commentBoxesStage = new Stage([this.mainCommentsStaged]);
     }
 
@@ -261,23 +255,10 @@
 
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
         ViewUtil.hide(this.commentBoxes.rootElm);
-
-        let feedFilterSecondIcon = this.btnToggleFeedFilter.children[1];
-
+        
         this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
 
-        if (this.feedFilter == 'likes') {
-
-            this.btnToggleFeedFilter.title = 'Sort by recent';
-            feedFilterSecondIcon.classList.remove('fa-thumbs-up');
-            feedFilterSecondIcon.classList.add('fa-calendar');
-        }
-        else if (this.feedFilter == 'recent') {
-
-            this.btnToggleFeedFilter.title = 'Sort by popularity';
-            feedFilterSecondIcon.classList.remove('fa-calendar');
-            feedFilterSecondIcon.classList.add('fa-thumbs-up');
-        }
+        this.btnToggleFeedFilter.toggle();
 
         this.mainCommentsBox.clear();
         this.mainCommentsBox.request(15);
@@ -342,34 +323,11 @@
             this.commentBoxesStage.stageFlags.push(this.likedCommentsStaged);
             this.likedCommentsBox.refreshComments();
         }
-
     }
 
     private setBtnMyActivity(makeBtnShowActivty: boolean) {
-        makeBtnShowActivty ?
-            this.btnMyActivity.classList.remove('showingMyCommentActivity')
-            : this.btnMyActivity.classList.add('showingMyCommentActivity');
-
-        this.mainCommentsBox.messageElm.innerText         = makeBtnShowActivty ? ''                          : 'All Comments';
-        this.btnMyActivity.title                          = makeBtnShowActivty ? 'Show my activity'          : 'Hide my activity';
-        this.btnMyActivity.onclick = (event: MouseEvent) => makeBtnShowActivty ? this.showCommentActivity() : this.hideCommentActivity();
-    }
-
-    private setBtnToggleViewExpansion(makeBtnExpandView: boolean) {
-
-        let icon: HTMLElement = <HTMLElement>this.btnToggleViewExpansion.childNodes[0];
-
-        if (makeBtnExpandView) {
-            icon.classList.remove('fa-sort-up');
-            icon.classList.add('fa-sort-down');
-            this.btnToggleViewExpansion.title = 'Expand Comment Section';
-            this.btnToggleViewExpansion.onclick = (event: MouseEvent) => this.expandCommentSection();
-        } else {
-            icon.classList.remove('fa-sort-down');
-            icon.classList.add('fa-sort-up');
-            this.btnToggleViewExpansion.title = 'Contract Comment Section';
-            this.btnToggleViewExpansion.onclick = (event: MouseEvent) => this.contractCommentSection();
-        }
+        this.mainCommentsBox.messageElm.innerText = makeBtnShowActivty ? '' : 'All Comments';
+        this.btnMyActivity.toggle();
     }
 
     private displayResults(): void {
@@ -394,7 +352,7 @@
     private showCommentSearchBar(): void {
         ViewUtil.show(this.txtSearchComments);
         ViewUtil.show(this.btnConfirmCommentSearch);
-        this.setBtnSearchComments(false);
+        this.btnSearchComments.toggle();
         this.txtSearchComments.focus();
     }
 
@@ -402,63 +360,35 @@
         ViewUtil.hide(this.txtSearchComments);
         ViewUtil.hide(this.btnConfirmCommentSearch);
         this.txtSearchComments.value = '';
-        this.setBtnSearchComments(true);
+        this.btnSearchComments.toggle();
         this.mainCommentsBox.clear();
         this.mainCommentsBox.request(15);
         this.mainCommentsBox.messageElm.innerText = '';
     }
 
-    private setBtnSearchComments(makeBtnShowSearch: boolean): void {
-
-        let icon: HTMLElement = <HTMLElement>this.btnSearchComments.childNodes[0];
-
-        if (makeBtnShowSearch) {
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-search');
-            this.btnSearchComments.title = 'Search comments';
-            this.btnSearchComments.onclick = (event: MouseEvent) => this.showCommentSearchBar();
-        }
-        else {
-            icon.classList.remove('fa-search');
-            icon.classList.add('fa-times');
-            this.btnSearchComments.title = 'Close search';
-            this.btnSearchComments.onclick = (event: MouseEvent) => this.hideCommentSearchBar();
-        }
-    }
-
     private expandCommentSection(): void {
-        
-        this.commentBoxes.height = 720;
-        this.commentBoxes.rootElm.style.maxHeight = '720';
-        this.rootElm.style.minHeight = `${720 + this.inputHeight}`;
-        this.rootElm.style.maxHeight = `${720 + this.inputHeight}`;
-        
-        this.setBtnToggleViewExpansion(false);
+        this.setHeight(720, (720 + this.inputHeight));
+        this.btnToggleViewExpansion.toggle();
     }
 
     private contractCommentSection(): void {
-
-        this.commentBoxes.height = this.targetHeight;
-        this.commentBoxes.rootElm.style.maxHeight = `${this.targetHeight}`;
-        this.rootElm.style.minHeight = `${this.rootElmMinHeight}`;
-        this.rootElm.style.maxHeight = `${this.rootElmMinHeight}`;
-        
-        this.setBtnToggleViewExpansion(true);
+        this.setHeight(this.targetHeight, this.rootElmMinHeight);
+        this.btnToggleViewExpansion.toggle();
     }
 
     public resizeCommentBox(): void {
-        this.inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight + this.btnToggleViewExpansion.clientHeight;
-
-        // The desired height of the comments box.
+        this.inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight + this.btnToggleViewExpansion.rootElm.clientHeight;
         this.targetHeight = this.getContentHeight() - this.inputHeight;
         
-        // Set height of comment box to the target height. CSS rule (min-height: 250px;) is applied to this.commentBox.rootElm.
-        this.commentBoxes.height = this.targetHeight;
-        this.commentBoxes.rootElm.style.maxHeight = `${this.targetHeight}`;
-        this.rootElm.style.minHeight = `${this.rootElm.offsetHeight}`;
-        this.rootElm.style.maxHeight = `${this.rootElm.offsetHeight}`;
+        this.setHeight(this.targetHeight, this.rootElm.offsetHeight);
+        this.rootElmMinHeight = this.rootElm.clientHeight; // clientHeight must be read after setHeight() call.
+    }
 
-        this.rootElmMinHeight = this.rootElm.clientHeight;
+    private setHeight(commentBoxesHeight: number, sectionHeight: number): void {
+        this.commentBoxes.height = commentBoxesHeight;
+        this.commentBoxes.rootElm.style.maxHeight = `${commentBoxesHeight}`;
+        this.rootElm.style.minHeight = `${sectionHeight}`;
+        this.rootElm.style.maxHeight = `${sectionHeight}`;
     }
 
     public setCommentCount(newCount: number): void {
