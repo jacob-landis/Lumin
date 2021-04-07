@@ -13,6 +13,8 @@ class PostsBox extends ContentBox {
     // The profile who's post feed will be loaded.
     // If profileId is false this will ask the host for the public feed.
     public profileId: number;
+    public getFeedFilter: () => ('recent' | 'likes');
+    public feedType: ('myComments' | 'likedComments' | 'mainComments');
 
     private stage: Stage;
     
@@ -21,7 +23,7 @@ class PostsBox extends ContentBox {
         profileId can be null.
         rootElm must be an HTML element.
     */
-    public constructor(profileId?: number, rootElm?: HTMLElement, scrollElm?: HTMLElement) {
+    public constructor(profileId?: number, rootElm?: HTMLElement, scrollElm?: HTMLElement, onPostsLoadEnd?: () => void) {
         
         // Add class attribute to rootElm before sending to base class.
         rootElm.classList.add('post-box');
@@ -38,19 +40,25 @@ class PostsBox extends ContentBox {
                     Ajax.getProfilePosts(this.profileId, skip, take, 'recent', 
 
                         // and when the posts return as post cards,
-                        (postCards: PostCard[]) => 
+                        (postCards: PostCard[]) => {
+
                             // add them to the content box of this post box.
                             this.addPost(postCards)
+                            if (onPostsLoadEnd != null) onPostsLoadEnd();  
+                        }
                     )
                 else
                     // or else send a publicPosts request to the server with the set skip and take values of this post box,
                     Ajax.getPublicPosts(skip, take,
 
                         // and when the posts return as post cards,
-                        (postCards: PostCard[]) =>
+                        (postCards: PostCard[]) => {
 
                             // add them to the content box of this post box.
-                            this.addPost(postCards));
+                            this.addPost(postCards)
+                            if (onPostsLoadEnd != null) onPostsLoadEnd();        
+                        }
+                    );
             }
         );
         
@@ -91,5 +99,13 @@ class PostsBox extends ContentBox {
     */
     public start(): void {
         this.request(15);
+    }
+
+    public refreshPosts(onRefreshLoadEnd?: () => void): void {
+        this.clear();
+        Ajax.getProfilePosts(this.profileId, 0, 15, this.getFeedFilter(), (postCards: PostCard[]) => {
+            this.addPost(postCards);
+            if (onRefreshLoadEnd) onRefreshLoadEnd();
+        });
     }
 }

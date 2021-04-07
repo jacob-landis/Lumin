@@ -119,19 +119,19 @@
         this.btnConfirmCommentSearch.title = 'Search';
 
         this.myCommentsBox = new CommentsBox(this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
-            
-            this.commentBoxesStage.updateStaging(this.myCommentsStaged)
 
             if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
             else this.myCommentsBox.messageElm.innerText = 'My Comments';
+            
+            this.commentBoxesStage.updateStaging(this.myCommentsStaged);
         });
 
         this.likedCommentsBox = new CommentsBox(this.post.postId, 'likedComments', () => this.feedFilter, (noChanges: boolean) => {
             
-            this.commentBoxesStage.updateStaging(this.likedCommentsStaged)
-
             if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
             else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+
+            this.commentBoxesStage.updateStaging(this.likedCommentsStaged);
         });
         
         this.mainCommentsBox = new CommentsBox(this.post.postId, 'mainComments', () => this.feedFilter, () => {
@@ -277,9 +277,15 @@
         }
     }
 
-    private showCommentActivity(): void {
-        this.commentBoxesStage = new Stage([this.myCommentsStaged, this.likedCommentsStaged], () => this.displayResults());
+    public showCommentActivity(onActivityStaged?: () => void): void {
+        this.commentBoxesStage = new Stage([/*this.mainCommentsStaged, */this.myCommentsStaged, this.likedCommentsStaged], () => {
+            this.displayResults()
+            if (onActivityStaged != null) onActivityStaged();
+        });
+
         ViewUtil.hide(this.commentBoxes.rootElm);
+        //this.mainCommentsBox.clear();
+        //this.mainCommentsBox.request(15);
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
         this.setBtnMyActivity(false);
@@ -325,8 +331,8 @@
         }
     }
 
-    private setBtnMyActivity(makeBtnShowActivty: boolean) {
-        this.mainCommentsBox.messageElm.innerText = makeBtnShowActivty ? '' : 'All Comments';
+    private setBtnMyActivity(makeBtnShowActivity: boolean) {
+        this.mainCommentsBox.messageElm.innerText = makeBtnShowActivity ? '' : 'All Comments';
         this.btnMyActivity.toggle();
     }
 

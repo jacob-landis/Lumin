@@ -7,8 +7,11 @@ class ProfileModal extends Modal {
     private content;
     
     // Container elm for a PostsBox that is below the profile modal header.
-    private postWrapper: HTMLElement;
-    
+    private postBoxesWrapper: HTMLElement;
+    private mainPostsBoxWrapper: HTMLElement;
+    private likedPostsBoxWrapper: HTMLElement;
+    private commentedPostsBoxWrapper: HTMLElement;
+
     // ImageBox for profile picture.
     public profilePictureBox: ImageBox;
     
@@ -42,22 +45,31 @@ class ProfileModal extends Modal {
     private friendBox: ContentBox;
     private friendBoxElm: HTMLElement;
 
-    private btnTogglePostFeedFilter: HTMLElement;
     private feedFilter: 'recent' | 'likes' | 'comments' = 'recent';
 
+    private btnTogglePostFeedFilter: HTMLElement;
     private btnRefreshProfilePostFeed: HTMLElement;
+    private btnMyPostActivity: ToggleButton;
 
     // A PostsBox for displaying a profile's posts.
-    private postBox: PostsBox;
+    private postBoxes: ContentBox;
+    private mainPostsBox: PostsBox;
+    private likedPostsBox: PostsBox;
+    private commentedPostsBox: PostsBox;
 
     // STAGE FLAGS
     private fullProfileStaged: StageFlag = new StageFlag();
     private imagesBoxStaged: StageFlag = new StageFlag();
     private friendsStaged: StageFlag = new StageFlag();
 
-    private stage: Stage;
+    private summaryStage: Stage;
+    private summaryStageContainers: HTMLElement[];
 
-    private stageContainers: HTMLElement[];
+    private commentedPostsStaged: StageFlag = new StageFlag();
+    private likedPostsStaged: StageFlag = new StageFlag();
+    private mainPostsStaged: StageFlag = new StageFlag();
+
+    private postBoxesStage: Stage;
 
     /*
         Sudo-inherits from the sudo-base class.
@@ -67,7 +79,10 @@ class ProfileModal extends Modal {
         rootElm: HTMLElement,
         content: HTMLElement,
         profileNameWrapper: HTMLElement,
-        postWrapper: HTMLElement,
+        postBoxesWrapper: HTMLElement,
+        mainPostsBoxWrapper: HTMLElement,
+        likedPostsBoxWrapper: HTMLElement,
+        commentedPostsBoxWrapper: HTMLElement,
         imageWrapper: HTMLElement,
         profileBioWrapper: HTMLElement,
         imageBoxElm: HTMLElement,
@@ -75,6 +90,7 @@ class ProfileModal extends Modal {
         friendBoxElm: HTMLElement,
         btnTogglePostFeedFilter: HTMLElement,
         btnRefreshProfilePostFeed: HTMLElement,
+        btnMyPostActivity: HTMLElement,
         imageClassList: string,
         editorClassList: string,
         doubleEditorClassList: string
@@ -83,7 +99,10 @@ class ProfileModal extends Modal {
 
         // Get handles on modal HTML elms.
         this.content = content;
-        this.postWrapper = postWrapper;
+        this.postBoxesWrapper = postBoxesWrapper;
+        this.commentedPostsBoxWrapper = commentedPostsBoxWrapper;
+        this.likedPostsBoxWrapper = likedPostsBoxWrapper;
+        this.mainPostsBoxWrapper = mainPostsBoxWrapper;
         this.imageWrapper = imageWrapper;
         this.profileNameWrapper = profileNameWrapper;
         this.profileBioWrapper = profileBioWrapper;
@@ -93,6 +112,9 @@ class ProfileModal extends Modal {
         this.btnRefreshProfilePostFeed = btnRefreshProfilePostFeed;
         this.btnChangeName = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' });
         this.btnChangeBio = ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' });
+
+        this.btnMyPostActivity = new ToggleButton(null, '', 'showingMyPostActivity', 'Show my activity', 'Hide my activity', null, btnMyPostActivity,
+            () => this.showMyPostActivity(), () => this.hideMyPostActivity());
 
         // Construct an ImageBox for the profile picture and get a handle on it.
         this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
@@ -111,16 +133,37 @@ class ProfileModal extends Modal {
         this.btnTogglePostFeedFilter.onclick = (event: MouseEvent) => this.togglePostFeedFilter();
         this.btnRefreshProfilePostFeed.onclick = (event: MouseEvent) => this.refreshProfilePostFeed();
 
-        this.postBox = new PostsBox(0, this.postWrapper, this.rootElm);
+        this.postBoxes = new ContentBox(this.postBoxesWrapper);
 
-        this.stageContainers = [
+        this.commentedPostsBox = new PostsBox(0, this.commentedPostsBoxWrapper, this.rootElm, () => {
+            this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
+            this.postBoxesStage.updateStaging(this.commentedPostsStaged);
+
+            // ShowCommentActivity on each post card in commentedPosts.
+            this.commentedPostsBox.content.forEach((content: IAppendable) => {
+                let postCard = <PostCard>content;
+                postCard.commentsSection.showCommentActivity(() => postCard.stage.updateStaging(postCard.commentsSection.allStaged));
+            });
+        });
+
+        this.likedPostsBox = new PostsBox(0, this.likedPostsBoxWrapper, this.rootElm, () => {
+            this.likedPostsBox.messageElm.innerText = 'Liked Posts';
+            this.postBoxesStage.updateStaging(this.likedPostsStaged);
+        });
+
+        this.mainPostsBox = new PostsBox(0, this.mainPostsBoxWrapper, this.rootElm, () => {
+            this.mainPostsBox.messageElm.innerText = 'All Posts'
+            this.postBoxesStage.updateStaging(this.mainPostsStaged);
+        });
+
+        this.summaryStageContainers = [
             this.profilePictureBox.rootElm, this.profileNameWrapper,
             this.profileBioWrapper, this.friendBoxElm, this.imageScrollBox
         ]
 
-        this.stage = new Stage([this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged],
+        this.summaryStage = new Stage([this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged],
             () => {
-                this.stageContainers.forEach((container: HTMLElement) => {
+                this.summaryStageContainers.forEach((container: HTMLElement) => {
                     ViewUtil.show(container, null, () => {
                         container.style.opacity = '1';
                     });
@@ -149,7 +192,7 @@ class ProfileModal extends Modal {
             // Set profile picture display.
             this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
 
-            this.stage.updateStaging(this.fullProfileStaged);
+            this.summaryStage.updateStaging(this.fullProfileStaged);
         });
 
         // PRIVATE PROFILE OPTIONS
@@ -183,7 +226,7 @@ class ProfileModal extends Modal {
             // Set click callback of each image to open a collection in fullzise image modal.
             fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
 
-        this.imagesBox.onLoadEnd = () => this.stage.updateStaging(this.imagesBoxStaged);
+        this.imagesBox.onLoadEnd = () => this.summaryStage.updateStaging(this.imagesBoxStaged);
 
         // Append new profile images box to container elm.
         this.imageWrapper.append(this.imagesBox.rootElm);
@@ -191,12 +234,15 @@ class ProfileModal extends Modal {
         // Request friends by ProfileID and load them into friendBox when they arrive as profile cards.
         Ajax.getFriends(profileId, null, (profileCards: ProfileCard[]) => {
             this.friendBox.add(profileCards);
-            this.stage.updateStaging(this.friendsStaged);
+            this.summaryStage.updateStaging(this.friendsStaged);
         });
-    
+
+        this.postBoxesStage = new Stage([this.mainPostsStaged], () => this.displayPosts());
+        this.mainPostsBox.onLoadEnd = () => this.postBoxesStage.updateStaging(this.mainPostsStaged);
+
         // Create post box and start feed.
-        this.postBox.profileId = profileId;
-        this.postBox.start();
+        this.mainPostsBox.profileId = profileId;
+        this.mainPostsBox.start();
         
         // Open this modal.
         super.open();
@@ -230,21 +276,68 @@ class ProfileModal extends Modal {
             }
         }
 
-        this.postBox.clear();
-        this.postBox.requestCallback = (skip: number, take: number) => {
+        this.mainPostsBox.clear();
+        this.mainPostsBox.requestCallback = (skip: number, take: number) => {
             Ajax.getProfilePosts(this.profile.profileId, skip, take, this.feedFilter, (postCards: PostCard[]) => {
 
                 if (postCards == null) return;
-                this.postBox.add(postCards);
+                this.mainPostsBox.add(postCards);
             });
         }
 
-        this.postBox.start();
+        this.mainPostsBox.start();
     }
 
-    private refreshProfilePostFeed() {
-        this.postBox.clear();
-        this.postBox.start();
+    private refreshProfilePostFeed(): void {
+        //this.mainPostsBox.clear();
+        //this.mainPostsBox.start();
+
+        this.postBoxesStage = new Stage([this.mainPostsStaged], () => this.displayPosts());
+        ViewUtil.hide(this.postBoxes.rootElm);
+
+        this.mainPostsBox.refreshPosts(() => {
+
+            if (this.commentedPostsBox.length > 0 || this.likedPostsBox.length > 0) this.mainPostsBox.messageElm.innerText = 'All Posts';
+            this.postBoxesStage.updateStaging(this.mainPostsStaged);
+        });
+
+        if (this.commentedPostsBox.length > 0) {
+
+            this.postBoxesStage.stageFlags.push(this.commentedPostsStaged);
+            this.commentedPostsBox.refreshPosts(() => this.postBoxesStage.updateStaging(this.commentedPostsStaged));
+        }
+
+        if (this.likedPostsBox.length > 0) {
+
+            this.postBoxesStage.stageFlags.push(this.likedPostsStaged);
+            this.likedPostsBox.refreshPosts(() => this.postBoxesStage.updateStaging(this.likedPostsStaged));
+        }
+    }
+
+    private showMyPostActivity(): void {
+        this.postBoxesStage = new Stage([this.commentedPostsStaged, this.likedPostsStaged], () => this.displayPosts());
+        ViewUtil.hide(this.postBoxes.rootElm);
+        this.commentedPostsBox.request(15);
+        this.likedPostsBox.request(15);
+        this.setBtnMyPostActivity(false);
+    }
+
+    private hideMyPostActivity(): void {
+        this.commentedPostsBox.clear();
+        this.likedPostsBox.clear();
+        this.commentedPostsBox.messageElm.innerText = '';
+        this.likedPostsBox.messageElm.innerText = '';
+        this.mainPostsBox.messageElm.innerText = '';
+        this.setBtnMyPostActivity(true);
+    }
+
+    private setBtnMyPostActivity(makeBtnShowActivity: boolean): void {
+        this.mainPostsBox.messageElm.innerText = makeBtnShowActivity ? '' : 'All Posts';
+        this.btnMyPostActivity.toggle();
+    }
+
+    private displayPosts(): void {
+        ViewUtil.show(this.postBoxes.rootElm, 'block');
     }
 
     /*
@@ -302,14 +395,14 @@ class ProfileModal extends Modal {
 
         // Clear friends box and posts box. Even though these were just constructed, they reused an existing elm that could still have cards in it.
         this.friendBox.clear();
-        this.postBox.clear();
+        this.mainPostsBox.clear();
 
         // Change style to 'blank' state.
-        this.stageContainers.forEach((container: HTMLElement) => {
+        this.summaryStageContainers.forEach((container: HTMLElement) => {
             container.style.opacity = '0';
             ViewUtil.hide(container);
         });
 
-        this.stage.stageFlags.forEach((flag: StageFlag) => flag.lower());
+        this.summaryStage.stageFlags.forEach((flag: StageFlag) => flag.lower());
     }
 }

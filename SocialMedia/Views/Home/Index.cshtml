@@ -423,10 +423,17 @@
         <div id="btnRefreshProfilePostFeed" class="icon" title="Refresh posts">
             <i class="fa fa-refresh"></i>
         </div>
+        <div id="btnMyPostActivity" class="icon" title="Show my post activity">
+            <i class="fa fa-history"></i>
+        </div>
     </div>
 
     @* Profile posts. *@
-    <div id="profilePosts"></div>
+    <div id="profilePostBoxes">
+        <div id="mainProfilePostsBox"></div>
+        <div id="likedProfilePostsBox"></div>
+        <div id="commentedProfilePostsBox"></div>
+    </div>
 </div>
 
 @* CREATE POST MODAL *@
