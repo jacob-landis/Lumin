@@ -18,7 +18,7 @@ var ContentBox = (function () {
         if (requestCallback)
             this.requestCallback = requestCallback;
         this.scrollElm.addEventListener("wheel", function (event) {
-            if (_this.requestCallback != null) {
+            if (_this.requestCallback != null && _this.content.length != 0) {
                 _this.lazyLoad();
                 _this.getVisibleContent().forEach(function (card) { return card.alertVisible(); });
             }

@@ -87,7 +87,7 @@ class ContentBox implements IAppendable {
         if (requestCallback) this.requestCallback = requestCallback;
         
         this.scrollElm.addEventListener("wheel", (event: MouseWheelEvent) => {
-            if (this.requestCallback != null) {
+            if (this.requestCallback != null && this.content.length != 0) {
                 this.lazyLoad();    
                 this.getVisibleContent().forEach((card: Card) => card.alertVisible());
             }

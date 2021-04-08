@@ -278,10 +278,11 @@
         skip: number,
         take: number,
         feedFilter: 'recent' | 'likes' | 'comments',
+        feedType: 'commentedPosts' | 'likedPosts' | 'mainPosts',
         onPostResults: (postCards: PostCard[]) => void
     ): void {
         this.call(
-            `apipost/profileposts/${profileId}/${skip}/${take}/${feedFilter}`, 
+            `apipost/profileposts/${profileId}/${skip}/${take}/${feedFilter}/${feedType}`, 
             "GET",
             (postResults: string) => onPostResults(PostCard.list(<PostRecord[]><unknown>postResults))
         );

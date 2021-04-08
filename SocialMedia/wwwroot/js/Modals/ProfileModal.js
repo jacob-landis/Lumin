@@ -48,7 +48,7 @@ var ProfileModal = (function (_super) {
         _this.btnTogglePostFeedFilter.onclick = function (event) { return _this.togglePostFeedFilter(); };
         _this.btnRefreshProfilePostFeed.onclick = function (event) { return _this.refreshProfilePostFeed(); };
         _this.postBoxes = new ContentBox(_this.postBoxesWrapper);
-        _this.commentedPostsBox = new PostsBox(0, _this.commentedPostsBoxWrapper, _this.rootElm, function () {
+        _this.commentedPostsBox = new PostsBox(0, _this.commentedPostsBoxWrapper, _this.rootElm, 'commentedPosts', function () { return _this.feedFilter; }, function () {
             _this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
             _this.postBoxesStage.updateStaging(_this.commentedPostsStaged);
             _this.commentedPostsBox.content.forEach(function (content) {
@@ -56,11 +56,11 @@ var ProfileModal = (function (_super) {
                 postCard.commentsSection.showCommentActivity(function () { return postCard.stage.updateStaging(postCard.commentsSection.allStaged); });
             });
         });
-        _this.likedPostsBox = new PostsBox(0, _this.likedPostsBoxWrapper, _this.rootElm, function () {
+        _this.likedPostsBox = new PostsBox(0, _this.likedPostsBoxWrapper, _this.rootElm, 'likedPosts', function () { return _this.feedFilter; }, function () {
             _this.likedPostsBox.messageElm.innerText = 'Liked Posts';
             _this.postBoxesStage.updateStaging(_this.likedPostsStaged);
         });
-        _this.mainPostsBox = new PostsBox(0, _this.mainPostsBoxWrapper, _this.rootElm, function () {
+        _this.mainPostsBox = new PostsBox(0, _this.mainPostsBoxWrapper, _this.rootElm, 'mainPosts', function () { return _this.feedFilter; }, function () {
             _this.mainPostsBox.messageElm.innerText = 'All Posts';
             _this.postBoxesStage.updateStaging(_this.mainPostsStaged);
         });
@@ -142,7 +142,7 @@ var ProfileModal = (function (_super) {
         }
         this.mainPostsBox.clear();
         this.mainPostsBox.requestCallback = function (skip, take) {
-            Ajax.getProfilePosts(_this.profile.profileId, skip, take, _this.feedFilter, function (postCards) {
+            Ajax.getProfilePosts(_this.profile.profileId, skip, take, _this.feedFilter, 'mainPosts', function (postCards) {
                 if (postCards == null)
                     return;
                 _this.mainPostsBox.add(postCards);

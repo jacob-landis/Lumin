@@ -135,7 +135,7 @@ class ProfileModal extends Modal {
 
         this.postBoxes = new ContentBox(this.postBoxesWrapper);
 
-        this.commentedPostsBox = new PostsBox(0, this.commentedPostsBoxWrapper, this.rootElm, () => {
+        this.commentedPostsBox = new PostsBox(0, this.commentedPostsBoxWrapper, this.rootElm, 'commentedPosts', () => this.feedFilter, () => {
             this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
             this.postBoxesStage.updateStaging(this.commentedPostsStaged);
 
@@ -146,12 +146,12 @@ class ProfileModal extends Modal {
             });
         });
 
-        this.likedPostsBox = new PostsBox(0, this.likedPostsBoxWrapper, this.rootElm, () => {
+        this.likedPostsBox = new PostsBox(0, this.likedPostsBoxWrapper, this.rootElm, 'likedPosts', () => this.feedFilter, () => {
             this.likedPostsBox.messageElm.innerText = 'Liked Posts';
             this.postBoxesStage.updateStaging(this.likedPostsStaged);
         });
 
-        this.mainPostsBox = new PostsBox(0, this.mainPostsBoxWrapper, this.rootElm, () => {
+        this.mainPostsBox = new PostsBox(0, this.mainPostsBoxWrapper, this.rootElm, 'mainPosts', () => this.feedFilter, () => {
             this.mainPostsBox.messageElm.innerText = 'All Posts'
             this.postBoxesStage.updateStaging(this.mainPostsStaged);
         });
@@ -278,7 +278,7 @@ class ProfileModal extends Modal {
 
         this.mainPostsBox.clear();
         this.mainPostsBox.requestCallback = (skip: number, take: number) => {
-            Ajax.getProfilePosts(this.profile.profileId, skip, take, this.feedFilter, (postCards: PostCard[]) => {
+            Ajax.getProfilePosts(this.profile.profileId, skip, take, this.feedFilter, 'mainPosts', (postCards: PostCard[]) => {
 
                 if (postCards == null) return;
                 this.mainPostsBox.add(postCards);
@@ -289,8 +289,6 @@ class ProfileModal extends Modal {
     }
 
     private refreshProfilePostFeed(): void {
-        //this.mainPostsBox.clear();
-        //this.mainPostsBox.start();
 
         this.postBoxesStage = new Stage([this.mainPostsStaged], () => this.displayPosts());
         ViewUtil.hide(this.postBoxes.rootElm);

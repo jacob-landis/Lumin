@@ -112,8 +112,8 @@ var Ajax = (function () {
     Ajax.getPublicPosts = function (skip, take, onPostResults) {
         this.call("apipost/publicposts/" + skip + "/" + take, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
     };
-    Ajax.getProfilePosts = function (profileId, skip, take, feedFilter, onPostResults) {
-        this.call("apipost/profileposts/" + profileId + "/" + skip + "/" + take + "/" + feedFilter, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
+    Ajax.getProfilePosts = function (profileId, skip, take, feedFilter, feedType, onPostResults) {
+        this.call("apipost/profileposts/" + profileId + "/" + skip + "/" + take + "/" + feedFilter + "/" + feedType, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
     };
     Ajax.call = function (path, method, onResults, data) {
         var _this = this;

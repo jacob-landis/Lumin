@@ -55,6 +55,9 @@ namespace SocialMedia.Models
                 .OrderByDescending(c => c.DateTime)
                 .Skip((int)commentCount)
                 .Take((int)amount);
+
+
+        public bool HasCommented(int postId, int profileId) => context.Comments.Any(c => c.PostId == postId && c.ProfileId == profileId);
         // END SHORTCUTS
 
         /*

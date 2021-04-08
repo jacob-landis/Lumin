@@ -114,50 +114,66 @@ namespace SocialMedia.Controllers
         /*
              Returns a portion of a profile's posts. Used for lazy loading.
         */
-        [HttpGet("profileposts/{id}/{postCount}/{amount}/{feedFilter}")]
-        public List<PostModel> ProfilePosts(int id, int postCount, int amount, string feedFilter)
+        [HttpGet("profileposts/{id}/{postCount}/{amount}/{feedFilter}/{feedType}")]
+        public List<PostModel> ProfilePosts(int id, int postCount, int amount, string feedFilter, string feedType)
         {
             // If there are more posts than the user requested, only return the amount requested, or else return none.
             if (postCount < postRepo.CountByProfileId(id))
             {
                 IEnumerable<Post> postRecords = new List<Post>();
-
-                switch (feedFilter)
+                
+                switch (feedType)
                 {
-                    case "recent": return PostRange(GetProfilePosts(id), postCount, amount);
-
-                    case "likes":
-                        postRecords = postRepo.Posts
-                            .Where(p => p.ProfileId == id)
-                            .OrderByDescending(p => p.DateTime)
-                            .OrderByDescending(p => likeRepo.CountByContentId(1, p.PostId))
-                            .Skip(postCount)
-                            .Take(amount)
-                            .ToList();
+                    case "commentedPosts":
+                        postRecords = postRepo.Posts.Where(p => p.ProfileId == id && 
+                        (
+                            commentRepo.HasCommented(p.PostId, currentProfile.id)
+                            || commentRepo.ByPostId(p.PostId).Any(c => likeRepo.HasLiked(2, c.CommentId, currentProfile.id))
+                        ));
                         break;
 
-                    case "comments":
-                        postRecords = postRepo.Posts
-                            .Where(p => p.ProfileId == id)
-                            .OrderByDescending(p => p.DateTime)
-                            .OrderByDescending(p => commentRepo.CountByPostId(p.PostId))
-                            .Skip(postCount)
-                            .Take(amount)
-                            .ToList();
+                    case "likedPosts":
+                        postRecords = postRepo.Posts.Where(p => p.ProfileId == id && likeRepo.HasLiked(1, p.PostId, currentProfile.id));
+                        break;
+
+                    case "mainPosts":
+                        postRecords = postRepo.Posts.Where(p => p.ProfileId == id);
                         break;
                 }
 
+                switch (feedFilter)
+                {
+                    case "recent":
+                        postRecords = postRecords.OrderByDescending(p => p.DateTime);
+                        break;
+
+                    case "likes":
+                        postRecords = postRecords
+                            .OrderByDescending(p => p.DateTime)
+                            .OrderByDescending(p => likeRepo.CountByContentId(1, p.PostId));
+                        break;
+
+                    case "comments":
+                        postRecords = postRecords
+                            .OrderByDescending(p => p.DateTime)
+                            .OrderByDescending(p => commentRepo.CountByPostId(p.PostId));
+                        break;
+                }
+
+                // Sorting by HasCommentActivity must happen after sorting by DateTime.
+                if (feedType == "CommentedPosts") postRecords = postRecords
+                        .OrderByDescending(p => commentRepo.HasCommented(p.PostId, currentProfile.id));
+
                 List<PostModel> postModels = new List<PostModel>();
 
-                foreach (Post p in postRecords)
+                foreach (Post p in postRecords.Skip(postCount).Take(amount))
                 {
                     postModels.Add(GetPostModel(p.PostId));
                 }
 
                 return postModels;
             }
-            else return null;
-            //return postCount < postRepo.CountByProfileId(id) ? PostRange(GetProfilePosts(id), postCount, amount) : null;
+            return null;
         }
 
         /*
@@ -217,7 +233,7 @@ namespace SocialMedia.Controllers
              Shortcut function taking a segment of a list of posts.
         */
         public List<PostModel> PostRange(List<PostModel> posts, int postCount, int amount) =>
-            posts.OrderByDescending(p => p.DateTime).Skip(postCount).Take(postCount + amount).ToList();
+            posts.OrderByDescending(p => p.DateTime).Skip(postCount).Take(postCount + amount).ToList(); // XXX Why postCount + amount? XXX
 
         /*
              Returns a prepped list of a profile's posts by ProfileID.

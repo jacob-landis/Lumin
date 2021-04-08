@@ -29,6 +29,8 @@ namespace SocialMedia.Models
         // Get a range of comments belonging to a post ordered by datetime. 
         // Caller can specify how many to skip, and how many to take.
         IEnumerable<Comment> RangeByPostId(int? id, int? commentCount, int? amount);
+
+        bool HasCommented(int postId, int profileId);
         // END SHORTCUTS
 
         // Used to create a new record or update an old record, and return the ID of the newly created or the updated record.

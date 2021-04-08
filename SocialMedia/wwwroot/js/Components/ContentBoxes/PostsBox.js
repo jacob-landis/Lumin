@@ -13,12 +13,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PostsBox = (function (_super) {
     __extends(PostsBox, _super);
-    function PostsBox(profileId, rootElm, scrollElm, onPostsLoadEnd) {
+    function PostsBox(profileId, rootElm, scrollElm, feedType, getFeedFilter, onPostsLoadEnd) {
         var _this = this;
         rootElm.classList.add('post-box');
         _this = _super.call(this, rootElm, scrollElm, 1500, 5, function (skip, take) {
             if (profileId != null)
-                Ajax.getProfilePosts(_this.profileId, skip, take, 'recent', function (postCards) {
+                Ajax.getProfilePosts(_this.profileId, skip, take, _this.getFeedFilter(), _this.feedType, function (postCards) {
                     _this.addPost(postCards);
                     if (onPostsLoadEnd != null)
                         onPostsLoadEnd();
@@ -31,6 +31,8 @@ var PostsBox = (function (_super) {
                 });
         }) || this;
         _this.profileId = profileId ? profileId : User.profileId;
+        _this.getFeedFilter = getFeedFilter;
+        _this.feedType = feedType;
         PostsBox.postBoxes.push(_this);
         return _this;
     }
@@ -55,7 +57,7 @@ var PostsBox = (function (_super) {
     PostsBox.prototype.refreshPosts = function (onRefreshLoadEnd) {
         var _this = this;
         this.clear();
-        Ajax.getProfilePosts(this.profileId, 0, 15, this.getFeedFilter(), function (postCards) {
+        Ajax.getProfilePosts(this.profileId, 0, 15, this.getFeedFilter(), this.feedType, function (postCards) {
             _this.addPost(postCards);
             if (onRefreshLoadEnd)
                 onRefreshLoadEnd();
