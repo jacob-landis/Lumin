@@ -284,4 +284,13 @@ class Editor implements IAppendable {
             }
         });
     }   
+
+    public disableEditing(): void {
+        ViewUtil.remove(this.btnStart);
+    }
+
+    public enableEditing(): void {
+        this.rootElm.append(this.btnStart);
+        ViewUtil.show(this.btnStart);
+    }
 }

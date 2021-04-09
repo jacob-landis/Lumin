@@ -200,6 +200,69 @@ namespace SocialMedia.Controllers
             return postCount < posts.Count() ? PostRange(posts, postCount, amount) : null;
         }
 
+        [HttpPost("searchposts/{profileId}/{skip}/{take}")]
+        public List<PostModel> SearchPosts(int profileId, int skip, int take, [FromBody] StringModel searchText)
+        {
+            if (searchText.str == "NULL") return null;
+
+            // Prep list for matches. Each index contains a key value pair of <ProfileId, searchPoints>.
+            List<KeyValuePair<int, int>> matches = new List<KeyValuePair<int, int>>();
+
+            // Split search terms into array of search terms.
+            string[] searchTerms = searchText.str.Split(' ');
+
+            // Define how many points an exact match is worth.
+            int exactMatchWorth = 3;
+
+            // Loop though all profiles in the database.
+            foreach (Post p in postRepo.ByProfileId(profileId))
+            {
+                if (p.Caption == "" || p.Caption == null) continue;
+
+                // Define points variable and start it at 0.
+                int points = 0;
+
+                string[] contentTerms = p.Caption.Split(' ');
+
+                foreach (string contentTerm in contentTerms)
+                {
+                    string lcContentTerm = contentTerm.ToLower();
+
+                    // Loop through search terms.
+                    foreach (string searchTerm in searchTerms)
+                    {
+                        // Convert search term to lowercase.
+                        string lcSearchTerm = searchTerm.ToLower();
+
+                        // If the terms are an exact match, add an exact match worth of points.
+                        if (lcSearchTerm == lcContentTerm) points += exactMatchWorth;
+
+                        // Else if the terms are a partial match, add 1 point.
+                        else if (lcSearchTerm.Contains(lcContentTerm) || lcContentTerm.Contains(lcSearchTerm)) points++;
+                    }
+                }
+
+                // If the comment earned any points, add its id to the list of matches.
+                if (points > 0) matches.Add(new KeyValuePair<int, int>(p.PostId, points));
+            }
+
+            // Sort match results by points.
+            matches.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+
+            // Prep list for preped results.
+            List<PostModel> results = new List<PostModel>();
+
+            // Loop through matches.
+            foreach (KeyValuePair<int, int> match in matches)
+            {
+                // Add preped result to results.
+                results.Add(GetPostModel(match.Key));
+            }
+
+            // Return search results to user.
+            return results;
+        }
+
         /*
              Get a single post by PostID.
         */

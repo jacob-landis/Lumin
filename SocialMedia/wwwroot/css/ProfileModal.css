@@ -31,7 +31,7 @@
     grid-template-columns: 1fr 1fr;
 }
 
-#btnTogglePostFeedFilter, #btnRefreshProfilePostFeed, #btnMyPostActivity {
+#btnToggleSearchBar, #btnTogglePostFeedFilter, #btnRefreshProfilePostFeed, #btnMyPostActivity {
     display: inline;
     padding: 4px;
     margin-bottom: 5px;
@@ -86,8 +86,8 @@
     word-break: break-word;
 }
 
-#profileBioWrapper:hover > #btnChangeBio,
-#profileNameWrapper:hover > #btnChangeName {
+#profileBioWrapper:hover > .editor > #btnChangeBio,
+#profileNameWrapper:hover > .editor > #btnChangeName {
     opacity: 1;
 }
 

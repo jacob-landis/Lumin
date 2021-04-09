@@ -278,14 +278,12 @@
     }
 
     public showCommentActivity(onActivityStaged?: () => void): void {
-        this.commentBoxesStage = new Stage([/*this.mainCommentsStaged, */this.myCommentsStaged, this.likedCommentsStaged], () => {
+        this.commentBoxesStage = new Stage([this.myCommentsStaged, this.likedCommentsStaged], () => {
             this.displayResults()
             if (onActivityStaged != null) onActivityStaged();
         });
 
         ViewUtil.hide(this.commentBoxes.rootElm);
-        //this.mainCommentsBox.clear();
-        //this.mainCommentsBox.request(15);
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
         this.setBtnMyActivity(false);

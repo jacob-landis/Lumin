@@ -121,7 +121,7 @@ namespace SocialMedia.Controllers
         {
             if (searchText.str == "NULL") return null;
 
-            // Prep list for matches. Each index contains a key value pair of <ProfileID, searchPoints>.
+            // Prep list for matches. Each index contains a key value pair of <CommentId, searchPoints>.
             List<KeyValuePair<int, int>> matches = new List<KeyValuePair<int, int>>();
 
             // Split search terms into array of search terms.

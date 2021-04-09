@@ -42,6 +42,7 @@
 <script src="~/js/Cards/LikeCard.js"></script>
 <script src="~/js/Cards/PostCard.js"></script>
 <script src="~/js/Cards/ProfileCard.js"></script>
+<script src="~/js/Cards/ProfilePostsCard.js"></script>
 <script src="~/js/Cards/ImageCard.js"></script>
 
 <script src="~/js/Main.js"></script>
@@ -416,6 +417,9 @@
 
     @* Profile post controls. *@
     <div id="profilePostControls">
+        <div id="btnToggleSearchBar" class="icon" title="Open search bar">
+            <i class="fa fa-search"></i>
+        </div>
         <div id="btnTogglePostFeedFilter" class="icon" title="Sort by like popularity">
             <i class="fa fa-filter"></i>
             <i class="fa fa-thumbs-up"></i>
@@ -425,6 +429,11 @@
         </div>
         <div id="btnMyPostActivity" class="icon" title="Show my post activity">
             <i class="fa fa-history"></i>
+        </div>
+
+        <input id="txtSearchPosts" class="txtSearchComments myTextBtnPair" type="text">
+        <div id="btnSearchPosts" class="icon btnConfirmCommentSearch myBtnTextPair" title="Search">
+            <i class="fa fa-search"></i>
         </div>
     </div>
 

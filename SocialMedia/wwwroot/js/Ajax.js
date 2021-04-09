@@ -115,6 +115,11 @@ var Ajax = (function () {
     Ajax.getProfilePosts = function (profileId, skip, take, feedFilter, feedType, onPostResults) {
         this.call("apipost/profileposts/" + profileId + "/" + skip + "/" + take + "/" + feedFilter + "/" + feedType, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
     };
+    Ajax.searchPosts = function (profileId, skip, take, searchText, onPostResults) {
+        this.call("apipost/searchposts/" + profileId + "/" + skip + "/" + take, "POST", function (postResults) {
+            onPostResults(PostCard.list(postResults));
+        }, this.JSONstring(searchText));
+    };
     Ajax.call = function (path, method, onResults, data) {
         var _this = this;
         this.finalCall("apiprofile/confirmuser", "GET", function (confirmed) {

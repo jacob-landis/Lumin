@@ -288,6 +288,23 @@
         );
     }
 
+    public static searchPosts(
+        profileId: number,
+        skip: number,
+        take: number,
+        searchText: string,
+        onPostResults: (postCards: PostCard[]) => void
+    ): void {
+        this.call(
+            `apipost/searchposts/${profileId}/${skip}/${take}`,
+            "POST",
+            (postResults: string) => {
+                onPostResults(PostCard.list(<PostRecord[]><unknown>postResults))
+            },
+            this.JSONstring(searchText)
+        )
+    }
+
 
     //CALL
     private static call(path: string, method: string, onResults?: (results: string) => void, data?: string): void {

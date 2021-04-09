@@ -104,6 +104,13 @@ var Editor = (function () {
             }
         });
     };
+    Editor.prototype.disableEditing = function () {
+        ViewUtil.remove(this.btnStart);
+    };
+    Editor.prototype.enableEditing = function () {
+        this.rootElm.append(this.btnStart);
+        ViewUtil.show(this.btnStart);
+    };
     return Editor;
 }());
 //# sourceMappingURL=Editor.js.map
