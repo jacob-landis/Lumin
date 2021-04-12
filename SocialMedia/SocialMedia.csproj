@@ -17,6 +17,7 @@
     <Content Remove="wwwroot\ts\Cards\ProfilePostsCard.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\CommentsBox.ts" />
+    <Content Remove="wwwroot\ts\Components\ContentBoxes\PartitionedBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
     <Content Remove="wwwroot\ts\Components\DoubleEditor.ts" />
@@ -79,6 +80,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Cards\ProfilePostsCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\CommentsBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\PartitionedBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\DoubleEditor.ts" />

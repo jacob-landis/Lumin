@@ -29,13 +29,22 @@ var CommentSectionCard = (function (_super) {
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         _this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
         var btnSearchCommentsIcon = Icons.search();
-        _this.btnSearchComments = new ToggleButton('btnSearchComments', 'fa-search', 'fa-times', 'Search comments', 'Close search', btnSearchCommentsIcon.childNodes[0], btnSearchCommentsIcon, function () { return _this.showCommentSearchBar(); }, function () { return _this.hideCommentSearchBar(); });
+        _this.btnSearchComments = new ToggleButton('btnSearchComments', btnSearchCommentsIcon, btnSearchCommentsIcon.childNodes[0], [
+            new PropertySet('fa-search', 'Search comments', function () { return _this.showCommentSearchBar(); }),
+            new PropertySet('fa-times', 'Close search', function () { return _this.hideCommentSearchBar(); })
+        ]);
         var btnToggleFeedFilterIcon = Icons.filterByLikes();
-        _this.btnToggleFeedFilter = new ToggleButton('btnToggleCommentFeedFilter', 'fa-thumbs-up', 'fa-calendar', 'Sort by popularity', 'Sort by recent', btnToggleFeedFilterIcon.childNodes[1], btnToggleFeedFilterIcon, function () { return _this.toggleFeedFilter(); });
+        _this.btnToggleFeedFilter = new ToggleButton('btnToggleCommentFeedFilter', btnToggleFeedFilterIcon, btnToggleFeedFilterIcon.childNodes[1], [
+            new PropertySet('fa-thumbs-up', 'Sort by popularity', function () { return _this.toggleFeedFilter(); }),
+            new PropertySet('fa-calendar', 'Sort by recent')
+        ]);
         _this.btnRefreshFeed = Icons.refresh();
         _this.btnRefreshFeed.classList.add('btnRefreshCommentFeed');
         _this.btnRefreshFeed.title = 'Refresh comment feed';
-        _this.btnMyActivity = new ToggleButton('btnMyActivity', '', 'showingMyCommentActivity', 'Show my activity', 'Hide my activity', null, Icons.history(), function () { return _this.showCommentActivity(); }, function () { return _this.hideCommentActivity(); });
+        _this.btnMyActivity = new ToggleButton('btnMyActivity', Icons.history(), null, [
+            new PropertySet('', 'Show my activity', function () { return _this.showCommentActivity(); }),
+            new PropertySet('showingMyCommentActivity', 'Hide my activity', function () { return _this.hideCommentActivity(); })
+        ]);
         _this.txtSearchComments = ViewUtil.tag('input', { type: 'text', classList: 'txtSearchComments myTextBtnPair' });
         _this.btnConfirmCommentSearch = Icons.search();
         _this.btnConfirmCommentSearch.classList.add('btnConfirmCommentSearch', 'myBtnTextPair');
@@ -77,7 +86,10 @@ var CommentSectionCard = (function (_super) {
         var btnCancel = Icons.cancel();
         var btnComment = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
         var btnToggleExpanIcon = Icons.dropdownArrow();
-        _this.btnToggleViewExpansion = new ToggleButton('btnToggleViewExpansion', 'fa-sort-down', 'fa-sort-up', 'Expand comments', 'Contract comments', btnToggleExpanIcon.childNodes[0], btnToggleExpanIcon, function () { return _this.expandCommentSection(); }, function () { return _this.contractCommentSection(); });
+        _this.btnToggleViewExpansion = new ToggleButton('btnToggleViewExpansion', btnToggleExpanIcon, btnToggleExpanIcon.childNodes[0], [
+            new PropertySet('fa-sort-down', 'Expand comments', function () { return _this.expandCommentSection(); }),
+            new PropertySet('fa-sort-up', 'Contract comments', function () { return _this.contractCommentSection(); })
+        ]);
         _this.rootElm.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.txtSearchComments, _this.btnConfirmCommentSearch, _this.commentBoxes.rootElm, _this.btnToggleViewExpansion.rootElm);
         _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls);
         _this.commentBoxFeedControls.append(_this.btnMyActivity.rootElm, _this.btnToggleFeedFilter.rootElm, _this.btnRefreshFeed, _this.btnSearchComments.rootElm);

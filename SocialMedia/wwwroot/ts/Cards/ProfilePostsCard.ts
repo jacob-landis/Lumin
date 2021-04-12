@@ -6,6 +6,7 @@
     
     private btnMyPostActivity: ToggleButton; 
     private btnToggleSearchBar: ToggleButton; 
+    private btnTogglePostFeedFilter: ToggleButton;
     
     // A PostsBox for displaying a profile's posts.
     private postBoxes: ContentBox; 
@@ -22,7 +23,7 @@
     public constructor(
         rootElm: HTMLElement,
         btnToggleSearchBar: HTMLElement,
-        private btnTogglePostFeedFilter: HTMLElement,
+        btnTogglePostFeedFilter: HTMLElement,
         btnRefreshProfilePostFeed: HTMLElement,
         btnMyPostActivity: HTMLElement,
         private btnSearchPosts: HTMLElement,
@@ -33,17 +34,27 @@
     ) {
 
         super(rootElm);
+        
+        this.btnToggleSearchBar = new ToggleButton(null, btnToggleSearchBar, <HTMLElement>btnToggleSearchBar.childNodes[1], [
+            new PropertySet('fa-search', 'Open search bar', () => this.showSearchBar()),
+            new PropertySet('fa-times', 'Close search bar', () => this.hideSearchBar())
+        ]);
+        
+        this.btnMyPostActivity = new ToggleButton(null, null, btnMyPostActivity, [
+            new PropertySet('', 'Show my activity', () => this.showMyPostActivity()),
+            new PropertySet('showingMyPostActivity', 'Hide my activity', () => this.hideMyPostActivity())
+        ]);
 
-        this.btnToggleSearchBar = new ToggleButton(null, 'fa-search', 'fa-times', 'Open search bar', 'Close search bar',
-            <HTMLElement>btnToggleSearchBar.childNodes[1], btnToggleSearchBar, () => this.showSearchBar(), () => this.hideSearchBar());
-
-        this.btnMyPostActivity = new ToggleButton(null, '', 'showingMyPostActivity', 'Show my activity', 'Hide my activity', null, btnMyPostActivity,
-            () => this.showMyPostActivity(), () => this.hideMyPostActivity()); 
+        this.btnTogglePostFeedFilter = new ToggleButton(null, btnTogglePostFeedFilter, <HTMLElement>btnTogglePostFeedFilter.children[1], [
+            new PropertySet('fa-thumbs-up', 'Sort by popularity',        () => this.setPostFeedFilter('likes')),
+            new PropertySet('fa-comments', 'Sort by comment popularity', () => this.setPostFeedFilter('comments')),
+            new PropertySet('fa-calendar', 'Sort by recent',             () => this.setPostFeedFilter('recent'))
+        ]);
 
         this.btnSearchPosts.onclick = (e: MouseEvent) => this.searchPosts();
         this.txtSearchPosts.onkeyup = (e: KeyboardEvent) => { if (e.keyCode == 13) this.btnSearchPosts.click(); }
 
-        this.btnTogglePostFeedFilter.onclick = (event: MouseEvent) => this.togglePostFeedFilter(); 
+        //this.btnTogglePostFeedFilter.onclick = (event: MouseEvent) => this.togglePostFeedFilter(); 
         btnRefreshProfilePostFeed.onclick = (event: MouseEvent) => this.refreshProfilePostFeed(); 
 
         this.postBoxes = new ContentBox(this.rootElm); 
@@ -81,33 +92,10 @@
     }
 
 
-    private togglePostFeedFilter(): void { 
+    private setPostFeedFilter(feedFilter: 'recent' | 'likes' | 'comments' = 'recent'): void { 
 
-        let feedFilterSecondIcon = this.btnTogglePostFeedFilter.children[1];
-
-        switch (this.feedFilter) {
-            case 'recent': { // Switch to likes. Next: comments
-                this.feedFilter = 'likes';
-                this.btnTogglePostFeedFilter.title = 'Sort by comment popularity';
-                feedFilterSecondIcon.classList.remove('fa-thumbs-up');
-                feedFilterSecondIcon.classList.add('fa-comments');
-                break;
-            }
-            case 'likes': { // Switch to comments. Next: recent
-                this.feedFilter = 'comments';
-                this.btnTogglePostFeedFilter.title = 'Sort by recent';
-                feedFilterSecondIcon.classList.remove('fa-comments');
-                feedFilterSecondIcon.classList.add('fa-calendar');
-                break;
-            }
-            case 'comments': { // Switch to recent. Next: likes
-                this.feedFilter = 'recent';
-                this.btnTogglePostFeedFilter.title = 'Sort by like popularity';
-                feedFilterSecondIcon.classList.remove('fa-calendar');
-                feedFilterSecondIcon.classList.add('fa-thumbs-up');
-                break;
-            }
-        }
+        this.feedFilter = feedFilter;
+        this.btnTogglePostFeedFilter.toggle();
 
         this.mainPostsBox.clear();
         this.mainPostsBox.requestCallback = (skip: number, take: number) => {
@@ -119,6 +107,18 @@
         }
 
         this.mainPostsBox.start();
+
+        if (this.commentedPostsBox.length > 0) {
+            this.postBoxesStage.stageFlags.push(this.commentedPostsStaged);
+            this.commentedPostsBox.clear();
+            this.commentedPostsBox.request(15);
+        }
+
+        if (this.likedPostsBox.length > 0) {
+            this.postBoxesStage.stageFlags.push(this.likedPostsStaged);
+            this.likedPostsBox.clear();
+            this.likedPostsBox.request(15);
+        }
     }
 
     private refreshProfilePostFeed(): void { 

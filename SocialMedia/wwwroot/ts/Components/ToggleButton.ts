@@ -1,49 +1,35 @@
-﻿class ToggleButton implements IAppendable {
+﻿class PropertySet {
+    public constructor(
+        public classList: string,
+        public title: string,
+        public onClick?: (event: MouseEvent) => void,
+    ) { }
+}
+
+class ToggleButton implements IAppendable {
 
     public rootElm: HTMLElement;
-
-    private stateIsPrimary: boolean = true;
-
-    private icon: HTMLElement;
-    private primaryStateClass: string;
-    private secondaryStateClass: string;
-    private primaryTitle: string;
-    private secondaryTitle: string;
-    private primaryOnClick: (event: MouseEvent) => void;
-    private secondaryOnClick: (event: MouseEvent) => void;
-
+    private stateIndex: number = 0;
+    
     public constructor(
         classList: string,
-        primaryStateClass?: string,
-        secondaryStateClass?: string,
-        primaryTitle?: string,
-        secondaryTitle?: string,
-        icon?: HTMLElement,
         iconContainer?: HTMLElement,
-        primaryOnClick?: (event: MouseEvent) => void,
-        secondaryOnClick?: (event: MouseEvent) => void
+        private icon?: HTMLElement,
+        private propertySets?: PropertySet[]
     ) {
-        this.primaryStateClass = primaryStateClass;
-        this.secondaryStateClass = secondaryStateClass;
-        this.primaryTitle = primaryTitle;
-        this.secondaryTitle = secondaryTitle;
-        this.icon = icon;
-        this.primaryOnClick = primaryOnClick;
-        this.secondaryOnClick = secondaryOnClick;
-
         this.rootElm = iconContainer ? iconContainer : ViewUtil.tag('div');
         if (classList) this.rootElm.classList.add(classList);
 
-        this.setBtn(this.primaryStateClass, '', this.primaryTitle, this.primaryOnClick);
+        this.setBtn(this.propertySets[0].classList, '', this.propertySets[0].title, this.propertySets[0].onClick);
     }
 
     public toggle(): void {
+        
+        let oldSet: PropertySet = this.propertySets[this.stateIndex];
+        this.stateIndex = ((this.stateIndex + 1) >= this.propertySets.length) ? 0 : this.stateIndex + 1;
+        let newSet: PropertySet = this.propertySets[this.stateIndex];
 
-        // Toggle flag.
-        this.stateIsPrimary = !this.stateIsPrimary;
-
-        if (this.stateIsPrimary) this.setBtn(this.primaryStateClass, this.secondaryStateClass, this.primaryTitle, this.primaryOnClick);
-        else this.setBtn(this.secondaryStateClass, this.primaryStateClass, this.secondaryTitle, this.secondaryOnClick? this.secondaryOnClick:null);
+        this.setBtn(newSet.classList, oldSet.classList, newSet.title, newSet.onClick);
     }
 
     private setBtn(newClass?: string, oldClass?: string, title?: string, onClick?: (event: MouseEvent) => void): void {
