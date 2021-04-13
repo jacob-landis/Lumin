@@ -36,19 +36,19 @@
         super(rootElm);
         
         this.btnToggleSearchBar = new ToggleButton(null, btnToggleSearchBar, <HTMLElement>btnToggleSearchBar.childNodes[1], [
-            new PropertySet('fa-search', 'Open search bar', () => this.showSearchBar()),
-            new PropertySet('fa-times', 'Close search bar', () => this.hideSearchBar())
+            new ToggleState('fa-search', 'Open search bar', () => this.showSearchBar()),
+            new ToggleState('fa-times', 'Close search bar', () => this.hideSearchBar())
         ]);
         
         this.btnMyPostActivity = new ToggleButton(null, null, btnMyPostActivity, [
-            new PropertySet('', 'Show my activity', () => this.showMyPostActivity()),
-            new PropertySet('showingMyPostActivity', 'Hide my activity', () => this.hideMyPostActivity())
+            new ToggleState('', 'Show my activity', () => this.showMyPostActivity()),
+            new ToggleState('showingMyPostActivity', 'Hide my activity', () => this.hideMyPostActivity())
         ]);
 
         this.btnTogglePostFeedFilter = new ToggleButton(null, btnTogglePostFeedFilter, <HTMLElement>btnTogglePostFeedFilter.children[1], [
-            new PropertySet('fa-thumbs-up', 'Sort by popularity',        () => this.setPostFeedFilter('likes')),
-            new PropertySet('fa-comments', 'Sort by comment popularity', () => this.setPostFeedFilter('comments')),
-            new PropertySet('fa-calendar', 'Sort by recent',             () => this.setPostFeedFilter('recent'))
+            new ToggleState('fa-thumbs-up', 'Sort by popularity',        () => this.setPostFeedFilter('likes')),
+            new ToggleState('fa-comments', 'Sort by comment popularity', () => this.setPostFeedFilter('comments')),
+            new ToggleState('fa-calendar', 'Sort by recent',             () => this.setPostFeedFilter('recent'))
         ]);
 
         this.btnSearchPosts.onclick = (e: MouseEvent) => this.searchPosts();
@@ -181,7 +181,8 @@
         ViewUtil.hide(this.postBoxes.rootElm);
         this.commentedPostsBox.request(15);
         this.likedPostsBox.request(15);
-        this.setBtnMyPostActivity(false);
+        this.mainPostsBox.messageElm.innerText = 'All Posts'
+        this.btnMyPostActivity.toggle();
     }
 
     private hideMyPostActivity(): void { 
@@ -190,11 +191,7 @@
         this.commentedPostsBox.messageElm.innerText = '';
         this.likedPostsBox.messageElm.innerText = '';
         this.mainPostsBox.messageElm.innerText = '';
-        this.setBtnMyPostActivity(true);
-    }
-
-    private setBtnMyPostActivity(makeBtnShowActivity: boolean): void { 
-        this.mainPostsBox.messageElm.innerText = makeBtnShowActivity ? '' : 'All Posts';
+        this.mainPostsBox.messageElm.innerText = '';
         this.btnMyPostActivity.toggle();
     }
 

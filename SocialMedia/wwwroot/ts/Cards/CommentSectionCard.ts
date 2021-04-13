@@ -99,33 +99,25 @@
         this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
 
         let btnSearchCommentsIcon: HTMLElement = Icons.search();
-        //this.btnSearchComments = new ToggleButton('btnSearchComments', 'fa-search', 'fa-times', 'Search comments', 'Close search',
-        //    <HTMLElement>btnSearchCommentsIcon.childNodes[0], btnSearchCommentsIcon, () => this.showCommentSearchBar(), () => this.hideCommentSearchBar());
 
         this.btnSearchComments = new ToggleButton('btnSearchComments', btnSearchCommentsIcon, <HTMLElement>btnSearchCommentsIcon.childNodes[0], [
-            new PropertySet('fa-search', 'Search comments', () => this.showCommentSearchBar()),
-            new PropertySet('fa-times', 'Close search', () => this.hideCommentSearchBar())
+            new ToggleState('fa-search', 'Search comments', () => this.showCommentSearchBar()),
+            new ToggleState('fa-times', 'Close search', () => this.hideCommentSearchBar())
         ]);
 
         let btnToggleFeedFilterIcon: HTMLElement = Icons.filterByLikes();
-        //this.btnToggleFeedFilter = new ToggleButton('btnToggleCommentFeedFilter', 'fa-thumbs-up', 'fa-calendar', 'Sort by popularity', 'Sort by recent',
-        //    <HTMLElement>btnToggleFeedFilterIcon.childNodes[1], btnToggleFeedFilterIcon, () => this.toggleFeedFilter());
-
         this.btnToggleFeedFilter = new ToggleButton('btnToggleCommentFeedFilter', btnToggleFeedFilterIcon, <HTMLElement>btnToggleFeedFilterIcon.childNodes[1], [
-            new PropertySet('fa-thumbs-up', 'Sort by popularity', () => this.toggleFeedFilter()),
-            new PropertySet('fa-calendar', 'Sort by recent')
+            new ToggleState('fa-thumbs-up', 'Sort by popularity', () => this.toggleFeedFilter()),
+            new ToggleState('fa-calendar', 'Sort by recent')
         ]);
 
         this.btnRefreshFeed = Icons.refresh();
         this.btnRefreshFeed.classList.add('btnRefreshCommentFeed');
         this.btnRefreshFeed.title = 'Refresh comment feed';
         
-        //this.btnMyActivity = new ToggleButton('btnMyActivity', '', 'showingMyCommentActivity', 'Show my activity', 'Hide my activity', null, Icons.history(),
-        //    () => this.showCommentActivity(), () => this.hideCommentActivity());
-
         this.btnMyActivity = new ToggleButton('btnMyActivity', Icons.history(), null, [
-            new PropertySet('', 'Show my activity', () => this.showCommentActivity()),
-            new PropertySet('showingMyCommentActivity', 'Hide my activity', () => this.hideCommentActivity())
+            new ToggleState('', 'Show my activity', () => this.showCommentActivity()),
+            new ToggleState('showingMyCommentActivity', 'Hide my activity', () => this.hideCommentActivity())
         ]);
 
         this.txtSearchComments = <HTMLInputElement>ViewUtil.tag('input', { type: 'text', classList: 'txtSearchComments myTextBtnPair' });
@@ -181,12 +173,9 @@
         let btnComment: HTMLElement = ViewUtil.tag('button', { classList: 'btnComment', innerHTML: 'Create Comment' });
 
         let btnToggleExpanIcon: HTMLElement = Icons.dropdownArrow();
-        //this.btnToggleViewExpansion = new ToggleButton('btnToggleViewExpansion', 'fa-sort-down', 'fa-sort-up', 'Expand comments', 'Contract comments',
-        //    <HTMLElement>btnToggleExpanIcon.childNodes[0], btnToggleExpanIcon, () => this.expandCommentSection(), () => this.contractCommentSection());
-
         this.btnToggleViewExpansion = new ToggleButton('btnToggleViewExpansion', btnToggleExpanIcon, <HTMLElement>btnToggleExpanIcon.childNodes[0], [
-            new PropertySet('fa-sort-down', 'Expand comments', () => this.expandCommentSection()),
-            new PropertySet('fa-sort-up', 'Contract comments', () => this.contractCommentSection())
+            new ToggleState('fa-sort-down', 'Expand comments', () => this.expandCommentSection()),
+            new ToggleState('fa-sort-up', 'Contract comments', () => this.contractCommentSection())
         ]);
 
         this.rootElm.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.txtSearchComments,
