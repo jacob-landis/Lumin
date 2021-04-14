@@ -109,13 +109,13 @@
         this.mainPostsBox.start();
 
         if (this.commentedPostsBox.length > 0) {
-            this.postBoxesStage.stageFlags.push(this.commentedPostsStaged);
+            this.postBoxesStage.flags.push(this.commentedPostsStaged);
             this.commentedPostsBox.clear();
             this.commentedPostsBox.request(15);
         }
 
         if (this.likedPostsBox.length > 0) {
-            this.postBoxesStage.stageFlags.push(this.likedPostsStaged);
+            this.postBoxesStage.flags.push(this.likedPostsStaged);
             this.likedPostsBox.clear();
             this.likedPostsBox.request(15);
         }
@@ -134,13 +134,13 @@
 
         if (this.commentedPostsBox.length > 0) {
 
-            this.postBoxesStage.stageFlags.push(this.commentedPostsStaged);
+            this.postBoxesStage.flags.push(this.commentedPostsStaged);
             this.commentedPostsBox.refreshPosts(() => this.postBoxesStage.updateStaging(this.commentedPostsStaged));
         }
 
         if (this.likedPostsBox.length > 0) {
 
-            this.postBoxesStage.stageFlags.push(this.likedPostsStaged);
+            this.postBoxesStage.flags.push(this.likedPostsStaged);
             this.likedPostsBox.refreshPosts(() => this.postBoxesStage.updateStaging(this.likedPostsStaged));
         }
     }

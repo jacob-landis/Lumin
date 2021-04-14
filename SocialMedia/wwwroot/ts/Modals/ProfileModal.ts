@@ -210,6 +210,6 @@ class ProfileModal extends Modal {
             ViewUtil.hide(container);
         });
 
-        this.summaryStage.stageFlags.forEach((flag: StageFlag) => flag.lower());
+        this.summaryStage.flags.forEach((flag: StageFlag) => flag.lower());
     }
 }

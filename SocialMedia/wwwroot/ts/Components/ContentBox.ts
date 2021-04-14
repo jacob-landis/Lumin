@@ -53,6 +53,8 @@ class ContentBox implements IAppendable {
 
     public onLoadEnd: () => void = null;
 
+    public staged: StageFlag = new StageFlag();
+
     /*
         <div>
         
@@ -217,4 +219,6 @@ class ContentBox implements IAppendable {
         this.loading = false;
         this.moreContent = true;
     }
+
+    public refresh(onRefreshEnd: () => void) { }
 }

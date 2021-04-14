@@ -274,13 +274,13 @@
         this.mainCommentsBox.messageElm.innerText = '';
 
         if (this.myCommentsBox.length > 0) {
-            this.commentBoxesStage.stageFlags.push(this.mainCommentsStaged);
+            this.commentBoxesStage.flags.push(this.mainCommentsStaged);
             this.myCommentsBox.clear();
             this.myCommentsBox.request(15);
         }
 
         if (this.likedCommentsBox.length > 0) {
-            this.commentBoxesStage.stageFlags.push(this.likedCommentsStaged);
+            this.commentBoxesStage.flags.push(this.likedCommentsStaged);
             this.likedCommentsBox.clear();
             this.likedCommentsBox.request(15);
         }
@@ -327,13 +327,13 @@
 
         if (this.myCommentsBox.length > 0) {
 
-            this.commentBoxesStage.stageFlags.push(this.myCommentsStaged);
+            this.commentBoxesStage.flags.push(this.myCommentsStaged);
             this.myCommentsBox.refreshComments();
         }
 
         if (this.likedCommentsBox.length > 0) {
             
-            this.commentBoxesStage.stageFlags.push(this.likedCommentsStaged);
+            this.commentBoxesStage.flags.push(this.likedCommentsStaged);
             this.likedCommentsBox.refreshComments();
         }
     }
