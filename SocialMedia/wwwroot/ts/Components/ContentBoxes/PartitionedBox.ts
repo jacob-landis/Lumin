@@ -1,22 +1,22 @@
 ﻿class PartitionedBox extends ContentBox {
-
-    private mainBox: ContentBox;
-    private subBoxes: ContentBox[];
+    
     private feedFilter: string;
-    private btnToggleFeedFilter: ToggleButton;
-    private btnToggleSubBoxes: ToggleButton;
-    private btnToggleSearchBar: ToggleButton;
     private btnSearch: HTMLElement;
     private txtSearch: HTMLInputElement;
     private stage: Stage;
 
-    public constructor(rootElm: HTMLElement) {
+    public constructor(
+        rootElm: HTMLElement,
+        buttons: HTMLElement[],
+        private mainBox: ContentBox,
+        private subBoxes: ContentBox[]
+    ) {
         super(rootElm);
+        
     }
 
     public setFeedFilter(feedFilter: string): void {
         this.feedFilter = feedFilter;
-        this.btnToggleFeedFilter.toggle();
 
         this.stage = new Stage([this.mainBox.staged], () => this.display());
 
@@ -68,7 +68,6 @@
         });
 
         this.mainBox.messageElm.innerText = 'All';
-        this.btnToggleSubBoxes.toggle;
     }
 
     public hideSubBoxes(): void {
@@ -77,14 +76,12 @@
             box.messageElm.innerText = '';
         });
 
-        this.mainBox.messageElm.innerText = ''
-        this.btnToggleSubBoxes.toggle();
+        this.mainBox.messageElm.innerText = '';
     }
 
     public showSearchBar(): void {
         ViewUtil.show(this.txtSearch);
         ViewUtil.show(this.btnSearch);
-        this.btnToggleSearchBar.toggle();
         this.txtSearch.focus();
     }
 
@@ -92,7 +89,6 @@
         ViewUtil.hide(this.txtSearch);
         ViewUtil.hide(this.btnSearch);
         this.txtSearch.value = '';
-        this.btnToggleSearchBar.toggle();
         this.mainBox.clear();
         this.mainBox.request(10);
         this.mainBox.messageElm.innerText = '';

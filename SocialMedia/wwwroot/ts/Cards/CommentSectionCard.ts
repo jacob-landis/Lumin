@@ -267,7 +267,7 @@
         
         this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
 
-        this.btnToggleFeedFilter.toggle();
+        //this.btnToggleFeedFilter.toggle();
 
         this.mainCommentsBox.clear();
         this.mainCommentsBox.request(15);
@@ -340,7 +340,7 @@
 
     private setBtnMyActivity(makeBtnShowActivity: boolean) {
         this.mainCommentsBox.messageElm.innerText = makeBtnShowActivity ? '' : 'All Comments';
-        this.btnMyActivity.toggle();
+        //this.btnMyActivity.toggle();
     }
 
     private displayResults(): void {
@@ -365,7 +365,7 @@
     private showCommentSearchBar(): void {
         ViewUtil.show(this.txtSearchComments);
         ViewUtil.show(this.btnConfirmCommentSearch);
-        this.btnSearchComments.toggle();
+        //this.btnSearchComments.toggle();
         this.txtSearchComments.focus();
     }
 
@@ -373,7 +373,7 @@
         ViewUtil.hide(this.txtSearchComments);
         ViewUtil.hide(this.btnConfirmCommentSearch);
         this.txtSearchComments.value = '';
-        this.btnSearchComments.toggle();
+        //this.btnSearchComments.toggle();
         this.mainCommentsBox.clear();
         this.mainCommentsBox.request(15);
         this.mainCommentsBox.messageElm.innerText = '';
@@ -381,12 +381,12 @@
 
     private expandCommentSection(): void {
         this.setHeight(720, (720 + this.inputHeight));
-        this.btnToggleViewExpansion.toggle();
+        //this.btnToggleViewExpansion.toggle();
     }
 
     private contractCommentSection(): void {
         this.setHeight(this.targetHeight, this.rootElmMinHeight);
-        this.btnToggleViewExpansion.toggle();
+        //this.btnToggleViewExpansion.toggle();
     }
 
     public resizeCommentBox(): void {

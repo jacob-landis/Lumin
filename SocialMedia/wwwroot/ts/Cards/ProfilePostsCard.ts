@@ -53,8 +53,6 @@
 
         this.btnSearchPosts.onclick = (e: MouseEvent) => this.searchPosts();
         this.txtSearchPosts.onkeyup = (e: KeyboardEvent) => { if (e.keyCode == 13) this.btnSearchPosts.click(); }
-
-        //this.btnTogglePostFeedFilter.onclick = (event: MouseEvent) => this.togglePostFeedFilter(); 
         btnRefreshProfilePostFeed.onclick = (event: MouseEvent) => this.refreshProfilePostFeed(); 
 
         this.postBoxes = new ContentBox(this.rootElm); 
@@ -95,7 +93,7 @@
     private setPostFeedFilter(feedFilter: 'recent' | 'likes' | 'comments' = 'recent'): void { 
 
         this.feedFilter = feedFilter;
-        this.btnTogglePostFeedFilter.toggle();
+        //this.btnTogglePostFeedFilter.toggle();
 
         this.mainPostsBox.clear();
         this.mainPostsBox.requestCallback = (skip: number, take: number) => {
@@ -162,7 +160,7 @@
     private showSearchBar(): void {
         ViewUtil.show(this.txtSearchPosts);
         ViewUtil.show(this.btnSearchPosts);
-        this.btnToggleSearchBar.toggle();
+        //this.btnToggleSearchBar.toggle();
         this.txtSearchPosts.focus();
     }
 
@@ -170,7 +168,7 @@
         ViewUtil.hide(this.txtSearchPosts);
         ViewUtil.hide(this.btnSearchPosts);
         this.txtSearchPosts.value = '';
-        this.btnToggleSearchBar.toggle();
+        //this.btnToggleSearchBar.toggle();
         this.mainPostsBox.clear();
         this.mainPostsBox.request(15);
         this.mainPostsBox.messageElm.innerText = '';
@@ -182,7 +180,7 @@
         this.commentedPostsBox.request(15);
         this.likedPostsBox.request(15);
         this.mainPostsBox.messageElm.innerText = 'All Posts'
-        this.btnMyPostActivity.toggle();
+        //this.btnMyPostActivity.toggle();
     }
 
     private hideMyPostActivity(): void { 
@@ -192,7 +190,7 @@
         this.likedPostsBox.messageElm.innerText = '';
         this.mainPostsBox.messageElm.innerText = '';
         this.mainPostsBox.messageElm.innerText = '';
-        this.btnMyPostActivity.toggle();
+        //this.btnMyPostActivity.toggle();
     }
 
     private displayPosts(): void { 
