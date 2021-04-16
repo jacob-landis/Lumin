@@ -6,6 +6,7 @@ var ContentBox = (function () {
         this.content = [];
         this.requestCallback = null;
         this.onLoadEnd = null;
+        this.staged = new StageFlag();
         this.rootElm = rootElm;
         this.messageElm = ViewUtil.tag('div', { classList: 'contentMessage' });
         this.contentElm = ViewUtil.tag('div', { classList: 'contentContainer' });
@@ -105,6 +106,7 @@ var ContentBox = (function () {
         this.loading = false;
         this.moreContent = true;
     };
+    ContentBox.prototype.refresh = function (onRefreshEnd) { };
     ContentBox.contentBoxes = [];
     return ContentBox;
 }());

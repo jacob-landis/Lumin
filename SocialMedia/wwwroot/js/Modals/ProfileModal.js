@@ -103,7 +103,7 @@ var ProfileModal = (function (_super) {
             container.style.opacity = '0';
             ViewUtil.hide(container);
         });
-        this.summaryStage.stageFlags.forEach(function (flag) { return flag.lower(); });
+        this.summaryStage.flags.forEach(function (flag) { return flag.lower(); });
     };
     return ProfileModal;
 }(Modal));

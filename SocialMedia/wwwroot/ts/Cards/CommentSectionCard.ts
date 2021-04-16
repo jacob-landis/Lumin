@@ -10,10 +10,12 @@
     private targetHeight: number;
     private rootElmMinHeight: number;
 
-    private commentBoxes: ContentBox;
-    private mainCommentsBox: CommentsBox;
-    private myCommentsBox: CommentsBox;
-    private likedCommentsBox: CommentsBox;
+    //private commentBoxes: ContentBox;
+    //private mainCommentsBox: CommentsBox;
+    //private myCommentsBox: CommentsBox;
+    //private likedCommentsBox: CommentsBox;
+
+    public commentBoxes2: PartitionedBox;
 
     private commentInputWrapper: HTMLElement;
     private errorSlot: HTMLElement;
@@ -29,7 +31,7 @@
     private btnToggleFeedFilter: ToggleButton;
     private btnMyActivity: ToggleButton;
     private btnToggleViewExpansion: ToggleButton;
-    private btnSearchComments: ToggleButton;
+    //private btnSearchComments: ToggleButton;
 
     private feedFilter: 'recent' | 'likes' = 'recent';
 
@@ -100,14 +102,14 @@
 
         let btnSearchCommentsIcon: HTMLElement = Icons.search();
 
-        this.btnSearchComments = new ToggleButton('btnSearchComments', btnSearchCommentsIcon, <HTMLElement>btnSearchCommentsIcon.childNodes[0], [
-            new ToggleState('fa-search', 'Search comments', () => this.showCommentSearchBar()),
-            new ToggleState('fa-times', 'Close search', () => this.hideCommentSearchBar())
-        ]);
+        //this.btnSearchComments = new ToggleButton('btnSearchComments', btnSearchCommentsIcon, <HTMLElement>btnSearchCommentsIcon.childNodes[0], [
+        //    new ToggleState('fa-search', 'Search comments', () => this.commentBoxes2.showSearchBar()),
+        //    new ToggleState('fa-times', 'Close search', () => this.commentBoxes2.hideSearchBar())
+        //]);
 
         let btnToggleFeedFilterIcon: HTMLElement = Icons.filterByLikes();
         this.btnToggleFeedFilter = new ToggleButton('btnToggleCommentFeedFilter', btnToggleFeedFilterIcon, <HTMLElement>btnToggleFeedFilterIcon.childNodes[1], [
-            new ToggleState('fa-thumbs-up', 'Sort by popularity', () => this.toggleFeedFilter()),
+            new ToggleState('fa-thumbs-up', 'Sort by popularity', () => this.commentBoxes2.setFeedFilter()),
             new ToggleState('fa-calendar', 'Sort by recent')
         ]);
 
@@ -116,8 +118,8 @@
         this.btnRefreshFeed.title = 'Refresh comment feed';
         
         this.btnMyActivity = new ToggleButton('btnMyActivity', Icons.history(), null, [
-            new ToggleState('', 'Show my activity', () => this.showCommentActivity()),
-            new ToggleState('showingMyCommentActivity', 'Hide my activity', () => this.hideCommentActivity())
+            new ToggleState('', 'Show my activity', () => this.commentBoxes2.showSubBoxes()),
+            new ToggleState('showingMyCommentActivity', 'Hide my activity', () => this.commentBoxes2.hideSubBoxes())
         ]);
 
         this.txtSearchComments = <HTMLInputElement>ViewUtil.tag('input', { type: 'text', classList: 'txtSearchComments myTextBtnPair' });
@@ -125,47 +127,94 @@
         this.btnConfirmCommentSearch.classList.add('btnConfirmCommentSearch', 'myBtnTextPair');
         this.btnConfirmCommentSearch.title = 'Search';
 
-        this.myCommentsBox = new CommentsBox(this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
+        this.commentBoxes2 = new PartitionedBox(this.rootElm, [this.btnMyActivity.rootElm, this.btnRefreshFeed, this.btnToggleFeedFilter.rootElm],
+            new CommentsBox(this.post.postId, 'mainComments', () => this.feedFilter, () => {
 
-            if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
-            else this.myCommentsBox.messageElm.innerText = 'My Comments';
-            
-            this.commentBoxesStage.updateStaging(this.myCommentsStaged);
-        });
+                if (this.commentBoxes2.mainBox.length == 0) {
+                    this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
+                    return;
+                }
 
-        this.likedCommentsBox = new CommentsBox(this.post.postId, 'likedComments', () => this.feedFilter, (noChanges: boolean) => {
-            
-            if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
-            else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+                // If any other boxes are active, add message to differentiate main section.
+                this.commentBoxes2.subBoxes.forEach((box: ContentBox) => {
+                    if (box.length > 0) this.commentBoxes2.mainBox.messageElm.innerText = 'All Comments';
+                });
 
-            this.commentBoxesStage.updateStaging(this.likedCommentsStaged);
-        });
-        
-        this.mainCommentsBox = new CommentsBox(this.post.postId, 'mainComments', () => this.feedFilter, () => {
-            
-            if (this.mainCommentsBox.length == 0) {
+                // If this post belongs to current user, indicate which comments have not been seen by the user.
+                if (this.post.profile.profileId == User.profileId)
+                    this.commentBoxes2.mainBox.content.forEach((comment: CommentCard) => comment.disputeHasSeen());
+
+                // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
+                if (this.isFirstCommentsBatch) {
+                    this.isFirstCommentsBatch = false;
+
+                    if (this.post.image == null) this.resizeCommentBox();
+                }
+
                 this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
-                return;
+            }),
+            [
+                new CommentsBox(this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
+
+                    if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
+                    else this.myCommentsBox.messageElm.innerText = 'My Comments';
+
+                    this.commentBoxesStage.updateStaging(this.myCommentsStaged);
+                }),
+                new CommentsBox(this.post.postId, 'likedComments', () => this.feedFilter, (noChanges: boolean) => {
+
+                    if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
+                    else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+
+                    this.commentBoxesStage.updateStaging(this.likedCommentsStaged);
+                })
+            ],
+            (searchString: string, onResults: (cards: Card[]) => void) => {
+                Ajax.searchComments(this.post.postId, 0, 30, searchString, (commentCards: CommentCard[]) => onResults(commentCards));
             }
+        );
 
-            if (this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0) this.mainCommentsBox.messageElm.innerText = 'All Comments';
+        //this.myCommentsBox = new CommentsBox(this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
 
-            // If this post belongs to current user, indicate which comments have not been seen by the user.
-            if (this.post.profile.profileId == User.profileId)
-                this.mainCommentsBox.content.forEach((comment: CommentCard) => comment.disputeHasSeen());
+        //    if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
+        //    else this.myCommentsBox.messageElm.innerText = 'My Comments';
+            
+        //    this.commentBoxesStage.updateStaging(this.myCommentsStaged);
+        //});
 
-            // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
-            if (this.isFirstCommentsBatch) {
-                this.isFirstCommentsBatch = false;
+        //this.likedCommentsBox = new CommentsBox(this.post.postId, 'likedComments', () => this.feedFilter, (noChanges: boolean) => {
+            
+        //    if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
+        //    else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
 
-                if (this.post.image == null) this.resizeCommentBox();
-            }
+        //    this.commentBoxesStage.updateStaging(this.likedCommentsStaged);
+        //});
+        
+        //this.mainCommentsBox = new CommentsBox(this.post.postId, 'mainComments', () => this.feedFilter, () => {
+            
+        //    if (this.mainCommentsBox.length == 0) {
+        //        this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
+        //        return;
+        //    }
 
-            this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
-        });
+        //    if (this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0) this.mainCommentsBox.messageElm.innerText = 'All Comments';
 
-        this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
-        this.commentBoxes.add([this.myCommentsBox, this.likedCommentsBox, this.mainCommentsBox]);
+        //    // If this post belongs to current user, indicate which comments have not been seen by the user.
+        //    if (this.post.profile.profileId == User.profileId)
+        //        this.mainCommentsBox.content.forEach((comment: CommentCard) => comment.disputeHasSeen());
+
+        //    // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
+        //    if (this.isFirstCommentsBatch) {
+        //        this.isFirstCommentsBatch = false;
+
+        //        if (this.post.image == null) this.resizeCommentBox();
+        //    }
+
+        //    this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
+        //});
+
+        //this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
+        //this.commentBoxes.add([this.myCommentsBox, this.likedCommentsBox, this.mainCommentsBox]);
 
         let txtComment: HTMLInputElement = <HTMLInputElement>ViewUtil.tag('textarea', { classList: 'txtComment' });
         let btnConfirm: HTMLElement = Icons.confirm();
@@ -178,14 +227,14 @@
             new ToggleState('fa-sort-up', 'Contract comments', () => this.contractCommentSection())
         ]);
 
-        this.rootElm.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, this.txtSearchComments,
-            this.btnConfirmCommentSearch, this.commentBoxes.rootElm, this.btnToggleViewExpansion.rootElm);
-        this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls);
-        this.commentBoxFeedControls.append(this.btnMyActivity.rootElm, this.btnToggleFeedFilter.rootElm, this.btnRefreshFeed, this.btnSearchComments.rootElm);
+        this.rootElm.append(this.commentInputWrapper, this.errorSlot, this.commentBoxDetails, /*this.txtSearchComments,
+            this.btnConfirmCommentSearch,*/ /*this.commentBoxes2.rootElm,*/ this.btnToggleViewExpansion.rootElm);
+        this.commentBoxDetails.append(this.commentCountSlot/*, this.commentBoxFeedControls*/);
+        //this.commentBoxFeedControls.append(this.btnMyActivity.rootElm, this.btnToggleFeedFilter.rootElm, this.btnRefreshFeed, this.btnSearchComments.rootElm);
         this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
 
         // Load comments
-        this.mainCommentsBox.request(15);
+        //this.mainCommentsBox.request(15);
         this.requestCommentCount();
 
         this.btnConfirmCommentSearch.onclick = (e: MouseEvent) => this.searchComments();
@@ -260,133 +309,128 @@
         this.commentBoxesStage = new Stage([this.mainCommentsStaged]);
     }
 
-    private toggleFeedFilter(): void {
+    //private toggleFeedFilter(): void {
 
-        this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
-        ViewUtil.hide(this.commentBoxes.rootElm);
+    //    this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
+    //    ViewUtil.hide(this.commentBoxes.rootElm);
         
-        this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
+    //    this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
 
-        //this.btnToggleFeedFilter.toggle();
+    //    //this.btnToggleFeedFilter.toggle();
 
-        this.mainCommentsBox.clear();
-        this.mainCommentsBox.request(15);
-        this.mainCommentsBox.messageElm.innerText = '';
+    //    this.mainCommentsBox.clear();
+    //    this.mainCommentsBox.request(15);
+    //    this.mainCommentsBox.messageElm.innerText = '';
 
-        if (this.myCommentsBox.length > 0) {
-            this.commentBoxesStage.flags.push(this.mainCommentsStaged);
-            this.myCommentsBox.clear();
-            this.myCommentsBox.request(15);
-        }
+    //    if (this.myCommentsBox.length > 0) {
+    //        this.commentBoxesStage.flags.push(this.mainCommentsStaged);
+    //        this.myCommentsBox.clear();
+    //        this.myCommentsBox.request(15);
+    //    }
 
-        if (this.likedCommentsBox.length > 0) {
-            this.commentBoxesStage.flags.push(this.likedCommentsStaged);
-            this.likedCommentsBox.clear();
-            this.likedCommentsBox.request(15);
-        }
-    }
+    //    if (this.likedCommentsBox.length > 0) {
+    //        this.commentBoxesStage.flags.push(this.likedCommentsStaged);
+    //        this.likedCommentsBox.clear();
+    //        this.likedCommentsBox.request(15);
+    //    }
+    //}
 
-    public showCommentActivity(onActivityStaged?: () => void): void {
-        this.commentBoxesStage = new Stage([this.myCommentsStaged, this.likedCommentsStaged], () => {
-            this.displayResults()
-            if (onActivityStaged != null) onActivityStaged();
-        });
+    //public showCommentActivity(onActivityStaged?: () => void): void {
+    //    this.commentBoxesStage = new Stage([this.myCommentsStaged, this.likedCommentsStaged], () => {
+    //        this.displayResults()
+    //        if (onActivityStaged != null) onActivityStaged();
+    //    });
 
-        ViewUtil.hide(this.commentBoxes.rootElm);
-        this.myCommentsBox.request(15);
-        this.likedCommentsBox.request(15);
-        this.setBtnMyActivity(false);
-    }
+    //    ViewUtil.hide(this.commentBoxes.rootElm);
+    //    this.myCommentsBox.request(15);
+    //    this.likedCommentsBox.request(15);
+    //    this.setBtnMyActivity(false);
+    //}
 
-    private hideCommentActivity(): void {
-        this.myCommentsBox.clear();
-        this.likedCommentsBox.clear();
-        this.myCommentsBox.messageElm.innerText = '';
-        this.likedCommentsBox.messageElm.innerText = '';
-        this.mainCommentsBox.messageElm.innerText = '';
-        this.setBtnMyActivity(true);
-    }
+    //private hideCommentActivity(): void {
+    //    this.myCommentsBox.clear();
+    //    this.likedCommentsBox.clear();
+    //    this.myCommentsBox.messageElm.innerText = '';
+    //    this.likedCommentsBox.messageElm.innerText = '';
+    //    this.mainCommentsBox.messageElm.innerText = '';
+    //    this.setBtnMyActivity(true);
+    //}
 
-    private refreshCommentFeed(): void {
+    //private refreshCommentFeed(): void {
 
-        this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
-        ViewUtil.hide(this.commentBoxes.rootElm);
+    //    this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
+    //    ViewUtil.hide(this.commentBoxes.rootElm);
 
-        this.mainCommentsBox.refreshComments((noChanges: boolean) => {
+    //    this.mainCommentsBox.refreshComments((noChanges: boolean) => {
 
-            let myActivityIsShowing: boolean = this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0;
+    //        let myActivityIsShowing: boolean = this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0;
 
-            if (noChanges) {
-                if (myActivityIsShowing) this.mainCommentsBox.messageElm.innerText = 'All Comments - No changes have been made';
-                else this.mainCommentsBox.messageElm.innerText = 'No changes have been made';
-            }
-            else if (myActivityIsShowing) this.mainCommentsBox.messageElm.innerText = 'All Comments';
+    //        if (noChanges) {
+    //            if (myActivityIsShowing) this.mainCommentsBox.messageElm.innerText = 'All Comments - No changes have been made';
+    //            else this.mainCommentsBox.messageElm.innerText = 'No changes have been made';
+    //        }
+    //        else if (myActivityIsShowing) this.mainCommentsBox.messageElm.innerText = 'All Comments';
 
-            this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
-        });
+    //        this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
+    //    });
 
-        if (this.myCommentsBox.length > 0) {
+    //    if (this.myCommentsBox.length > 0) {
 
-            this.commentBoxesStage.flags.push(this.myCommentsStaged);
-            this.myCommentsBox.refreshComments();
-        }
+    //        this.commentBoxesStage.flags.push(this.myCommentsStaged);
+    //        this.myCommentsBox.refreshComments();
+    //    }
 
-        if (this.likedCommentsBox.length > 0) {
+    //    if (this.likedCommentsBox.length > 0) {
             
-            this.commentBoxesStage.flags.push(this.likedCommentsStaged);
-            this.likedCommentsBox.refreshComments();
-        }
-    }
+    //        this.commentBoxesStage.flags.push(this.likedCommentsStaged);
+    //        this.likedCommentsBox.refreshComments();
+    //    }
+    //}
 
-    private setBtnMyActivity(makeBtnShowActivity: boolean) {
-        this.mainCommentsBox.messageElm.innerText = makeBtnShowActivity ? '' : 'All Comments';
-        //this.btnMyActivity.toggle();
-    }
+    //private setBtnMyActivity(makeBtnShowActivity: boolean) {
+    //    this.mainCommentsBox.messageElm.innerText = makeBtnShowActivity ? '' : 'All Comments';
+    //}
 
-    private displayResults(): void {
-        ViewUtil.show(this.commentBoxes.rootElm, 'block');
-    }
+    //private displayResults(): void {
+    //    ViewUtil.show(this.commentBoxes2.rootElm, 'block');
+    //}
 
-    private searchComments(): void {
+    //private searchComments(): void {
 
-        Ajax.searchComments(this.post.postId, 0, 30, this.txtSearchComments.value, (commentCards: CommentCard[]) => {
+    //    Ajax.searchComments(this.post.postId, 0, 30, this.txtSearchComments.value, (commentCards: CommentCard[]) => {
 
-            this.mainCommentsBox.clear();
+    //        this.mainCommentsBox.clear();
 
-            if (commentCards != null) {
-                this.hideCommentActivity();
-                this.mainCommentsBox.add(commentCards);
-                this.mainCommentsBox.messageElm.innerText = 'Search results';
-            }
-            else this.mainCommentsBox.messageElm.innerText = 'Search results - No comments found';
-        });
-    }
+    //        if (commentCards != null) {
+    //            this.hideCommentActivity();
+    //            this.mainCommentsBox.add(commentCards);
+    //            this.mainCommentsBox.messageElm.innerText = 'Search results';
+    //        }
+    //        else this.mainCommentsBox.messageElm.innerText = 'Search results - No comments found';
+    //    });
+    //}
 
-    private showCommentSearchBar(): void {
-        ViewUtil.show(this.txtSearchComments);
-        ViewUtil.show(this.btnConfirmCommentSearch);
-        //this.btnSearchComments.toggle();
-        this.txtSearchComments.focus();
-    }
+    //private showCommentSearchBar(): void {
+    //    ViewUtil.show(this.txtSearchComments);
+    //    ViewUtil.show(this.btnConfirmCommentSearch);
+    //    this.txtSearchComments.focus();
+    //}
 
-    private hideCommentSearchBar(): void {
-        ViewUtil.hide(this.txtSearchComments);
-        ViewUtil.hide(this.btnConfirmCommentSearch);
-        this.txtSearchComments.value = '';
-        //this.btnSearchComments.toggle();
-        this.mainCommentsBox.clear();
-        this.mainCommentsBox.request(15);
-        this.mainCommentsBox.messageElm.innerText = '';
-    }
+    //private hideCommentSearchBar(): void {
+    //    ViewUtil.hide(this.txtSearchComments);
+    //    ViewUtil.hide(this.btnConfirmCommentSearch);
+    //    this.txtSearchComments.value = '';
+    //    this.mainCommentsBox.clear();
+    //    this.mainCommentsBox.request(15);
+    //    this.mainCommentsBox.messageElm.innerText = '';
+    //}
 
     private expandCommentSection(): void {
         this.setHeight(720, (720 + this.inputHeight));
-        //this.btnToggleViewExpansion.toggle();
     }
 
     private contractCommentSection(): void {
         this.setHeight(this.targetHeight, this.rootElmMinHeight);
-        //this.btnToggleViewExpansion.toggle();
     }
 
     public resizeCommentBox(): void {
@@ -398,8 +442,8 @@
     }
 
     private setHeight(commentBoxesHeight: number, sectionHeight: number): void {
-        this.commentBoxes.height = commentBoxesHeight;
-        this.commentBoxes.rootElm.style.maxHeight = `${commentBoxesHeight}`;
+        this.commentBoxes2.height = commentBoxesHeight;
+        this.commentBoxes2.rootElm.style.maxHeight = `${commentBoxesHeight}`;
         this.rootElm.style.minHeight = `${sectionHeight}`;
         this.rootElm.style.maxHeight = `${sectionHeight}`;
     }
@@ -424,6 +468,6 @@
     }
 
     public alertVisible() {
-        this.mainCommentsBox.getVisibleContent().forEach((commentCard: Card) => commentCard.alertVisible());
+        this.commentBoxes2.mainBox.getVisibleContent().forEach((commentCard: Card) => commentCard.alertVisible());
     }
 }

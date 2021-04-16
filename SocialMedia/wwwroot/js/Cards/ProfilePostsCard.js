@@ -22,17 +22,17 @@ var ProfilePostsCard = (function (_super) {
         _this.likedPostsStaged = new StageFlag();
         _this.mainPostsStaged = new StageFlag();
         _this.btnToggleSearchBar = new ToggleButton(null, btnToggleSearchBar, btnToggleSearchBar.childNodes[1], [
-            new PropertySet('fa-search', 'Open search bar', function () { return _this.showSearchBar(); }),
-            new PropertySet('fa-times', 'Close search bar', function () { return _this.hideSearchBar(); })
+            new ToggleState('fa-search', 'Open search bar', function () { return _this.showSearchBar(); }),
+            new ToggleState('fa-times', 'Close search bar', function () { return _this.hideSearchBar(); })
         ]);
         _this.btnMyPostActivity = new ToggleButton(null, null, btnMyPostActivity, [
-            new PropertySet('', 'Show my activity', function () { return _this.showMyPostActivity(); }),
-            new PropertySet('showingMyPostActivity', 'Hide my activity', function () { return _this.hideMyPostActivity(); })
+            new ToggleState('', 'Show my activity', function () { return _this.showMyPostActivity(); }),
+            new ToggleState('showingMyPostActivity', 'Hide my activity', function () { return _this.hideMyPostActivity(); })
         ]);
         _this.btnTogglePostFeedFilter = new ToggleButton(null, btnTogglePostFeedFilter, btnTogglePostFeedFilter.children[1], [
-            new PropertySet('fa-thumbs-up', 'Sort by popularity', function () { return _this.setPostFeedFilter('likes'); }),
-            new PropertySet('fa-comments', 'Sort by comment popularity', function () { return _this.setPostFeedFilter('comments'); }),
-            new PropertySet('fa-calendar', 'Sort by recent', function () { return _this.setPostFeedFilter('recent'); })
+            new ToggleState('fa-thumbs-up', 'Sort by popularity', function () { return _this.setPostFeedFilter('likes'); }),
+            new ToggleState('fa-comments', 'Sort by comment popularity', function () { return _this.setPostFeedFilter('comments'); }),
+            new ToggleState('fa-calendar', 'Sort by recent', function () { return _this.setPostFeedFilter('recent'); })
         ]);
         _this.btnSearchPosts.onclick = function (e) { return _this.searchPosts(); };
         _this.txtSearchPosts.onkeyup = function (e) { if (e.keyCode == 13)
@@ -69,7 +69,6 @@ var ProfilePostsCard = (function (_super) {
         var _this = this;
         if (feedFilter === void 0) { feedFilter = 'recent'; }
         this.feedFilter = feedFilter;
-        this.btnTogglePostFeedFilter.toggle();
         this.mainPostsBox.clear();
         this.mainPostsBox.requestCallback = function (skip, take) {
             Ajax.getProfilePosts(_this.profileId, skip, take, _this.feedFilter, 'mainPosts', function (postCards) {
@@ -80,12 +79,12 @@ var ProfilePostsCard = (function (_super) {
         };
         this.mainPostsBox.start();
         if (this.commentedPostsBox.length > 0) {
-            this.postBoxesStage.stageFlags.push(this.commentedPostsStaged);
+            this.postBoxesStage.flags.push(this.commentedPostsStaged);
             this.commentedPostsBox.clear();
             this.commentedPostsBox.request(15);
         }
         if (this.likedPostsBox.length > 0) {
-            this.postBoxesStage.stageFlags.push(this.likedPostsStaged);
+            this.postBoxesStage.flags.push(this.likedPostsStaged);
             this.likedPostsBox.clear();
             this.likedPostsBox.request(15);
         }
@@ -100,11 +99,11 @@ var ProfilePostsCard = (function (_super) {
             _this.postBoxesStage.updateStaging(_this.mainPostsStaged);
         });
         if (this.commentedPostsBox.length > 0) {
-            this.postBoxesStage.stageFlags.push(this.commentedPostsStaged);
+            this.postBoxesStage.flags.push(this.commentedPostsStaged);
             this.commentedPostsBox.refreshPosts(function () { return _this.postBoxesStage.updateStaging(_this.commentedPostsStaged); });
         }
         if (this.likedPostsBox.length > 0) {
-            this.postBoxesStage.stageFlags.push(this.likedPostsStaged);
+            this.postBoxesStage.flags.push(this.likedPostsStaged);
             this.likedPostsBox.refreshPosts(function () { return _this.postBoxesStage.updateStaging(_this.likedPostsStaged); });
         }
     };
@@ -124,14 +123,12 @@ var ProfilePostsCard = (function (_super) {
     ProfilePostsCard.prototype.showSearchBar = function () {
         ViewUtil.show(this.txtSearchPosts);
         ViewUtil.show(this.btnSearchPosts);
-        this.btnToggleSearchBar.toggle();
         this.txtSearchPosts.focus();
     };
     ProfilePostsCard.prototype.hideSearchBar = function () {
         ViewUtil.hide(this.txtSearchPosts);
         ViewUtil.hide(this.btnSearchPosts);
         this.txtSearchPosts.value = '';
-        this.btnToggleSearchBar.toggle();
         this.mainPostsBox.clear();
         this.mainPostsBox.request(15);
         this.mainPostsBox.messageElm.innerText = '';
@@ -142,7 +139,7 @@ var ProfilePostsCard = (function (_super) {
         ViewUtil.hide(this.postBoxes.rootElm);
         this.commentedPostsBox.request(15);
         this.likedPostsBox.request(15);
-        this.setBtnMyPostActivity(false);
+        this.mainPostsBox.messageElm.innerText = 'All Posts';
     };
     ProfilePostsCard.prototype.hideMyPostActivity = function () {
         this.commentedPostsBox.clear();
@@ -150,11 +147,7 @@ var ProfilePostsCard = (function (_super) {
         this.commentedPostsBox.messageElm.innerText = '';
         this.likedPostsBox.messageElm.innerText = '';
         this.mainPostsBox.messageElm.innerText = '';
-        this.setBtnMyPostActivity(true);
-    };
-    ProfilePostsCard.prototype.setBtnMyPostActivity = function (makeBtnShowActivity) {
-        this.mainPostsBox.messageElm.innerText = makeBtnShowActivity ? '' : 'All Posts';
-        this.btnMyPostActivity.toggle();
+        this.mainPostsBox.messageElm.innerText = '';
     };
     ProfilePostsCard.prototype.displayPosts = function () {
         ViewUtil.show(this.postBoxes.rootElm, 'block');

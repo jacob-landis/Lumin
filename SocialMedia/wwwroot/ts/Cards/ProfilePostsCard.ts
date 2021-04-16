@@ -13,7 +13,9 @@
     private mainPostsBox: PostsBox;
     private likedPostsBox: PostsBox; 
     private commentedPostsBox: PostsBox; 
-    
+
+    private postBoxes2: PartitionedBox;
+
     private commentedPostsStaged: StageFlag = new StageFlag(); 
     private likedPostsStaged: StageFlag = new StageFlag(); 
     private mainPostsStaged: StageFlag = new StageFlag(); 
@@ -55,6 +57,48 @@
         this.txtSearchPosts.onkeyup = (e: KeyboardEvent) => { if (e.keyCode == 13) this.btnSearchPosts.click(); }
         btnRefreshProfilePostFeed.onclick = (event: MouseEvent) => this.refreshProfilePostFeed(); 
 
+        //this.postBoxes2 = new PartitionedBox(this.rootElm, 
+
+        //    // Feed Control Buttons
+        //    [
+        //        this.btnMyPostActivity.rootElm, 
+        //        btnRefreshProfilePostFeed, 
+        //        this.btnTogglePostFeedFilter.rootElm
+        //    ],
+
+        //    // Main Box
+        //    new PostsBox(0, mainPostsBoxWrapper, this.rootElm, 'mainPosts', () => this.feedFilter, () => {
+        //        this.mainPostsBox.messageElm.innerText = 'All Posts'
+        //        this.postBoxesStage.updateStaging(this.mainPostsStaged);
+        //    }),
+
+        //    // Sub Boxes
+        //    [
+        //        // Liked Posts
+        //        new PostsBox(0, likedPostsBoxWrapper, this.rootElm, 'likedPosts', () => this.feedFilter, () => {
+        //            this.likedPostsBox.messageElm.innerText = 'Liked Posts';
+        //            this.postBoxesStage.updateStaging(this.likedPostsStaged);
+        //        }),
+
+        //        // Commented Posts
+        //        new PostsBox(0, commentedPostsBoxWrapper, this.rootElm, 'commentedPosts', () => this.feedFilter, () => {
+        //            this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
+        //            this.postBoxesStage.updateStaging(this.commentedPostsStaged);
+
+        //            // ShowCommentActivity on each post card in commentedPosts.
+        //            this.commentedPostsBox.content.forEach((content: IAppendable) => {
+        //                let postCard = <PostCard>content;
+        //                postCard.commentsSection.showCommentActivity(() => postCard.stage.updateStaging(postCard.commentsSection.allStaged));
+        //            });
+        //        })
+        //    ],
+
+        //    // Search
+        //    (searchString: string, onResults: (cards: Card[]) => void) => {
+        //        Ajax.searchPosts(this.profileId, 0, 10, searchString, (postCards: PostCard[]) => onResults(postCards));
+        //    }
+        //);
+
         this.postBoxes = new ContentBox(this.rootElm); 
 
         this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, this.rootElm, 'commentedPosts', () => this.feedFilter, () => { 
@@ -64,7 +108,7 @@
             // ShowCommentActivity on each post card in commentedPosts.
             this.commentedPostsBox.content.forEach((content: IAppendable) => {
                 let postCard = <PostCard>content;
-                postCard.commentsSection.showCommentActivity(() => postCard.stage.updateStaging(postCard.commentsSection.allStaged));
+                postCard.commentsSection.commentBoxes2.showSubBoxes(() => postCard.stage.updateStaging(postCard.commentsSection.allStaged));
             });
         });
 

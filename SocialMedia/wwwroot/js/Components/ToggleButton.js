@@ -1,20 +1,25 @@
-var PropertySet = (function () {
-    function PropertySet(classList, title, onClick) {
+var ToggleState = (function () {
+    function ToggleState(classList, title, onClick) {
         this.classList = classList;
         this.title = title;
         this.onClick = onClick;
     }
-    return PropertySet;
+    return ToggleState;
 }());
 var ToggleButton = (function () {
     function ToggleButton(classList, iconContainer, icon, propertySets) {
+        var _this = this;
         this.icon = icon;
         this.propertySets = propertySets;
         this.stateIndex = 0;
         this.rootElm = iconContainer ? iconContainer : ViewUtil.tag('div');
         if (classList)
             this.rootElm.classList.add(classList);
-        this.setBtn(this.propertySets[0].classList, '', this.propertySets[0].title, this.propertySets[0].onClick);
+        this.rootElm.onclick = function (event) {
+            _this.onClick();
+            _this.toggle();
+        };
+        this.resetBtn();
     }
     ToggleButton.prototype.toggle = function () {
         var oldSet = this.propertySets[this.stateIndex];
@@ -38,7 +43,10 @@ var ToggleButton = (function () {
         if (title)
             this.rootElm.title = title;
         if (onClick)
-            this.rootElm.onclick = onClick;
+            this.onClick = onClick;
+    };
+    ToggleButton.prototype.resetBtn = function () {
+        this.setBtn(this.propertySets[0].classList, '', this.propertySets[0].title, this.propertySets[0].onClick);
     };
     return ToggleButton;
 }());
