@@ -1,31 +1,19 @@
 ﻿class CommentsBox extends ContentBox {
-
-    public postId: number;
-    public getFeedFilter: () => ('recent' | 'likes');
-    public feedType: ('myComments' | 'likedComments' | 'mainComments');
-
-    public onCommentsLoadEnd: (noChanges: boolean) => void;
-
+    
     public constructor(
-        postId: number,
-        feedType: ('myComments' | 'likedComments' | 'mainComments'),
-        getFeedFilter: () => ('recent' | 'likes'),
-        onCommentsLoadEnd: (noChanges: boolean) => void
+        public postId: number,
+        public feedType: ('myComments' | 'likedComments' | 'mainComments'),
+        public getFeedFilter: () => ('recent' | 'likes'),
+        public onCommentsLoadEnd: (noChanges: boolean) => void
     ) {
-
         super(ViewUtil.tag('div', { classList: 'commentsBox' }), null, 400, 30, (skip: number, take: number) => {
-            Ajax.getComments(postId, skip, take, getFeedFilter(), feedType, (commentCards: CommentCard[]) => {
+            Ajax.getComments(this.postId, skip, take, this.getFeedFilter(), this.feedType, (commentCards: CommentCard[]) => {
 
                 if (commentCards != null) this.add(commentCards);
 
                 if (this.onCommentsLoadEnd != null) this.onCommentsLoadEnd(commentCards == null);
             });
         });
-
-        this.postId = postId;
-        this.feedType = feedType;
-        this.getFeedFilter = getFeedFilter;
-        this.onCommentsLoadEnd = onCommentsLoadEnd;
     }
 
     public refreshComments(onRefreshLoadEnd?: (noChange: boolean) => void) {

@@ -71,7 +71,10 @@ class PostsBox extends ContentBox {
         // If no value is provided, the current user's public feed will be loaded.
         this.profileId = profileId ? profileId : User.profileId;
         this.getFeedFilter = getFeedFilter;
-        this.feedType = feedType;
+        this.feedType = feedType
+
+        this.messageElm.onclick = (event: MouseEvent) => this.collapseBox();
+        this.messageElm.title = 'Contract section';
 
         PostsBox.postBoxes.push(this);
     }
@@ -113,5 +116,17 @@ class PostsBox extends ContentBox {
             this.addPost(postCards);
             if (onRefreshLoadEnd) onRefreshLoadEnd();
         });
+    }
+
+    private collapseBox(): void {
+        ViewUtil.hide(this.contentElm);
+        this.messageElm.onclick = (event: MouseEvent) => this.expandBox();
+        this.messageElm.title = 'Expand section';
+    }
+
+    private expandBox(): void {
+        ViewUtil.show(this.contentElm, 'block');
+        this.messageElm.onclick = (event: MouseEvent) => this.collapseBox();
+        this.messageElm.title = 'Collapse section';
     }
 }

@@ -15,7 +15,7 @@ var CommentsBox = (function (_super) {
     __extends(CommentsBox, _super);
     function CommentsBox(postId, feedType, getFeedFilter, onCommentsLoadEnd) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'commentsBox' }), null, 400, 30, function (skip, take) {
-            Ajax.getComments(postId, skip, take, getFeedFilter(), feedType, function (commentCards) {
+            Ajax.getComments(_this.postId, skip, take, _this.getFeedFilter(), _this.feedType, function (commentCards) {
                 if (commentCards != null)
                     _this.add(commentCards);
                 if (_this.onCommentsLoadEnd != null)

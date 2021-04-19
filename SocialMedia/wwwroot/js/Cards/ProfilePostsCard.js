@@ -21,15 +21,15 @@ var ProfilePostsCard = (function (_super) {
         _this.commentedPostsStaged = new StageFlag();
         _this.likedPostsStaged = new StageFlag();
         _this.mainPostsStaged = new StageFlag();
-        _this.btnToggleSearchBar = new ToggleButton(null, btnToggleSearchBar, btnToggleSearchBar.childNodes[1], [
+        new ToggleButton(null, btnToggleSearchBar, btnToggleSearchBar.childNodes[1], [
             new ToggleState('fa-search', 'Open search bar', function () { return _this.showSearchBar(); }),
             new ToggleState('fa-times', 'Close search bar', function () { return _this.hideSearchBar(); })
         ]);
-        _this.btnMyPostActivity = new ToggleButton(null, null, btnMyPostActivity, [
+        new ToggleButton(null, btnMyPostActivity, null, [
             new ToggleState('', 'Show my activity', function () { return _this.showMyPostActivity(); }),
             new ToggleState('showingMyPostActivity', 'Hide my activity', function () { return _this.hideMyPostActivity(); })
         ]);
-        _this.btnTogglePostFeedFilter = new ToggleButton(null, btnTogglePostFeedFilter, btnTogglePostFeedFilter.children[1], [
+        new ToggleButton(null, btnTogglePostFeedFilter, btnTogglePostFeedFilter.children[1], [
             new ToggleState('fa-thumbs-up', 'Sort by popularity', function () { return _this.setPostFeedFilter('likes'); }),
             new ToggleState('fa-comments', 'Sort by comment popularity', function () { return _this.setPostFeedFilter('comments'); }),
             new ToggleState('fa-calendar', 'Sort by recent', function () { return _this.setPostFeedFilter('recent'); })

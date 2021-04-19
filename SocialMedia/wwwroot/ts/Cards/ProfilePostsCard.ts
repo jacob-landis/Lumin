@@ -4,18 +4,12 @@
 
     private feedFilter: 'recent' | 'likes' | 'comments' = 'recent';
     
-    private btnMyPostActivity: ToggleButton; 
-    private btnToggleSearchBar: ToggleButton; 
-    private btnTogglePostFeedFilter: ToggleButton;
-    
     // A PostsBox for displaying a profile's posts.
     private postBoxes: ContentBox; 
     private mainPostsBox: PostsBox;
     private likedPostsBox: PostsBox; 
     private commentedPostsBox: PostsBox; 
-
-    private postBoxes2: PartitionedBox;
-
+    
     private commentedPostsStaged: StageFlag = new StageFlag(); 
     private likedPostsStaged: StageFlag = new StageFlag(); 
     private mainPostsStaged: StageFlag = new StageFlag(); 
@@ -37,17 +31,17 @@
 
         super(rootElm);
         
-        this.btnToggleSearchBar = new ToggleButton(null, btnToggleSearchBar, <HTMLElement>btnToggleSearchBar.childNodes[1], [
+        new ToggleButton(null, btnToggleSearchBar, <HTMLElement>btnToggleSearchBar.childNodes[1], [
             new ToggleState('fa-search', 'Open search bar', () => this.showSearchBar()),
             new ToggleState('fa-times', 'Close search bar', () => this.hideSearchBar())
         ]);
         
-        this.btnMyPostActivity = new ToggleButton(null, null, btnMyPostActivity, [
+        new ToggleButton(null, btnMyPostActivity, null, [
             new ToggleState('', 'Show my activity', () => this.showMyPostActivity()),
             new ToggleState('showingMyPostActivity', 'Hide my activity', () => this.hideMyPostActivity())
         ]);
 
-        this.btnTogglePostFeedFilter = new ToggleButton(null, btnTogglePostFeedFilter, <HTMLElement>btnTogglePostFeedFilter.children[1], [
+        new ToggleButton(null, btnTogglePostFeedFilter, <HTMLElement>btnTogglePostFeedFilter.children[1], [
             new ToggleState('fa-thumbs-up', 'Sort by popularity',        () => this.setPostFeedFilter('likes')),
             new ToggleState('fa-comments', 'Sort by comment popularity', () => this.setPostFeedFilter('comments')),
             new ToggleState('fa-calendar', 'Sort by recent',             () => this.setPostFeedFilter('recent'))
@@ -56,48 +50,6 @@
         this.btnSearchPosts.onclick = (e: MouseEvent) => this.searchPosts();
         this.txtSearchPosts.onkeyup = (e: KeyboardEvent) => { if (e.keyCode == 13) this.btnSearchPosts.click(); }
         btnRefreshProfilePostFeed.onclick = (event: MouseEvent) => this.refreshProfilePostFeed(); 
-
-        //this.postBoxes2 = new PartitionedBox(this.rootElm, 
-
-        //    // Feed Control Buttons
-        //    [
-        //        this.btnMyPostActivity.rootElm, 
-        //        btnRefreshProfilePostFeed, 
-        //        this.btnTogglePostFeedFilter.rootElm
-        //    ],
-
-        //    // Main Box
-        //    new PostsBox(0, mainPostsBoxWrapper, this.rootElm, 'mainPosts', () => this.feedFilter, () => {
-        //        this.mainPostsBox.messageElm.innerText = 'All Posts'
-        //        this.postBoxesStage.updateStaging(this.mainPostsStaged);
-        //    }),
-
-        //    // Sub Boxes
-        //    [
-        //        // Liked Posts
-        //        new PostsBox(0, likedPostsBoxWrapper, this.rootElm, 'likedPosts', () => this.feedFilter, () => {
-        //            this.likedPostsBox.messageElm.innerText = 'Liked Posts';
-        //            this.postBoxesStage.updateStaging(this.likedPostsStaged);
-        //        }),
-
-        //        // Commented Posts
-        //        new PostsBox(0, commentedPostsBoxWrapper, this.rootElm, 'commentedPosts', () => this.feedFilter, () => {
-        //            this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
-        //            this.postBoxesStage.updateStaging(this.commentedPostsStaged);
-
-        //            // ShowCommentActivity on each post card in commentedPosts.
-        //            this.commentedPostsBox.content.forEach((content: IAppendable) => {
-        //                let postCard = <PostCard>content;
-        //                postCard.commentsSection.showCommentActivity(() => postCard.stage.updateStaging(postCard.commentsSection.allStaged));
-        //            });
-        //        })
-        //    ],
-
-        //    // Search
-        //    (searchString: string, onResults: (cards: Card[]) => void) => {
-        //        Ajax.searchPosts(this.profileId, 0, 10, searchString, (postCards: PostCard[]) => onResults(postCards));
-        //    }
-        //);
 
         this.postBoxes = new ContentBox(this.rootElm); 
 
@@ -108,7 +60,7 @@
             // ShowCommentActivity on each post card in commentedPosts.
             this.commentedPostsBox.content.forEach((content: IAppendable) => {
                 let postCard = <PostCard>content;
-                postCard.commentsSection.commentBoxes2.showSubBoxes(() => postCard.stage.updateStaging(postCard.commentsSection.allStaged));
+                postCard.commentsSection.showCommentActivity(() => postCard.stage.updateStaging(postCard.commentsSection.allStaged));
             });
         });
 
@@ -137,7 +89,6 @@
     private setPostFeedFilter(feedFilter: 'recent' | 'likes' | 'comments' = 'recent'): void { 
 
         this.feedFilter = feedFilter;
-        //this.btnTogglePostFeedFilter.toggle();
 
         this.mainPostsBox.clear();
         this.mainPostsBox.requestCallback = (skip: number, take: number) => {
@@ -204,7 +155,6 @@
     private showSearchBar(): void {
         ViewUtil.show(this.txtSearchPosts);
         ViewUtil.show(this.btnSearchPosts);
-        //this.btnToggleSearchBar.toggle();
         this.txtSearchPosts.focus();
     }
 
@@ -212,19 +162,17 @@
         ViewUtil.hide(this.txtSearchPosts);
         ViewUtil.hide(this.btnSearchPosts);
         this.txtSearchPosts.value = '';
-        //this.btnToggleSearchBar.toggle();
         this.mainPostsBox.clear();
         this.mainPostsBox.request(15);
         this.mainPostsBox.messageElm.innerText = '';
     }
 
-    private showMyPostActivity(): void { 
+    private showMyPostActivity(): void {
         this.postBoxesStage = new Stage([this.commentedPostsStaged, this.likedPostsStaged], () => this.displayPosts());
         ViewUtil.hide(this.postBoxes.rootElm);
         this.commentedPostsBox.request(15);
         this.likedPostsBox.request(15);
-        this.mainPostsBox.messageElm.innerText = 'All Posts'
-        //this.btnMyPostActivity.toggle();
+        this.mainPostsBox.messageElm.innerText = 'All Posts';
     }
 
     private hideMyPostActivity(): void { 
@@ -234,7 +182,6 @@
         this.likedPostsBox.messageElm.innerText = '';
         this.mainPostsBox.messageElm.innerText = '';
         this.mainPostsBox.messageElm.innerText = '';
-        //this.btnMyPostActivity.toggle();
     }
 
     private displayPosts(): void { 

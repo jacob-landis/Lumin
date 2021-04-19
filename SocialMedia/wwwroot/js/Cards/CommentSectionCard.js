@@ -49,8 +49,22 @@ var CommentSectionCard = (function (_super) {
         _this.btnConfirmCommentSearch = Icons.search();
         _this.btnConfirmCommentSearch.classList.add('btnConfirmCommentSearch', 'myBtnTextPair');
         _this.btnConfirmCommentSearch.title = 'Search';
-        _this.commentBoxes2 = new PartitionedBox(_this.rootElm, [_this.btnMyActivity.rootElm, _this.btnRefreshFeed, _this.btnToggleFeedFilter.rootElm], new CommentsBox(_this.post.postId, 'mainComments', function () { return _this.feedFilter; }, function () {
-            if (_this.commentBoxes2.mainBox.length == 0) {
+        _this.myCommentsBox = new CommentsBox(_this.post.postId, 'myComments', function () { return _this.feedFilter; }, function (noChanges) {
+            if (noChanges)
+                _this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
+            else
+                _this.myCommentsBox.messageElm.innerText = 'My Comments';
+            _this.commentBoxesStage.updateStaging(_this.myCommentsStaged);
+        });
+        _this.likedCommentsBox = new CommentsBox(_this.post.postId, 'likedComments', function () { return _this.feedFilter; }, function (noChanges) {
+            if (noChanges)
+                _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
+            else
+                _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+            _this.commentBoxesStage.updateStaging(_this.likedCommentsStaged);
+        });
+        _this.mainCommentsBox = new CommentsBox(_this.post.postId, 'mainComments', function () { return _this.feedFilter; }, function () {
+            if (_this.mainCommentsBox.length == 0) {
                 _this.commentBoxesStage.updateStaging(_this.mainCommentsStaged);
                 return;
             }
@@ -64,24 +78,9 @@ var CommentSectionCard = (function (_super) {
                     _this.resizeCommentBox();
             }
             _this.commentBoxesStage.updateStaging(_this.mainCommentsStaged);
-        }), [
-            new CommentsBox(_this.post.postId, 'myComments', function () { return _this.feedFilter; }, function (noChanges) {
-                if (noChanges)
-                    _this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
-                else
-                    _this.myCommentsBox.messageElm.innerText = 'My Comments';
-                _this.commentBoxesStage.updateStaging(_this.myCommentsStaged);
-            }),
-            new CommentsBox(_this.post.postId, 'likedComments', function () { return _this.feedFilter; }, function (noChanges) {
-                if (noChanges)
-                    _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
-                else
-                    _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
-                _this.commentBoxesStage.updateStaging(_this.likedCommentsStaged);
-            })
-        ], function (searchString, onResults) {
-            Ajax.searchComments(_this.post.postId, 0, 30, searchString, function (commentCards) { return onResults(commentCards); });
         });
+        _this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
+        _this.commentBoxes.add([_this.myCommentsBox, _this.likedCommentsBox, _this.mainCommentsBox]);
         var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
         var btnConfirm = Icons.confirm();
         var btnCancel = Icons.cancel();
@@ -91,9 +90,11 @@ var CommentSectionCard = (function (_super) {
             new ToggleState('fa-sort-down', 'Expand comments', function () { return _this.expandCommentSection(); }),
             new ToggleState('fa-sort-up', 'Contract comments', function () { return _this.contractCommentSection(); })
         ]);
-        _this.rootElm.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.btnToggleViewExpansion.rootElm);
-        _this.commentBoxDetails.append(_this.commentCountSlot);
+        _this.rootElm.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.txtSearchComments, _this.btnConfirmCommentSearch, _this.commentBoxes.rootElm, _this.btnToggleViewExpansion.rootElm);
+        _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls);
+        _this.commentBoxFeedControls.append(_this.btnMyActivity.rootElm, _this.btnToggleFeedFilter.rootElm, _this.btnRefreshFeed, _this.btnSearchComments.rootElm);
         _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
+        _this.mainCommentsBox.request(15);
         _this.requestCommentCount();
         _this.btnConfirmCommentSearch.onclick = function (e) { return _this.searchComments(); };
         _this.txtSearchComments.onkeyup = function (e) { if (e.keyCode == 13)
@@ -258,8 +259,8 @@ var CommentSectionCard = (function (_super) {
         this.rootElmMinHeight = this.rootElm.clientHeight;
     };
     CommentSectionCard.prototype.setHeight = function (commentBoxesHeight, sectionHeight) {
-        this.commentBoxes2.height = commentBoxesHeight;
-        this.commentBoxes2.rootElm.style.maxHeight = "" + commentBoxesHeight;
+        this.commentBoxes.height = commentBoxesHeight;
+        this.commentBoxes.rootElm.style.maxHeight = "" + commentBoxesHeight;
         this.rootElm.style.minHeight = "" + sectionHeight;
         this.rootElm.style.maxHeight = "" + sectionHeight;
     };
