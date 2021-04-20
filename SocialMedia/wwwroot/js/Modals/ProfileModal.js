@@ -13,13 +13,14 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
-    function ProfileModal(rootElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, postBoxesWrapper, mainPostsBoxWrapper, likedPostsBoxWrapper, commentedPostsBoxWrapper, imageBoxElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, imageClassList, editorClassList, doubleEditorClassList) {
+    function ProfileModal(rootElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, relationWrapper, postBoxesWrapper, mainPostsBoxWrapper, likedPostsBoxWrapper, commentedPostsBoxWrapper, imageBoxElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, imageClassList, editorClassList, doubleEditorClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.profileNameWrapper = profileNameWrapper;
         _this.imageWrapper = imageWrapper;
         _this.profileBioWrapper = profileBioWrapper;
         _this.imageScrollBox = imageScrollBox;
         _this.friendBoxElm = friendBoxElm;
+        _this.relationWrapper = relationWrapper;
         _this.fullProfileStaged = new StageFlag();
         _this.imagesBoxStaged = new StageFlag();
         _this.friendsStaged = new StageFlag();
@@ -52,6 +53,10 @@ var ProfileModal = (function (_super) {
             _this.bioEditor.setText(_this.profile.bio);
             _this.profilePictureBox.loadImage(new ImageCard(_this.profile.profilePicture));
             _this.summaryStage.updateStaging(_this.fullProfileStaged);
+        });
+        Ajax.getProfile(profileId, function (profileCard) {
+            if (profileCard.profile.relationToUser != 'me')
+                _this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
         });
         if (profileId == User.profileId) {
             this.profilePictureBox.heldImageClick = function (target) { return _this.selectProfilePicture(); };
@@ -93,6 +98,7 @@ var ProfileModal = (function (_super) {
     };
     ProfileModal.prototype.reset = function () {
         ViewUtil.empty(this.imageWrapper);
+        ViewUtil.empty(this.relationWrapper);
         delete this.imagesBox;
         this.nameEditor.setText2('', '');
         this.bioEditor.setText('');

@@ -33,7 +33,7 @@ var PostsBox = (function (_super) {
         _this.profileId = profileId ? profileId : User.profileId;
         _this.getFeedFilter = getFeedFilter;
         _this.feedType = feedType;
-        _this.messageElm.onclick = function (event) { return _this.contractBox(); };
+        _this.messageElm.onclick = function (event) { return _this.collapseBox(); };
         _this.messageElm.title = 'Contract section';
         PostsBox.postBoxes.push(_this);
         return _this;
@@ -65,7 +65,7 @@ var PostsBox = (function (_super) {
                 onRefreshLoadEnd();
         });
     };
-    PostsBox.prototype.contractBox = function () {
+    PostsBox.prototype.collapseBox = function () {
         var _this = this;
         ViewUtil.hide(this.contentElm);
         this.messageElm.onclick = function (event) { return _this.expandBox(); };
@@ -74,8 +74,8 @@ var PostsBox = (function (_super) {
     PostsBox.prototype.expandBox = function () {
         var _this = this;
         ViewUtil.show(this.contentElm, 'block');
-        this.messageElm.onclick = function (event) { return _this.contractBox(); };
-        this.messageElm.title = 'Contract section';
+        this.messageElm.onclick = function (event) { return _this.collapseBox(); };
+        this.messageElm.title = 'Collapse section';
     };
     PostsBox.postBoxes = [];
     return PostsBox;

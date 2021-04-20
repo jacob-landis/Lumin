@@ -78,6 +78,7 @@ class Main {
             document.getElementById('profileBioWrapper'),
             document.getElementById('profileImagesWrapper'),
             document.getElementById('profileFriends'),
+            document.getElementById('relationWrapper'),
             document.getElementById('profilePostBoxes'),
             document.getElementById('commentedProfilePostsBox'),
             document.getElementById('likedProfilePostsBox'),

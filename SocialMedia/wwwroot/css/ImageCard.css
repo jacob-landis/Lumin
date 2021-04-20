@@ -1,10 +1,9 @@
 ﻿.imageCardHover {
     cursor: pointer;
-    transition: opacity ease-out;
-    opacity: 1;
+    transition: border ease-out;
+    border: none;
 }
 
 .imageCardHover:hover {
-    opacity: 0.95;
     border: 1px solid rgba(160, 160, 160, 0.1);
 }

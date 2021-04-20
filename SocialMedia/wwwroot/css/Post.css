@@ -35,6 +35,8 @@
 }
 .postImageWrapper {
     padding: 2%;
+    max-height: 930px;
+    overflow: hidden;
 }
 
 .commentSection {

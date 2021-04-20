@@ -8,7 +8,7 @@ class ProfileModal extends Modal {
     
     private nameEditor: DoubleEditor;
     private bioEditor: Editor;
-    
+
     // A FULL profile. The profile being displayed. 
     private profile: FullProfileRecord;
     
@@ -37,6 +37,7 @@ class ProfileModal extends Modal {
         rootElm: HTMLElement,                   private profileNameWrapper: HTMLElement,
         private imageWrapper: HTMLElement,      private profileBioWrapper: HTMLElement,
         private imageScrollBox: HTMLElement,    private friendBoxElm: HTMLElement,
+        private relationWrapper: HTMLElement,
         postBoxesWrapper: HTMLElement,          mainPostsBoxWrapper: HTMLElement,
         likedPostsBoxWrapper: HTMLElement,      commentedPostsBoxWrapper: HTMLElement,
         imageBoxElm: HTMLElement,               btnToggleSearchBar: HTMLElement,
@@ -97,6 +98,11 @@ class ProfileModal extends Modal {
             this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
 
             this.summaryStage.updateStaging(this.fullProfileStaged);
+        });
+
+        Ajax.getProfile(profileId, (profileCard: ProfileCard) => {
+            if (profileCard.profile.relationToUser != 'me')
+                this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
         });
 
         // PRIVATE PROFILE OPTIONS
@@ -188,6 +194,7 @@ class ProfileModal extends Modal {
 
         // Emptie out the containers that are refilled on load.
         ViewUtil.empty(this.imageWrapper);
+        ViewUtil.empty(this.relationWrapper);
 
         // Delete the components that are reconstructed on load.
         delete this.imagesBox;

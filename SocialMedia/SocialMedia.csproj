@@ -15,6 +15,7 @@
     <Content Remove="wwwroot\ts\Ajax.ts" />
     <Content Remove="wwwroot\ts\Cards\CommentSectionCard.ts" />
     <Content Remove="wwwroot\ts\Cards\ProfilePostsCard.ts" />
+    <Content Remove="wwwroot\ts\Cards\RelationCard.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\CommentsBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
@@ -77,6 +78,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Ajax.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cards\CommentSectionCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cards\ProfilePostsCard.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Cards\RelationCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\CommentsBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />

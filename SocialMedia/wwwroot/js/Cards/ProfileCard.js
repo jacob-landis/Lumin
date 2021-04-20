@@ -16,31 +16,16 @@ var ProfileCard = (function (_super) {
     function ProfileCard(profile) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'profileCard' })) || this;
         _this.profile = profile;
-        _this.case = ProfileCard.cases[_this.profile.relationToUser];
         _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, true);
         _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', null, function (target) { }));
-        _this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: (_this.profile.firstName + " " + _this.profile.lastName) });
+        _this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: _this.profile.firstName + " " + _this.profile.lastName });
         _this.rootElm.append(_this.imageBox.rootElm, _this.txtName);
         if (_this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me')
             _this.rootElm.onclick = function (e) { return profileModal.load(_this.profile.profileId); };
         if (_this.profile.relationToUser != 'me') {
+            _this.relationCard = new RelationCard(profile);
             _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, [
-                new ContextOption(_this.case.icon, function (e) {
-                    switch (_this.case.label) {
-                        case 'Accept':
-                            Ajax.acceptFriendRequest(_this.profile.profileId);
-                            break;
-                        case 'Request':
-                            Ajax.sendFriendRequest(_this.profile.profileId);
-                            break;
-                        case 'Cancel':
-                            _this.remove();
-                            break;
-                        case 'Unfriend': confirmPrompt.load('Are you sure you want to unfriend this user?', function (confirmation) { if (confirmation)
-                            _this.remove(); });
-                    }
-                    _this.case = ProfileCard.cases[_this.case.nextCase];
-                })
+                new ContextOption(_this.relationCard.case.icon, function (e) { return _this.relationCard.changeRelation(); })
             ]); };
         }
         ProfileCard.profileCards.push(_this);
@@ -63,37 +48,7 @@ var ProfileCard = (function (_super) {
                 profileCard.txtName.innerText = firstName + " " + lastName;
         });
     };
-    ProfileCard.prototype.remove = function () {
-        var _this = this;
-        PostCard.postCards.forEach(function (p) {
-            if (p.post.profile.profileId == _this.profile.profileId)
-                ViewUtil.remove(p.rootElm);
-        });
-        Ajax.deleteFriend(this.profile.profileId);
-    };
     ProfileCard.profileCards = [];
-    ProfileCard.cases = {
-        'friend': {
-            label: 'Unfriend',
-            icon: Icons.removeFriend(),
-            nextCase: 'unrelated'
-        },
-        'userRequested': {
-            label: 'Cancel',
-            icon: Icons.cancelRequest(),
-            nextCase: 'unrelated'
-        },
-        'requestedUser': {
-            label: 'Accept',
-            icon: Icons.acceptRequest(),
-            nextCase: 'friend'
-        },
-        'unrelated': {
-            label: 'Request',
-            icon: Icons.sendRequest(),
-            nextCase: 'userRequested'
-        }
-    };
     return ProfileCard;
 }(Card));
 //# sourceMappingURL=ProfileCard.js.map
