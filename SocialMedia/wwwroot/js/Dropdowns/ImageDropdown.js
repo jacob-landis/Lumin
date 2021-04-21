@@ -13,8 +13,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ImageDropdown = (function (_super) {
     __extends(ImageDropdown, _super);
-    function ImageDropdown(rootElm, contentElm, imagesWrapper, prompt, btnUploadImageModal, btnOpen) {
+    function ImageDropdown(rootElm, contentElm, imagesWrapper, prompt, btnOpenUploadImageModal, btnOpen) {
         var _this = _super.call(this, rootElm, contentElm, btnOpen) || this;
+        _this.btnOpenUploadImageModal = btnOpenUploadImageModal;
         _this.highLitImage = null;
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;
@@ -22,7 +23,7 @@ var ImageDropdown = (function (_super) {
             return fullSizeImageModal.load(_this.indexOf(target));
         });
         _this.imageWrapper.append(_this.imageBox.rootElm);
-        btnUploadImageModal.onchange = function (e) {
+        btnOpenUploadImageModal.onchange = function (e) {
             return uploadImageModal.load(e, function (imageCard) {
                 return ProfileImagesBox.profileImageBoxes.forEach(function (p) {
                     if (p.profileId == User.profileId)

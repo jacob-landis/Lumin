@@ -84,8 +84,19 @@ var ProfileModal = (function (_super) {
     };
     ProfileModal.prototype.selectProfilePicture = function () {
         var _this = this;
+        var callback = function (event) {
+            var hit = false;
+            ['btnImageModalUploadImage', 'plusIcon', 'imageFileIcon', 'imageDropdown', 'imageDropDownContent'].forEach(function (id) {
+                if (event.srcElement == document.getElementById(id))
+                    hit = true;
+            });
+            if (!hit && !uploadImageModal.hasFocus) {
+                imageDropdown.close();
+                window.removeEventListener('mouseup', callback);
+            }
+        };
+        window.addEventListener('mouseup', callback);
         imageDropdown.load(User.profileId, "Select a profile picture", "Set profile picture", function (target) {
-            imageDropdown.close();
             imageDropdown.rootElm.style.zIndex = '0';
             ProfileCard.changeUserProfilePicture(target);
             User.profilePictureId = target.image.imageId;

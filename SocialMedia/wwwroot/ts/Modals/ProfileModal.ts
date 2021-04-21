@@ -158,12 +158,26 @@ class ProfileModal extends Modal {
     */
     private selectProfilePicture(): void {
 
+        // Listen for any clicks not related to the process of selecting an image and end the process if one is found.
+        // callback is stored in a variable so that the variable can be referenced to remove the event listener.
+        let callback = (event: MouseEvent) => {
+            let hit = false;
+            ['btnImageModalUploadImage', 'plusIcon', 'imageFileIcon', 'imageDropdown', 'imageDropDownContent'].forEach((id: string) => {
+                
+                if (event.srcElement == document.getElementById(id)) hit = true;
+            });
+
+            if (!hit && !uploadImageModal.hasFocus) {
+                imageDropdown.close();
+                window.removeEventListener('mouseup', callback);
+            }
+
+        }
+        window.addEventListener('mouseup', callback);
+
         // Load image dropdown for current user and set the onclick to change profile picture.
         imageDropdown.load(User.profileId, "Select a profile picture", "Set profile picture", (target: ImageCard) => {
-
-            // Close the image dropdown.
-            imageDropdown.close();
-
+            
             // Reset z index of dropdown.
             imageDropdown.rootElm.style.zIndex = '0'; // XXX move to onclose of imageDropdown. XXX
 

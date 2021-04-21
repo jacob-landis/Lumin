@@ -35,7 +35,7 @@ class ImageDropdown extends Dropdown {
         contentElm: HTMLElement,
         imagesWrapper: HTMLElement,
         prompt: HTMLElement,
-        btnUploadImageModal: HTMLElement,
+        public btnOpenUploadImageModal: HTMLElement,
         btnOpen: HTMLElement
     ) {
 
@@ -60,7 +60,7 @@ class ImageDropdown extends Dropdown {
         // This is triggered once the user has selected a file from their computers file system.
         // (Refer to this elm in /Views/Home/Index.cshtml for further explaination.)
         // This has the additional function of updating any and all active displays of the current user's images when one is added.
-        btnUploadImageModal.onchange = (e: MouseEvent) =>
+        btnOpenUploadImageModal.onchange = (e: MouseEvent) =>
 
             // Send file (must be accessed through the MouseEvent) and callback to image upload modal.
             uploadImageModal.load(e,
