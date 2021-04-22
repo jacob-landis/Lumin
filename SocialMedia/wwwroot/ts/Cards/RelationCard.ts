@@ -3,7 +3,7 @@
     private static cases = {
         'friend': {
             label: 'Unfriend',
-            icon: Icons.removeFriend(),
+            icon: () => Icons.removeFriend(),
             nextCase: 'unrelated',
             action: (profileId: number) => {
                 confirmPrompt.load('Are you sure you want to unfriend this user?',
@@ -12,19 +12,19 @@
         },
         'userRequested': {
             label: 'Cancel',
-            icon: Icons.cancelRequest(),
+            icon: () => Icons.cancelRequest(),
             nextCase: 'unrelated',
             action: (profileId: number) => RelationCard.remove(profileId)
         },
         'requestedUser': {
             label: 'Accept',
-            icon: Icons.acceptRequest(),
+            icon: () => Icons.acceptRequest(),
             nextCase: 'friend',
             action: (profileId: number) => Ajax.acceptFriendRequest(profileId)
         },
         'unrelated': {
             label: 'Request',
-            icon: Icons.sendRequest(),
+            icon: () => Icons.sendRequest(),
             nextCase: 'userRequested',
             action: (profileId: number) =>  Ajax.sendFriendRequest(profileId)
         }
@@ -38,16 +38,17 @@
         Ajax.deleteFriend(profileId);
     }
 
-    public case: { label: string, icon: HTMLElement, nextCase: string, action: (profileId: number) => void };
+    public case: { label: string, icon: () => HTMLElement, nextCase: string, action: (profileId: number) => void };
 
     public constructor(
         public profile: ProfileRecord
     ) {
-        super(RelationCard.cases[profile.relationToUser].icon);
+        super(RelationCard.cases[profile.relationToUser].icon());
+
         this.case = RelationCard.cases[this.profile.relationToUser];
-        this.rootElm.onclick = (event: MouseEvent) => {
-            this.case.action(this.profile.profileId);
-        }
+
+        this.rootElm.onclick = (event: MouseEvent) => this.changeRelation();
+        this.rootElm.title = this.case.label;
     }
 
     public changeRelation(): void {

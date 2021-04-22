@@ -24,20 +24,19 @@
     margin-right: 5px;
 }
 
-/*.relationCaseBtn {
+.profileCard > .icon {
     display: inline;
     float: right;
-    margin-left: 5px;
-    background: none;
-    border: none;
-    font-size: 9pt;
-    color: gray;
-    height: 25px;
-    width: 60px;
-    border-radius: 100px;
-}*/
+    background-color: lightgray;
+    padding: 5px;
+    margin: 4px 20px auto 0;
+    border-radius: 2px;
+}
 
-.relationCaseBtn:hover {
-    background: lightgray;
-    color: black;
+.profileCard:hover > .icon {
+    background-color: gray;
+}
+
+.profileCard > .icon:hover {
+    background-color: dimgray;
 }

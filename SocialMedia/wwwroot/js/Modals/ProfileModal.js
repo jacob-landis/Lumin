@@ -34,8 +34,8 @@ var ProfileModal = (function (_super) {
         _this.profileNameWrapper.append(_this.nameEditor.rootElm);
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
         _this.summaryStageContainers = [
-            _this.profilePictureBox.rootElm, _this.profileNameWrapper,
-            _this.profileBioWrapper, _this.friendBoxElm, _this.imageScrollBox
+            _this.profilePictureBox.rootElm, _this.profileNameWrapper, _this.profileBioWrapper,
+            _this.friendBoxElm, _this.imageScrollBox, _this.relationWrapper
         ];
         _this.summaryStage = new Stage([_this.fullProfileStaged, _this.imagesBoxStaged, _this.friendsStaged], function () {
             return _this.summaryStageContainers.forEach(function (container) {
@@ -76,7 +76,8 @@ var ProfileModal = (function (_super) {
         this.imagesBox.onLoadEnd = function () { return _this.summaryStage.updateStaging(_this.imagesBoxStaged); };
         this.imageWrapper.append(this.imagesBox.rootElm);
         Ajax.getFriends(profileId, null, function (profileCards) {
-            _this.friendBox.add(profileCards);
+            if (profileCards != null)
+                _this.friendBox.add(profileCards);
             _this.summaryStage.updateStaging(_this.friendsStaged);
         });
         this.profilePostsCard.load(profileId);

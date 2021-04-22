@@ -74,7 +74,8 @@ class ProfileImagesBox extends ContentBox {
     }
 
     public addImageCards(imageCards: ImageCard[]): void {
-        imageCards.forEach(i => this.addImageCard(i));
+        if (imageCards != null) imageCards.forEach(i => this.addImageCard(i));
+        else if (this.onLoadEnd != null) this.onLoadEnd();
     }
 
     /*

@@ -37,7 +37,10 @@ var ProfileImagesBox = (function (_super) {
     };
     ProfileImagesBox.prototype.addImageCards = function (imageCards) {
         var _this = this;
-        imageCards.forEach(function (i) { return _this.addImageCard(i); });
+        if (imageCards != null)
+            imageCards.forEach(function (i) { return _this.addImageCard(i); });
+        else if (this.onLoadEnd != null)
+            this.onLoadEnd();
     };
     ProfileImagesBox.prototype.addImageCard = function (imageCard, prepend) {
         imageCard.onImageClick = this.clickCallback;

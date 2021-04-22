@@ -17,7 +17,6 @@ class ProfileModal extends Modal {
     
     // A ContentBox used to show a profile's friends.
     private friendBox: ContentBox;
-    //private friendBoxElm: HTMLElement;
 
     private profilePostsCard: ProfilePostsCard;
     
@@ -66,8 +65,8 @@ class ProfileModal extends Modal {
         this.profileBioWrapper.append(this.bioEditor.rootElm);
 
         this.summaryStageContainers = [
-            this.profilePictureBox.rootElm, this.profileNameWrapper,
-            this.profileBioWrapper, this.friendBoxElm, this.imageScrollBox
+            this.profilePictureBox.rootElm, this.profileNameWrapper, this.profileBioWrapper,
+            this.friendBoxElm, this.imageScrollBox, this.relationWrapper
         ]
 
         this.summaryStage = new Stage([this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged], () =>
@@ -143,7 +142,7 @@ class ProfileModal extends Modal {
 
         // Request friends by ProfileID and load them into friendBox when they arrive as profile cards.
         Ajax.getFriends(profileId, null, (profileCards: ProfileCard[]) => {
-            this.friendBox.add(profileCards);
+            if (profileCards != null) this.friendBox.add(profileCards);
             this.summaryStage.updateStaging(this.friendsStaged);
         });
         
@@ -161,9 +160,9 @@ class ProfileModal extends Modal {
         // Listen for any clicks not related to the process of selecting an image and end the process if one is found.
         // callback is stored in a variable so that the variable can be referenced to remove the event listener.
         let callback = (event: MouseEvent) => {
+
             let hit = false;
             ['btnImageModalUploadImage', 'plusIcon', 'imageFileIcon', 'imageDropdown', 'imageDropDownContent'].forEach((id: string) => {
-                
                 if (event.srcElement == document.getElementById(id)) hit = true;
             });
 
@@ -171,7 +170,6 @@ class ProfileModal extends Modal {
                 imageDropdown.close();
                 window.removeEventListener('mouseup', callback);
             }
-
         }
         window.addEventListener('mouseup', callback);
 

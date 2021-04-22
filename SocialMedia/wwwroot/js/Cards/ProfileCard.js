@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileCard = (function (_super) {
     __extends(ProfileCard, _super);
-    function ProfileCard(profile) {
+    function ProfileCard(profile, includeRelationButton) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'profileCard' })) || this;
         _this.profile = profile;
         _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, true);
@@ -24,16 +24,23 @@ var ProfileCard = (function (_super) {
             _this.rootElm.onclick = function (e) { return profileModal.load(_this.profile.profileId); };
         if (_this.profile.relationToUser != 'me') {
             _this.relationCard = new RelationCard(profile);
-            _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, [
-                new ContextOption(_this.relationCard.case.icon, function (e) { return _this.relationCard.changeRelation(); })
-            ]); };
+            if (includeRelationButton) {
+                _this.rootElm.append(_this.relationCard.rootElm);
+            }
+            else {
+                _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, [
+                    new ContextOption(_this.relationCard.rootElm, function (e) { return _this.relationCard.changeRelation(); })
+                ]); };
+            }
         }
         ProfileCard.profileCards.push(_this);
         return _this;
     }
-    ProfileCard.list = function (profiles) {
+    ProfileCard.list = function (profiles, includeRelationButton) {
+        if (profiles == null)
+            return null;
         var profileCards = [];
-        profiles.forEach(function (profileRecord) { return profileCards.push(new ProfileCard(profileRecord)); });
+        profiles.forEach(function (profileRecord) { return profileCards.push(new ProfileCard(profileRecord, includeRelationButton)); });
         return profileCards;
     };
     ProfileCard.changeUserProfilePicture = function (imageCard) {

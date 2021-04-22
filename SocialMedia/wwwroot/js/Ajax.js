@@ -80,7 +80,7 @@ var Ajax = (function () {
     Ajax.getFriends = function (profileId, searchText, onProfileResults) {
         var newId = profileId ? profileId : 0;
         var newSearch = this.JSONstring(searchText ? searchText : "NULL");
-        this.call("apifriend/friends/" + newId, "POST", function (profileResults) { return onProfileResults(ProfileCard.list(profileResults)); }, newSearch);
+        this.call("apifriend/friends/" + newId, "POST", function (profileResults) { return onProfileResults(ProfileCard.list(profileResults, true)); }, newSearch);
     };
     Ajax.deleteImage = function (imageId) {
         this.call("apiimage/deleteimage/" + imageId, "POST");

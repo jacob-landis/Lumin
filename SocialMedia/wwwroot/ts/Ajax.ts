@@ -183,7 +183,7 @@
         this.call(
             `apifriend/friends/${newId}`,
             "POST", 
-            (profileResults: string) => onProfileResults(ProfileCard.list(<ProfileRecord[]><unknown>profileResults)),
+            (profileResults: string) => onProfileResults(ProfileCard.list(<ProfileRecord[]><unknown>profileResults, true)),
             newSearch
         );
     }

@@ -2,9 +2,10 @@
 
     public static profileCards: ProfileCard[] = [];
 
-    public static list(profiles: ProfileRecord[]): ProfileCard[] {
+    public static list(profiles: ProfileRecord[], includeRelationButton?: boolean): ProfileCard[] {
+        if (profiles == null) return null;
         let profileCards: ProfileCard[] = [];
-        profiles.forEach((profileRecord: ProfileRecord) => profileCards.push(new ProfileCard(profileRecord)));
+        profiles.forEach((profileRecord: ProfileRecord) => profileCards.push(new ProfileCard(profileRecord, includeRelationButton)));
         return profileCards;
     }
 
@@ -34,7 +35,7 @@
             <span class="profileCardName">Jane Doe</span>
         </div>
     */
-    public constructor(public profile: ProfileRecord) {
+    public constructor(public profile: ProfileRecord, includeRelationButton?: boolean) {
 
         super(ViewUtil.tag('div', { classList: 'profileCard' }));
         
@@ -54,9 +55,14 @@
             
             this.relationCard = new RelationCard(profile);
 
-            this.rootElm.oncontextmenu = (e: MouseEvent) => contextMenu.load(e, [
-                new ContextOption(this.relationCard.case.icon, (e: MouseEvent) => this.relationCard.changeRelation())
-            ]);
+            if (includeRelationButton) {
+                this.rootElm.append(this.relationCard.rootElm);
+            }
+            else {
+                this.rootElm.oncontextmenu = (e: MouseEvent) => contextMenu.load(e, [
+                    new ContextOption(this.relationCard.rootElm, (e: MouseEvent) => this.relationCard.changeRelation())
+                ]);
+            }
         }
         ProfileCard.profileCards.push(this);
     }

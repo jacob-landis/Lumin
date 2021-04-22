@@ -14,12 +14,11 @@ var __extends = (this && this.__extends) || (function () {
 var RelationCard = (function (_super) {
     __extends(RelationCard, _super);
     function RelationCard(profile) {
-        var _this = _super.call(this, RelationCard.cases[profile.relationToUser].icon) || this;
+        var _this = _super.call(this, RelationCard.cases[profile.relationToUser].icon()) || this;
         _this.profile = profile;
         _this.case = RelationCard.cases[_this.profile.relationToUser];
-        _this.rootElm.onclick = function (event) {
-            _this.case.action(_this.profile.profileId);
-        };
+        _this.rootElm.onclick = function (event) { return _this.changeRelation(); };
+        _this.rootElm.title = _this.case.label;
         return _this;
     }
     RelationCard.remove = function (profileId) {
@@ -38,7 +37,7 @@ var RelationCard = (function (_super) {
     RelationCard.cases = {
         'friend': {
             label: 'Unfriend',
-            icon: Icons.removeFriend(),
+            icon: function () { return Icons.removeFriend(); },
             nextCase: 'unrelated',
             action: function (profileId) {
                 confirmPrompt.load('Are you sure you want to unfriend this user?', function (confirmation) { if (confirmation)
@@ -47,19 +46,19 @@ var RelationCard = (function (_super) {
         },
         'userRequested': {
             label: 'Cancel',
-            icon: Icons.cancelRequest(),
+            icon: function () { return Icons.cancelRequest(); },
             nextCase: 'unrelated',
             action: function (profileId) { return RelationCard.remove(profileId); }
         },
         'requestedUser': {
             label: 'Accept',
-            icon: Icons.acceptRequest(),
+            icon: function () { return Icons.acceptRequest(); },
             nextCase: 'friend',
             action: function (profileId) { return Ajax.acceptFriendRequest(profileId); }
         },
         'unrelated': {
             label: 'Request',
-            icon: Icons.sendRequest(),
+            icon: function () { return Icons.sendRequest(); },
             nextCase: 'userRequested',
             action: function (profileId) { return Ajax.sendFriendRequest(profileId); }
         }
