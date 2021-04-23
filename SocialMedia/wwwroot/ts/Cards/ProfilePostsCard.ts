@@ -16,6 +16,8 @@
 
     private postBoxesStage: Stage;
 
+    private get myActivityIsShowing() { return this.commentedPostsBox.hasContent || this.likedPostsBox.hasContent }
+
     public constructor(
         rootElm: HTMLElement,
         btnToggleSearchBar: HTMLElement,
@@ -70,7 +72,17 @@
         });
 
         this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, this.rootElm, 'mainPosts', () => this.feedFilter, () => { 
-            this.mainPostsBox.messageElm.innerText = 'All Posts'
+            
+            if (this.myActivityIsShowing)
+                this.mainPostsBox.messageElm.innerText = 'All Posts';
+
+            else if (!this.mainPostsBox.hasContent && this.profileId == User.profileId)
+                this.mainPostsBox.messageElm.innerHTML = `You have no posts. Click the <i class="fa fa-plus" alt="plus"></i>
+                    <i class="fa fa-sticky-note" alt="post"></i> button on the left side of the navigation bar to start creating your first post.`;
+
+            else if (!this.mainPostsBox.hasContent && this.profileId)
+                this.mainPostsBox.messageElm.innerText = 'This user has no posts.';
+
             this.postBoxesStage.updateStaging(this.mainPostsStaged);
         });
     }
@@ -101,13 +113,13 @@
 
         this.mainPostsBox.start();
 
-        if (this.commentedPostsBox.length > 0) {
+        if (this.commentedPostsBox.hasContent) {
             this.postBoxesStage.flags.push(this.commentedPostsStaged);
             this.commentedPostsBox.clear();
             this.commentedPostsBox.request(15);
         }
 
-        if (this.likedPostsBox.length > 0) {
+        if (this.likedPostsBox.hasContent) {
             this.postBoxesStage.flags.push(this.likedPostsStaged);
             this.likedPostsBox.clear();
             this.likedPostsBox.request(15);
@@ -121,17 +133,17 @@
 
         this.mainPostsBox.refreshPosts(() => {
 
-            if (this.commentedPostsBox.length > 0 || this.likedPostsBox.length > 0) this.mainPostsBox.messageElm.innerText = 'All Posts';
+            if (this.myActivityIsShowing) this.mainPostsBox.messageElm.innerText = 'All Posts';
             this.postBoxesStage.updateStaging(this.mainPostsStaged);
         });
 
-        if (this.commentedPostsBox.length > 0) {
+        if (this.commentedPostsBox.hasContent) {
 
             this.postBoxesStage.flags.push(this.commentedPostsStaged);
             this.commentedPostsBox.refreshPosts(() => this.postBoxesStage.updateStaging(this.commentedPostsStaged));
         }
 
-        if (this.likedPostsBox.length > 0) {
+        if (this.likedPostsBox.hasContent) {
 
             this.postBoxesStage.flags.push(this.likedPostsStaged);
             this.likedPostsBox.refreshPosts(() => this.postBoxesStage.updateStaging(this.likedPostsStaged));

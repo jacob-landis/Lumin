@@ -13,25 +13,21 @@ class PostsBox extends ContentBox {
     // The profile who's post feed will be loaded.
     // If profileId is false this will ask the host for the public feed.
     public profileId: number;
-    public getFeedFilter: () => ('recent' | 'likes' | 'comments');
-    public feedType: ('commentedPosts' | 'likedPosts' | 'mainPosts');
-
     private stage: Stage;
-    
+
     /*
         PARAMETERS:
         profileId can be null.
         rootElm must be an HTML element.
     */
-    public constructor(profileId?: number, rootElm?: HTMLElement, scrollElm?: HTMLElement,
-        feedType?: ('commentedPosts' | 'likedPosts' | 'mainPosts'),
-        getFeedFilter?: () => ('recent' | 'likes' | 'comments'),
+    public constructor(
+        profileId?: number,
+        rootElm?: HTMLElement,
+        scrollElm?: HTMLElement,
+        public feedType?: ('commentedPosts' | 'likedPosts' | 'mainPosts'),
+        public getFeedFilter?: () => ('recent' | 'likes' | 'comments'),
         onPostsLoadEnd?: () => void
     ) {
-        
-        // Add class attribute to rootElm before sending to base class.
-        rootElm.classList.add('post-box');
-
         // Call base class constructor.
         super(rootElm, scrollElm, 1500, 5,
             // When content box is ready for more content,
@@ -66,12 +62,13 @@ class PostsBox extends ContentBox {
             }
         );
         
+        // Add class attribute to rootElm before sending to base class.
+        rootElm.classList.add('post-box');
+
         // Get handle on the provided ProfileID or the current user's ProfileID.
         // Used to make request a feed of one profile's posts.
         // If no value is provided, the current user's public feed will be loaded.
         this.profileId = profileId ? profileId : User.profileId;
-        this.getFeedFilter = getFeedFilter;
-        this.feedType = feedType
 
         this.messageElm.onclick = (event: MouseEvent) => this.collapseBox();
         this.messageElm.title = 'Contract section';

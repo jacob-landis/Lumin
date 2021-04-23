@@ -40,6 +40,7 @@ class ContentBox implements IAppendable {
     // A shortcut for the content count.
     // Acts as the skip paramter in a request.
     public get length(): number { return this.content.length; }
+    public get hasContent() { return this.length > 0 }
 
     // Shortcuts to get the height and width properties of this content box's rootElm.
     public get height(): number { return Util.getElmHeight(this.rootElm); }

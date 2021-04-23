@@ -13,6 +13,10 @@
     grid-template-columns: 12fr 20fr 1fr;
 }
 
+.detailsSlot > .likeCard {
+    margin-top: 6px;
+}
+
 .caption {
     font-size: 12pt;
     margin: 1%;

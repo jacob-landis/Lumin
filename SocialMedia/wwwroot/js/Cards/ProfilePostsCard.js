@@ -52,11 +52,21 @@ var ProfilePostsCard = (function (_super) {
             _this.postBoxesStage.updateStaging(_this.likedPostsStaged);
         });
         _this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, _this.rootElm, 'mainPosts', function () { return _this.feedFilter; }, function () {
-            _this.mainPostsBox.messageElm.innerText = 'All Posts';
+            if (_this.myActivityIsShowing)
+                _this.mainPostsBox.messageElm.innerText = 'All Posts';
+            else if (!_this.mainPostsBox.hasContent && _this.profileId == User.profileId)
+                _this.mainPostsBox.messageElm.innerHTML = "You have no posts. Click the <i class=\"fa fa-plus\" alt=\"plus\"></i>\n                    <i class=\"fa fa-sticky-note\" alt=\"post\"></i> button on the left side of the navigation bar to start creating your first post.";
+            else if (!_this.mainPostsBox.hasContent && _this.profileId)
+                _this.mainPostsBox.messageElm.innerText = 'This user has no posts.';
             _this.postBoxesStage.updateStaging(_this.mainPostsStaged);
         });
         return _this;
     }
+    Object.defineProperty(ProfilePostsCard.prototype, "myActivityIsShowing", {
+        get: function () { return this.commentedPostsBox.hasContent || this.likedPostsBox.hasContent; },
+        enumerable: true,
+        configurable: true
+    });
     ProfilePostsCard.prototype.load = function (profileId) {
         var _this = this;
         this.profileId = profileId;
@@ -78,12 +88,12 @@ var ProfilePostsCard = (function (_super) {
             });
         };
         this.mainPostsBox.start();
-        if (this.commentedPostsBox.length > 0) {
+        if (this.commentedPostsBox.hasContent) {
             this.postBoxesStage.flags.push(this.commentedPostsStaged);
             this.commentedPostsBox.clear();
             this.commentedPostsBox.request(15);
         }
-        if (this.likedPostsBox.length > 0) {
+        if (this.likedPostsBox.hasContent) {
             this.postBoxesStage.flags.push(this.likedPostsStaged);
             this.likedPostsBox.clear();
             this.likedPostsBox.request(15);
@@ -94,15 +104,15 @@ var ProfilePostsCard = (function (_super) {
         this.postBoxesStage = new Stage([this.mainPostsStaged], function () { return _this.displayPosts(); });
         ViewUtil.hide(this.postBoxes.rootElm);
         this.mainPostsBox.refreshPosts(function () {
-            if (_this.commentedPostsBox.length > 0 || _this.likedPostsBox.length > 0)
+            if (_this.myActivityIsShowing)
                 _this.mainPostsBox.messageElm.innerText = 'All Posts';
             _this.postBoxesStage.updateStaging(_this.mainPostsStaged);
         });
-        if (this.commentedPostsBox.length > 0) {
+        if (this.commentedPostsBox.hasContent) {
             this.postBoxesStage.flags.push(this.commentedPostsStaged);
             this.commentedPostsBox.refreshPosts(function () { return _this.postBoxesStage.updateStaging(_this.commentedPostsStaged); });
         }
-        if (this.likedPostsBox.length > 0) {
+        if (this.likedPostsBox.hasContent) {
             this.postBoxesStage.flags.push(this.likedPostsStaged);
             this.likedPostsBox.refreshPosts(function () { return _this.postBoxesStage.updateStaging(_this.likedPostsStaged); });
         }
