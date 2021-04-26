@@ -85,6 +85,7 @@ namespace SocialMedia.Infrastructure
             {
                 ImageId = image.ImageId,
                 ProfileId = image.ProfileId,
+                DateTime = image.DateTime,
                 ImageAsByteArray = ImageToByte(image.Name, getThumbnail)
             };
 

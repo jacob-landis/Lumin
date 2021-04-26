@@ -67,6 +67,7 @@ class Main {
             document.getElementById('btnFullsizePrevious'),
             document.getElementById('btnFullsizeNext'),
             document.getElementById('imageCount'),
+            document.getElementById('imageDateTime'),
             document.getElementById('fullsizeImageBox'),
             'fullSizeImage'
         );

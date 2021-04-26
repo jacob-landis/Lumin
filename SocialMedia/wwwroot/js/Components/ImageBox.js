@@ -45,6 +45,8 @@ var ImageBox = (function () {
             imageCard.onImageClick = this.heldImageClick;
         this.rootElm.append(imageCard.rootElm);
         this.isLoaded = true;
+        if (this._onLoadEnd)
+            this._onLoadEnd();
     };
     ImageBox.prototype.unload = function () {
         if (this.isLoaded) {

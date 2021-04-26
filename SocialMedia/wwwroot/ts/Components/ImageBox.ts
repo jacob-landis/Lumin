@@ -140,6 +140,8 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
         // Raise is loaded flag.
         this.isLoaded = true;
+
+        if (this._onLoadEnd) this._onLoadEnd();
     }
 
     /*

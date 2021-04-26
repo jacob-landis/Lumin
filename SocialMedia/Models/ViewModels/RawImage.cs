@@ -13,6 +13,9 @@ namespace SocialMedia.Models.ViewModels
         // ProfileID of owner.
         public int? ProfileId { get; set; }
 
+        // Datetime that the image was uploaded.
+        public DateTime DateTime { get; set; }
+
         // The image in byte array form so it can be sent to client. XXX rename to ByteArrImg
         public byte[] ImageAsByteArray { get; set; }
     }

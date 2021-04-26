@@ -22,6 +22,8 @@ class FullSizeImageModal extends Modal {
     // Displays the current index and the total number of images in a collection (ex. 7/10).
     private imageCount: HTMLElement;
 
+    private imageDateTime: HTMLElement;
+
     // The owner of the collection of images being shown.
     private profileId: number;
 
@@ -48,6 +50,7 @@ class FullSizeImageModal extends Modal {
         btnPrev: HTMLElement,
         btnNext: HTMLElement,
         imageCount: HTMLElement,
+        imageDateTime: HTMLElement,
         imageBoxElm: HTMLElement,
         imageClassList: string
     ) {
@@ -60,14 +63,18 @@ class FullSizeImageModal extends Modal {
         this.btnPrev = btnPrev;
         this.btnNext = btnNext;
         this.imageCount = imageCount;
+        this.imageDateTime = imageDateTime;
         this.imageClassList = imageClassList;
 
         // Get a handle on a group of HTML elms.
-        this.imageControls = [this.imageCount, this.btnNext, this.btnPrev, Modal.btnClose];
+        this.imageControls = [this.imageCount, this.imageDateTime, this.btnNext, this.btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
         this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', (target: ImageCard) => this.toggleControls());
-        
+
+        this.imageCon.onLoadEnd = () =>
+            this.imageDateTime.innerText = `Uploaded on ${Util.formatDateTime(this.imageCon.imageCard.image.dateTime)}`;
+
         // Set the callback of btnPrev to invoke requestImage with a deincrement.
         this.btnPrev.onclick = (e: MouseEvent) => this.requestImage(this.index - 1);
 
@@ -91,7 +98,7 @@ class FullSizeImageModal extends Modal {
     public loadSingle(imageId: number): void {
 
         // Load image into imageCon by ImageID.
-        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', (target: ImageCard) => this.toggleClose());
+        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', (target: ImageCard) => this.toggleSingularControls());
 
         // Hides all controls.
         this.hideControls();
@@ -101,6 +108,8 @@ class FullSizeImageModal extends Modal {
 
         // Raise singular flag.
         this.isSingular = true;
+
+        ViewUtil.show(this.imageDateTime);
     }
 
     /*
@@ -181,20 +190,8 @@ class FullSizeImageModal extends Modal {
 
         super.close();
     }
-
-    /*
-        Have a request be made based on the distance and direction from the current index.
-
-        increment should be a number between -1 and 1.
-            -1 = previus image.
-            0 = load current image. (kicks off the process)
-            1 = next image.
-    */
-    //private requestImage(increment: (-1|0|1)): void {
+    
     private requestImage(targetIndex: number): void {
-
-        // Get a handle on the target index.
-        //let indexToBe: number = this.index + increment; // XXX rename this to targetIndex.
 
         // If target index is within range of the collection.
         if (targetIndex >= 0 && targetIndex < this.profileImagesCount) {
@@ -231,13 +228,15 @@ class FullSizeImageModal extends Modal {
     private updateImageCount(): void { this.imageCount.innerText = `${this.index + 1} / ${this.profileImagesCount}`; }
 
     // Toggle the visibility of the close button.
-    private toggleClose(): void {
+    private toggleSingularControls(): void {
         if (ViewUtil.isDisplayed(Modal.btnClose)) {
-            ViewUtil.hide(Modal.btnClose)
+            ViewUtil.hide(Modal.btnClose);
+            ViewUtil.hide(this.imageDateTime);
             navBar.hide();
         }
         else {
             ViewUtil.show(Modal.btnClose);
+            ViewUtil.show(this.imageDateTime);
             navBar.show();
         }
     }

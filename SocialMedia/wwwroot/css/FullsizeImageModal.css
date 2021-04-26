@@ -63,17 +63,23 @@
     right: 22%;
 }
 
-#imageCount {
+#imageCount, #imageDateTime {
     position: fixed;
-}
-
-#imageCount{
-    font-size: 20px;
     color: white;
-    left: 48%;
     align-content: center;
+    background-color: rgba(64, 64, 64, 0.75);
+    padding: 5px;
+    border-radius: 5px;
 }
 
 #imageCount {
+    font-size: 20px;
+    left: 48%;
     top: 5%;
+}
+
+#imageDateTime {
+    font-size: 14px;
+    left: 45%;
+    top: 95%;
 }

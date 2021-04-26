@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var FullSizeImageModal = (function (_super) {
     __extends(FullSizeImageModal, _super);
-    function FullSizeImageModal(rootElm, btnPrev, btnNext, imageCount, imageBoxElm, imageClassList) {
+    function FullSizeImageModal(rootElm, btnPrev, btnNext, imageCount, imageDateTime, imageBoxElm, imageClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.isSingular = null;
         rootElm.onclick = function (event) { if (event.target == rootElm)
@@ -21,9 +21,13 @@ var FullSizeImageModal = (function (_super) {
         _this.btnPrev = btnPrev;
         _this.btnNext = btnNext;
         _this.imageCount = imageCount;
+        _this.imageDateTime = imageDateTime;
         _this.imageClassList = imageClassList;
-        _this.imageControls = [_this.imageCount, _this.btnNext, _this.btnPrev, Modal.btnClose];
+        _this.imageControls = [_this.imageCount, _this.imageDateTime, _this.btnNext, _this.btnPrev, Modal.btnClose];
         _this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', function (target) { return _this.toggleControls(); });
+        _this.imageCon.onLoadEnd = function () {
+            return _this.imageDateTime.innerText = "Uploaded on " + Util.formatDateTime(_this.imageCon.imageCard.image.dateTime);
+        };
         _this.btnPrev.onclick = function (e) { return _this.requestImage(_this.index - 1); };
         _this.btnNext.onclick = function (e) { return _this.requestImage(_this.index + 1); };
         document.addEventListener("keydown", function (event) {
@@ -38,10 +42,11 @@ var FullSizeImageModal = (function (_super) {
     }
     FullSizeImageModal.prototype.loadSingle = function (imageId) {
         var _this = this;
-        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', function (target) { return _this.toggleClose(); });
+        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', function (target) { return _this.toggleSingularControls(); });
         this.hideControls();
         this.openOverrided();
         this.isSingular = true;
+        ViewUtil.show(this.imageDateTime);
     };
     FullSizeImageModal.prototype.load = function (clickedImageIndex, profileId) {
         var _this = this;
@@ -90,13 +95,15 @@ var FullSizeImageModal = (function (_super) {
         }
     };
     FullSizeImageModal.prototype.updateImageCount = function () { this.imageCount.innerText = this.index + 1 + " / " + this.profileImagesCount; };
-    FullSizeImageModal.prototype.toggleClose = function () {
+    FullSizeImageModal.prototype.toggleSingularControls = function () {
         if (ViewUtil.isDisplayed(Modal.btnClose)) {
             ViewUtil.hide(Modal.btnClose);
+            ViewUtil.hide(this.imageDateTime);
             navBar.hide();
         }
         else {
             ViewUtil.show(Modal.btnClose);
+            ViewUtil.show(this.imageDateTime);
             navBar.show();
         }
     };
