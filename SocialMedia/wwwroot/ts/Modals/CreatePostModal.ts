@@ -128,12 +128,9 @@ class CreatePostModal extends Modal {
             // When the selected image card returns.
             (imageCard: ImageCard) => {
 
-                // Request fullsize version of the selected image.
-                Ajax.getImage(imageCard.image.imageId, false, null, 'Attach to post', null, (imageCard: ImageCard) => {
-                    this.selectedImageBox.loadImage(imageCard);
-                    ViewUtil.show(this.btnClearAttachment);
-                });
-               
+                // Load image into selected image container by id so the fullsize version is requested and displayed.
+                this.selectedImageBox.load(imageCard.image.imageId, null, 'Attach to post');
+
                 imageDropdown.close();
             }
         );

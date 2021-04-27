@@ -31,7 +31,7 @@ var ImageBox = (function () {
         this.heldImageClassList = classList ? classList : this.heldImageClassList;
         this.heldTooltipMsg = toolTipMsg ? toolTipMsg : this.heldTooltipMsg;
         this.heldImageClick = click ? click : this.heldImageClick;
-        this.unload();
+        this.isLoaded = false;
         this.reload();
     };
     ImageBox.prototype.loadImage = function (imageCard) {
@@ -60,10 +60,11 @@ var ImageBox = (function () {
         if (!this.isLoaded) {
             this.rootElm.classList.add('loadingImage');
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
+                _this.isLoaded = true;
+                _this.unload();
                 _this.imageCard = imageCard;
                 ViewUtil.empty(_this.rootElm);
                 _this.rootElm.append(_this.imageCard.rootElm);
-                _this.isLoaded = true;
                 if (_this._onLoadEnd)
                     _this._onLoadEnd();
                 _this.rootElm.classList.remove('loadingImage');

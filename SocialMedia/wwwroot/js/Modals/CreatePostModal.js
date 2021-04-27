@@ -48,10 +48,7 @@ var CreatePostModal = (function (_super) {
     CreatePostModal.prototype.selectImage = function () {
         var _this = this;
         imageDropdown.load(User.profileId, "Select an image", 'Attach image to post', function (imageCard) {
-            Ajax.getImage(imageCard.image.imageId, false, null, 'Attach to post', null, function (imageCard) {
-                _this.selectedImageBox.loadImage(imageCard);
-                ViewUtil.show(_this.btnClearAttachment);
-            });
+            _this.selectedImageBox.load(imageCard.image.imageId, null, 'Attach to post');
             imageDropdown.close();
         });
     };

@@ -111,7 +111,8 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         this.heldImageClick = click ? click : this.heldImageClick;
 
         // Unload current image.
-        this.unload();
+        //this.unload();
+        this.isLoaded = false;
 
         // Reload current image (Makes request).
         this.reload();
@@ -179,6 +180,11 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
                 // When the prepped image card arrives,
                 (imageCard: ImageCard) => {
 
+                    // raise the isLoaded flag,
+                    this.isLoaded = true;
+
+                    this.unload();
+
                     // get a handle on it,
                     this.imageCard = imageCard;
 
@@ -187,10 +193,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
                     // append the image card tag to this image box's elm,
                     this.rootElm.append(this.imageCard.rootElm);
-
-                    // raise the isLoaded flag,
-                    this.isLoaded = true;
-
+                    
                     // and if there is an onLoadEnd callback, invoke it.
                     if (this._onLoadEnd) this._onLoadEnd();
 
