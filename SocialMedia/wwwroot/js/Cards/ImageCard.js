@@ -58,7 +58,7 @@ var ImageCard = (function (_super) {
         set: function (msg) {
             this._tooltipMsg = msg;
             if (msg != null) {
-                this.rootElm.title = msg;
+                this.rootElm.title = this.image.profileId == User.profileId ? msg + ' + Right-Click options' : msg;
                 this.rootElm.setAttribute('alt', msg);
                 this.rootElm.classList.add('imageCardHover');
             }

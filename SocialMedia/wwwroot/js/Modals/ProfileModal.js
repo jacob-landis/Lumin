@@ -102,7 +102,6 @@ var ProfileModal = (function (_super) {
             ProfileCard.changeUserProfilePicture(target);
             User.profilePictureId = target.image.imageId;
             navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target));
-            _this.profilePictureBox.loadImage(ImageCard.copy(target, null, 'Change profile picture'));
             Ajax.updateProfilePicture(target.image.imageId, null, 'Change profile picture', null, function (imageCard) {
                 return _this.profilePictureBox.loadImage(imageCard);
             });

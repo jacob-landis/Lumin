@@ -157,6 +157,7 @@ class ProfileModal extends Modal {
     */
     private selectProfilePicture(): void {
 
+        // Off-click detection.
         // Listen for any clicks not related to the process of selecting an image and end the process if one is found.
         // callback is stored in a variable so that the variable can be referenced to remove the event listener.
         let callback = (event: MouseEvent) => {
@@ -186,10 +187,7 @@ class ProfileModal extends Modal {
             User.profilePictureId = target.image.imageId;
 
             navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target));
-
-            // Inserts the low res thumbnail as a placeholder until the fullsize version is returned.
-            this.profilePictureBox.loadImage(ImageCard.copy(target, null, 'Change profile picture'));
-
+            
             // Send an update request to the host to change the profile picture in the profile record.
             Ajax.updateProfilePicture(target.image.imageId, null, 'Change profile picture', null,
 

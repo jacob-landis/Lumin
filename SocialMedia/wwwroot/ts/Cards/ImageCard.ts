@@ -36,7 +36,7 @@
         this._tooltipMsg = msg;
 
         if (msg != null) {
-            this.rootElm.title = msg;
+            this.rootElm.title = this.image.profileId == User.profileId ? msg + ' + Right-Click options' : msg;
             this.rootElm.setAttribute('alt', msg);
             this.rootElm.classList.add('imageCardHover');
         }
@@ -79,24 +79,25 @@
         this.onImageClick = onImageClick ? onImageClick : (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId);
 
         // R-Click on imageCard action.
-        if (image.profileId == User.profileId) this.rootElm.oncontextmenu = (event: MouseEvent) => 
+        if (image.profileId == User.profileId) 
+            this.rootElm.oncontextmenu = (event: MouseEvent) =>
 
-            // and loads the context modal with options and the mouseEvent.
-            contextMenu.load(event, [
+                // and loads the context modal with options and the mouseEvent.
+                contextMenu.load(event, [
 
-                new ContextOption(Icons.createPost(), (e: MouseEvent) => {
-                    createPostModal.load(this);
-                }),
-                new ContextOption(Icons.deleteImage(), (e: MouseEvent) => {
-                    confirmPrompt.load('Are you sure you want to delete this image?',
-                        (confirmation: boolean) => {
-                            if (!confirmation) return;
-                            this.remove();
+                    new ContextOption(Icons.createPost(), (e: MouseEvent) => {
+                        createPostModal.load(this);
+                    }),
+                    new ContextOption(Icons.deleteImage(), (e: MouseEvent) => {
+                        confirmPrompt.load('Are you sure you want to delete this image?',
+                            (confirmation: boolean) => {
+                                if (!confirmation) return;
+                                this.remove();
 
-                        //return answer == false? null : imageCard.remove(); // TEST THIS XXXXXXXXXXXXX
-                    });
-                })
-            ]);
+                                //return answer == false? null : imageCard.remove(); // TEST THIS XXXXXXXXXXXXX
+                            });
+                    })
+                ]);
         
         ImageCard.imageCards.push(this);
     }
