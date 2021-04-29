@@ -4,7 +4,7 @@ var NavBar = (function () {
         this.lastScrollTop = 0;
         this.navBarElm = navBarElm;
         this.postsSectionElm = postsSectionElm;
-        this.btnOpenUserProfileModalImageBox = new ImageBox(btnOpenUserProfileModal, '', 'Open my profile', null, true);
+        this.btnOpenUserProfileModalImageBox = new ImageBox(btnOpenUserProfileModal, '', 'My profile', null, true);
         this.btnOpenUserProfileModalImageBox.load(User.profilePictureId);
         document.getElementById('btnOpenHelpModal').onclick = function (e) { return helpModal.open(); };
         document.getElementById('btnOpenUserProfileModal').onclick = function (e) { return profileModal.load(User.profileId); };

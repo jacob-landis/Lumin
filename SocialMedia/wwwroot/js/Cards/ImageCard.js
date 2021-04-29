@@ -25,10 +25,10 @@ var ImageCard = (function (_super) {
         if (image.profileId == User.profileId)
             _this.rootElm.oncontextmenu = function (event) {
                 return contextMenu.load(event, [
-                    new ContextOption(Icons.createPost(), function (e) {
+                    new ContextOption(Icons.createPost(), 'Post image', function (e) {
                         createPostModal.load(_this);
                     }),
-                    new ContextOption(Icons.deleteImage(), function (e) {
+                    new ContextOption(Icons.deleteImage(), 'Delete image', function (e) {
                         confirmPrompt.load('Are you sure you want to delete this image?', function (confirmation) {
                             if (!confirmation)
                                 return;

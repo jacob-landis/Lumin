@@ -85,10 +85,10 @@
                 // and loads the context modal with options and the mouseEvent.
                 contextMenu.load(event, [
 
-                    new ContextOption(Icons.createPost(), (e: MouseEvent) => {
+                    new ContextOption(Icons.createPost(), 'Post image', (e: MouseEvent) => {
                         createPostModal.load(this);
                     }),
-                    new ContextOption(Icons.deleteImage(), (e: MouseEvent) => {
+                    new ContextOption(Icons.deleteImage(), 'Delete image', (e: MouseEvent) => {
                         confirmPrompt.load('Are you sure you want to delete this image?',
                             (confirmation: boolean) => {
                                 if (!confirmation) return;

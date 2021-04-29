@@ -25,6 +25,8 @@ var ViewUtil = (function () {
                 newElement.onclick = propertySetting.onclick;
             if (propertySetting.type)
                 newElement.setAttribute('type', propertySetting.type);
+            if (propertySetting.title)
+                newElement.title = propertySetting.title;
             if (propertySetting.oncontextmenu)
                 newElement.oncontextmenu = propertySetting.oncontextmenu;
         }

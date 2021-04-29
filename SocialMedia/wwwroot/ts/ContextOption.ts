@@ -6,11 +6,12 @@ class ContextOption implements IAppendable {
 
     public rootElm: HTMLElement;
 
-    public constructor(rootElm: HTMLElement, onOptionClick: (event: MouseEvent) => void) {
+    public constructor(rootElm: HTMLElement, title: string, onOptionClick: (event: MouseEvent) => void) {
         
         this.rootElm = rootElm;
         
         this.rootElm.classList.add('context-option');
+        this.rootElm.title = title;
         this.rootElm.onclick = onOptionClick;
     }
 }

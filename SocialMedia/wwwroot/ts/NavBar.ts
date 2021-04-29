@@ -12,7 +12,7 @@
         this.navBarElm = navBarElm;
         this.postsSectionElm = postsSectionElm;
 
-        this.btnOpenUserProfileModalImageBox = new ImageBox(btnOpenUserProfileModal, '', 'Open my profile', null, true);
+        this.btnOpenUserProfileModalImageBox = new ImageBox(btnOpenUserProfileModal, '', 'My profile', null, true);
         this.btnOpenUserProfileModalImageBox.load(User.profilePictureId);
 
         // OPEN HELP MODAL

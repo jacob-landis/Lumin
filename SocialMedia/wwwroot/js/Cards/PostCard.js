@@ -57,19 +57,19 @@ var PostCard = (function (_super) {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });
             postOptsSlot.append(btnPostOpts);
             btnPostOpts.onclick = function (e) { return contextMenu.load(e, [
-                new ContextOption(_this.editIcon, function (e) { return _this.captionEditor.start(); }),
-                new ContextOption(Icons.deletePost(), function (e) {
+                new ContextOption(_this.editIcon, 'Edit post caption', function (e) { return _this.captionEditor.start(); }),
+                new ContextOption(Icons.deletePost(), 'Delete post', function (e) {
                     return confirmPrompt.load('Are you sure you want to delete this post?', function (confirmation) {
                         if (!confirmation)
                             return;
                         _this.remove();
                     });
                 }),
-                new ContextOption(Icons.refresh(), function (event) { return _this.refreshPostDetails(); })
+                new ContextOption(Icons.refresh(), 'Refresh post details', function (event) { return _this.refreshPostDetails(); })
             ]); };
         }
         else {
-            var btnRefreshPostDetails = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-refresh' });
+            var btnRefreshPostDetails = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-refresh', title: 'Refresh post details' });
             btnRefreshPostDetails.onclick = function (event) { return _this.refreshPostDetails(); };
             postOptsSlot.append(btnRefreshPostDetails);
         }

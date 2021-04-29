@@ -63,7 +63,7 @@
             }
             else {
                 this.rootElm.oncontextmenu = (e: MouseEvent) => contextMenu.load(e, [
-                    new ContextOption(this.relationCard.rootElm, (e: MouseEvent) => this.relationCard.changeRelation())
+                    new ContextOption(this.relationCard.rootElm, this.relationCard.case.label, (e: MouseEvent) => this.relationCard.changeRelation())
                 ]);
             }
         }

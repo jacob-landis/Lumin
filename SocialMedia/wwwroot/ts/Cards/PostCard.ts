@@ -145,17 +145,17 @@
             postOptsSlot.append(btnPostOpts);
 
             btnPostOpts.onclick = (e: MouseEvent) => contextMenu.load(e, [
-                new ContextOption(this.editIcon, (e: MouseEvent) => this.captionEditor.start()),
-                new ContextOption(Icons.deletePost(), (e: MouseEvent) =>
+                new ContextOption(this.editIcon, 'Edit post caption', (e: MouseEvent) => this.captionEditor.start()),
+                new ContextOption(Icons.deletePost(), 'Delete post', (e: MouseEvent) =>
                     confirmPrompt.load('Are you sure you want to delete this post?', (confirmation: boolean) => {
                         if (!confirmation) return;
                         this.remove();
                     })),
-                new ContextOption(Icons.refresh(), (event: MouseEvent) => this.refreshPostDetails())
+                new ContextOption(Icons.refresh(), 'Refresh post details', (event: MouseEvent) => this.refreshPostDetails())
             ]);
         }
         else {
-            let btnRefreshPostDetails: HTMLElement = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-refresh' });
+            let btnRefreshPostDetails: HTMLElement = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-refresh', title: 'Refresh post details' });
             btnRefreshPostDetails.onclick = (event: MouseEvent) => this.refreshPostDetails();
             postOptsSlot.append(btnRefreshPostDetails);
         }

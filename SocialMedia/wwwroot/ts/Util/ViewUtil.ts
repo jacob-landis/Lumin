@@ -21,6 +21,7 @@
             if (propertySetting.src) newElement.setAttribute('src', `data:image/png;base64,${propertySetting.src}`);  // TEST
             if (propertySetting.onclick) newElement.onclick = propertySetting.onclick;
             if (propertySetting.type) newElement.setAttribute('type', propertySetting.type); // TEST
+            if (propertySetting.title) newElement.title = propertySetting.title;
             if (propertySetting.oncontextmenu) newElement.oncontextmenu = propertySetting.oncontextmenu;
         }
         return newElement;

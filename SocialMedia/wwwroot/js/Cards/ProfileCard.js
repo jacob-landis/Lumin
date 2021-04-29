@@ -31,7 +31,7 @@ var ProfileCard = (function (_super) {
             }
             else {
                 _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, [
-                    new ContextOption(_this.relationCard.rootElm, function (e) { return _this.relationCard.changeRelation(); })
+                    new ContextOption(_this.relationCard.rootElm, _this.relationCard.case.label, function (e) { return _this.relationCard.changeRelation(); })
                 ]); };
             }
         }

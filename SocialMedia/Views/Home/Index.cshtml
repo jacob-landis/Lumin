@@ -73,13 +73,13 @@
     @* --------------------LEFT-SIDE---------------------- *@
 
     @* Btn show friends. Opens or closes friends dropdown. *@
-    <i id="btnShowFriends" class="fa fa-users navIcon" alt="friends"></i>
+    <i id="btnShowFriends" class="fa fa-users navIcon" alt="friends" title="Friends dropdown"></i>
 
     @* Btn show images. Opens or closes images dropdown. *@
-    <i id="btnShowImages" class="fa fa-image navIcon" alt="images"></i>
+    <i id="btnShowImages" class="fa fa-image navIcon" alt="images" title="Images dropdown"></i>
 
     @* Btn creat post. Opens create post modal. *@
-    <i id="btnCreatePost" class="navIcon fa">
+    <i id="btnCreatePost" class="navIcon fa" title="Create new post">
         @* (compound icon) *@
         <i id="createPostPlusIcon" class="fa fa-plus navIcon" alt="create post"></i>
         <i id="createPostNoteIcon" class="fa fa-sticky-note navIcon" alt="create post"></i>
@@ -88,7 +88,7 @@
 
     @* CENTER *@
     @* Refreshes page.  *@
-    <a href="/" id="luminLogo"><img src="~/ImgStatic/LuminLogoSource.png" class="navLogo" /></a>
+    <a href="/" id="luminLogo"><img src="~/ImgStatic/LuminLogoSource.png" class="navLogo" title="Refresh page" /></a>
 
 
     @* --------------------RIGHT-SIDE--------------------- *@
@@ -98,10 +98,10 @@
         <div id="btnOpenUserProfileModal" class="navIcon" alt="my profile"></div>
 
         @* Btn open help modal. Opens help modal. *@
-        <i id="btnOpenHelpModal" class="fa fa-question navIcon" alt="help"></i>
+        <i id="btnOpenHelpModal" class="fa fa-question navIcon" alt="help" title="Help menu"></i>
 
         @* Logs user out, in turn redirecting them to login page. *@
-        <a id="btnLogout" asp-controller="Account" asp-action="Logout">
+        <a id="btnLogout" asp-controller="Account" asp-action="Logout" title="Logout">
             <i class="fa fa-sign-out navIcon" alt="sign out"></i>
         </a>
     </div>
@@ -162,7 +162,7 @@
                     the value of the label's 'for' attribute was the id of the text input).
                     A similar thing happens when it is a file input.
                 *@
-                <label for="imageModalUploadImage" id="btnImageModalUploadImage">
+                <label for="imageModalUploadImage" id="btnImageModalUploadImage" title="Upload image">
                     @* (compound icon) *@
                     <i id="plusIcon" class="fa fa-plus"></i>
                     <i id="imageFileIcon" class="fa fa-file-image-o"></i>

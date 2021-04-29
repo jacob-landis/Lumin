@@ -21,7 +21,7 @@ var CommentCard = (function (_super) {
         _this.refreshMessageSection = ViewUtil.tag('div', { classList: 'commentRefreshMessageSection' });
         var contentSection = ViewUtil.tag('div', { classList: 'commentContentSection' });
         var btnOpts = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
-        var btnRefresh = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-refresh' });
+        var btnRefresh = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-refresh', title: 'Refresh comment' });
         var editIcon = Icons.edit();
         _this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', false, 125, function (content) {
             Ajax.updateComment(_this.comment.commentId, content);
@@ -37,14 +37,14 @@ var CommentCard = (function (_super) {
         if (comment.profile.relationToUser == 'me') {
             optsSection.append(btnOpts);
             btnOpts.onclick = function (e) { return contextMenu.load(e, [
-                new ContextOption(editIcon, function (e) { return _this.commentEditor.start(); }),
-                new ContextOption(Icons.deleteComment(), function (e) { return confirmPrompt.load('Are you sure you want to delete this comment?', function (answer) {
+                new ContextOption(editIcon, 'Edit comment', function (e) { return _this.commentEditor.start(); }),
+                new ContextOption(Icons.deleteComment(), 'Delete comment', function (e) { return confirmPrompt.load('Are you sure you want to delete this comment?', function (answer) {
                     if (answer == false)
                         return;
                     else
                         _this.remove();
                 }); }),
-                new ContextOption(Icons.refresh(), function (event) { return _this.refresh(); })
+                new ContextOption(Icons.refresh(), 'Refresh comment', function (event) { return _this.refresh(); })
             ]); };
         }
         else {

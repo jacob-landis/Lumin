@@ -69,7 +69,7 @@ class CommentCard extends Card {
         this.refreshMessageSection = ViewUtil.tag('div', { classList: 'commentRefreshMessageSection' });
         let contentSection: HTMLElement = ViewUtil.tag('div', { classList: 'commentContentSection' });
         let btnOpts: HTMLElement = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
-        let btnRefresh: HTMLElement = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-refresh' });
+        let btnRefresh: HTMLElement = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-refresh', title: 'Refresh comment' });
         let editIcon: HTMLElement = Icons.edit();
 
         // Create an Editor for the comment text.
@@ -104,10 +104,10 @@ class CommentCard extends Card {
             btnOpts.onclick = (e: MouseEvent) => contextMenu.load(e, [
 
                 // Edit: start comment edit.
-                new ContextOption(editIcon, (e: MouseEvent) => this.commentEditor.start()),
+                new ContextOption(editIcon, 'Edit comment', (e: MouseEvent) => this.commentEditor.start()),
 
                 // Delete: prompt for confirmation to delete.
-                new ContextOption(Icons.deleteComment(),
+                new ContextOption(Icons.deleteComment(), 'Delete comment',
                     (e: MouseEvent) => confirmPrompt.load('Are you sure you want to delete this comment?',
                         (answer: boolean) => {
                             if (answer == false) return;
@@ -115,7 +115,7 @@ class CommentCard extends Card {
                         }
                     )
                 ),
-                new ContextOption(Icons.refresh(), (event: MouseEvent) => this.refresh())
+                new ContextOption(Icons.refresh(), 'Refresh comment', (event: MouseEvent) => this.refresh())
             ]);
         }
         else {
