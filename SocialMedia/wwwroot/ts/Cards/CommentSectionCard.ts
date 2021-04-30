@@ -1,6 +1,5 @@
 ﻿class CommentSectionCard extends Card {
-
-    public rootElm: HTMLElement;
+    
     private post: PostRecord;
 
     private getContentHeight: () => number;
@@ -10,7 +9,7 @@
     private targetHeight: number;
     private rootElmMinHeight: number;
 
-    private commentBoxes: ContentBox;
+    public commentBoxes: ContentBox;
     private mainCommentsBox: CommentsBox;
     private myCommentsBox: CommentsBox;
     private likedCommentsBox: CommentsBox;

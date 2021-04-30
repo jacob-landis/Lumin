@@ -38,6 +38,9 @@ var ViewUtil = (function () {
             element.style.display == 'inline-flex' ||
             element.style.display == 'flex');
     };
+    ViewUtil.isOverflowing = function (element) {
+        return element.clientWidth < element.scrollWidth || element.clientHeight < element.scrollHeight;
+    };
     ViewUtil.addClassList = function (classList, elm) {
         var classListArray = classList.split(' ');
         classListArray.forEach(function (c) { return elm.classList.add(c); });

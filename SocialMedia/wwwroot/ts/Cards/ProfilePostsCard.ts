@@ -5,7 +5,7 @@
     private feedFilter: 'recent' | 'likes' | 'comments' = 'recent';
     
     // A PostsBox for displaying a profile's posts.
-    private postBoxes: ContentBox; 
+    public postBoxes: ContentBox; 
     private mainPostsBox: PostsBox;
     private likedPostsBox: PostsBox; 
     private commentedPostsBox: PostsBox; 
@@ -28,7 +28,9 @@
         private txtSearchPosts: HTMLInputElement,
         commentedPostsBoxWrapper: HTMLElement,
         likedPostsBoxWrapper: HTMLElement,
-        mainPostsBoxWrapper: HTMLElement
+        mainPostsBoxWrapper: HTMLElement,
+        lockScrolling: () => void,
+        unlockScrolling: () => void
     ) {
 
         super(rootElm);
@@ -64,11 +66,35 @@
                 let postCard = <PostCard>content;
                 postCard.commentsSection.showCommentActivity(() => postCard.stage.updateStaging(postCard.commentsSection.allStaged));
             });
+
+            if (this.commentedPostsBox.hasContent) this.commentedPostsBox.content.forEach((contentItem: IAppendable) => {
+                let commentSectionElm: HTMLElement = (<PostCard>contentItem).commentsSection.commentBoxes.rootElm;
+
+                commentSectionElm.addEventListener('mouseenter', (event: MouseEvent) => {
+                    if (ViewUtil.isOverflowing(commentSectionElm)) lockScrolling();
+                });
+
+                commentSectionElm.addEventListener('mouseleave', (event: MouseEvent) => {
+                    if (ViewUtil.isOverflowing(commentSectionElm)) unlockScrolling();
+                });
+            });
         });
 
         this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, this.rootElm, 'likedPosts', () => this.feedFilter, () => { 
             this.likedPostsBox.messageElm.innerText = 'Liked Posts';
             this.postBoxesStage.updateStaging(this.likedPostsStaged);
+
+            if (this.likedPostsBox.hasContent) this.likedPostsBox.content.forEach((contentItem: IAppendable) => {
+                let commentSectionElm: HTMLElement = (<PostCard>contentItem).commentsSection.commentBoxes.rootElm;
+
+                commentSectionElm.addEventListener('mouseenter', (event: MouseEvent) => {
+                    if (ViewUtil.isOverflowing(commentSectionElm)) lockScrolling();
+                });
+
+                commentSectionElm.addEventListener('mouseleave', (event: MouseEvent) => {
+                    if (ViewUtil.isOverflowing(commentSectionElm)) unlockScrolling();
+                });
+            });
         });
 
         this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, this.rootElm, 'mainPosts', () => this.feedFilter, () => { 
@@ -84,6 +110,18 @@
                 this.mainPostsBox.messageElm.innerText = 'This user has no posts.';
 
             this.postBoxesStage.updateStaging(this.mainPostsStaged);
+
+            if (this.mainPostsBox.hasContent) this.mainPostsBox.content.forEach((contentItem: IAppendable) => {
+                let commentSectionElm: HTMLElement = (<PostCard>contentItem).commentsSection.commentBoxes.rootElm;
+
+                commentSectionElm.addEventListener('mouseenter', (event: MouseEvent) => {
+                    if (ViewUtil.isOverflowing(commentSectionElm)) lockScrolling();
+                });
+
+                commentSectionElm.addEventListener('mouseleave', (event: MouseEvent) => {
+                    if (ViewUtil.isOverflowing(commentSectionElm)) unlockScrolling();
+                });
+            });
         });
     }
 

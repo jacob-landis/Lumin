@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfilePostsCard = (function (_super) {
     __extends(ProfilePostsCard, _super);
-    function ProfilePostsCard(rootElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper) {
+    function ProfilePostsCard(rootElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper, lockScrolling, unlockScrolling) {
         var _this = _super.call(this, rootElm) || this;
         _this.btnSearchPosts = btnSearchPosts;
         _this.txtSearchPosts = txtSearchPosts;
@@ -46,10 +46,34 @@ var ProfilePostsCard = (function (_super) {
                 var postCard = content;
                 postCard.commentsSection.showCommentActivity(function () { return postCard.stage.updateStaging(postCard.commentsSection.allStaged); });
             });
+            if (_this.commentedPostsBox.hasContent)
+                _this.commentedPostsBox.content.forEach(function (contentItem) {
+                    var commentSectionElm = contentItem.commentsSection.commentBoxes.rootElm;
+                    commentSectionElm.addEventListener('mouseenter', function (event) {
+                        if (ViewUtil.isOverflowing(commentSectionElm))
+                            lockScrolling();
+                    });
+                    commentSectionElm.addEventListener('mouseleave', function (event) {
+                        if (ViewUtil.isOverflowing(commentSectionElm))
+                            unlockScrolling();
+                    });
+                });
         });
         _this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, _this.rootElm, 'likedPosts', function () { return _this.feedFilter; }, function () {
             _this.likedPostsBox.messageElm.innerText = 'Liked Posts';
             _this.postBoxesStage.updateStaging(_this.likedPostsStaged);
+            if (_this.likedPostsBox.hasContent)
+                _this.likedPostsBox.content.forEach(function (contentItem) {
+                    var commentSectionElm = contentItem.commentsSection.commentBoxes.rootElm;
+                    commentSectionElm.addEventListener('mouseenter', function (event) {
+                        if (ViewUtil.isOverflowing(commentSectionElm))
+                            lockScrolling();
+                    });
+                    commentSectionElm.addEventListener('mouseleave', function (event) {
+                        if (ViewUtil.isOverflowing(commentSectionElm))
+                            unlockScrolling();
+                    });
+                });
         });
         _this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, _this.rootElm, 'mainPosts', function () { return _this.feedFilter; }, function () {
             if (_this.myActivityIsShowing)
@@ -59,6 +83,18 @@ var ProfilePostsCard = (function (_super) {
             else if (!_this.mainPostsBox.hasContent && _this.profileId)
                 _this.mainPostsBox.messageElm.innerText = 'This user has no posts.';
             _this.postBoxesStage.updateStaging(_this.mainPostsStaged);
+            if (_this.mainPostsBox.hasContent)
+                _this.mainPostsBox.content.forEach(function (contentItem) {
+                    var commentSectionElm = contentItem.commentsSection.commentBoxes.rootElm;
+                    commentSectionElm.addEventListener('mouseenter', function (event) {
+                        if (ViewUtil.isOverflowing(commentSectionElm))
+                            lockScrolling();
+                    });
+                    commentSectionElm.addEventListener('mouseleave', function (event) {
+                        if (ViewUtil.isOverflowing(commentSectionElm))
+                            unlockScrolling();
+                    });
+                });
         });
         return _this;
     }

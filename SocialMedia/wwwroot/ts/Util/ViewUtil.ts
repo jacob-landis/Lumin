@@ -39,6 +39,10 @@
         );
     }
 
+    public static isOverflowing(element: HTMLElement) {
+        return element.clientWidth < element.scrollWidth || element.clientHeight < element.scrollHeight;
+    }
+
 //_____ TAG MANIPULATORS
 
     // Add the provided classList to the provided element.
