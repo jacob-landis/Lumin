@@ -44,9 +44,9 @@ var FullSizeImageModal = (function (_super) {
         var _this = this;
         this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', function (target) { return _this.toggleSingularControls(); });
         this.hideControls();
+        this.showSingularControls();
         this.openOverrided();
         this.isSingular = true;
-        ViewUtil.show(this.imageDateTime);
     };
     FullSizeImageModal.prototype.load = function (clickedImageIndex, profileId) {
         var _this = this;
@@ -93,26 +93,36 @@ var FullSizeImageModal = (function (_super) {
     };
     FullSizeImageModal.prototype.updateImageCount = function () { this.imageCount.innerText = this.index + 1 + " / " + this.profileImagesCount; };
     FullSizeImageModal.prototype.toggleSingularControls = function () {
-        if (ViewUtil.isDisplayed(Modal.btnClose)) {
-            ViewUtil.hide(Modal.btnClose);
-            ViewUtil.hide(this.imageDateTime);
-            navBar.hide();
-        }
-        else {
-            ViewUtil.show(Modal.btnClose);
-            ViewUtil.show(this.imageDateTime);
-            navBar.show();
-        }
+        ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
+    };
+    FullSizeImageModal.prototype.showSingularControls = function () {
+        var _this = this;
+        ViewUtil.show(Modal.btnClose);
+        ViewUtil.show(this.imageDateTime, 'inline', function () { return _this.imageDateTime.style.display = 'inline'; });
+        console.log('show singular controls');
+        console.log(this.imageDateTime.style.display);
+        navBar.show();
+    };
+    FullSizeImageModal.prototype.hideSingularControls = function () {
+        ViewUtil.hide(Modal.btnClose);
+        ViewUtil.hide(this.imageDateTime);
+        console.log('hide singular controls');
+        console.log(this.imageDateTime.style.display);
+        navBar.hide();
     };
     FullSizeImageModal.prototype.toggleControls = function () { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); };
     FullSizeImageModal.prototype.showControls = function () {
         ViewUtil.show(imageDropdown.rootElm);
         this.imageControls.forEach(function (control) { return ViewUtil.show(control); });
+        console.log('show controls');
+        console.log(this.imageDateTime.style.display);
     };
     FullSizeImageModal.prototype.hideControls = function () {
         navBar.hide();
         ViewUtil.hide(imageDropdown.rootElm);
         this.imageControls.forEach(function (control) { return ViewUtil.hide(control); });
+        console.log('hide controls');
+        console.log(this.imageDateTime.style.display);
     };
     return FullSizeImageModal;
 }(Modal));

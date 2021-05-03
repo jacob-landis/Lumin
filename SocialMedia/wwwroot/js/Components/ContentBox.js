@@ -1,7 +1,6 @@
 var ContentBox = (function () {
     function ContentBox(rootElm, scrollElm, loadThreshold, take, requestCallback) {
         var _this = this;
-        this.scrollOverride = null;
         this.loading = false;
         this.moreContent = true;
         this.content = [];
@@ -20,10 +19,6 @@ var ContentBox = (function () {
         if (requestCallback)
             this.requestCallback = requestCallback;
         this.scrollElm.addEventListener("wheel", function (event) {
-            if (_this.scrollOverride != null) {
-                _this.scrollOverride(event);
-                return;
-            }
             if (_this.requestCallback != null && _this.content.length != 0) {
                 _this.lazyLoad();
                 _this.getVisibleContent().forEach(function (card) { return card.alertVisible(); });

@@ -24,7 +24,7 @@ var ProfileModal = (function (_super) {
         _this.fullProfileStaged = new StageFlag();
         _this.imagesBoxStaged = new StageFlag();
         _this.friendsStaged = new StageFlag();
-        _this.profilePostsCard = new ProfilePostsCard(postBoxesWrapper, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper, function () { return _this.lockScrolling(); }, function () { return _this.unlockScrolling(); });
+        _this.profilePostsCard = new ProfilePostsCard(postBoxesWrapper, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         _this.nameEditor = new DoubleEditor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' }), '', '', doubleEditorClassList, 30, function (firstName, lastName) {
             ProfileCard.changeUserProfileName(firstName, lastName);
@@ -40,16 +40,6 @@ var ProfileModal = (function (_super) {
         _this.summaryStage = new Stage([_this.fullProfileStaged, _this.imagesBoxStaged, _this.friendsStaged], function () {
             return _this.summaryStageContainers.forEach(function (container) {
                 return ViewUtil.show(container, null, function () { return container.style.opacity = '1'; });
-            });
-        });
-        [_this.friendBoxElm, _this.imageScrollBox].forEach(function (element) {
-            element.addEventListener('mouseenter', function (event) {
-                if (ViewUtil.isOverflowing(element))
-                    _this.lockScrolling();
-            });
-            element.addEventListener('mouseleave', function (event) {
-                if (ViewUtil.isOverflowing(element))
-                    _this.unlockScrolling();
             });
         });
         return _this;
@@ -117,8 +107,6 @@ var ProfileModal = (function (_super) {
             });
         });
     };
-    ProfileModal.prototype.lockScrolling = function () { this.profilePostsCard.postBoxes.scrollOverride = function (event) { return event.preventDefault(); }; };
-    ProfileModal.prototype.unlockScrolling = function () { this.profilePostsCard.postBoxes.scrollOverride = null; };
     ProfileModal.prototype.reset = function () {
         ViewUtil.empty(this.imageWrapper);
         ViewUtil.empty(this.relationWrapper);

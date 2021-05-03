@@ -48,8 +48,7 @@ class ProfileModal extends Modal {
         super(rootElm);
         
         this.profilePostsCard = new ProfilePostsCard(postBoxesWrapper, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, 
-            btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper,
-            () => this.lockScrolling(), () => this.unlockScrolling());
+            btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
         
         this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         
@@ -75,20 +74,8 @@ class ProfileModal extends Modal {
                 ViewUtil.show(container, null, () => container.style.opacity = '1')
             )
         );
-        
-        [this.friendBoxElm, this.imageScrollBox].forEach((element: HTMLElement) => {
-            element.addEventListener('mouseenter', (event: MouseEvent) => {
-                if (ViewUtil.isOverflowing(element)) this.lockScrolling()
-            });
-            element.addEventListener('mouseleave', (event: MouseEvent) => {
-                if (ViewUtil.isOverflowing(element)) this.unlockScrolling()
-            });
-        });
     }
-
-    private lockScrolling(): void { console.log('lock'); }
-    private unlockScrolling(): void { console.log('unlock'); }
-
+    
     /*
         Loads profile information into the different slots and then opens this modal.
     */

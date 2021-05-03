@@ -102,14 +102,14 @@ class FullSizeImageModal extends Modal {
 
         // Hides all controls.
         this.hideControls();
-        
+
+        this.showSingularControls();
+
         // Open this modal. (btnClose control is unhidden by Modal)
         this.openOverrided();
 
         // Raise singular flag.
         this.isSingular = true;
-
-        ViewUtil.show(this.imageDateTime);
     }
 
     /*
@@ -224,16 +224,19 @@ class FullSizeImageModal extends Modal {
 
     // Toggle the visibility of the close button.
     private toggleSingularControls(): void {
-        if (ViewUtil.isDisplayed(Modal.btnClose)) {
-            ViewUtil.hide(Modal.btnClose);
-            ViewUtil.hide(this.imageDateTime);
-            navBar.hide();
-        }
-        else {
-            ViewUtil.show(Modal.btnClose);
-            ViewUtil.show(this.imageDateTime);
-            navBar.show();
-        }
+        ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
+    }
+
+    private showSingularControls(): void {
+        ViewUtil.show(Modal.btnClose);
+        ViewUtil.show(this.imageDateTime, 'inline', () => this.imageDateTime.style.display = 'inline');
+        navBar.show();
+    }
+
+    private hideSingularControls(): void {
+        ViewUtil.hide(Modal.btnClose);
+        ViewUtil.hide(this.imageDateTime);
+        navBar.hide();
     }
 
     // Toggle the visibility of the control elms.
