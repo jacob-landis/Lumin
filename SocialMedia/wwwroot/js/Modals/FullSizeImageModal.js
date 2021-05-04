@@ -99,30 +99,22 @@ var FullSizeImageModal = (function (_super) {
         var _this = this;
         ViewUtil.show(Modal.btnClose);
         ViewUtil.show(this.imageDateTime, 'inline', function () { return _this.imageDateTime.style.display = 'inline'; });
-        console.log('show singular controls');
-        console.log(this.imageDateTime.style.display);
         navBar.show();
     };
     FullSizeImageModal.prototype.hideSingularControls = function () {
         ViewUtil.hide(Modal.btnClose);
         ViewUtil.hide(this.imageDateTime);
-        console.log('hide singular controls');
-        console.log(this.imageDateTime.style.display);
         navBar.hide();
     };
     FullSizeImageModal.prototype.toggleControls = function () { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); };
     FullSizeImageModal.prototype.showControls = function () {
         ViewUtil.show(imageDropdown.rootElm);
         this.imageControls.forEach(function (control) { return ViewUtil.show(control); });
-        console.log('show controls');
-        console.log(this.imageDateTime.style.display);
     };
     FullSizeImageModal.prototype.hideControls = function () {
         navBar.hide();
         ViewUtil.hide(imageDropdown.rootElm);
         this.imageControls.forEach(function (control) { return ViewUtil.hide(control); });
-        console.log('hide controls');
-        console.log(this.imageDateTime.style.display);
     };
     return FullSizeImageModal;
 }(Modal));

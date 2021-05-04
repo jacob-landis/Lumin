@@ -7,6 +7,7 @@ var Editor = (function () {
         this.callback = callback;
         this.rootElm = ViewUtil.tag('div', { classList: "editor " + classList });
         this.errorBox = new ContentBox(ViewUtil.tag('div', { classList: 'error-box' }));
+        this.lblCharacterCount = ViewUtil.tag('div', { classList: 'lblEditorCharacterCount' });
         this.textBox = ViewUtil.tag('div', { classList: 'editable-text', innerText: text });
         this.currentText = this.textBox.innerText;
         this.btnStart = btnStart;
@@ -21,16 +22,17 @@ var Editor = (function () {
         this.targetHandles = [
             this.rootElm, this.errorBox.rootElm,
             this.btnSlot, this.btnConfirm,
-            this.btnCancel, this.textBox
+            this.btnCancel, this.textBox,
+            this.lblCharacterCount
         ];
         window.addEventListener('mouseup', function (e) { return _this.windowClickFunc(e); });
     }
     Editor.prototype.fillRootElm = function (textBox2) {
         if (textBox2 === void 0) { textBox2 = null; }
         if (textBox2 == null)
-            this.rootElm.append(this.textBox, this.errorBox.rootElm, this.btnSlot);
+            this.rootElm.append(this.textBox, this.lblCharacterCount, this.errorBox.rootElm, this.btnSlot);
         else
-            this.rootElm.append(this.textBox, textBox2, this.errorBox.rootElm, this.btnSlot);
+            this.rootElm.append(this.textBox, textBox2, this.lblCharacterCount, this.errorBox.rootElm, this.btnSlot);
     };
     Editor.prototype.turnOnWindowClickFunc = function () {
         var _this = this;
@@ -48,12 +50,22 @@ var Editor = (function () {
         this.textBox.innerText = text;
     };
     Editor.prototype.start = function () {
+        var _this = this;
         this.currentText = this.textBox.innerText;
         this.btnSlot.classList.add('activeEditor');
         ViewUtil.hide(this.btnStart);
         ViewUtil.show(this.btnSlot, 'grid');
+        ViewUtil.show(this.lblCharacterCount);
         this.textBox.contentEditable = "" + true;
         this.textBox.focus();
+        this.lblCharacterCount.innerText = this.textBox.innerText.length + "/" + this.maxLength;
+        this.textBox.onkeyup = function (event) {
+            _this.lblCharacterCount.innerText = _this.textBox.innerText.length + "/" + _this.maxLength;
+            if (_this.textBox.innerText.length > _this.maxLength || (!_this.canBeEmpty && _this.textBox.innerText.length == 0))
+                _this.lblCharacterCount.classList.add('errorMsg');
+            else if (_this.lblCharacterCount.classList.contains('errorMsg'))
+                _this.lblCharacterCount.classList.remove('errorMsg');
+        };
         this.turnOnWindowClickFunc();
     };
     Editor.prototype.send = function () {
@@ -86,6 +98,9 @@ var Editor = (function () {
         this.btnSlot.classList.remove('activeEditor');
         ViewUtil.show(this.btnStart, 'block');
         ViewUtil.hide(this.btnSlot);
+        ViewUtil.hide(this.lblCharacterCount);
+        if (this.lblCharacterCount.classList.contains('errorMsg'))
+            this.lblCharacterCount.classList.remove('errorMsg');
         this.errorBox.clear();
         this.textBox.contentEditable = "" + false;
         this.windowClickFunc = function (e) { };

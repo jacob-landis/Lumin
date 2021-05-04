@@ -33,6 +33,8 @@ class Editor implements IAppendable {
     // A content box for error messages.
     protected errorBox: ContentBox;
 
+    private lblCharacterCount: HTMLElement;
+
     // The HTML text elm that display the main text and is edited.
     protected textBox: HTMLElement;
 
@@ -73,7 +75,14 @@ class Editor implements IAppendable {
         The edit result is sent to the callback.
         The result is meant to be sent to the host in an update request.
     */
-    constructor(btnStart: HTMLElement, text: string, classList: string, canBeEmpty: boolean, maxLength: number, callback?: (result: string) => void) {
+    constructor(
+        btnStart: HTMLElement,
+        text: string,
+        classList: string,
+        canBeEmpty: boolean,
+        maxLength: number,
+        callback?: (result: string) => void
+    ) {
 
         // XXX in CommentCard.js the callback could very well be assigned to the context option beforehand, unless it would be overwitten...
 
@@ -88,6 +97,8 @@ class Editor implements IAppendable {
         // Create and get a handle on this editors content box for errors.
         this.errorBox = new ContentBox(ViewUtil.tag('div', { classList: 'error-box' }));
         // XXX all of the classList attributes added in here should be held in static variables and set in Main.ts. XXX
+
+        this.lblCharacterCount = ViewUtil.tag('div', { classList: 'lblEditorCharacterCount' });
 
         // Create and get a handle on this editors text box and fill it with the provided text.
         this.textBox = ViewUtil.tag('div', { classList: 'editable-text', innerText: text });
@@ -119,7 +130,8 @@ class Editor implements IAppendable {
         this.targetHandles = [
             this.rootElm,   this.errorBox.rootElm,
             this.btnSlot,   this.btnConfirm,
-            this.btnCancel, this.textBox
+            this.btnCancel, this.textBox,
+            this.lblCharacterCount
         ];
         
         // At this point, this.windowClickFunc is an empty function, but once it's value is replaced by a real function, it can catch the clicks.
@@ -132,9 +144,9 @@ class Editor implements IAppendable {
     protected fillRootElm(textBox2: HTMLElement = null): void {
         // Append the error box, text box, and control buttons container to this editors main HTML tag.
         if (textBox2 == null)
-            this.rootElm.append(this.textBox, this.errorBox.rootElm, this.btnSlot);
+            this.rootElm.append(this.textBox, this.lblCharacterCount, this.errorBox.rootElm, this.btnSlot);
         else
-            this.rootElm.append(this.textBox, textBox2, this.errorBox.rootElm, this.btnSlot);
+            this.rootElm.append(this.textBox, textBox2, this.lblCharacterCount, this.errorBox.rootElm, this.btnSlot);
     }
     
     /* 
@@ -182,11 +194,25 @@ class Editor implements IAppendable {
         // Show confirm and cancel control buttons.
         ViewUtil.show(this.btnSlot, 'grid');
 
+        ViewUtil.show(this.lblCharacterCount);
+
         // Make text box editable.
         this.textBox.contentEditable = `${true}`;
 
         // Put cursor in text box.
         this.textBox.focus();
+
+        this.lblCharacterCount.innerText = `${this.textBox.innerText.length}/${this.maxLength}`;
+
+        this.textBox.onkeyup = (event: KeyboardEvent) => {
+            this.lblCharacterCount.innerText = `${this.textBox.innerText.length}/${this.maxLength}`;
+
+            if (this.textBox.innerText.length > this.maxLength || (!this.canBeEmpty && this.textBox.innerText.length == 0))
+                this.lblCharacterCount.classList.add('errorMsg');
+
+            else if (this.lblCharacterCount.classList.contains('errorMsg'))
+                this.lblCharacterCount.classList.remove('errorMsg');
+        }
 
         // "Turn on" window click function.
         this.turnOnWindowClickFunc();
@@ -245,6 +271,10 @@ class Editor implements IAppendable {
 
         // Hide control buttons.
         ViewUtil.hide(this.btnSlot);
+
+        ViewUtil.hide(this.lblCharacterCount);
+        if (this.lblCharacterCount.classList.contains('errorMsg'))
+            this.lblCharacterCount.classList.remove('errorMsg');
 
         // Clear error messages from error box.
         this.errorBox.clear();
