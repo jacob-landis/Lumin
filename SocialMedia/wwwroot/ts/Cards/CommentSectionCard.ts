@@ -16,6 +16,7 @@
 
     private commentInputWrapper: HTMLElement;
     private errorSlot: HTMLElement;
+    private lblCommentCharacterCount: HTMLElement;
 
     private txtSearchComments: HTMLInputElement;
     private btnConfirmCommentSearch: HTMLElement;
@@ -92,6 +93,7 @@
 
         this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
         this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
+        this.lblCommentCharacterCount = ViewUtil.tag('div', { classList: 'lblCommentCharacterCount' })
 
         this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
         this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
@@ -180,7 +182,7 @@
             this.btnConfirmCommentSearch, this.commentBoxes.rootElm, this.btnToggleViewExpansion.rootElm);
         this.commentBoxDetails.append(this.commentCountSlot, this.commentBoxFeedControls);
         this.commentBoxFeedControls.append(this.btnMyActivity.rootElm, this.btnToggleFeedFilter.rootElm, this.btnRefreshFeed, this.btnSearchComments.rootElm);
-        this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
+        this.commentInputWrapper.append(txtComment, this.lblCommentCharacterCount, btnConfirm, btnCancel, btnComment);
 
         // Load comments
         this.mainCommentsBox.request(15);
@@ -195,6 +197,18 @@
         let deactivateInput: () => void = () => {
             txtComment.value = '';
             this.commentInputWrapper.classList.remove('activeInput');
+        }
+        
+        this.lblCommentCharacterCount.innerText = `${txtComment.value.length}/125`;
+
+        txtComment.onkeyup = (event: KeyboardEvent) => {
+            this.lblCommentCharacterCount.innerText = `${txtComment.value.length}/125`;
+
+            if (txtComment.value.length > 125 || txtComment.value.length == 0)
+                this.lblCommentCharacterCount.classList.add('errorMsg');
+
+            else if (this.lblCommentCharacterCount.classList.contains('errorMsg'))
+                this.lblCommentCharacterCount.classList.remove('errorMsg');
         }
 
         // Submit comment.

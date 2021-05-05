@@ -13,8 +13,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var CreatePostModal = (function (_super) {
     __extends(CreatePostModal, _super);
-    function CreatePostModal(rootElm, txtCaption, captionWrapper, btnSubmit, btnClearAttachment, imageBoxElm, imageClassList, contentBoxElmId) {
+    function CreatePostModal(rootElm, txtCaption, captionWrapper, btnSubmit, btnClearAttachment, imageBoxElm, lblCaptionCharacterCount, imageClassList, contentBoxElmId) {
         var _this = _super.call(this, rootElm) || this;
+        _this.lblCaptionCharacterCount = lblCaptionCharacterCount;
+        _this.maxLength = 1000;
         _this.txtCaption = txtCaption;
         _this.captionWrapper = captionWrapper;
         _this.btnSubmit = btnSubmit;
@@ -24,6 +26,14 @@ var CreatePostModal = (function (_super) {
         _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image', function (targetImageCard) { return _this.selectImage(); });
         _this.btnClearAttachment.onclick = function (e) { return _this.loadPaperClip(); };
         _this.btnSubmit.onclick = function (e) { return _this.submit(); };
+        _this.lblCaptionCharacterCount.innerText = "0/" + _this.maxLength;
+        _this.txtCaption.onkeyup = function (event) {
+            _this.lblCaptionCharacterCount.innerText = _this.txtCaption.value.length + "/" + _this.maxLength;
+            if (_this.txtCaption.value.length > _this.maxLength || _this.txtCaption.value.length == 0)
+                _this.lblCaptionCharacterCount.classList.add('errorMsg');
+            else if (_this.lblCaptionCharacterCount.classList.contains('errorMsg'))
+                _this.lblCaptionCharacterCount.classList.remove('errorMsg');
+        };
         _this.loadPaperClip();
         return _this;
     }
@@ -53,11 +63,10 @@ var CreatePostModal = (function (_super) {
         });
     };
     CreatePostModal.prototype.submit = function () {
-        var charLimit = 1000;
         var tooShort = this.txtCaption.value.length <= 0;
-        var tooLong = this.txtCaption.value.length > charLimit;
+        var tooLong = this.txtCaption.value.length > this.maxLength;
         var noContent = tooShort && !this.selectedImageBox.isLoaded;
-        var tooLongError = { rootElm: ViewUtil.tag('div', { classList: 'errorMsg', innerText: "- Must be less than " + charLimit + " characters" }) };
+        var tooLongError = { rootElm: ViewUtil.tag('div', { classList: 'errorMsg', innerText: "- Must be less than " + this.maxLength + " characters" }) };
         var noContentError = { rootElm: ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Select an image or enter a caption' }) };
         if (tooLong || noContent) {
             this.errorBox.clear();
@@ -97,6 +106,8 @@ var CreatePostModal = (function (_super) {
     CreatePostModal.prototype.clear = function () {
         this.errorBox.clear();
         this.txtCaption.value = '';
+        if (this.lblCaptionCharacterCount.classList.contains('errorMsg'))
+            this.lblCaptionCharacterCount.classList.remove('errorMsg');
         this.loadPaperClip();
         imageDropdown.close();
         imageDropdown.rootElm.style.zIndex = '0';

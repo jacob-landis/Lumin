@@ -58,6 +58,7 @@ class Main {
             document.getElementById('btnSubmit'),
             document.getElementById('btnClearAttachment'),
             document.getElementById('selectedImageCon'),
+            document.getElementById('lblCaptionCharacterCount'),
             'selectedPostImage',
             'createPostErrorBox'
         );

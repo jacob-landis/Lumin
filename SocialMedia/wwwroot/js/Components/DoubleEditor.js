@@ -17,8 +17,9 @@ var DoubleEditor = (function (_super) {
         var _this = _super.call(this, btnStart, text, classList, false, maxLength, null) || this;
         _this.doubleCallback = doubleCallback;
         _this.textBox2 = ViewUtil.tag('div', { classList: 'editable-text2', innerText: text2 });
-        _this.fillRootElm(_this.textBox2);
-        _this.targetHandles.push(_this.textBox2);
+        _this.lblCharacterCount2 = ViewUtil.tag('div', { classList: 'lblEditorCharacterCount' });
+        _this.fillRootElm(_this.textBox2, _this.lblCharacterCount2);
+        _this.targetHandles.push(_this.textBox2, _this.lblCharacterCount2);
         return _this;
     }
     DoubleEditor.prototype.setText2 = function (text, text2) {
@@ -26,8 +27,18 @@ var DoubleEditor = (function (_super) {
         this.textBox2.innerText = text2;
     };
     DoubleEditor.prototype.start = function () {
+        var _this = this;
         this.currentText2 = this.textBox2.innerText;
         this.textBox2.contentEditable = "" + true;
+        ViewUtil.show(this.lblCharacterCount2);
+        this.lblCharacterCount2.innerText = this.textBox2.innerText.length + "/" + this.maxLength;
+        this.textBox2.onkeyup = function (event) {
+            _this.lblCharacterCount2.innerText = _this.textBox2.innerText.length + "/" + _this.maxLength;
+            if (_this.textBox2.innerText.length > _this.maxLength || (!_this.canBeEmpty && _this.textBox2.innerText.length == 0))
+                _this.lblCharacterCount2.classList.add('errorMsg');
+            else if (_this.lblCharacterCount2.classList.contains('errorMsg'))
+                _this.lblCharacterCount2.classList.remove('errorMsg');
+        };
         _super.prototype.start.call(this);
     };
     DoubleEditor.prototype.send = function () {
@@ -57,6 +68,9 @@ var DoubleEditor = (function (_super) {
     };
     DoubleEditor.prototype.end = function () {
         this.textBox2.contentEditable = "" + false;
+        ViewUtil.hide(this.lblCharacterCount2);
+        if (this.lblCharacterCount2.classList.contains('errorMsg'))
+            this.lblCharacterCount2.classList.remove('errorMsg');
         _super.prototype.end.call(this);
     };
     DoubleEditor.prototype.revert = function () {

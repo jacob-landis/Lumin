@@ -20,7 +20,9 @@ class CreatePostModal extends Modal {
     
     // An ImageBox that displays the image the user attaches to the post.
     private selectedImageBox: ImageBox;
-      
+
+    private maxLength: number = 1000;
+
     /*
         Gets handles on all necessary components.
         Sets up event listeners.
@@ -32,6 +34,7 @@ class CreatePostModal extends Modal {
         btnSubmit: HTMLElement,
         btnClearAttachment: HTMLElement,
         imageBoxElm: HTMLElement,
+        private lblCaptionCharacterCount: HTMLElement,
         imageClassList: string,
         contentBoxElmId: string
     ) {
@@ -61,7 +64,19 @@ class CreatePostModal extends Modal {
 
         // Set btnSubmit to invoke submit().
         this.btnSubmit.onclick = (e: MouseEvent) => this.submit();
-        
+
+        this.lblCaptionCharacterCount.innerText = `0/${this.maxLength}`;
+
+        this.txtCaption.onkeyup = (event: KeyboardEvent) => {
+            this.lblCaptionCharacterCount.innerText = `${this.txtCaption.value.length}/${this.maxLength}`;
+
+            if (this.txtCaption.value.length > this.maxLength || this.txtCaption.value.length == 0)
+                this.lblCaptionCharacterCount.classList.add('errorMsg');
+
+            else if (this.lblCaptionCharacterCount.classList.contains('errorMsg'))
+                this.lblCaptionCharacterCount.classList.remove('errorMsg');
+        }
+
         this.loadPaperClip();
     }
 
@@ -140,22 +155,19 @@ class CreatePostModal extends Modal {
         Checks for errors and either displays the errors or send the post to the host in a post request.
     */
     private submit(): void {
-
-        // Define max length of caption. 
-        let charLimit: number = 1000; //XXX max length for posts, comments, and bio should be stored somewhere central.XXX
-
+        
         // Check if there is a caption and hold result.
         let tooShort: boolean = this.txtCaption.value.length <= 0; // XXX Since this is not an error itself, noCaption would be a better name. XXX
 
         // Check if the caption is too long and hold result.
-        let tooLong: boolean = this.txtCaption.value.length > charLimit;
+        let tooLong: boolean = this.txtCaption.value.length > this.maxLength;
 
         // Check if there is some kind of content in the post.
         let noContent: boolean = tooShort && !this.selectedImageBox.isLoaded; // XXX btnPost should be grayed out until there is content. XXX
 
         // Create 'too long' error tag.
         let tooLongError: IAppendable =
-            { rootElm: ViewUtil.tag('div', { classList: 'errorMsg', innerText: `- Must be less than ${charLimit} characters` }) };
+            { rootElm: ViewUtil.tag('div', { classList: 'errorMsg', innerText: `- Must be less than ${this.maxLength} characters` }) };
 
         // Create 'no content' error tag
         let noContentError: IAppendable =
@@ -252,6 +264,9 @@ class CreatePostModal extends Modal {
 
         // Clear caption.
         this.txtCaption.value = '';
+
+        if (this.lblCaptionCharacterCount.classList.contains('errorMsg'))
+            this.lblCaptionCharacterCount.classList.remove('errorMsg');
 
         this.loadPaperClip();
 

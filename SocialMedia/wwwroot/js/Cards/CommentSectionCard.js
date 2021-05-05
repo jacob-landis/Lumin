@@ -25,6 +25,7 @@ var CommentSectionCard = (function (_super) {
         _this.getContentHeight = getContentHeight;
         _this.commentInputWrapper = ViewUtil.tag('div', { classList: 'commentInputWrapper' });
         _this.errorSlot = ViewUtil.tag('div', { classList: 'errorSlot' });
+        _this.lblCommentCharacterCount = ViewUtil.tag('div', { classList: 'lblCommentCharacterCount' });
         _this.commentBoxDetails = ViewUtil.tag('div', { classList: 'commentBoxDetails' });
         _this.commentCountSlot = ViewUtil.tag('div', { classList: 'commentCountSlot' });
         _this.commentBoxFeedControls = ViewUtil.tag('div', { classList: 'commentBoxFeedControls' });
@@ -93,7 +94,7 @@ var CommentSectionCard = (function (_super) {
         _this.rootElm.append(_this.commentInputWrapper, _this.errorSlot, _this.commentBoxDetails, _this.txtSearchComments, _this.btnConfirmCommentSearch, _this.commentBoxes.rootElm, _this.btnToggleViewExpansion.rootElm);
         _this.commentBoxDetails.append(_this.commentCountSlot, _this.commentBoxFeedControls);
         _this.commentBoxFeedControls.append(_this.btnMyActivity.rootElm, _this.btnToggleFeedFilter.rootElm, _this.btnRefreshFeed, _this.btnSearchComments.rootElm);
-        _this.commentInputWrapper.append(txtComment, btnConfirm, btnCancel, btnComment);
+        _this.commentInputWrapper.append(txtComment, _this.lblCommentCharacterCount, btnConfirm, btnCancel, btnComment);
         _this.mainCommentsBox.request(15);
         _this.requestCommentCount();
         _this.btnConfirmCommentSearch.onclick = function (e) { return _this.searchComments(); };
@@ -103,6 +104,14 @@ var CommentSectionCard = (function (_super) {
         var deactivateInput = function () {
             txtComment.value = '';
             _this.commentInputWrapper.classList.remove('activeInput');
+        };
+        _this.lblCommentCharacterCount.innerText = txtComment.value.length + "/125";
+        txtComment.onkeyup = function (event) {
+            _this.lblCommentCharacterCount.innerText = txtComment.value.length + "/125";
+            if (txtComment.value.length > 125 || txtComment.value.length == 0)
+                _this.lblCommentCharacterCount.classList.add('errorMsg');
+            else if (_this.lblCommentCharacterCount.classList.contains('errorMsg'))
+                _this.lblCommentCharacterCount.classList.remove('errorMsg');
         };
         btnConfirm.onclick = function (e) {
             var tooLong = txtComment.value.length > 125;

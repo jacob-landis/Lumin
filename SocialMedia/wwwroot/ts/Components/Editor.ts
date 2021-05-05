@@ -25,7 +25,7 @@ class Editor implements IAppendable {
     // Length limit of text.
     protected maxLength: number;
 
-    private canBeEmpty: boolean;
+    protected canBeEmpty: boolean;
 
     // A function that handles the edit results.
     private callback: (result: string) => void;
@@ -141,12 +141,12 @@ class Editor implements IAppendable {
     /*
         Accommodates DoubleEditor. XXX This is bad code for several reasons. Find a way of inserting textBox2 after the fact. XXX
     */
-    protected fillRootElm(textBox2: HTMLElement = null): void {
+    protected fillRootElm(textBox2?: HTMLElement, lblCharacterCount2?: HTMLElement): void {
         // Append the error box, text box, and control buttons container to this editors main HTML tag.
         if (textBox2 == null)
             this.rootElm.append(this.textBox, this.lblCharacterCount, this.errorBox.rootElm, this.btnSlot);
         else
-            this.rootElm.append(this.textBox, textBox2, this.lblCharacterCount, this.errorBox.rootElm, this.btnSlot);
+            this.rootElm.append(this.textBox, textBox2, this.lblCharacterCount, lblCharacterCount2, this.errorBox.rootElm, this.btnSlot);
     }
     
     /* 
@@ -273,6 +273,7 @@ class Editor implements IAppendable {
         ViewUtil.hide(this.btnSlot);
 
         ViewUtil.hide(this.lblCharacterCount);
+
         if (this.lblCharacterCount.classList.contains('errorMsg'))
             this.lblCharacterCount.classList.remove('errorMsg');
 

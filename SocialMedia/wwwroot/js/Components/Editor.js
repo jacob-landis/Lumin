@@ -27,12 +27,11 @@ var Editor = (function () {
         ];
         window.addEventListener('mouseup', function (e) { return _this.windowClickFunc(e); });
     }
-    Editor.prototype.fillRootElm = function (textBox2) {
-        if (textBox2 === void 0) { textBox2 = null; }
+    Editor.prototype.fillRootElm = function (textBox2, lblCharacterCount2) {
         if (textBox2 == null)
             this.rootElm.append(this.textBox, this.lblCharacterCount, this.errorBox.rootElm, this.btnSlot);
         else
-            this.rootElm.append(this.textBox, textBox2, this.lblCharacterCount, this.errorBox.rootElm, this.btnSlot);
+            this.rootElm.append(this.textBox, textBox2, this.lblCharacterCount, lblCharacterCount2, this.errorBox.rootElm, this.btnSlot);
     };
     Editor.prototype.turnOnWindowClickFunc = function () {
         var _this = this;
