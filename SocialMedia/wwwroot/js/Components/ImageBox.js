@@ -1,6 +1,7 @@
 var ImageBox = (function () {
     function ImageBox(rootElm, imageClassList, tooltipMsg, click, getThumbNail) {
         this.heldTooltipMsg = null;
+        this.imageCard = null;
         this.isLoaded = false;
         this.getThumbNail = getThumbNail;
         this.heldTooltipMsg = tooltipMsg;
@@ -49,11 +50,10 @@ var ImageBox = (function () {
             this._onLoadEnd();
     };
     ImageBox.prototype.unload = function () {
-        if (this.isLoaded) {
-            ViewUtil.empty(this.rootElm);
+        ViewUtil.empty(this.rootElm);
+        if (this.imageCard != null)
             delete this.imageCard;
-            this.isLoaded = false;
-        }
+        this.isLoaded = false;
     };
     ImageBox.prototype.reload = function () {
         var _this = this;

@@ -170,7 +170,6 @@ class FullSizeImageModal extends Modal {
     */
     private openOverrided(): void {
         super.open();
-        navBar.hide();
     }
     
     /*
@@ -244,6 +243,7 @@ class FullSizeImageModal extends Modal {
 
     // Show the control elms.
     private showControls(): void {
+        navBar.show();
         ViewUtil.show(imageDropdown.rootElm);
         this.imageControls.forEach((control: HTMLElement) => ViewUtil.show(control));
     }

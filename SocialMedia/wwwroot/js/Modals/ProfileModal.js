@@ -42,6 +42,7 @@ var ProfileModal = (function (_super) {
                 return ViewUtil.show(container, null, function () { return container.style.opacity = '1'; });
             });
         });
+        _this.friendBox = new ContentBox(_this.friendBoxElm);
         return _this;
     }
     ProfileModal.prototype.load = function (profileId) {
@@ -113,9 +114,9 @@ var ProfileModal = (function (_super) {
         delete this.imagesBox;
         this.nameEditor.setText2('', '');
         this.bioEditor.setText('');
-        this.friendBox = new ContentBox(this.friendBoxElm);
         this.friendBox.clear();
         this.profilePostsCard.clear();
+        this.friendBox = new ContentBox(this.friendBoxElm);
         this.summaryStageContainers.forEach(function (container) {
             container.style.opacity = '0';
             ViewUtil.hide(container);

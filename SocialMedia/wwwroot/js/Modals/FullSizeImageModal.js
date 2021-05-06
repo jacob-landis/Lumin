@@ -69,7 +69,6 @@ var FullSizeImageModal = (function (_super) {
     };
     FullSizeImageModal.prototype.openOverrided = function () {
         _super.prototype.open.call(this);
-        navBar.hide();
     };
     FullSizeImageModal.prototype.close = function () {
         if (this.isSingular == true)
@@ -108,6 +107,7 @@ var FullSizeImageModal = (function (_super) {
     };
     FullSizeImageModal.prototype.toggleControls = function () { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); };
     FullSizeImageModal.prototype.showControls = function () {
+        navBar.show();
         ViewUtil.show(imageDropdown.rootElm);
         this.imageControls.forEach(function (control) { return ViewUtil.show(control); });
     };

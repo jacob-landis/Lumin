@@ -31,7 +31,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     private getThumbNail: boolean;
 
     // The image card living in memory.
-    public imageCard: ImageCard;
+    public imageCard: ImageCard = null;
 
     // A shortcut to check if an image is currently loaded.
     public isLoaded: boolean = false;
@@ -149,19 +149,15 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         Unload the current image card and clear it from memory.
     */
     public unload(): void {
+        
+        // clear it's HTML rendering,
+        ViewUtil.empty(this.rootElm);
 
-        // If an image card is loaded,
-        if (this.isLoaded) {
+        // delete it from memory,
+        if (this.imageCard != null) delete this.imageCard;
 
-            // clear it's HTML rendering,
-            ViewUtil.empty(this.rootElm);
-
-            // delete it from memory,
-            delete this.imageCard;
-
-            // and lower the isLoaded flag.
-            this.isLoaded = false;
-        }
+        // and lower the isLoaded flag.
+        this.isLoaded = false;
     }
 
     /*

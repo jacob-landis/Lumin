@@ -74,6 +74,9 @@ class ProfileModal extends Modal {
                 ViewUtil.show(container, null, () => container.style.opacity = '1')
             )
         );
+
+        // Construct new Content box and set of friends display.
+        this.friendBox = new ContentBox(this.friendBoxElm);
     }
     
     /*
@@ -215,11 +218,11 @@ class ProfileModal extends Modal {
 
         // FRIENDS BOX
         // Construct new Content box and set of friends display.
-        this.friendBox = new ContentBox(this.friendBoxElm);
-
-        // Clear friends box and posts box. Even though these were just constructed, they reused an existing elm that could still have cards in it.
+        // Clear friends box and posts box.
         this.friendBox.clear();
         this.profilePostsCard.clear();
+        this.friendBox = new ContentBox(this.friendBoxElm);
+
 
         // Change style to 'blank' state.
         this.summaryStageContainers.forEach((container: HTMLElement) => {
