@@ -37,11 +37,13 @@ var Dropdown = (function () {
         });
     };
     Dropdown.prototype.close = function () {
-        contextMenu.close();
-        this.btnOpen.classList.remove('openDropdownBtn');
-        this.contentElm.style.opacity = '0';
-        Dropdown.openDropdown = null;
-        ViewUtil.hide(this.rootElm, 150);
+        if (Dropdown.openDropdown == this) {
+            contextMenu.close();
+            this.btnOpen.classList.remove('openDropdownBtn');
+            this.contentElm.style.opacity = '0';
+            Dropdown.openDropdown = null;
+            ViewUtil.hide(this.rootElm, 150);
+        }
     };
     Dropdown.prototype.toggle = function () {
         var closed = !ViewUtil.isDisplayed(this.rootElm);

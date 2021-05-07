@@ -48,6 +48,7 @@ var Modal = (function () {
         else {
             Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
             Modal.openModals.push(this);
+            Dropdown.moveToForeground();
         }
     };
     Modal.prototype.close = function () {

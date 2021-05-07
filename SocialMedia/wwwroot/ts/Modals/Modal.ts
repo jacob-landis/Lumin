@@ -125,6 +125,9 @@ class Modal implements IAppendable {
             // Move this to the top of list so it's array index matches it's Z index.
             Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
             Modal.openModals.push(this);
+
+            // Bring any open dropdown to foreground.
+            Dropdown.moveToForeground();
         }
     }
     

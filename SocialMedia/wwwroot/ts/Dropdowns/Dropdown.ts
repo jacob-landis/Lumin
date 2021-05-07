@@ -129,19 +129,22 @@ class Dropdown implements IAppendable {
     */ 
     public close(): void {
 
-        // Close context menu, even if it's already closed.
-        contextMenu.close();
+        if (Dropdown.openDropdown == this) {
 
-        this.btnOpen.classList.remove('openDropdownBtn');
+            // Close context menu, even if it's already closed.
+            contextMenu.close();
 
-        // Change style to start transition animation.
-        this.contentElm.style.opacity = '0';
+            this.btnOpen.classList.remove('openDropdownBtn');
 
-        // Clear this from openDropdown slot. In effect lowering the flag.
-        Dropdown.openDropdown = null;
+            // Change style to start transition animation.
+            this.contentElm.style.opacity = '0';
 
-        // Hide the dropdown's root element after waiting 150ms for transition animation.
-        ViewUtil.hide(this.rootElm, 150);
+            // Clear this from openDropdown slot. In effect lowering the flag.
+            Dropdown.openDropdown = null;
+
+            // Hide the dropdown's root element after waiting 150ms for transition animation.
+            ViewUtil.hide(this.rootElm, 150);
+        }
     }
 
     /*
