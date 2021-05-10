@@ -16,6 +16,12 @@ namespace SocialMedia.Models
         // Datetime that the image was uploaded.
         public DateTime DateTime { get; set; }
 
+        public int Height { get; set; }
+
+        public int Width { get; set; }
+
+        public int PrivacyLevel { get; set; }
+
         // ASSOCIATIONS
 
         // The owner of the image.

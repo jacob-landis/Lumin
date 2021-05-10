@@ -93,7 +93,7 @@ namespace SocialMedia.Controllers
             Friend friend = friendRepo.Friends.First(f => f.FromId == id && f.ToId == currentProfile.id);
 
             // Set DateAccepted to current date time.
-            friend.DateAccpted = DateTime.UtcNow;
+            friend.DateAccepted = DateTime.UtcNow;
 
             // Mark friend record as accepted.
             friend.Accepted = true;

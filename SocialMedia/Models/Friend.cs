@@ -19,7 +19,7 @@ namespace SocialMedia.Models
         public DateTime DateSent { get; set; }
 
         // The datetime that this was accepted on.
-        public DateTime DateAccpted { get; set; } // XXX typo (accepted)
+        public DateTime DateAccepted { get; set; } // XXX typo (accepted)
 
         // ASSOCIATIONS
 
@@ -28,5 +28,8 @@ namespace SocialMedia.Models
 
         // ProfileID of sender.
         public int? FromId { get; set; }
+
+        // The profile Id of the party that blocked the other.
+        public int? BlockerProfileId { get; set; }
     }
 }

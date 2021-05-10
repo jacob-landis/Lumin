@@ -16,6 +16,8 @@ namespace SocialMedia.Models
         // Datetime that post was created.
         public DateTime DateTime { get; set; }
 
+        public int PrivacyLevel { get; set; }
+
         // ASSOCIATIONS
 
         // ProfileID of the profile that owns this post.
