@@ -176,10 +176,10 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
                 // When the prepped image card arrives,
                 (imageCard: ImageCard) => {
 
+                    this.unload();
+
                     // raise the isLoaded flag,
                     this.isLoaded = true;
-
-                    this.unload();
 
                     // get a handle on it,
                     this.imageCard = imageCard;

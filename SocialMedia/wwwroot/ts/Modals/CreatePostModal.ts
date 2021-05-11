@@ -109,12 +109,8 @@ class CreatePostModal extends Modal {
 
         // Hide btnClearAttachment.
         ViewUtil.hide(this.btnClearAttachment);
-
-        // Clear selected image container.
-        ViewUtil.empty(this.selectedImageBox.rootElm); // XXX this should be this.selectedImageCon.unload();
-
-        // Lower is loaded flag of selected image container.
-        this.selectedImageBox.isLoaded = false; // XXX this should be this.selectedImageCon.unload();
+        
+        this.selectedImageBox.unload();
 
         // Get handle on new paper clip icon.
         let paperClip = Icons.paperClip();
@@ -145,6 +141,8 @@ class CreatePostModal extends Modal {
 
                 // Load image into selected image container by id so the fullsize version is requested and displayed.
                 this.selectedImageBox.load(imageCard.image.imageId, null, 'Attach to post');
+
+                ViewUtil.show(this.btnClearAttachment);
 
                 imageDropdown.close();
             }

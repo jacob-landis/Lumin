@@ -49,8 +49,7 @@ var CreatePostModal = (function (_super) {
     CreatePostModal.prototype.loadPaperClip = function () {
         var _this = this;
         ViewUtil.hide(this.btnClearAttachment);
-        ViewUtil.empty(this.selectedImageBox.rootElm);
-        this.selectedImageBox.isLoaded = false;
+        this.selectedImageBox.unload();
         var paperClip = Icons.paperClip();
         paperClip.onclick = function () { return _this.selectImage(); };
         this.selectedImageBox.rootElm.append(paperClip);
@@ -59,6 +58,7 @@ var CreatePostModal = (function (_super) {
         var _this = this;
         imageDropdown.load(User.profileId, "Select an image", 'Attach image to post', function (imageCard) {
             _this.selectedImageBox.load(imageCard.image.imageId, null, 'Attach to post');
+            ViewUtil.show(_this.btnClearAttachment);
             imageDropdown.close();
         });
     };

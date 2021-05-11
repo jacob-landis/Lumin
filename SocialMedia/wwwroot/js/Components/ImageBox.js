@@ -60,8 +60,8 @@ var ImageBox = (function () {
         if (!this.isLoaded) {
             this.rootElm.classList.add('loadingImage');
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
-                _this.isLoaded = true;
                 _this.unload();
+                _this.isLoaded = true;
                 _this.imageCard = imageCard;
                 ViewUtil.empty(_this.rootElm);
                 _this.rootElm.append(_this.imageCard.rootElm);
