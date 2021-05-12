@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
-    function ProfileModal(rootElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, relationWrapper, postBoxesWrapper, mainPostsBoxWrapper, likedPostsBoxWrapper, commentedPostsBoxWrapper, imageBoxElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, imageClassList, editorClassList, doubleEditorClassList) {
+    function ProfileModal(rootElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, relationWrapper, postBoxesWrapper, mainPostsBoxWrapper, likedPostsBoxWrapper, commentedPostsBoxWrapper, imageBoxElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, profileSettingsSection, btnToggleSettingsSection, selectProfilePictureSetting, selectBioSetting, selectImagesSetting, selectFriendsSetting, selectPostsSetting, imageClassList, editorClassList, doubleEditorClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.profileNameWrapper = profileNameWrapper;
         _this.imageWrapper = imageWrapper;
@@ -24,6 +24,7 @@ var ProfileModal = (function (_super) {
         _this.fullProfileStaged = new StageFlag();
         _this.imagesBoxStaged = new StageFlag();
         _this.friendsStaged = new StageFlag();
+        _this.profileSettingsCard = new ProfileSettingsCard(profileSettingsSection, btnToggleSettingsSection, selectProfilePictureSetting, selectBioSetting, selectImagesSetting, selectFriendsSetting, selectPostsSetting);
         _this.profilePostsCard = new ProfilePostsCard(postBoxesWrapper, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         _this.nameEditor = new DoubleEditor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' }), '', '', doubleEditorClassList, 30, function (firstName, lastName) {

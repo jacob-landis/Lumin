@@ -19,7 +19,9 @@ class ProfileModal extends Modal {
     private friendBox: ContentBox;
 
     private profilePostsCard: ProfilePostsCard;
-    
+
+    private profileSettingsCard: ProfileSettingsCard;
+
     // STAGE FLAGS
     private fullProfileStaged: StageFlag = new StageFlag();
     private imagesBoxStaged: StageFlag = new StageFlag();
@@ -42,11 +44,19 @@ class ProfileModal extends Modal {
         imageBoxElm: HTMLElement,               btnToggleSearchBar: HTMLElement,
         btnTogglePostFeedFilter: HTMLElement,   btnRefreshProfilePostFeed: HTMLElement,
         btnMyPostActivity: HTMLElement,         btnSearchPosts: HTMLElement,
-        txtSearchPosts: HTMLInputElement,       imageClassList: string,
+        txtSearchPosts: HTMLInputElement,
+        profileSettingsSection: HTMLElement,    btnToggleSettingsSection: HTMLElement,
+        selectProfilePictureSetting: HTMLElement,selectBioSetting: HTMLElement,
+        selectImagesSetting: HTMLElement,       selectFriendsSetting: HTMLElement,
+        selectPostsSetting: HTMLElement,        imageClassList: string,
         editorClassList: string,                doubleEditorClassList: string
     ) {
+
         super(rootElm);
-        
+
+        this.profileSettingsCard = new ProfileSettingsCard(profileSettingsSection, btnToggleSettingsSection, selectProfilePictureSetting, selectBioSetting,
+            selectImagesSetting, selectFriendsSetting, selectPostsSetting);
+
         this.profilePostsCard = new ProfilePostsCard(postBoxesWrapper, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, 
             btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
         

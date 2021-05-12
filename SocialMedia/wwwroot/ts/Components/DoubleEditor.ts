@@ -40,7 +40,7 @@
 
         ViewUtil.show(this.lblCharacterCount2);
 
-        this.lblCharacterCount2.innerText = `${this.textBox2.innerText.length}/${this.maxLength}`;
+        this.lblCharacterCount2.innerText = ` - ${this.textBox2.innerText.length}/${this.maxLength}`;
 
         this.textBox2.onkeyup = (event: KeyboardEvent) => {
             this.lblCharacterCount2.innerText = `${this.textBox2.innerText.length}/${this.maxLength}`;

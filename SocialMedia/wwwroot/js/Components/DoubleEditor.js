@@ -31,7 +31,7 @@ var DoubleEditor = (function (_super) {
         this.currentText2 = this.textBox2.innerText;
         this.textBox2.contentEditable = "" + true;
         ViewUtil.show(this.lblCharacterCount2);
-        this.lblCharacterCount2.innerText = this.textBox2.innerText.length + "/" + this.maxLength;
+        this.lblCharacterCount2.innerText = " - " + this.textBox2.innerText.length + "/" + this.maxLength;
         this.textBox2.onkeyup = function (event) {
             _this.lblCharacterCount2.innerText = _this.textBox2.innerText.length + "/" + _this.maxLength;
             if (_this.textBox2.innerText.length > _this.maxLength || (!_this.canBeEmpty && _this.textBox2.innerText.length == 0))
