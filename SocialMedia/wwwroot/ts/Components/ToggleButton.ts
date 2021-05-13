@@ -25,7 +25,7 @@ class ToggleButton implements IAppendable {
             this.toggle();
         }
 
-        this.resetBtn();
+        this.reset();
     }
 
     private toggle(): void {
@@ -52,7 +52,7 @@ class ToggleButton implements IAppendable {
         if (onClick) this.onClick = onClick;
     }
 
-    private resetBtn() {
+    public reset() {
         this.setBtn(this.propertySets[0].classList, '', this.propertySets[0].title, this.propertySets[0].onClick);
     }
 }

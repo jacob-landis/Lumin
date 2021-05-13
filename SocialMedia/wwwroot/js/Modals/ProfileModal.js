@@ -61,6 +61,7 @@ var ProfileModal = (function (_super) {
                 _this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
         });
         if (profileId == User.profileId) {
+            ViewUtil.show(this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block', function () { return ViewUtil.show(_this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block'); });
             this.profilePictureBox.heldImageClick = function (target) { return _this.selectProfilePicture(); };
             this.profilePictureBox.heldTooltipMsg = 'Change profile picture';
             this.nameEditor.enableEditing();
@@ -110,6 +111,9 @@ var ProfileModal = (function (_super) {
         });
     };
     ProfileModal.prototype.reset = function () {
+        ViewUtil.hide(this.profileSettingsCard.btnToggleSettingsSection.rootElm);
+        ViewUtil.hide(this.profileSettingsCard.rootElm);
+        this.profileSettingsCard.btnToggleSettingsSection.reset();
         ViewUtil.empty(this.imageWrapper);
         ViewUtil.empty(this.relationWrapper);
         delete this.imagesBox;

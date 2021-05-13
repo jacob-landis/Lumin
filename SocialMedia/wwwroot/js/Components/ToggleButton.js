@@ -19,7 +19,7 @@ var ToggleButton = (function () {
             _this.onClick();
             _this.toggle();
         };
-        this.resetBtn();
+        this.reset();
     }
     ToggleButton.prototype.toggle = function () {
         var oldSet = this.propertySets[this.stateIndex];
@@ -45,7 +45,7 @@ var ToggleButton = (function () {
         if (onClick)
             this.onClick = onClick;
     };
-    ToggleButton.prototype.resetBtn = function () {
+    ToggleButton.prototype.reset = function () {
         this.setBtn(this.propertySets[0].classList, '', this.propertySets[0].title, this.propertySets[0].onClick);
     };
     return ToggleButton;

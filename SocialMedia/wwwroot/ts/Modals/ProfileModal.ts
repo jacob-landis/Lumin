@@ -121,6 +121,10 @@ class ProfileModal extends Modal {
         // If profile is current user's,
         if (profileId == User.profileId) {
 
+            // Callback is used to workaround issue caused by a delay in hiding.
+            ViewUtil.show(this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block',
+                () => ViewUtil.show(this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block'));
+
             // set click callback of profile picture to invoke select profile picture,
             this.profilePictureBox.heldImageClick = (target: ImageCard) => this.selectProfilePicture()
             this.profilePictureBox.heldTooltipMsg = 'Change profile picture';
@@ -214,6 +218,10 @@ class ProfileModal extends Modal {
         Empties out the containers that are refilled on load and deletes the components that are reconstructed on load.
     */
     private reset(): void {
+
+        ViewUtil.hide(this.profileSettingsCard.btnToggleSettingsSection.rootElm);
+        ViewUtil.hide(this.profileSettingsCard.rootElm);
+        this.profileSettingsCard.btnToggleSettingsSection.reset();
 
         // Emptie out the containers that are refilled on load.
         ViewUtil.empty(this.imageWrapper);

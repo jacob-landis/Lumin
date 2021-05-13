@@ -1,6 +1,6 @@
 ﻿class ProfileSettingsCard extends Card {
 
-    private btnToggleSettingsSection: ToggleButton;
+    public btnToggleSettingsSection: ToggleButton;
 
     constructor(
         rootElm: HTMLElement,
