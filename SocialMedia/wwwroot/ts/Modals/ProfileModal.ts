@@ -17,11 +17,7 @@ class ProfileModal extends Modal {
     
     // A ContentBox used to show a profile's friends.
     private friendBox: ContentBox;
-
-    private profilePostsCard: ProfilePostsCard;
-
-    private profileSettingsCard: ProfileSettingsCard;
-
+    
     // STAGE FLAGS
     private fullProfileStaged: StageFlag = new StageFlag();
     private imagesBoxStaged: StageFlag = new StageFlag();
@@ -35,30 +31,15 @@ class ProfileModal extends Modal {
         Gets handles on all necessary components.
     */
     public constructor(
-        rootElm: HTMLElement,                   private profileNameWrapper: HTMLElement,
-        private imageWrapper: HTMLElement,      private profileBioWrapper: HTMLElement,
-        private imageScrollBox: HTMLElement,    private friendBoxElm: HTMLElement,
-        private relationWrapper: HTMLElement,
-        postBoxesWrapper: HTMLElement,          mainPostsBoxWrapper: HTMLElement,
-        likedPostsBoxWrapper: HTMLElement,      commentedPostsBoxWrapper: HTMLElement,
-        imageBoxElm: HTMLElement,               btnToggleSearchBar: HTMLElement,
-        btnTogglePostFeedFilter: HTMLElement,   btnRefreshProfilePostFeed: HTMLElement,
-        btnMyPostActivity: HTMLElement,         btnSearchPosts: HTMLElement,
-        txtSearchPosts: HTMLInputElement,
-        profileSettingsSection: HTMLElement,    btnToggleSettingsSection: HTMLElement,
-        selectProfilePictureSetting: HTMLElement,selectBioSetting: HTMLElement,
-        selectImagesSetting: HTMLElement,       selectFriendsSetting: HTMLElement,
-        selectPostsSetting: HTMLElement,        imageClassList: string,
-        editorClassList: string,                doubleEditorClassList: string
+        rootElm: HTMLElement,                       private profileNameWrapper: HTMLElement,
+        private imageWrapper: HTMLElement,          private profileBioWrapper: HTMLElement,
+        private imageScrollBox: HTMLElement,        private friendBoxElm: HTMLElement,
+        private relationWrapper: HTMLElement,       imageBoxElm: HTMLElement,
+        private profilePostsCard: ProfilePostsCard, private profileSettingsCard: ProfileSettingsCard,
+        imageClassList: string,                     editorClassList: string,
+        doubleEditorClassList: string
     ) {
-
         super(rootElm);
-
-        this.profileSettingsCard = new ProfileSettingsCard(profileSettingsSection, btnToggleSettingsSection, selectProfilePictureSetting, selectBioSetting,
-            selectImagesSetting, selectFriendsSetting, selectPostsSetting);
-
-        this.profilePostsCard = new ProfilePostsCard(postBoxesWrapper, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, 
-            btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
         
         this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         

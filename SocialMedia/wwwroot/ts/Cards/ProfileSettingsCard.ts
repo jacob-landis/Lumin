@@ -9,7 +9,8 @@
         private selectBioSetting: HTMLElement,
         private selectImagesSetting: HTMLElement,
         private selectFriendsSetting: HTMLElement,
-        private selectPostsSetting: HTMLElement
+        private selectPostsSetting: HTMLElement,
+        private txtProfileColor: HTMLInputElement
     ) {
         super(rootElm);
 
