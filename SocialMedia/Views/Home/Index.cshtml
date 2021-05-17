@@ -427,61 +427,77 @@
 
     @* Profile settings *@
     <div id="profileSettings">
-        <div>Who can view my...</div>
 
-        <div class="profileSetting">
-            <label for="profilePictureSetting">Profile picture</label>
-            <select id="profilePictureSetting">
-                <option value="0">All</option>
-                <option value="1">Mutal friends</option>
-                <option value="2">Friends</option>
-                <option value="3">None</option>
-            </select>
+        <div id="profilePrivacyOptions">
+            <div>Who can view my...</div>
+
+            <div class="profileSetting">
+                <label for="profilePictureSetting">Profile picture</label>
+                <select id="profilePictureSetting">
+                    <option value="0">All</option>
+                    <option value="1">Mutal friends</option>
+                    <option value="2">Friends</option>
+                    <option value="3">None</option>
+                </select>
+            </div>
+
+            <div class="profileSetting">
+                <label for="profileBioSetting">Bio</label>
+                <select id="profileBioSetting">
+                    <option value="0">All</option>
+                    <option value="1">Mutal friends</option>
+                    <option value="2">Friends</option>
+                    <option value="3">None</option>
+                </select>
+            </div>
+
+            <div class="profileSetting">
+                <label for="profileImagesSetting">Images</label>
+                <select id="profileImagesSetting">
+                    <option value="0">All</option>
+                    <option value="1">Mutal friends</option>
+                    <option value="2">Friends</option>
+                    <option value="3">None</option>
+                </select>
+            </div>
+
+            <div class="profileSetting">
+                <label for="profileFriendsSetting">Friends</label>
+                <select id="profileFriendsSetting">
+                    <option value="0">All</option>
+                    <option value="1">Mutal friends</option>
+                    <option value="2">Friends</option>
+                    <option value="3">None</option>
+                </select>
+            </div>
+
+            <div class="profileSetting">
+                <label for="profilePostsSetting">Posts</label>
+                <select id="profilePostsSetting">
+                    <option value="0">All</option>
+                    <option value="1">Mutal friends</option>
+                    <option value="2">Friends</option>
+                    <option value="3">None</option>
+                </select>
+            </div>
         </div>
 
-        <div class="profileSetting">
-            <label for="profileBioSetting">Bio</label>
-            <select id="profileBioSetting">
-                <option value="0">All</option>
-                <option value="1">Mutal friends</option>
-                <option value="2">Friends</option>
-                <option value="3">None</option>
-            </select>
-        </div>
+        <div></div>
 
-        <div class="profileSetting">
-            <label for="profileImagesSetting">Images</label>
-            <select id="profileImagesSetting">
-                <option value="0">All</option>
-                <option value="1">Mutal friends</option>
-                <option value="2">Friends</option>
-                <option value="3">None</option>
-            </select>
-        </div>
-
-        <div class="profileSetting">
-            <label for="profileFriendsSetting">Friends</label>
-            <select id="profileFriendsSetting">
-                <option value="0">All</option>
-                <option value="1">Mutal friends</option>
-                <option value="2">Friends</option>
-                <option value="3">None</option>
-            </select>
-        </div>
-
-        <div class="profileSetting">
-            <label for="profilePostsSetting">Posts</label>
-            <select id="profilePostsSetting">
-                <option value="0">All</option>
-                <option value="1">Mutal friends</option>
-                <option value="2">Friends</option>
-                <option value="3">None</option>
-            </select>
-        </div>
-
-        <div class="profileSetting">
-            <label for="txtProfileColor">Profile color</label>
-            <input type="text" id="txtProfileColor" />
+        <div id="profileColorSection">
+            <div id="profileColorPalette">
+                <div style="background-color:#ff0000"></div> @* RED *@
+                <div style="background-color:#009933"></div> @* GREEN *@
+                <div style="background-color:#0066cc"></div> @* BLUE *@
+                <div style="background-color:#ffff00"></div> @* YELLOW *@
+                <div style="background-color:#cc33ff"></div> @* MAGENTA *@
+                <div style="background-color:#33cccc"></div> @* CYAN *@
+            </div>
+            <div id="profileColorInput">
+                <label for="txtProfileColor">Profile color</label>
+                <input type="text" id="txtProfileColor" />
+                <button id="btnSetProfileColor" class="btn btn-primary">Set color</button>
+            </div>
         </div>
     </div>
 

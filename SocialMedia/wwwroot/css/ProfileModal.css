@@ -33,16 +33,33 @@
 
 #profileSettings {
     display: none;
+    grid-template-columns: 3fr 1fr 3fr;
     margin-bottom: 20px;
 }
 
 .profileSetting {
-    display: block;
-    width: 20%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
-.profileSetting > select {
+.profileSetting > label {
+    width: 70%;
     float: right;
+}
+
+#profileColorSection, #profilePrivacyOptions {
+    display: inline;
+}
+
+#profileColorPalette {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#profileColorPalette > div {
+    height: 50px;
+    width: 50px;
+    border-radius: 100%;
 }
 
 #btnToggleSearchBar, #btnTogglePostFeedFilter, #btnRefreshProfilePostFeed, #btnMyPostActivity {

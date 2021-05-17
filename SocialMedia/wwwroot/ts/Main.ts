@@ -132,7 +132,9 @@ class Main {
                 document.getElementById('profileImagesSetting'),
                 document.getElementById('profileFriendsSetting'),
                 document.getElementById('profilePostsSetting'),
-                <HTMLInputElement>document.getElementById('txtProfileColor')
+                document.getElementById('profileColorPalette'),
+                <HTMLInputElement>document.getElementById('txtProfileColor'),
+                document.getElementById('btnSetProfileColor')
             ),
 
             'profile-picture sqr',

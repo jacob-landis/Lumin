@@ -13,17 +13,34 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileSettingsCard = (function (_super) {
     __extends(ProfileSettingsCard, _super);
-    function ProfileSettingsCard(rootElm, btnToggleSettingsSection, selectProfilePictureSetting, selectBioSetting, selectImagesSetting, selectFriendsSetting, selectPostsSetting) {
+    function ProfileSettingsCard(rootElm, btnToggleSettingsSection, selectProfilePictureSetting, selectBioSetting, selectImagesSetting, selectFriendsSetting, selectPostsSetting, colorPalette, txtProfileColor, btnSaveColor) {
         var _this = _super.call(this, rootElm) || this;
         _this.selectProfilePictureSetting = selectProfilePictureSetting;
         _this.selectBioSetting = selectBioSetting;
         _this.selectImagesSetting = selectImagesSetting;
         _this.selectFriendsSetting = selectFriendsSetting;
         _this.selectPostsSetting = selectPostsSetting;
+        _this.colorPalette = colorPalette;
+        _this.txtProfileColor = txtProfileColor;
+        _this.btnSaveColor = btnSaveColor;
         _this.btnToggleSettingsSection = new ToggleButton(null, btnToggleSettingsSection, null, [
-            new ToggleState('fa-cog', 'Open profile settings', function () { return ViewUtil.show(_this.rootElm, 'block'); }),
+            new ToggleState('fa-cog', 'Open profile settings', function () { return ViewUtil.show(_this.rootElm, 'grid'); }),
             new ToggleState('fa-times', 'Close profile settings', function () { return ViewUtil.hide(_this.rootElm); })
         ]);
+        _this.colorPalette.childNodes.forEach(function (childNode) {
+            var elm = childNode;
+            elm.onclick = function (event) {
+                _this.txtProfileColor.value = elm.style.backgroundColor;
+                _this.btnSaveColor.style.backgroundColor = elm.style.backgroundColor;
+            };
+        });
+        _this.btnSaveColor.onclick = function (event) {
+            console.log(_this.txtProfileColor.value);
+        };
+        _this.txtProfileColor.onkeyup = function (event) {
+            _this.btnSaveColor.style.backgroundColor = _this.txtProfileColor.value;
+            console.log(_this.btnSaveColor.style.backgroundColor);
+        };
         return _this;
     }
     return ProfileSettingsCard;
