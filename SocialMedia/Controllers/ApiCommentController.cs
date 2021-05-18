@@ -274,6 +274,7 @@ namespace SocialMedia.Controllers
 
                 // attach prepped ProfileModel XXX shouldn't need to enter all this data about the user
                 Profile = Util.GetProfileModel(profile, imageRepo.ById(profile.ProfilePicture), friendRepo.RelationToUser(currentProfile.id, profile.ProfileId)),
+
                 DateTime = comment.DateTime.ToLocalTime(),
                 Likes = likes,
                 PostId = comment.PostId

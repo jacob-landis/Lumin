@@ -94,6 +94,7 @@ class ProfileModal extends Modal {
         });
 
         Ajax.getProfile(profileId, (profileCard: ProfileCard) => {
+            console.log(profileCard.profile);
             if (profileCard.profile.relationToUser != 'me')
                 this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
         });

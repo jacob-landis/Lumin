@@ -12,7 +12,8 @@
         private selectPostsSetting: HTMLElement,
         private colorPalette: HTMLElement,
         private txtProfileColor: HTMLInputElement,
-        private btnSaveColor: HTMLElement
+        private btnSaveColor: HTMLElement,
+        private btnSaveSettings: HTMLElement
     ) {
         super(rootElm);
 
@@ -20,6 +21,10 @@
             new ToggleState('fa-cog', 'Open profile settings', () => ViewUtil.show(this.rootElm, 'grid')),
             new ToggleState('fa-times', 'Close profile settings', () => ViewUtil.hide(this.rootElm))
         ]);
+
+        this.btnSaveSettings.onclick = (event: MouseEvent) => {
+            Ajax.updatePrivacySettings([1,2,3,4,2]);
+        }
 
         this.colorPalette.childNodes.forEach((childNode: ChildNode) => {
             let elm: HTMLElement = <HTMLElement>childNode;
@@ -31,7 +36,7 @@
         });
 
         this.btnSaveColor.onclick = (event: MouseEvent) => {
-            // Ajax.updateProfileColor(this.txtProfileColor.value);
+            Ajax.updateProfileColor(this.txtProfileColor.value);
             // profileModal.summary.backgroundColor = this.txtProfileColor.value;
             console.log(this.txtProfileColor.value);
         }

@@ -104,7 +104,15 @@ namespace SocialMedia.Infrastructure
 
                 // Prep profile picture for transmission.
                 ProfilePicture = GetRawImage(image, true),
-                RelationToUser = relationToUser
+                RelationToUser = relationToUser,
+
+                ProfilePicturePrivacyLevel = profile.ProfilePicturePrivacyLevel,
+                ProfileBioPrivacyLevel = profile.ProfileBioPrivacyLevel,
+                ProfileImagesPrivacyLevel = profile.ProfileImagesPrivacyLevel,
+                ProfileFriendsPrivacyLevel = profile.ProfileFriendsPrivacyLevel,
+                ProfilePostsPrivacyLevel = profile.ProfilePostsPrivacyLevel,
+
+                ProfileColor = profile.ProfileColor
             };
     }
 }

@@ -16,5 +16,14 @@ namespace SocialMedia.Models.ViewModels
 
         // Used to fill the relationship card on client side.
         public string RelationToUser { get; set; }
+
+        // PRIVACY LEVELS (0: All, 1: Mutual Friends, 2: Friends, 3: None)
+        public int ProfilePicturePrivacyLevel { get; set; }
+        public int ProfileBioPrivacyLevel { get; set; }
+        public int ProfileImagesPrivacyLevel { get; set; }
+        public int ProfileFriendsPrivacyLevel { get; set; }
+        public int ProfilePostsPrivacyLevel { get; set; }
+
+        public string ProfileColor { get; set; }
     }
 }

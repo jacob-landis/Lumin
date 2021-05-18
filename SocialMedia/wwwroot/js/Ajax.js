@@ -57,6 +57,12 @@ var Ajax = (function () {
     Ajax.updateProfilePicture = function (imageId, imageClassList, tooltipMsg, onImageClick, onCopyResults) {
         this.call("apiprofile/updateprofilepicture/" + imageId, "POST", function (imageResults) { return onCopyResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick)); });
     };
+    Ajax.updatePrivacySettings = function (settings) {
+        this.call("apiprofile/updateprivacysettings", "POST", null, JSON.stringify(settings));
+    };
+    Ajax.updateProfileColor = function (color) {
+        this.call("apiprofile/updateprofilecolor/" + color, "POST", null);
+    };
     Ajax.getProfile = function (profileId, onProfileResults) {
         this.call("apiprofile/" + profileId, "GET", function (profileResults) { return onProfileResults(new ProfileCard(profileResults)); });
     };

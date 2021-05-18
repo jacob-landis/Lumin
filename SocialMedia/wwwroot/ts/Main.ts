@@ -134,7 +134,8 @@ class Main {
                 document.getElementById('profilePostsSetting'),
                 document.getElementById('profileColorPalette'),
                 <HTMLInputElement>document.getElementById('txtProfileColor'),
-                document.getElementById('btnSetProfileColor')
+                document.getElementById('btnSetProfileColor'),
+                document.getElementById('btnSaveProfileSettings')
             ),
 
             'profile-picture sqr',

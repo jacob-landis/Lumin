@@ -57,6 +57,7 @@ var ProfileModal = (function (_super) {
             _this.summaryStage.updateStaging(_this.fullProfileStaged);
         });
         Ajax.getProfile(profileId, function (profileCard) {
+            console.log(profileCard.profile);
             if (profileCard.profile.relationToUser != 'me')
                 _this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
         });

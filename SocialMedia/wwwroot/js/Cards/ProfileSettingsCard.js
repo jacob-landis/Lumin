@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileSettingsCard = (function (_super) {
     __extends(ProfileSettingsCard, _super);
-    function ProfileSettingsCard(rootElm, btnToggleSettingsSection, selectProfilePictureSetting, selectBioSetting, selectImagesSetting, selectFriendsSetting, selectPostsSetting, colorPalette, txtProfileColor, btnSaveColor) {
+    function ProfileSettingsCard(rootElm, btnToggleSettingsSection, selectProfilePictureSetting, selectBioSetting, selectImagesSetting, selectFriendsSetting, selectPostsSetting, colorPalette, txtProfileColor, btnSaveColor, btnSaveSettings) {
         var _this = _super.call(this, rootElm) || this;
         _this.selectProfilePictureSetting = selectProfilePictureSetting;
         _this.selectBioSetting = selectBioSetting;
@@ -23,10 +23,14 @@ var ProfileSettingsCard = (function (_super) {
         _this.colorPalette = colorPalette;
         _this.txtProfileColor = txtProfileColor;
         _this.btnSaveColor = btnSaveColor;
+        _this.btnSaveSettings = btnSaveSettings;
         _this.btnToggleSettingsSection = new ToggleButton(null, btnToggleSettingsSection, null, [
             new ToggleState('fa-cog', 'Open profile settings', function () { return ViewUtil.show(_this.rootElm, 'grid'); }),
             new ToggleState('fa-times', 'Close profile settings', function () { return ViewUtil.hide(_this.rootElm); })
         ]);
+        _this.btnSaveSettings.onclick = function (event) {
+            Ajax.updatePrivacySettings([1, 2, 3, 4, 2]);
+        };
         _this.colorPalette.childNodes.forEach(function (childNode) {
             var elm = childNode;
             elm.onclick = function (event) {
@@ -35,6 +39,7 @@ var ProfileSettingsCard = (function (_super) {
             };
         });
         _this.btnSaveColor.onclick = function (event) {
+            Ajax.updateProfileColor(_this.txtProfileColor.value);
             console.log(_this.txtProfileColor.value);
         };
         _this.txtProfileColor.onkeyup = function (event) {

@@ -136,6 +136,14 @@
         );
     }
 
+    public static updatePrivacySettings(settings: number[]) {
+        this.call("apiprofile/updateprivacysettings", "POST", null, JSON.stringify(settings));
+    }
+
+    public static updateProfileColor(color: string) {
+        this.call(`apiprofile/updateprofilecolor/${color}`, "POST", null);
+    }
+
     public static getProfile(profileId: number, onProfileResults: (profileCard: ProfileCard) => void): void {
         this.call(
             `apiprofile/${profileId}`,

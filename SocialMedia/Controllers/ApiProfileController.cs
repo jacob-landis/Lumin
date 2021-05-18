@@ -71,13 +71,14 @@ namespace SocialMedia.Controllers
         }
 
         /*
-            Not used... XXX
+            
         */
         [HttpGet("{id}")]
         public ProfileModel Get(int id)
         {
             Profile profile = profileRepo.ById(id);
             Image image = imageRepo.ById(profile.ProfilePicture);
+
             return Util.GetProfileModel(profile, image, friendRepo.RelationToUser(currentProfile.id, id));
         }
 
@@ -118,6 +119,34 @@ namespace SocialMedia.Controllers
                 profile.Bio = Util.Sanitize(bio.str);
 
                 // Commit profile to database.
+                profileRepo.SaveProfile(profile);
+            }
+        }
+
+        [HttpPost("updateprivacysettings")]
+        public void UpdatePrivacySettings([FromBody] int[] settings)
+        {
+            if (settings != null)
+            {
+                Profile profile = profileRepo.ById(currentProfile.profile.ProfileId);
+
+                profile.ProfilePicturePrivacyLevel = settings[0];
+                profile.ProfileBioPrivacyLevel = settings[1];
+                profile.ProfileImagesPrivacyLevel = settings[2];
+                profile.ProfileFriendsPrivacyLevel = settings[3];
+                profile.ProfilePostsPrivacyLevel = settings[4];
+
+                profileRepo.SaveProfile(profile);
+            }
+        }
+
+        [HttpPost("updateprofilecolor/{color}")]
+        public void UpdateProfileColor(string color)
+        {
+            if (color != null)
+            {
+                Profile profile = profileRepo.ById(currentProfile.profile.ProfileId);
+                profile.ProfileColor = color;
                 profileRepo.SaveProfile(profile);
             }
         }
