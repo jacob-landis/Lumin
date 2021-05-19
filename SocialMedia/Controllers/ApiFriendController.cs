@@ -41,14 +41,18 @@ namespace SocialMedia.Controllers
         [HttpPost("friends/{id}")]
         public List<ProfileModel> GetFriends(int id, [FromBody] StringModel search)
         {
-            // If ID is provided, return friends by ProfileID.
-            if (id != 0) return ProfileFriends(id);
+            if (profileRepo.ById(id).ProfileFriendsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
+            {
+                // If ID is provided, return friends by ProfileID.
+                if (id != 0) return ProfileFriends(id);
 
-            // If search string is provided, return profile search results.
-            if (search.str != "NULL") return Search(search.str);
+                // If search string is provided, return profile search results.
+                if (search.str != "NULL") return Search(search.str);
             
-            // If no ID or search string was provided, return the current user's friend requests.
-            return FriendRequests();
+                // If no ID or search string was provided, return the current user's friend requests.
+                return FriendRequests();
+            }
+            return null;
         }
 
         /*
@@ -243,7 +247,7 @@ namespace SocialMedia.Controllers
             Image image = imageRepo.ById(profile.ProfilePicture);
 
             // Return prepped profile.
-            return Util.GetProfileModel(profile, image, friendRepo.RelationToUser(currentProfile.id, id));
+            return Util.GetProfileModel(profile, image, friendRepo.RelationToUser(currentProfile.id, id), friendRepo.RelationshipTier(currentProfile.id, id));
         }
     }
 }

@@ -35,7 +35,7 @@ namespace SocialMedia.Models
         /*
             Get friend records that requested to be friends with the user of the provided ProfileID.
         */
-        public IEnumerable<Friend> ByToId(int id, bool accepted) => 
+        public IEnumerable<Friend> ByToId(int? id, bool accepted) => 
             context.Friends.Where(f => 
                 f.ToId == id && 
                 f.Accepted == accepted
@@ -44,7 +44,7 @@ namespace SocialMedia.Models
         /*
             Get friend records that were requested to be friends by the user of the provided ProfileID.
         */
-        public IEnumerable<Friend> ByFromId(int id, bool accepted) => 
+        public IEnumerable<Friend> ByFromId(int? id, bool accepted) => 
             context.Friends.Where(f => 
                 f.FromId == id && 
                 f.Accepted == accepted
@@ -53,7 +53,7 @@ namespace SocialMedia.Models
         /*
             Get list of ProfileIDs of all friend records that have been accepted, either from the user, or to the user.
         */
-        public List<int?> ProfileFriends(int id)
+        public List<int?> ProfileFriends(int? id)
         {
             // Prep ProfileID list.
             List<int?> profileIds = new List<int?>();
@@ -82,6 +82,44 @@ namespace SocialMedia.Models
             foreach(Friend f in ByFromId(currentUserId, false)) { if (f.ToId == profileId)   return "userRequested"; }
             foreach(Friend f in ByToId(currentUserId, false))   { if (f.FromId == profileId) return "requestedUser"; }
             return "unrelated";
+        }
+
+        public bool IsMutualFriend(int currentUserId, int? profileId)
+        {
+            List<int?> otherUsersFriends = ProfileFriends(profileId);
+
+            foreach(int id in ProfileFriends(currentUserId))
+            {
+                foreach(int otherId in otherUsersFriends)
+                {
+                    if (id == otherId) return true;
+                }
+            }
+            return false;
+        }
+
+        /*
+            0: Unrelated
+            1: MutualFriend
+            2: Friend
+            3: Me
+        */
+        public int RelationshipTier(int currentUserId, int? profileId)
+        {
+            int tier = 0;
+
+            string relationToUser = RelationToUser(currentUserId, profileId);
+
+            if (relationToUser == "unrelated" && IsMutualFriend(currentUserId, profileId))
+                tier = 1;
+
+            else if (relationToUser == "friend" || relationToUser == "userRequested")
+                tier = 2;
+
+            else if (relationToUser == "me")
+                tier = 3;
+
+            return tier;
         }
         // END SHORTCUTS
 

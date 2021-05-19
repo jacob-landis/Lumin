@@ -118,7 +118,8 @@ namespace SocialMedia.Controllers
         public List<PostModel> ProfilePosts(int id, int postCount, int amount, string feedFilter, string feedType)
         {
             // If there are more posts than the user requested, only return the amount requested, or else return none.
-            if (postCount < postRepo.CountByProfileId(id))
+            if (postCount < postRepo.CountByProfileId(id) 
+                && profileRepo.ById(id).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
             {
                 IEnumerable<Post> postRecords = new List<Post>();
                 
@@ -341,7 +342,8 @@ namespace SocialMedia.Controllers
                 DateTime = post.DateTime.ToLocalTime(),
 
                 // Prep profile card.
-                Profile = Util.GetProfileModel(profile, profilePicture, friendRepo.RelationToUser(currentProfile.id, profile.ProfileId)),
+                Profile = Util.GetProfileModel(profile, profilePicture, 
+                    friendRepo.RelationToUser(currentProfile.id, profile.ProfileId), friendRepo.RelationshipTier(currentProfile.id, profile.ProfileId)),
 
                 // Prep like card.
                 Likes = new LikeModel

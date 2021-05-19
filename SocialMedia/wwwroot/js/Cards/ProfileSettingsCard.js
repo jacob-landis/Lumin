@@ -24,6 +24,7 @@ var ProfileSettingsCard = (function (_super) {
         _this.txtProfileColor = txtProfileColor;
         _this.btnSaveColor = btnSaveColor;
         _this.btnSaveSettings = btnSaveSettings;
+        console.log(typeof selectBioSetting);
         _this.btnToggleSettingsSection = new ToggleButton(null, btnToggleSettingsSection, null, [
             new ToggleState('fa-cog', 'Open profile settings', function () { return ViewUtil.show(_this.rootElm, 'grid'); }),
             new ToggleState('fa-times', 'Close profile settings', function () { return ViewUtil.hide(_this.rootElm); })
@@ -40,7 +41,6 @@ var ProfileSettingsCard = (function (_super) {
         });
         _this.btnSaveColor.onclick = function (event) {
             Ajax.updateProfileColor(_this.txtProfileColor.value);
-            console.log(_this.txtProfileColor.value);
         };
         _this.txtProfileColor.onkeyup = function (event) {
             _this.btnSaveColor.style.backgroundColor = _this.txtProfileColor.value;

@@ -29,6 +29,7 @@ namespace SocialMedia.Controllers
         private ICommentRepository commentRepo;
         private IProfileRepository profileRepo;
         private ILikeRepository likeRepo;
+        private IFriendRepository friendRepo;
         private CurrentProfile currentProfile;
         private readonly IHostingEnvironment env; // Used to deal with server files.
 
@@ -38,6 +39,7 @@ namespace SocialMedia.Controllers
            ICommentRepository commentRepo,
            IProfileRepository profileRepo,
            ILikeRepository likeRepo,
+           IFriendRepository friendRepo,
            CurrentProfile currentProfile,
            IHostingEnvironment env)
         {
@@ -46,6 +48,7 @@ namespace SocialMedia.Controllers
             this.commentRepo = commentRepo;
             this.profileRepo = profileRepo;
             this.likeRepo = likeRepo;
+            this.friendRepo = friendRepo;
             this.currentProfile = currentProfile;
             this.env = env;
         }
@@ -133,24 +136,28 @@ namespace SocialMedia.Controllers
         [HttpGet("profileimages/{id}/{imageCount}/{amount}")]
         public List<RawImage> ProfilesImages(int id, int imageCount, int amount) // (id, skip, take) XXX rename
         {
-            // Prep list.
-            List<RawImage> images = new List<RawImage>();
-
-            // If the requested segment does not start past the end of the list.
-            if (imageCount < imageRepo.CountByProfileId(id))
+            if (profileRepo.ById(id).ProfileImagesPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
             {
-                // Loop though requested segment of profile's images.
-                foreach (Models.Image i in imageRepo.RangeByProfileId(id, imageCount, amount))
+                // Prep list.
+                List<RawImage> images = new List<RawImage>();
+
+                // If the requested segment does not start past the end of the list.
+                if (imageCount < imageRepo.CountByProfileId(id))
                 {
-                    // Add prepped image to list of results.
-                    images.Add(Util.GetRawImage(i, true));
+                    // Loop though requested segment of profile's images.
+                    foreach (Models.Image i in imageRepo.RangeByProfileId(id, imageCount, amount))
+                    {
+                        // Add prepped image to list of results.
+                        images.Add(Util.GetRawImage(i, true));
+                    }
+
+                    // Return the results.
+                    return images;
                 }
 
-                // Return the results.
-                return images;
+                // If no images fall in the requested range, return null.
+                else return null;
             }
-
-            // If no images fall in the requested range, return null.
             else return null;
         }
 
@@ -159,7 +166,16 @@ namespace SocialMedia.Controllers
              TODO: add privacy options, and privacy checks.
         */
         [HttpGet("{id}/{thumb}")] // thumb will be 1 or 0. 0 meaning fullsize, 1 meaning thumbnail.
-        public RawImage Get(int id, int thumb) => Util.GetRawImage(imageRepo.ById(id), thumb == 1);
+        public RawImage Get(int id, int thumb)
+        {
+            Models.Image image = imageRepo.ById(id);
+            Profile profile = profileRepo.ById(image.ProfileId);
+
+            if (profile.ProfileImagesPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profile.ProfileId))
+                return Util.GetRawImage(imageRepo.ById(id), thumb == 1);
+
+            return null;
+        }
 
         /*
              Adds image and its thumbnail version to the file system. Adds image record to database.

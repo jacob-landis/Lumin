@@ -21,13 +21,13 @@ namespace SocialMedia.Models
         Friend ById(int id);
 
         // Get friend records that requested to be friends with the user of the provided ProfileID.
-        IEnumerable<Friend> ByToId(int id, bool accepted);
+        IEnumerable<Friend> ByToId(int? id, bool accepted);
 
         // Get friend records that were requested to be friends by the user of the provided ProfileID.
-        IEnumerable<Friend> ByFromId(int id, bool accepted);
+        IEnumerable<Friend> ByFromId(int? id, bool accepted);
 
         // Get list of ProfileIDs of all friend records that have been accepted, either from the user, or to the user.
-        List<int?> ProfileFriends(int id);
+        List<int?> ProfileFriends(int? id);
 
         /*
             Determine how the provided profile relates to current user's profile in terms of a friend record.
@@ -39,6 +39,10 @@ namespace SocialMedia.Models
             5. (unrelated)     The profile has not sent or recieved a request to or from the current user.
         */
         string RelationToUser(int currentUserId, int? profileId);
+
+        bool IsMutualFriend(int currentUserId, int? profileId);
+
+        int RelationshipTier(int currentUserId, int? profileId);
         // END SHORTCUTS
 
         // Used to create a new record or update an old record.

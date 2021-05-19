@@ -54,20 +54,27 @@ namespace SocialMedia.Controllers
             Image image = imageRepo.ById(profile.ProfilePicture);
 
             // Prep profile.
-            return new FullProfileModel
+            FullProfileModel fullProfileModel = new FullProfileModel
             {
                 // Details from profile.
                 ProfileId = profile.ProfileId,
                 FirstName = profile.FirstName,
                 LastName = profile.LastName,
-                Bio = profile.Bio,
-
-                // Prep profile picture.
-                ProfilePicture = Util.GetRawImage(image, false),
 
                 // Get data for relationship button.
                 RelationToUser = friendRepo.RelationToUser(currentProfile.id, id)
             };
+
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.id, id);
+
+            // If privacy level does not exceed relationship level
+            if (profile.ProfileBioPrivacyLevel <= relationshipTier)
+                fullProfileModel.Bio = profile.Bio;
+
+            if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
+                fullProfileModel.ProfilePicture = Util.GetRawImage(image, false);
+
+            return fullProfileModel;
         }
 
         /*
@@ -79,7 +86,8 @@ namespace SocialMedia.Controllers
             Profile profile = profileRepo.ById(id);
             Image image = imageRepo.ById(profile.ProfilePicture);
 
-            return Util.GetProfileModel(profile, image, friendRepo.RelationToUser(currentProfile.id, id));
+            return Util.GetProfileModel(profile, image, 
+                friendRepo.RelationToUser(currentProfile.id, id), friendRepo.RelationshipTier(currentProfile.id, id));
         }
 
         /*
