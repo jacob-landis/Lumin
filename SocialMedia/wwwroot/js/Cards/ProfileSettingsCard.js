@@ -24,13 +24,16 @@ var ProfileSettingsCard = (function (_super) {
         _this.txtProfileColor = txtProfileColor;
         _this.btnSaveColor = btnSaveColor;
         _this.btnSaveSettings = btnSaveSettings;
-        console.log(typeof selectBioSetting);
         _this.btnToggleSettingsSection = new ToggleButton(null, btnToggleSettingsSection, null, [
             new ToggleState('fa-cog', 'Open profile settings', function () { return ViewUtil.show(_this.rootElm, 'grid'); }),
             new ToggleState('fa-times', 'Close profile settings', function () { return ViewUtil.hide(_this.rootElm); })
         ]);
         _this.btnSaveSettings.onclick = function (event) {
-            Ajax.updatePrivacySettings([1, 2, 3, 4, 2]);
+            var privacySettings = [];
+            _this.selectElements.forEach(function (elm) {
+                privacySettings.push(elm.selectedIndex);
+            });
+            Ajax.updatePrivacySettings(privacySettings);
         };
         _this.colorPalette.childNodes.forEach(function (childNode) {
             var elm = childNode;
@@ -48,6 +51,13 @@ var ProfileSettingsCard = (function (_super) {
         };
         return _this;
     }
+    Object.defineProperty(ProfileSettingsCard.prototype, "selectElements", {
+        get: function () {
+            return [this.selectProfilePictureSetting, this.selectBioSetting, this.selectImagesSetting, this.selectFriendsSetting, this.selectPostsSetting];
+        },
+        enumerable: true,
+        configurable: true
+    });
     return ProfileSettingsCard;
 }(Card));
 //# sourceMappingURL=ProfileSettingsCard.js.map
