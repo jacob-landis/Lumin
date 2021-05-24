@@ -50,9 +50,7 @@
         let isFriendOrMe: boolean = this.profile.relationToUser == 'friend' || this.profile.relationToUser == 'me'
 
         // card click
-        if (isFriendOrMe) {
-            this.rootElm.onclick = e => profileModal.load(this.profile.profileId);
-        }
+        this.rootElm.onclick = e => profileModal.load(this.profile.profileId);
 
         if (this.profile.relationToUser != 'me') {
             
@@ -70,10 +68,7 @@
 
         if (isFriendOrMe)
             this.rootElm.title = 'View full profile';
-
-        if (!isFriendOrMe && !includeRelationButton)
-            this.rootElm.title = 'Right-Click options';
-
+        
         if (this.profile.relationToUser == 'friend' && !includeRelationButton)
             this.rootElm.title = 'View full profile + Right-Click options';
 

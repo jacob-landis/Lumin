@@ -21,9 +21,7 @@ var ProfileCard = (function (_super) {
         _this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: _this.profile.firstName + " " + _this.profile.lastName });
         _this.rootElm.append(_this.imageBox.rootElm, _this.txtName);
         var isFriendOrMe = _this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me';
-        if (isFriendOrMe) {
-            _this.rootElm.onclick = function (e) { return profileModal.load(_this.profile.profileId); };
-        }
+        _this.rootElm.onclick = function (e) { return profileModal.load(_this.profile.profileId); };
         if (_this.profile.relationToUser != 'me') {
             _this.relationCard = new RelationCard(profile);
             if (includeRelationButton) {
@@ -37,8 +35,6 @@ var ProfileCard = (function (_super) {
         }
         if (isFriendOrMe)
             _this.rootElm.title = 'View full profile';
-        if (!isFriendOrMe && !includeRelationButton)
-            _this.rootElm.title = 'Right-Click options';
         if (_this.profile.relationToUser == 'friend' && !includeRelationButton)
             _this.rootElm.title = 'View full profile + Right-Click options';
         ProfileCard.profileCards.push(_this);

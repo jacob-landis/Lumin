@@ -95,8 +95,13 @@ class ProfileModal extends Modal {
 
         Ajax.getProfile(profileId, (profileCard: ProfileCard) => {
 
-            if (profileCard.profile.relationToUser != 'me')
+            // If NOT current user.
+            if (profileCard.profile.relationToUser != 'me') 
                 this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
+
+            // If current user.
+            else if (profileCard.profile.relationToUser == 'me')
+                this.profileSettingsCard.setPrivacySelectValues(profileCard.profile);
         });
 
         // PRIVATE PROFILE OPTIONS

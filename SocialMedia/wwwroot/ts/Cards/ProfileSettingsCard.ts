@@ -57,4 +57,12 @@
             console.log(this.btnSaveColor.style.backgroundColor);
         }
     }
+
+    public setPrivacySelectValues(profile: ProfileRecord): void {
+        this.selectProfilePictureSetting.value = `${profile.profilePicturePrivacyLevel}`;
+        this.selectBioSetting.value =            `${profile.profileBioPrivacyLevel}`;
+        this.selectImagesSetting.value =         `${profile.profileImagesPrivacyLevel}`;
+        this.selectFriendsSetting.value =        `${profile.profileFriendsPrivacyLevel}`;
+        this.selectPostsSetting.value =          `${profile.profilePostsPrivacyLevel}`;
+    }
 }

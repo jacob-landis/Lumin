@@ -44,7 +44,7 @@ namespace SocialMedia.Controllers
         /*
             Returns a prepped profile by ProfileID.
         */
-        [HttpPost("fullProfile/{id}")]
+        [HttpPost("fullprofile/{id}")]
         public FullProfileModel GetFullProfile(int id)
         {
             // Get profile by ProfileID.
@@ -70,6 +70,8 @@ namespace SocialMedia.Controllers
             // If privacy level does not exceed relationship level
             if (profile.ProfileBioPrivacyLevel <= relationshipTier)
                 fullProfileModel.Bio = profile.Bio;
+            else
+                fullProfileModel.Bio = "";
 
             if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
                 fullProfileModel.ProfilePicture = Util.GetRawImage(image, false);

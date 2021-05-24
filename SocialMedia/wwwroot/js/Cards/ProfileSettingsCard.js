@@ -58,6 +58,13 @@ var ProfileSettingsCard = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    ProfileSettingsCard.prototype.setPrivacySelectValues = function (profile) {
+        this.selectProfilePictureSetting.value = "" + profile.profilePicturePrivacyLevel;
+        this.selectBioSetting.value = "" + profile.profileBioPrivacyLevel;
+        this.selectImagesSetting.value = "" + profile.profileImagesPrivacyLevel;
+        this.selectFriendsSetting.value = "" + profile.profileFriendsPrivacyLevel;
+        this.selectPostsSetting.value = "" + profile.profilePostsPrivacyLevel;
+    };
     return ProfileSettingsCard;
 }(Card));
 //# sourceMappingURL=ProfileSettingsCard.js.map

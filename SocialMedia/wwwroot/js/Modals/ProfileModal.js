@@ -59,6 +59,8 @@ var ProfileModal = (function (_super) {
         Ajax.getProfile(profileId, function (profileCard) {
             if (profileCard.profile.relationToUser != 'me')
                 _this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
+            else if (profileCard.profile.relationToUser == 'me')
+                _this.profileSettingsCard.setPrivacySelectValues(profileCard.profile);
         });
         if (profileId == User.profileId) {
             ViewUtil.show(this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block', function () { return ViewUtil.show(_this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block'); });
