@@ -61,6 +61,22 @@ var ProfileModal = (function (_super) {
                 _this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
             else if (profileCard.profile.relationToUser == 'me')
                 _this.profileSettingsCard.setPrivacySelectValues(profileCard.profile);
+            if (profileCard.profile.profileFriendsPrivacyLevel <= profileCard.profile.relationshipTier) {
+                Ajax.getFriends(profileId, null, function (profileCards) {
+                    if (profileCards != null)
+                        _this.friendBox.add(profileCards);
+                    _this.summaryStage.updateStaging(_this.friendsStaged);
+                });
+            }
+            if (profileCard.profile.profilePostsPrivacyLevel <= profileCard.profile.relationshipTier)
+                _this.profilePostsCard.load(profileId);
+            if (profileCard.profile.profileImagesPrivacyLevel <= profileCard.profile.relationshipTier) {
+                _this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', _this.imageScrollBox, function (target) {
+                    return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
+                });
+                _this.imagesBox.onLoadEnd = function () { return _this.summaryStage.updateStaging(_this.imagesBoxStaged); };
+                _this.imageWrapper.append(_this.imagesBox.rootElm);
+            }
         });
         if (profileId == User.profileId) {
             ViewUtil.show(this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block', function () { return ViewUtil.show(_this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block'); });
@@ -75,17 +91,6 @@ var ProfileModal = (function (_super) {
             this.nameEditor.disableEditing();
             this.bioEditor.disableEditing();
         }
-        this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', this.imageScrollBox, function (target) {
-            return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
-        });
-        this.imagesBox.onLoadEnd = function () { return _this.summaryStage.updateStaging(_this.imagesBoxStaged); };
-        this.imageWrapper.append(this.imagesBox.rootElm);
-        Ajax.getFriends(profileId, null, function (profileCards) {
-            if (profileCards != null)
-                _this.friendBox.add(profileCards);
-            _this.summaryStage.updateStaging(_this.friendsStaged);
-        });
-        this.profilePostsCard.load(profileId);
         _super.prototype.open.call(this);
     };
     ProfileModal.prototype.selectProfilePicture = function () {

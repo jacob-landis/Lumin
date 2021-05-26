@@ -110,7 +110,8 @@ namespace SocialMedia.Models
 
             string relationToUser = RelationToUser(currentUserId, profileId);
 
-            if (relationToUser == "unrelated" && IsMutualFriend(currentUserId, profileId))
+            if ((relationToUser == "unrelated" || relationToUser == "requestedUser")
+                && IsMutualFriend(currentUserId, profileId))
                 tier = 1;
 
             else if (relationToUser == "friend" || relationToUser == "userRequested")
