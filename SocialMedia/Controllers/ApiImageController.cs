@@ -170,8 +170,11 @@ namespace SocialMedia.Controllers
         {
             Models.Image image = imageRepo.ById(id);
             Profile profile = profileRepo.ById(image.ProfileId);
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profile.ProfileId);
 
-            if (profile.ProfileImagesPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profile.ProfileId))
+            // If (hasImageAccess OR (imageIsProfilePicture AND hasProfilePictureAccess))
+            if (profile.ProfileImagesPrivacyLevel <= relationshipTier 
+                || (profile.ProfilePicture == id && profile.ProfilePicturePrivacyLevel <= relationshipTier))
                 return Util.GetRawImage(imageRepo.ById(id), thumb == 1);
 
             return null;
