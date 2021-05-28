@@ -175,9 +175,9 @@ namespace SocialMedia.Controllers
             // If (hasImageAccess OR (imageIsProfilePicture AND hasProfilePictureAccess))
             if (profile.ProfileImagesPrivacyLevel <= relationshipTier 
                 || (profile.ProfilePicture == id && profile.ProfilePicturePrivacyLevel <= relationshipTier))
-                return Util.GetRawImage(imageRepo.ById(id), thumb == 1);
+                return Util.GetRawImage(image, thumb == 1);
 
-            return null;
+            return Util.GetRawImage(new Models.Image(), thumb == 1);
         }
 
         /*
