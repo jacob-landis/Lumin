@@ -53,7 +53,8 @@ var ProfileModal = (function (_super) {
             _this.profile = fullProfile;
             _this.nameEditor.setText2(_this.profile.firstName, _this.profile.lastName);
             _this.bioEditor.setText(_this.profile.bio);
-            _this.profilePictureBox.loadImage(new ImageCard(_this.profile.profilePicture));
+            if (_this.profile.profilePicture != null)
+                _this.profilePictureBox.loadImage(new ImageCard(_this.profile.profilePicture));
             _this.summaryStage.updateStaging(_this.fullProfileStaged);
         });
         Ajax.getProfile(profileId, function (profileCard) {

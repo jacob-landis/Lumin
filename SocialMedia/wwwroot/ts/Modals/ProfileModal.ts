@@ -88,7 +88,8 @@ class ProfileModal extends Modal {
             this.bioEditor.setText(this.profile.bio);
 
             // Set profile picture display.
-            this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
+            if (this.profile.profilePicture != null)
+                this.profilePictureBox.loadImage(new ImageCard(this.profile.profilePicture));
 
             this.summaryStage.updateStaging(this.fullProfileStaged);
         });

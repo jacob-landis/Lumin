@@ -41,7 +41,8 @@
         
         this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, true);
 
-        this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', null, (target: ImageCard) => { }));
+        if (this.profile.profilePicture != null)
+            this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', null, (target: ImageCard) => { }));
 
         this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: `${this.profile.firstName} ${this.profile.lastName}` });
 

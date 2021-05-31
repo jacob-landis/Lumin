@@ -101,7 +101,10 @@ var Ajax = (function () {
         this.call("apiimage/profileimagescount/" + profileId, "GET", onCountResults);
     };
     Ajax.getImage = function (imageId, thumb, imageClassList, tooltipMsg, onImageClick, onImageResults) {
-        this.call("apiimage/" + imageId + "/" + (thumb ? 1 : 0), "GET", function (imageResults) { return onImageResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick)); });
+        this.call("apiimage/" + imageId + "/" + (thumb ? 1 : 0), "GET", function (imageResults) {
+            if (imageResults != null)
+                onImageResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick));
+        });
     };
     Ajax.deletePost = function (postId) {
         this.call("apipost/deletepost/" + postId, "POST");

@@ -242,7 +242,10 @@
         this.call(
             `apiimage/${imageId}/${thumb ? 1 : 0}`, 
             "GET",
-            (imageResults: string) => onImageResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, tooltipMsg, onImageClick))
+            (imageResults: string) => {
+                if (imageResults != null)
+                    onImageResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, tooltipMsg, onImageClick));
+            }
         );
     }
 
