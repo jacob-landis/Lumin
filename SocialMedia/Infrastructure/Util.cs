@@ -116,6 +116,8 @@ namespace SocialMedia.Infrastructure
 
             if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
                 profileModel.ProfilePicture = GetRawImage(image, true);
+            else
+                profileModel.ProfilePicture = GetRawImage(new Models.Image(), true);
 
             return profileModel;
         }
