@@ -71,6 +71,8 @@ var ProfileModal = (function (_super) {
             }
             if (profileCard.profile.profilePostsPrivacyLevel <= profileCard.profile.relationshipTier)
                 _this.profilePostsCard.load(profileId);
+            else
+                _this.profilePostsCard.setMessage("This user's posts are private.");
             if (profileCard.profile.profileImagesPrivacyLevel <= profileCard.profile.relationshipTier) {
                 _this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', _this.imageScrollBox, function (target) {
                     return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);

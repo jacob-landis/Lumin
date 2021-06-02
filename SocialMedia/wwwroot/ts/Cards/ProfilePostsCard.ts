@@ -193,11 +193,14 @@
         this.commentedPostsBox.messageElm.innerText = '';
         this.likedPostsBox.messageElm.innerText = '';
         this.mainPostsBox.messageElm.innerText = '';
-        this.mainPostsBox.messageElm.innerText = '';
     }
 
     private displayPosts(): void { 
         ViewUtil.show(this.postBoxes.rootElm, 'block');
+    }
+
+    public setMessage(message: string): void {
+        this.mainPostsBox.messageElm.innerText = message;
     }
 
     public clear(): void {

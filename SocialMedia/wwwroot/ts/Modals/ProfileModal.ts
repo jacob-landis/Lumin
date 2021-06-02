@@ -115,6 +115,8 @@ class ProfileModal extends Modal {
 
             if (profileCard.profile.profilePostsPrivacyLevel <= profileCard.profile.relationshipTier)
                 this.profilePostsCard.load(profileId);
+            else
+                this.profilePostsCard.setMessage(`This user's posts are private.`);
 
             if (profileCard.profile.profileImagesPrivacyLevel <= profileCard.profile.relationshipTier) {
 

@@ -157,10 +157,12 @@ var ProfilePostsCard = (function (_super) {
         this.commentedPostsBox.messageElm.innerText = '';
         this.likedPostsBox.messageElm.innerText = '';
         this.mainPostsBox.messageElm.innerText = '';
-        this.mainPostsBox.messageElm.innerText = '';
     };
     ProfilePostsCard.prototype.displayPosts = function () {
         ViewUtil.show(this.postBoxes.rootElm, 'block');
+    };
+    ProfilePostsCard.prototype.setMessage = function (message) {
+        this.mainPostsBox.messageElm.innerText = message;
     };
     ProfilePostsCard.prototype.clear = function () {
         this.hideMyPostActivity();
