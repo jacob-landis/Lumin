@@ -163,7 +163,6 @@ namespace SocialMedia.Controllers
 
         /*
              Returns an image to the user.
-             TODO: add privacy options, and privacy checks.
         */
         [HttpGet("{id}/{thumb}")] // thumb will be 1 or 0. 0 meaning fullsize, 1 meaning thumbnail.
         public RawImage Get(int id, int thumb)
@@ -172,9 +171,13 @@ namespace SocialMedia.Controllers
             Profile profile = profileRepo.ById(image.ProfileId);
             int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profile.ProfileId);
 
-            // If (hasImageAccess OR (imageIsProfilePicture AND hasProfilePictureAccess))
+            bool imageIsInPost = postRepo.ByProfileId(image.ProfileId).Any((Post p) => p.ImageId == image.ImageId);
+
+            // If user has direct access or indirect access.
+            // If (hasImageAccess OR (imageIsProfilePicture AND hasProfilePictureAccess) OR (imageIsInPost AND hasPostAccess))
             if (profile.ProfileImagesPrivacyLevel <= relationshipTier 
-                || (profile.ProfilePicture == id && profile.ProfilePicturePrivacyLevel <= relationshipTier))
+                || (profile.ProfilePicture == id && profile.ProfilePicturePrivacyLevel <= relationshipTier)
+                || (imageIsInPost && profile.ProfilePostsPrivacyLevel <= relationshipTier))
                 return Util.GetRawImage(image, thumb == 1);
 
             return Util.GetRawImage(new Models.Image(), thumb == 1);

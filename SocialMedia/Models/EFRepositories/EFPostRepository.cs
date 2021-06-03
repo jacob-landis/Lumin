@@ -35,7 +35,7 @@ namespace SocialMedia.Models
         /*
             Get posts belonging to a profile by the ProfileID.
         */
-        public IEnumerable<Post> ByProfileId(int id) => context.Posts.Where(p => p.ProfileId == id);
+        public IEnumerable<Post> ByProfileId(int? id) => context.Posts.Where(p => p.ProfileId == id);
         
         /*
             Get the count of posts that belong to the profile with the provided ProfileID.

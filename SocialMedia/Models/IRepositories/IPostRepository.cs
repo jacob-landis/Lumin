@@ -21,7 +21,7 @@ namespace SocialMedia.Models
         Post ById(int? id);
 
         // Get posts belonging to a profile by the ProfileID.
-        IEnumerable<Post> ByProfileId(int id);
+        IEnumerable<Post> ByProfileId(int? id);
 
         // Get the count of posts that belong to the profile with the provided ProfileID.
         int CountByProfileId(int id);
