@@ -80,6 +80,9 @@ var ProfileModal = (function (_super) {
                 _this.imagesBox.onLoadEnd = function () { return _this.summaryStage.updateStaging(_this.imagesBoxStaged); };
                 _this.imageWrapper.append(_this.imagesBox.rootElm);
             }
+            else {
+                _this.imageWrapper.innerHTML = "This user's images are private";
+            }
         });
         if (profileId == User.profileId) {
             ViewUtil.show(this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block', function () { return ViewUtil.show(_this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block'); });

@@ -131,6 +131,9 @@ class ProfileModal extends Modal {
                 // Append new profile images box to container elm.
                 this.imageWrapper.append(this.imagesBox.rootElm);
             }
+            else {
+                this.imageWrapper.innerHTML = `This user's images are private`;
+            }
         });
 
         // PRIVATE PROFILE OPTIONS
