@@ -29,11 +29,20 @@ var ProfileSettingsCard = (function (_super) {
             new ToggleState('fa-times', 'Close profile settings', function () { return ViewUtil.hide(_this.rootElm); })
         ]);
         _this.btnSaveSettings.onclick = function (event) {
-            var privacySettings = [];
-            _this.selectElements.forEach(function (elm) {
-                privacySettings.push(elm.selectedIndex);
+            confirmPrompt.load("Are you sure you want to use these privacy settings?", function (answer) {
+                if (answer == true) {
+                    var privacySettings_1 = [];
+                    _this.selectElements.forEach(function (elm) {
+                        privacySettings_1.push(elm.selectedIndex);
+                    });
+                    Ajax.updatePrivacySettings(privacySettings_1);
+                    _this.profile.profilePicturePrivacyLevel = _this.selectProfilePictureSetting.selectedIndex;
+                    _this.profile.profileBioPrivacyLevel = _this.selectBioSetting.selectedIndex;
+                    _this.profile.profileImagesPrivacyLevel = _this.selectImagesSetting.selectedIndex;
+                    _this.profile.profileFriendsPrivacyLevel = _this.selectFriendsSetting.selectedIndex;
+                    _this.profile.profilePostsPrivacyLevel = _this.selectPostsSetting.selectedIndex;
+                }
             });
-            Ajax.updatePrivacySettings(privacySettings);
         };
         _this.colorPalette.childNodes.forEach(function (childNode) {
             var elm = childNode;
@@ -59,11 +68,19 @@ var ProfileSettingsCard = (function (_super) {
         configurable: true
     });
     ProfileSettingsCard.prototype.setPrivacySelectValues = function (profile) {
+        this.profile = profile;
         this.selectProfilePictureSetting.value = "" + profile.profilePicturePrivacyLevel;
         this.selectBioSetting.value = "" + profile.profileBioPrivacyLevel;
         this.selectImagesSetting.value = "" + profile.profileImagesPrivacyLevel;
         this.selectFriendsSetting.value = "" + profile.profileFriendsPrivacyLevel;
         this.selectPostsSetting.value = "" + profile.profilePostsPrivacyLevel;
+    };
+    ProfileSettingsCard.prototype.isChanged = function () {
+        return (this.selectProfilePictureSetting.value != "" + this.profile.profilePicturePrivacyLevel ||
+            this.selectBioSetting.value != "" + this.profile.profileBioPrivacyLevel ||
+            this.selectImagesSetting.value != "" + this.profile.profileImagesPrivacyLevel ||
+            this.selectFriendsSetting.value != "" + this.profile.profileFriendsPrivacyLevel ||
+            this.selectPostsSetting.value != "" + this.profile.profilePostsPrivacyLevel);
     };
     return ProfileSettingsCard;
 }(Card));

@@ -35,7 +35,8 @@
             element.style.display == 'inline'       ||
             element.style.display == 'block'        ||
             element.style.display == 'inline-flex'  ||
-            element.style.display == 'flex'
+            element.style.display == 'flex'         ||
+            element.style.display == 'grid'
         );
     }
 

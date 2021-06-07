@@ -250,4 +250,28 @@ class ProfileModal extends Modal {
 
         this.summaryStage.flags.forEach((flag: StageFlag) => flag.lower());
     }
+
+    public close(): void {
+
+        // If there are unsaved changes in the settings, ask the user to confirm reverting those changes.
+        if (ViewUtil.isDisplayed(this.profileSettingsCard.rootElm)) {
+
+            if (this.profileSettingsCard.isChanged()) {
+                confirmPrompt.load("Are you sure you want to revert all changes to your privacy settings?", (answer: boolean) => {
+                    if (answer == true) {
+                        this.profileSettingsCard.btnToggleSettingsSection.toggle();
+                        super.close();
+                    }
+                });
+            }
+            // If nothing was changed, but the settings section needs to be closed.
+            else {
+                this.profileSettingsCard.btnToggleSettingsSection.toggle();
+                super.close();
+            }
+        }
+        else {
+            super.close();
+        }
+    }
 }

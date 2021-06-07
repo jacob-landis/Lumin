@@ -141,6 +141,26 @@ var ProfileModal = (function (_super) {
         });
         this.summaryStage.flags.forEach(function (flag) { return flag.lower(); });
     };
+    ProfileModal.prototype.close = function () {
+        var _this = this;
+        if (ViewUtil.isDisplayed(this.profileSettingsCard.rootElm)) {
+            if (this.profileSettingsCard.isChanged()) {
+                confirmPrompt.load("Are you sure you want to revert all changes to your privacy settings?", function (answer) {
+                    if (answer == true) {
+                        _this.profileSettingsCard.btnToggleSettingsSection.toggle();
+                        _super.prototype.close.call(_this);
+                    }
+                });
+            }
+            else {
+                this.profileSettingsCard.btnToggleSettingsSection.toggle();
+                _super.prototype.close.call(this);
+            }
+        }
+        else {
+            _super.prototype.close.call(this);
+        }
+    };
     return ProfileModal;
 }(Modal));
 //# sourceMappingURL=ProfileModal.js.map

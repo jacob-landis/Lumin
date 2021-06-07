@@ -1,6 +1,7 @@
 ﻿class ProfileSettingsCard extends Card {
 
     public btnToggleSettingsSection: ToggleButton;
+    private profile: ProfileRecord;
 
     public get selectElements(): HTMLSelectElement[] {
         return [this.selectProfilePictureSetting, this.selectBioSetting, this.selectImagesSetting, this.selectFriendsSetting, this.selectPostsSetting]
@@ -28,13 +29,25 @@
 
         this.btnSaveSettings.onclick = (event: MouseEvent) => {
 
-            let privacySettings: number[] = [];
+            confirmPrompt.load("Are you sure you want to use these privacy settings?", (answer: boolean) => {
+                if (answer == true) {
 
-            this.selectElements.forEach((elm: HTMLSelectElement) => {
-                privacySettings.push(elm.selectedIndex);
+                    let privacySettings: number[] = [];
+
+                    this.selectElements.forEach((elm: HTMLSelectElement) => {
+                        privacySettings.push(elm.selectedIndex);
+                    });
+
+                    Ajax.updatePrivacySettings(privacySettings);
+
+                    // Update held profile. This prevents a revert prompt from triggering after the user has saved changes.
+                    this.profile.profilePicturePrivacyLevel = this.selectProfilePictureSetting.selectedIndex;
+                    this.profile.profileBioPrivacyLevel = this.selectBioSetting.selectedIndex;
+                    this.profile.profileImagesPrivacyLevel = this.selectImagesSetting.selectedIndex;
+                    this.profile.profileFriendsPrivacyLevel = this.selectFriendsSetting.selectedIndex;
+                    this.profile.profilePostsPrivacyLevel = this.selectPostsSetting.selectedIndex;
+                }
             });
-
-            Ajax.updatePrivacySettings(privacySettings);
         }
 
         this.colorPalette.childNodes.forEach((childNode: ChildNode) => {
@@ -59,10 +72,21 @@
     }
 
     public setPrivacySelectValues(profile: ProfileRecord): void {
+        this.profile = profile;
         this.selectProfilePictureSetting.value = `${profile.profilePicturePrivacyLevel}`;
         this.selectBioSetting.value =            `${profile.profileBioPrivacyLevel}`;
         this.selectImagesSetting.value =         `${profile.profileImagesPrivacyLevel}`;
         this.selectFriendsSetting.value =        `${profile.profileFriendsPrivacyLevel}`;
         this.selectPostsSetting.value =          `${profile.profilePostsPrivacyLevel}`;
+    }
+
+    public isChanged(): boolean {
+        return (
+            this.selectProfilePictureSetting.value != `${this.profile.profilePicturePrivacyLevel}` ||
+            this.selectBioSetting.value !=            `${this.profile.profileBioPrivacyLevel}` ||
+            this.selectImagesSetting.value !=         `${this.profile.profileImagesPrivacyLevel}` ||
+            this.selectFriendsSetting.value !=        `${this.profile.profileFriendsPrivacyLevel}` ||
+            this.selectPostsSetting.value !=          `${this.profile.profilePostsPrivacyLevel}`
+        )
     }
 }

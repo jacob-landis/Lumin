@@ -28,7 +28,7 @@ class ToggleButton implements IAppendable {
         this.reset();
     }
 
-    private toggle(): void {
+    public toggle(): void {
         
         let oldSet: ToggleState = this.propertySets[this.stateIndex];
         this.stateIndex = ((this.stateIndex + 1) >= this.propertySets.length) ? 0 : this.stateIndex + 1;

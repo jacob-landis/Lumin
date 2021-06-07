@@ -36,7 +36,8 @@ var ViewUtil = (function () {
         return (element.style.display == 'inline' ||
             element.style.display == 'block' ||
             element.style.display == 'inline-flex' ||
-            element.style.display == 'flex');
+            element.style.display == 'flex' ||
+            element.style.display == 'grid');
     };
     ViewUtil.addClassList = function (classList, elm) {
         var classListArray = classList.split(' ');
