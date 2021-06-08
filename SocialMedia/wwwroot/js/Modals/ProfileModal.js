@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
-    function ProfileModal(rootElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, relationWrapper, imageBoxElm, profilePostsCard, profileSettingsCard, imageClassList, editorClassList, doubleEditorClassList) {
+    function ProfileModal(rootElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, relationWrapper, imageBoxElm, summaryWrapper, profilePostsCard, profileSettingsCard, imageClassList, editorClassList, doubleEditorClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.profileNameWrapper = profileNameWrapper;
         _this.imageWrapper = imageWrapper;
@@ -21,6 +21,7 @@ var ProfileModal = (function (_super) {
         _this.imageScrollBox = imageScrollBox;
         _this.friendBoxElm = friendBoxElm;
         _this.relationWrapper = relationWrapper;
+        _this.summaryWrapper = summaryWrapper;
         _this.profilePostsCard = profilePostsCard;
         _this.profileSettingsCard = profileSettingsCard;
         _this.fullProfileStaged = new StageFlag();
@@ -62,6 +63,7 @@ var ProfileModal = (function (_super) {
                 _this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
             else if (profileCard.profile.relationToUser == 'me')
                 _this.profileSettingsCard.setPrivacySelectValues(profileCard.profile);
+            _this.summaryWrapper.style.backgroundColor = profileCard.profile.profileColor;
             if (profileCard.profile.profileFriendsPrivacyLevel <= profileCard.profile.relationshipTier) {
                 Ajax.getFriends(profileId, null, function (profileCards) {
                     if (profileCards != null)

@@ -74,34 +74,6 @@ class Main {
         );
 
         profileModal = new ProfileModal(
-            //document.getElementById('profileModal'),
-            //document.getElementById('profileNameWrapper'),
-            //document.getElementById('profileImages'),
-            //document.getElementById('profileBioWrapper'),
-            //document.getElementById('profileImagesWrapper'),
-            //document.getElementById('profileFriends'),
-            //document.getElementById('relationWrapper'),
-            //document.getElementById('profilePostBoxes'),
-            //document.getElementById('commentedProfilePostsBox'),
-            //document.getElementById('likedProfilePostsBox'),
-            //document.getElementById('mainProfilePostsBox'),
-            //document.getElementById('profileModalPictureWrapper'),
-            //document.getElementById('btnToggleSearchBar'),
-            //document.getElementById('btnTogglePostFeedFilter'),
-            //document.getElementById('btnRefreshProfilePostFeed'),
-            //document.getElementById('btnMyPostActivity'),
-            //document.getElementById('btnSearchPosts'),
-            //<HTMLInputElement>document.getElementById('txtSearchPosts'),
-            //document.getElementById('profileSettings'),
-            //document.getElementById('btnToggleProfileSettings'),
-            //document.getElementById('profilePictureSetting'),
-            //document.getElementById('profileBioSetting'),
-            //document.getElementById('profileImagesSetting'),
-            //document.getElementById('profileFriendsSetting'),
-            //document.getElementById('profilePostsSetting'),
-            //'profile-picture sqr',
-            //'bio',
-            //'name'
             document.getElementById('profileModal'),
             document.getElementById('profileNameWrapper'),
             document.getElementById('profileImages'),
@@ -110,6 +82,7 @@ class Main {
             document.getElementById('profileFriends'),
             document.getElementById('relationWrapper'),
             document.getElementById('profileModalPictureWrapper'),
+            document.getElementById('profileSummary'),
 
             new ProfilePostsCard(
                 document.getElementById('profilePostBoxes'),

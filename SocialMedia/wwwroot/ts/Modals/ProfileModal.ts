@@ -35,6 +35,7 @@ class ProfileModal extends Modal {
         private imageWrapper: HTMLElement,          private profileBioWrapper: HTMLElement,
         private imageScrollBox: HTMLElement,        private friendBoxElm: HTMLElement,
         private relationWrapper: HTMLElement,       imageBoxElm: HTMLElement,
+        private summaryWrapper: HTMLElement,
         private profilePostsCard: ProfilePostsCard, private profileSettingsCard: ProfileSettingsCard,
         imageClassList: string,                     editorClassList: string,
         doubleEditorClassList: string
@@ -100,9 +101,11 @@ class ProfileModal extends Modal {
             if (profileCard.profile.relationToUser != 'me') 
                 this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
 
-            // If current user.
+            // Else if current user.
             else if (profileCard.profile.relationToUser == 'me')
                 this.profileSettingsCard.setPrivacySelectValues(profileCard.profile);
+
+            this.summaryWrapper.style.backgroundColor = profileCard.profile.profileColor;
 
             if (profileCard.profile.profileFriendsPrivacyLevel <= profileCard.profile.relationshipTier) {
 

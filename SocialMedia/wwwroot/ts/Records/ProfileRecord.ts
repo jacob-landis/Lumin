@@ -10,4 +10,5 @@
     profileImagesPrivacyLevel: number;
     profileFriendsPrivacyLevel: number;
     profilePostsPrivacyLevel: number;
+    profileColor: string;
 }
