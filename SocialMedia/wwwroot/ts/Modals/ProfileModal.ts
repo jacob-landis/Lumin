@@ -137,6 +137,9 @@ class ProfileModal extends Modal {
             else {
                 this.imageWrapper.innerHTML = `This user's images are private`;
             }
+
+            // Open this modal.
+            super.open();
         });
 
         // PRIVATE PROFILE OPTIONS
@@ -167,9 +170,6 @@ class ProfileModal extends Modal {
             this.nameEditor.disableEditing();
             this.bioEditor.disableEditing();
         }
-        
-        // Open this modal.
-        super.open();
     }
     
     /*

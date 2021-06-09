@@ -85,6 +85,7 @@ var ProfileModal = (function (_super) {
             else {
                 _this.imageWrapper.innerHTML = "This user's images are private";
             }
+            _super.prototype.open.call(_this);
         });
         if (profileId == User.profileId) {
             ViewUtil.show(this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block', function () { return ViewUtil.show(_this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block'); });
@@ -99,7 +100,6 @@ var ProfileModal = (function (_super) {
             this.nameEditor.disableEditing();
             this.bioEditor.disableEditing();
         }
-        _super.prototype.open.call(this);
     };
     ProfileModal.prototype.selectProfilePicture = function () {
         var _this = this;
