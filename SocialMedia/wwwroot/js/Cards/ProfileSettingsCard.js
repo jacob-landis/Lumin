@@ -53,6 +53,7 @@ var ProfileSettingsCard = (function (_super) {
         });
         _this.btnSaveColor.onclick = function (event) {
             Ajax.updateProfileColor(_this.txtProfileColor.value);
+            profileModal.summaryWrapper.style.backgroundColor = _this.txtProfileColor.value;
         };
         _this.txtProfileColor.onkeyup = function (event) {
             _this.btnSaveColor.style.backgroundColor = _this.txtProfileColor.value;

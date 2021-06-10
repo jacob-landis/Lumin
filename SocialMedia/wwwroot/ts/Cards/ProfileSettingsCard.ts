@@ -61,7 +61,7 @@
 
         this.btnSaveColor.onclick = (event: MouseEvent) => {
             Ajax.updateProfileColor(this.txtProfileColor.value);
-            // profileModal.summary.backgroundColor = this.txtProfileColor.value;
+            profileModal.summaryWrapper.style.backgroundColor = this.txtProfileColor.value;
         }
 
         this.txtProfileColor.onkeyup = (event: KeyboardEvent) => {

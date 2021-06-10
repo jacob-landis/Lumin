@@ -35,7 +35,7 @@ class ProfileModal extends Modal {
         private imageWrapper: HTMLElement,          private profileBioWrapper: HTMLElement,
         private imageScrollBox: HTMLElement,        private friendBoxElm: HTMLElement,
         private relationWrapper: HTMLElement,       imageBoxElm: HTMLElement,
-        private summaryWrapper: HTMLElement,
+        public summaryWrapper: HTMLElement,
         private profilePostsCard: ProfilePostsCard, private profileSettingsCard: ProfileSettingsCard,
         imageClassList: string,                     editorClassList: string,
         doubleEditorClassList: string
