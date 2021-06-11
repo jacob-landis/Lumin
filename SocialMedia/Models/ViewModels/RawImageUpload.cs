@@ -15,5 +15,7 @@ namespace SocialMedia.Models.ViewModels
 
         // Image file as string.
         public string Raw { get; set; }
+
+        public int PrivacyLevel { get; set; }
     }
 }

@@ -119,6 +119,7 @@ class Main {
         uploadImageModal = new UploadImageModal(
             document.getElementById('imageUploadModal'),
             document.getElementById('stagedUploadCon'),
+            <HTMLSelectElement>document.getElementById('imagePrivacySetting'),
             document.getElementById('btnConfirmImageUpload'),
             document.getElementById('uploadImageModalUploadImage'),
             'stagedUpload',

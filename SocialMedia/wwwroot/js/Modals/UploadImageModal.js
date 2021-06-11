@@ -13,15 +13,20 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var UploadImageModal = (function (_super) {
     __extends(UploadImageModal, _super);
-    function UploadImageModal(rootElm, stagedUploadCon, btnConfirm, btnSelectDifferentImage, stagedUploadClassList, errMsgClassList) {
+    function UploadImageModal(rootElm, stagedUploadCon, selectPrivacySetting, btnConfirm, btnSelectDifferentImage, stagedUploadClassList, errMsgClassList) {
         var _this = _super.call(this, rootElm) || this;
+        _this.selectPrivacySetting = selectPrivacySetting;
         _this.stagedUploadCon = stagedUploadCon;
         _this.btnConfirm = btnConfirm;
         _this.btnSelectDifferentImage = btnSelectDifferentImage;
         _this.stagedUploadClassList = stagedUploadClassList;
         _this.errMsgClassList = errMsgClassList;
         _this.btnConfirm.onclick = function (e) {
-            Ajax.postImage(_this.stagedUpload, function (imageCard) {
+            Ajax.postImage(JSON.stringify({
+                Name: _this.stagedFileName,
+                Raw: _this.raw,
+                PrivacyLevel: _this.selectPrivacySetting.selectedIndex
+            }), function (imageCard) {
                 if (_this.callback)
                     _this.callback(imageCard);
             });
@@ -54,13 +59,9 @@ var UploadImageModal = (function (_super) {
     };
     UploadImageModal.prototype.stageFile = function () {
         ViewUtil.show(this.btnConfirm);
-        var raw = this.reader.result.substring(this.reader.result.indexOf(',') + 1);
-        var imgTag = ViewUtil.tag('img', { classList: this.stagedUploadClassList, src: raw });
+        this.raw = this.reader.result.substring(this.reader.result.indexOf(',') + 1);
+        var imgTag = ViewUtil.tag('img', { classList: this.stagedUploadClassList, src: this.raw });
         this.stagedUploadCon.append(imgTag);
-        this.stagedUpload = JSON.stringify({
-            Name: this.stagedFileName,
-            Raw: raw
-        });
     };
     UploadImageModal.prototype.validateType = function (name) {
         var extension = name.slice(name.indexOf('.')).toLowerCase();

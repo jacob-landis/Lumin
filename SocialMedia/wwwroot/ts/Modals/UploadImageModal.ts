@@ -18,14 +18,13 @@ class UploadImageModal extends Modal {
     // A FileReader. Used to convert file data to string data.
     private reader: FileReader;
         
-    // A JSON obj that holds the file name and the file data stored as string data.
-    private stagedUpload: string;
-        
     // Used to get the image that comes back after it is uploaded. XXX why not use the image already on the client? XXX
     private callback: (imageCard: ImageCard) => void;
         
     // Used to persist name from load() to stageUpload().
     private stagedFileName: string;
+
+    private raw: string;
 
     private errMsgClassList: string;
 
@@ -36,6 +35,7 @@ class UploadImageModal extends Modal {
     public constructor(
         rootElm: HTMLElement,
         stagedUploadCon: HTMLElement,
+        private selectPrivacySetting: HTMLSelectElement,
         btnConfirm: HTMLElement,
         btnSelectDifferentImage: HTMLElement,
         stagedUploadClassList: string,
@@ -52,11 +52,18 @@ class UploadImageModal extends Modal {
         
         // Set btnConfirm to send image to host in a post request.
         this.btnConfirm.onclick = (e: MouseEvent) => {
-            Ajax.postImage(this.stagedUpload, (imageCard: ImageCard) => {
+            Ajax.postImage(
+                JSON.stringify({
+                    Name: this.stagedFileName,
+                    Raw: this.raw,
+                    PrivacyLevel: this.selectPrivacySetting.selectedIndex
+                }),
+                (imageCard: ImageCard) => {
 
-                // When uploaded image returns as an image card, if another class has set up a callback, send the image card to it.
-                if (this.callback) this.callback(imageCard);
-            });
+                    // When uploaded image returns as an image card, if another class has set up a callback, send the image card to it.
+                    if (this.callback) this.callback(imageCard);
+                }
+            );
 
             // Close this modal.
             super.close();
@@ -129,19 +136,13 @@ class UploadImageModal extends Modal {
         ViewUtil.show(this.btnConfirm);
 
         // Cut off "data:image/jpeg;base64," from the result and get a handle on the rest.
-        let raw: string = (<string> this.reader.result).substring((<string>this.reader.result).indexOf(',') + 1);
+        this.raw = (<string> this.reader.result).substring((<string>this.reader.result).indexOf(',') + 1);
         
         // Create an image tag with raw image data and give it a class for CSS.
-        let imgTag: HTMLElement = ViewUtil.tag('img', { classList: this.stagedUploadClassList, src: raw });
+        let imgTag: HTMLElement = ViewUtil.tag('img', { classList: this.stagedUploadClassList, src: this.raw });
 
         // Show user the image preview.
         this.stagedUploadCon.append(imgTag);
-
-        // Put prepped image name and raw image data in JSON obj for transmission and get a handle on it.
-        this.stagedUpload = JSON.stringify({
-            Name: this.stagedFileName,
-            Raw: raw
-        });
     }
 
     /*

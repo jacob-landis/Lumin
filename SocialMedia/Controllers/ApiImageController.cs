@@ -286,7 +286,8 @@ namespace SocialMedia.Controllers
             {
                 Name = name,
                 ProfileId = currentProfile.profile.ProfileId,
-                DateTime = DateTime.UtcNow
+                DateTime = DateTime.UtcNow,
+                PrivacyLevel = rawImage.PrivacyLevel
             };
 
             // Save image record, use the returned id to pull that same record, prep it, and return it to the user.
