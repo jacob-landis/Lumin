@@ -44,4 +44,6 @@
     public static dropdownArrow(): HTMLElement  { return Icons.buildIcon(['sort-down']) }
 
     public static search(): HTMLElement         { return Icons.buildIcon(['search']) }
+
+    public static privacy(): HTMLElement        { return Icons.buildIcon(['unlock']) }
 }

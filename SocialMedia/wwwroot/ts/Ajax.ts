@@ -211,6 +211,10 @@
         );
     }
 
+    public static updateImagePrivacy(imageId: number, privacyLevel: number): void {
+        this.call(`apiimage/updateimageprivacy/${imageId}/${privacyLevel}`, "POST");
+    }
+
     public static getProfileImages(
         profileId: number,
         skip: number,

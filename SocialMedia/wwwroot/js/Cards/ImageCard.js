@@ -28,6 +28,16 @@ var ImageCard = (function (_super) {
                     new ContextOption(Icons.createPost(), 'Post image', function (e) {
                         createPostModal.load(_this);
                     }),
+                    new ContextOption(Icons.privacy(), 'Change privacy', function (e) {
+                        setTimeout(function () {
+                            contextMenu.load(event, [
+                                new ContextOption(ViewUtil.tag('div', { innerText: 'All' }), null, function () { return Ajax.updateImagePrivacy(_this.image.imageId, 0); }),
+                                new ContextOption(ViewUtil.tag('div', { innerText: 'Mutual' }), null, function () { return Ajax.updateImagePrivacy(_this.image.imageId, 1); }),
+                                new ContextOption(ViewUtil.tag('div', { innerText: 'Friends' }), null, function () { return Ajax.updateImagePrivacy(_this.image.imageId, 2); }),
+                                new ContextOption(ViewUtil.tag('div', { innerText: 'None' }), null, function () { return Ajax.updateImagePrivacy(_this.image.imageId, 3); })
+                            ]);
+                        }, 10);
+                    }),
                     new ContextOption(Icons.deleteImage(), 'Delete image', function (e) {
                         confirmPrompt.load('Are you sure you want to delete this image?', function (confirmation) {
                             if (!confirmation)

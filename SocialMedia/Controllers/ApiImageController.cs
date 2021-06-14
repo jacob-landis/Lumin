@@ -61,6 +61,14 @@ namespace SocialMedia.Controllers
         [HttpGet("profileimagescount/{id}")]
         public int ProfileImagesCount(int id) => imageRepo.ByProfileId(id).Count();
 
+        [HttpPost("updateimageprivacy/{imageId}/{privacyLevel}")]
+        public void UpdateImagePrivacy(int imageId, int privacyLevel)
+        {
+            Models.Image image = imageRepo.ById(imageId);
+            image.PrivacyLevel = privacyLevel;
+            imageRepo.SaveImage(image);
+        }
+
         /*
              Deletes an image by ImageID from database and file system, and deletes all dependencies of image (posts, postLikes, comments, commentLikes)
         */

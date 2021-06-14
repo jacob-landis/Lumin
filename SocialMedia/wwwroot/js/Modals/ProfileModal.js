@@ -75,11 +75,16 @@ var ProfileModal = (function (_super) {
                 _this.profilePostsCard.load(profileId);
             else
                 _this.profilePostsCard.setMessage("This user's posts are private.");
-            _this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', _this.imageScrollBox, function (target) {
-                fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
-            });
-            _this.imagesBox.onLoadEnd = function () { return _this.summaryStage.updateStaging(_this.imagesBoxStaged); };
-            _this.imageWrapper.append(_this.imagesBox.rootElm);
+            if (profileCard.profile.profileImagesPrivacyLevel <= profileCard.profile.relationshipTier) {
+                _this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', _this.imageScrollBox, function (target) {
+                    return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
+                });
+                _this.imagesBox.onLoadEnd = function () { return _this.summaryStage.updateStaging(_this.imagesBoxStaged); };
+                _this.imageWrapper.append(_this.imagesBox.rootElm);
+            }
+            else {
+                _this.imageWrapper.innerHTML = "This user's images are private";
+            }
             _super.prototype.open.call(_this);
         });
         if (profileId == User.profileId) {

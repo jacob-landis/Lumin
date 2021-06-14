@@ -94,6 +94,9 @@ var Ajax = (function () {
     Ajax.postImage = function (imageAsString, onCopyResults) {
         this.call("apiimage", "POST", function (imageCopy) { return onCopyResults(new ImageCard(imageCopy)); }, imageAsString);
     };
+    Ajax.updateImagePrivacy = function (imageId, privacyLevel) {
+        this.call("apiimage/updateimageprivacy/" + imageId + "/" + privacyLevel, "POST");
+    };
     Ajax.getProfileImages = function (profileId, skip, take, imageClassList, tooltipMsg, onImageClick, onImageResults) {
         this.call("apiimage/profileimages/" + profileId + "/" + skip + "/" + take, "GET", function (imageResults) { return onImageResults(ImageCard.list(imageResults, imageClassList, tooltipMsg, onImageClick)); });
     };

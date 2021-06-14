@@ -88,6 +88,16 @@
                     new ContextOption(Icons.createPost(), 'Post image', (e: MouseEvent) => {
                         createPostModal.load(this);
                     }),
+                    new ContextOption(Icons.privacy(), 'Change privacy', (e: MouseEvent) => {
+                        setTimeout(() => {
+                            contextMenu.load(event, [
+                                new ContextOption(ViewUtil.tag('div', { innerText: 'All' }),     null, () => Ajax.updateImagePrivacy(this.image.imageId, 0)),
+                                new ContextOption(ViewUtil.tag('div', { innerText: 'Mutual' }),  null, () => Ajax.updateImagePrivacy(this.image.imageId, 1)),
+                                new ContextOption(ViewUtil.tag('div', { innerText: 'Friends' }), null, () => Ajax.updateImagePrivacy(this.image.imageId, 2)),
+                                new ContextOption(ViewUtil.tag('div', { innerText: 'None' }),    null, () => Ajax.updateImagePrivacy(this.image.imageId, 3))
+                            ]);
+                        }, 10);
+                    }),
                     new ContextOption(Icons.deleteImage(), 'Delete image', (e: MouseEvent) => {
                         confirmPrompt.load('Are you sure you want to delete this image?',
                             (confirmation: boolean) => {

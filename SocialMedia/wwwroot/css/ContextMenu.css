@@ -22,6 +22,6 @@
     cursor: pointer;
 }
 
-.context-option > .icon:hover {
+.context-option > .icon:hover, .context-option:hover {
     background: rgb(121, 25, 139);
 }
