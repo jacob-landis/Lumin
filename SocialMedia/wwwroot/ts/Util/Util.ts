@@ -1,5 +1,15 @@
 ﻿class Util {
 
+    public static convertPrivacyLevel(level: number): string {
+        switch (level) {
+            case 0: return 'All';
+            case 1: return 'Mutual friends';
+            case 2: return 'Friends'; 
+            case 3: return 'None';
+        }
+        return 'All';
+    }
+
     public static getElmHeight(elm: HTMLElement): number {
         return Math.max(
             elm.scrollHeight,

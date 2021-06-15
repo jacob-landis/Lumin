@@ -50,6 +50,7 @@ class FullSizeImageModal extends Modal {
         btnPrev: HTMLElement,
         btnNext: HTMLElement,
         imageCount: HTMLElement,
+        private imageOwnership: HTMLElement,
         imageDateTime: HTMLElement,
         imageBoxElm: HTMLElement,
         imageClassList: string
@@ -67,13 +68,20 @@ class FullSizeImageModal extends Modal {
         this.imageClassList = imageClassList;
 
         // Get a handle on a group of HTML elms.
-        this.imageControls = [this.imageCount, this.imageDateTime, this.btnNext, this.btnPrev, Modal.btnClose];
+        this.imageControls = [this.imageCount, this.imageOwnership, this.imageDateTime, this.btnNext, this.btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
         this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', (target: ImageCard) => this.toggleControls());
 
-        this.imageCon.onLoadEnd = () =>
+        this.imageCon.onLoadEnd = () => {
             this.imageDateTime.innerText = `Uploaded on ${Util.formatDateTime(this.imageCon.imageCard.image.dateTime)}`;
+
+            ViewUtil.empty(this.imageOwnership);
+            Ajax.getProfile(this.imageCon.imageCard.image.profileId, (profileCard: ProfileCard) => {
+                let lblPrivacy = ViewUtil.tag('div', { innerText: `Can be seen by: ${Util.convertPrivacyLevel(this.imageCon.imageCard.image.privacyLevel)}` });
+                this.imageOwnership.append(profileCard.rootElm, lblPrivacy);
+            });
+        }
 
         // Set the callback of btnPrev to invoke requestImage with a deincrement.
         this.btnPrev.onclick = (e: MouseEvent) => this.requestImage(this.index - 1);
@@ -229,12 +237,14 @@ class FullSizeImageModal extends Modal {
     private showSingularControls(): void {
         ViewUtil.show(Modal.btnClose);
         ViewUtil.show(this.imageDateTime, 'inline', () => this.imageDateTime.style.display = 'inline');
+        ViewUtil.show(this.imageOwnership, 'inline', () => this.imageOwnership.style.display = 'inline');
         navBar.show();
     }
 
     private hideSingularControls(): void {
         ViewUtil.hide(Modal.btnClose);
         ViewUtil.hide(this.imageDateTime);
+        ViewUtil.hide(this.imageOwnership);
         navBar.hide();
     }
 

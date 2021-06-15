@@ -16,6 +16,8 @@ namespace SocialMedia.Models.ViewModels
         // Datetime that the image was uploaded.
         public DateTime DateTime { get; set; }
 
+        public int PrivacyLevel { get; set; }
+
         // The image in byte array form so it can be sent to client. XXX rename to ByteArrImg
         public byte[] ImageAsByteArray { get; set; }
     }

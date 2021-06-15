@@ -67,7 +67,8 @@ class Main {
             document.getElementById('fullSizeImageModalContent'),
             document.getElementById('btnFullsizePrevious'),
             document.getElementById('btnFullsizeNext'),
-            document.getElementById('imageCount'),
+            document.getElementById('imageCount'), 
+            document.getElementById('imageOwnership'),
             document.getElementById('imageDateTime'),
             document.getElementById('fullsizeImageBox'),
             'fullSizeImage'

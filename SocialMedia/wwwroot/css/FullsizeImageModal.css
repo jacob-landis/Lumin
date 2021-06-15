@@ -63,7 +63,7 @@
     right: 22%;
 }
 
-#imageCount, #imageDateTime {
+#imageCount, #imageDateTime, #imageOwnership {
     position: fixed;
     color: white;
     align-content: center;
@@ -82,4 +82,14 @@
     font-size: 14px;
     left: 45%;
     top: 95%;
+}
+
+#imageOwnership {
+    font-size: 14px;
+    left: 45%;
+    top: 90%;
+}
+
+#imageOwnership > div {
+    display: inline;
 }

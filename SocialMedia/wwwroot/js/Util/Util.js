@@ -1,6 +1,15 @@
 var Util = (function () {
     function Util() {
     }
+    Util.convertPrivacyLevel = function (level) {
+        switch (level) {
+            case 0: return 'All';
+            case 1: return 'Mutual friends';
+            case 2: return 'Friends';
+            case 3: return 'None';
+        }
+        return 'All';
+    };
     Util.getElmHeight = function (elm) {
         return Math.max(elm.scrollHeight, elm.offsetHeight, elm.clientHeight);
     };

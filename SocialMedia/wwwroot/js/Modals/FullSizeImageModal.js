@@ -13,8 +13,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var FullSizeImageModal = (function (_super) {
     __extends(FullSizeImageModal, _super);
-    function FullSizeImageModal(rootElm, btnPrev, btnNext, imageCount, imageDateTime, imageBoxElm, imageClassList) {
+    function FullSizeImageModal(rootElm, btnPrev, btnNext, imageCount, imageOwnership, imageDateTime, imageBoxElm, imageClassList) {
         var _this = _super.call(this, rootElm) || this;
+        _this.imageOwnership = imageOwnership;
         _this.isSingular = null;
         rootElm.onclick = function (event) { if (event.target == rootElm)
             _this.close(); };
@@ -23,10 +24,15 @@ var FullSizeImageModal = (function (_super) {
         _this.imageCount = imageCount;
         _this.imageDateTime = imageDateTime;
         _this.imageClassList = imageClassList;
-        _this.imageControls = [_this.imageCount, _this.imageDateTime, _this.btnNext, _this.btnPrev, Modal.btnClose];
+        _this.imageControls = [_this.imageCount, _this.imageOwnership, _this.imageDateTime, _this.btnNext, _this.btnPrev, Modal.btnClose];
         _this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', function (target) { return _this.toggleControls(); });
         _this.imageCon.onLoadEnd = function () {
-            return _this.imageDateTime.innerText = "Uploaded on " + Util.formatDateTime(_this.imageCon.imageCard.image.dateTime);
+            _this.imageDateTime.innerText = "Uploaded on " + Util.formatDateTime(_this.imageCon.imageCard.image.dateTime);
+            ViewUtil.empty(_this.imageOwnership);
+            Ajax.getProfile(_this.imageCon.imageCard.image.profileId, function (profileCard) {
+                var lblPrivacy = ViewUtil.tag('div', { innerText: "Can be seen by: " + Util.convertPrivacyLevel(_this.imageCon.imageCard.image.privacyLevel) });
+                _this.imageOwnership.append(profileCard.rootElm, lblPrivacy);
+            });
         };
         _this.btnPrev.onclick = function (e) { return _this.requestImage(_this.index - 1); };
         _this.btnNext.onclick = function (e) { return _this.requestImage(_this.index + 1); };
@@ -98,11 +104,13 @@ var FullSizeImageModal = (function (_super) {
         var _this = this;
         ViewUtil.show(Modal.btnClose);
         ViewUtil.show(this.imageDateTime, 'inline', function () { return _this.imageDateTime.style.display = 'inline'; });
+        ViewUtil.show(this.imageOwnership, 'inline', function () { return _this.imageOwnership.style.display = 'inline'; });
         navBar.show();
     };
     FullSizeImageModal.prototype.hideSingularControls = function () {
         ViewUtil.hide(Modal.btnClose);
         ViewUtil.hide(this.imageDateTime);
+        ViewUtil.hide(this.imageOwnership);
         navBar.hide();
     };
     FullSizeImageModal.prototype.toggleControls = function () { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); };
