@@ -160,6 +160,7 @@ var ProfilePostsCard = (function (_super) {
     };
     ProfilePostsCard.prototype.displayPosts = function () {
         ViewUtil.show(this.postBoxes.rootElm, 'block');
+        this.onLoadEnd();
     };
     ProfilePostsCard.prototype.setMessage = function (message) {
         this.mainPostsBox.messageElm.innerText = message;

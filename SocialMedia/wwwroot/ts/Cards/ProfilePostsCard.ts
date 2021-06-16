@@ -3,10 +3,12 @@
     private profileId: number;
 
     private feedFilter: 'recent' | 'likes' | 'comments' = 'recent';
-    
+
+    public onLoadEnd: () => void;
+
     // A PostsBox for displaying a profile's posts.
     private postBoxes: ContentBox; 
-    private mainPostsBox: PostsBox;
+    public mainPostsBox: PostsBox;
     private likedPostsBox: PostsBox; 
     private commentedPostsBox: PostsBox; 
     
@@ -197,6 +199,7 @@
 
     private displayPosts(): void { 
         ViewUtil.show(this.postBoxes.rootElm, 'block');
+        this.onLoadEnd();
     }
 
     public setMessage(message: string): void {

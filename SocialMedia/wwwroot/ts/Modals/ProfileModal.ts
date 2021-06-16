@@ -69,6 +69,11 @@ class ProfileModal extends Modal {
 
         // Construct new Content box and set of friends display.
         this.friendBox = new ContentBox(this.friendBoxElm);
+
+        this.profilePostsCard.onLoadEnd = () => {
+            if (this.profilePostsCard.mainPostsBox.content.length == 0)
+                this.profilePostsCard.mainPostsBox.messageElm.innerText = `No posts were retrieved.`;
+        }
     }
     
     /*
@@ -115,28 +120,28 @@ class ProfileModal extends Modal {
                     this.summaryStage.updateStaging(this.friendsStaged);
                 });
             }
-
-            if (profileCard.profile.profilePostsPrivacyLevel <= profileCard.profile.relationshipTier)
-                this.profilePostsCard.load(profileId);
-            else
-                this.profilePostsCard.setMessage(`This user's posts are private.`);
-
-            if (profileCard.profile.profileImagesPrivacyLevel <= profileCard.profile.relationshipTier) {
-
-                // Construct new ProfileImageBox and set up profile images display.
-                this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', this.imageScrollBox, (target: ImageCard) =>
-
-                    // Set click callback of each image to open a collection in fullzise image modal.
-                    fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
-
-                this.imagesBox.onLoadEnd = () => this.summaryStage.updateStaging(this.imagesBoxStaged);
-
-                // Append new profile images box to container elm.
-                this.imageWrapper.append(this.imagesBox.rootElm);
-            }
             else {
-                this.imageWrapper.innerHTML = `This user's images are private`;
+                this.friendBox.messageElm.innerText = `This user's friends are private.`;
+                this.summaryStage.updateStaging(this.friendsStaged);
             }
+
+            this.profilePostsCard.load(profileId);
+            
+            // Construct new ProfileImageBox and set up profile images display.
+            this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', this.imageScrollBox, (target: ImageCard) =>
+
+                // Set click callback of each image to open a collection in fullzise image modal.
+                fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
+
+            this.imagesBox.onLoadEnd = () => {
+                this.summaryStage.updateStaging(this.imagesBoxStaged);
+
+                if (this.imagesBox.content.length == 0)
+                    this.imageWrapper.innerHTML = 'No images were retrieved.';
+            }
+
+            // Append new profile images box to container elm.
+            this.imageWrapper.append(this.imagesBox.rootElm);
 
             // Open this modal.
             super.open();

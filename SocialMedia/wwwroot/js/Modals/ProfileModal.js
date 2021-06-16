@@ -45,6 +45,10 @@ var ProfileModal = (function (_super) {
             });
         });
         _this.friendBox = new ContentBox(_this.friendBoxElm);
+        _this.profilePostsCard.onLoadEnd = function () {
+            if (_this.profilePostsCard.mainPostsBox.content.length == 0)
+                _this.profilePostsCard.mainPostsBox.messageElm.innerText = "No posts were retrieved.";
+        };
         return _this;
     }
     ProfileModal.prototype.load = function (profileId) {
@@ -71,20 +75,20 @@ var ProfileModal = (function (_super) {
                     _this.summaryStage.updateStaging(_this.friendsStaged);
                 });
             }
-            if (profileCard.profile.profilePostsPrivacyLevel <= profileCard.profile.relationshipTier)
-                _this.profilePostsCard.load(profileId);
-            else
-                _this.profilePostsCard.setMessage("This user's posts are private.");
-            if (profileCard.profile.profileImagesPrivacyLevel <= profileCard.profile.relationshipTier) {
-                _this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', _this.imageScrollBox, function (target) {
-                    return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
-                });
-                _this.imagesBox.onLoadEnd = function () { return _this.summaryStage.updateStaging(_this.imagesBoxStaged); };
-                _this.imageWrapper.append(_this.imagesBox.rootElm);
-            }
             else {
-                _this.imageWrapper.innerHTML = "This user's images are private";
+                _this.friendBox.messageElm.innerText = "This user's friends are private.";
+                _this.summaryStage.updateStaging(_this.friendsStaged);
             }
+            _this.profilePostsCard.load(profileId);
+            _this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', _this.imageScrollBox, function (target) {
+                return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
+            });
+            _this.imagesBox.onLoadEnd = function () {
+                _this.summaryStage.updateStaging(_this.imagesBoxStaged);
+                if (_this.imagesBox.content.length == 0)
+                    _this.imageWrapper.innerHTML = 'No images were retrieved.';
+            };
+            _this.imageWrapper.append(_this.imagesBox.rootElm);
             _super.prototype.open.call(_this);
         });
         if (profileId == User.profileId) {
