@@ -144,29 +144,30 @@ namespace SocialMedia.Controllers
         [HttpGet("profileimages/{id}/{imageCount}/{amount}")]
         public List<RawImage> ProfilesImages(int id, int imageCount, int amount) // (id, skip, take) XXX rename
         {
-            if (profileRepo.ById(id).ProfileImagesPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
-            {
-                // Prep list.
-                List<RawImage> images = new List<RawImage>();
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id);
 
-                // If the requested segment does not start past the end of the list.
-                if (imageCount < imageRepo.CountByProfileId(id))
+            // Prep list.
+            List<RawImage> images = new List<RawImage>();
+
+            // If the requested segment does not start past the end of the list.
+            if (imageCount < imageRepo.CountByProfileId(id))
+            {
+                // Loop though requested segment of profile's images.
+                foreach (Models.Image i in imageRepo.RangeByProfileId(id, imageCount, amount))
                 {
-                    // Loop though requested segment of profile's images.
-                    foreach (Models.Image i in imageRepo.RangeByProfileId(id, imageCount, amount))
+                    if (i.PrivacyLevel <= relationshipTier)
                     {
                         // Add prepped image to list of results.
                         images.Add(Util.GetRawImage(i, true));
                     }
-
-                    // Return the results.
-                    return images;
                 }
 
-                // If no images fall in the requested range, return null.
-                else return null;
+                // Return the results.
+                if (images.Count != 0) return images;
             }
-            else return null;
+
+            // If no images fall in the requested range, return null.
+            return null;
         }
 
         /*
