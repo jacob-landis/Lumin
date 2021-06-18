@@ -15,6 +15,8 @@ namespace SocialMedia.Models.ViewModels
         // The datetime that the post was created.
         public DateTime DateTime { get; set; }
 
+        public int PrivacyLevel { get; set; }
+
         // The profile of the owner of the post.
         public ProfileModel Profile { get; set; }
 

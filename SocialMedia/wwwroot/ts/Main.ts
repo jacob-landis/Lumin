@@ -59,6 +59,7 @@ class Main {
             document.getElementById('btnClearAttachment'),
             document.getElementById('selectedImageCon'),
             document.getElementById('lblCaptionCharacterCount'),
+            <HTMLSelectElement>document.getElementById('postPrivacySetting'),
             'selectedPostImage',
             'createPostErrorBox'
         );

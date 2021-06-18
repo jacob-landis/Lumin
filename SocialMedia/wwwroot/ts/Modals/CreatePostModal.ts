@@ -35,6 +35,7 @@ class CreatePostModal extends Modal {
         btnClearAttachment: HTMLElement,
         imageBoxElm: HTMLElement,
         private lblCaptionCharacterCount: HTMLElement,
+        private selectPostPrivacy: HTMLSelectElement,
         imageClassList: string,
         contentBoxElmId: string
     ) {
@@ -188,8 +189,10 @@ class CreatePostModal extends Modal {
             // Set imageId of post to the attached image's id or to 0 if no image was attached.
             let imageId: number = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.imageId : 0;
 
+            let privacyLevel = this.selectPostPrivacy.selectedIndex;
+
             // Prep the caption and ImageID to be sent off.
-            let post: string = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId }); // XXX there is a method in Repo for this. XXX
+            let post: string = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId, PrivacyLevel: privacyLevel }); // XXX there is a method in Repo for this. XXX
 
             // Send post to host in a post request. XXX put post in a PostRecord XXX
             Ajax.submitPost(post,

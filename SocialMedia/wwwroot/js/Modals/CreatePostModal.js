@@ -13,9 +13,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var CreatePostModal = (function (_super) {
     __extends(CreatePostModal, _super);
-    function CreatePostModal(rootElm, txtCaption, captionWrapper, btnSubmit, btnClearAttachment, imageBoxElm, lblCaptionCharacterCount, imageClassList, contentBoxElmId) {
+    function CreatePostModal(rootElm, txtCaption, captionWrapper, btnSubmit, btnClearAttachment, imageBoxElm, lblCaptionCharacterCount, selectPostPrivacy, imageClassList, contentBoxElmId) {
         var _this = _super.call(this, rootElm) || this;
         _this.lblCaptionCharacterCount = lblCaptionCharacterCount;
+        _this.selectPostPrivacy = selectPostPrivacy;
         _this.maxLength = 1000;
         _this.txtCaption = txtCaption;
         _this.captionWrapper = captionWrapper;
@@ -77,7 +78,8 @@ var CreatePostModal = (function (_super) {
         }
         else {
             var imageId = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.imageId : 0;
-            var post = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId });
+            var privacyLevel = this.selectPostPrivacy.selectedIndex;
+            var post = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId, PrivacyLevel: privacyLevel });
             Ajax.submitPost(post, function (post) {
                 PostsBox.postBoxes.forEach(function (p) {
                     if (p.profileId == User.profileId)
