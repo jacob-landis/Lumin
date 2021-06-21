@@ -13,9 +13,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var FullSizeImageModal = (function (_super) {
     __extends(FullSizeImageModal, _super);
-    function FullSizeImageModal(rootElm, btnPrev, btnNext, imageCount, imageOwnership, imageDateTime, imageBoxElm, imageClassList) {
+    function FullSizeImageModal(rootElm, btnPrev, btnNext, imageCount, imageOwnership, imageOwner, imagePrivacy, selectImagePrivacy, imageDateTime, imageBoxElm, imageClassList) {
         var _this = _super.call(this, rootElm) || this;
         _this.imageOwnership = imageOwnership;
+        _this.imageOwner = imageOwner;
+        _this.imagePrivacy = imagePrivacy;
+        _this.selectImagePrivacy = selectImagePrivacy;
         _this.isSingular = null;
         rootElm.onclick = function (event) { if (event.target == rootElm)
             _this.close(); };
@@ -28,11 +31,22 @@ var FullSizeImageModal = (function (_super) {
         _this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', function (target) { return _this.toggleControls(); });
         _this.imageCon.onLoadEnd = function () {
             _this.imageDateTime.innerText = "Uploaded on " + Util.formatDateTime(_this.imageCon.imageCard.image.dateTime);
-            ViewUtil.empty(_this.imageOwnership);
-            Ajax.getProfile(_this.imageCon.imageCard.image.profileId, function (profileCard) {
-                var lblPrivacy = ViewUtil.tag('div', { innerText: "Can be seen by: " + Util.convertPrivacyLevel(_this.imageCon.imageCard.image.privacyLevel) });
-                _this.imageOwnership.append(profileCard.rootElm, lblPrivacy);
-            });
+            if (_this.imageCon.imageCard.image.profileId == User.profileId) {
+                ViewUtil.hide(_this.imageOwner);
+                ViewUtil.show(_this.imagePrivacy);
+                _this.selectImagePrivacy.value = "" + _this.imageCon.imageCard.image.privacyLevel;
+            }
+            else {
+                ViewUtil.hide(_this.imagePrivacy);
+                ViewUtil.show(_this.imageOwner);
+                ViewUtil.empty(_this.imageOwner);
+                Ajax.getProfile(_this.imageCon.imageCard.image.profileId, function (profileCard) {
+                    _this.imageOwner.append(profileCard.rootElm);
+                });
+            }
+        };
+        _this.selectImagePrivacy.onchange = function () {
+            Ajax.updateImagePrivacy(_this.imageCon.imageCard.image.imageId, _this.selectImagePrivacy.selectedIndex);
         };
         _this.btnPrev.onclick = function (e) { return _this.requestImage(_this.index - 1); };
         _this.btnNext.onclick = function (e) { return _this.requestImage(_this.index + 1); };

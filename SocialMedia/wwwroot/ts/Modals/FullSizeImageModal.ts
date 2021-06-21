@@ -51,6 +51,9 @@ class FullSizeImageModal extends Modal {
         btnNext: HTMLElement,
         imageCount: HTMLElement,
         private imageOwnership: HTMLElement,
+        private imageOwner: HTMLElement,
+        private imagePrivacy: HTMLElement,
+        private selectImagePrivacy: HTMLSelectElement,
         imageDateTime: HTMLElement,
         imageBoxElm: HTMLElement,
         imageClassList: string
@@ -75,13 +78,25 @@ class FullSizeImageModal extends Modal {
 
         this.imageCon.onLoadEnd = () => {
             this.imageDateTime.innerText = `Uploaded on ${Util.formatDateTime(this.imageCon.imageCard.image.dateTime)}`;
-
-            ViewUtil.empty(this.imageOwnership);
-            Ajax.getProfile(this.imageCon.imageCard.image.profileId, (profileCard: ProfileCard) => {
-                let lblPrivacy = ViewUtil.tag('div', { innerText: `Can be seen by: ${Util.convertPrivacyLevel(this.imageCon.imageCard.image.privacyLevel)}` });
-                this.imageOwnership.append(profileCard.rootElm, lblPrivacy);
-            });
+            
+            if (this.imageCon.imageCard.image.profileId == User.profileId) {
+                ViewUtil.hide(this.imageOwner);
+                ViewUtil.show(this.imagePrivacy);
+                this.selectImagePrivacy.value = `${this.imageCon.imageCard.image.privacyLevel}`;
+            }
+            else {
+                ViewUtil.hide(this.imagePrivacy);
+                ViewUtil.show(this.imageOwner);
+                ViewUtil.empty(this.imageOwner);
+                Ajax.getProfile(this.imageCon.imageCard.image.profileId, (profileCard: ProfileCard) => {
+                    this.imageOwner.append(profileCard.rootElm);
+                });
+            }
         }
+
+        this.selectImagePrivacy.onchange = () => {
+            Ajax.updateImagePrivacy(this.imageCon.imageCard.image.imageId, this.selectImagePrivacy.selectedIndex);
+        };
 
         // Set the callback of btnPrev to invoke requestImage with a deincrement.
         this.btnPrev.onclick = (e: MouseEvent) => this.requestImage(this.index - 1);

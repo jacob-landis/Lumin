@@ -70,6 +70,9 @@ class Main {
             document.getElementById('btnFullsizeNext'),
             document.getElementById('imageCount'), 
             document.getElementById('imageOwnership'),
+            document.getElementById('imageOwner'),
+            document.getElementById('FSIMImagePrivacy'),
+            <HTMLSelectElement>document.getElementById('selectFSIMImagePrivacy'),
             document.getElementById('imageDateTime'),
             document.getElementById('fullsizeImageBox'),
             'fullSizeImage'

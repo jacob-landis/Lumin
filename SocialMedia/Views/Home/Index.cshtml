@@ -364,7 +364,18 @@
     @* Display image count in an image collection. (Ex. "7/10") *@
     <div id="imageCount"></div>
 
-    <div id="imageOwnership"></div>
+    <div id="imageOwnership">
+        <div id="imageOwner"></div>
+        <div id="FSIMImagePrivacy">
+            <label for="selectFSIMImagePrivacy">Privacy level:</label>
+            <select id="selectFSIMImagePrivacy">
+                <option value="0">All</option>
+                <option value="1">Mutal friends</option>
+                <option value="2">Friends</option>
+                <option value="3">None</option>
+            </select>
+        </div>
+    </div>
 
     <div id="imageDateTime"></div>
 
