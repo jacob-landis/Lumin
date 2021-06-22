@@ -146,6 +146,16 @@
 
             btnPostOpts.onclick = (e: MouseEvent) => contextMenu.load(e, [
                 new ContextOption(this.editIcon, 'Edit post caption', (e: MouseEvent) => this.captionEditor.start()),
+                new ContextOption(Icons.privacy(), 'Change privacy', (e: MouseEvent) => {
+                    setTimeout(() => {
+                        contextMenu.load(e, [
+                            new ContextOption(ViewUtil.tag('div', { innerText: 'All' }), null, () => Ajax.updatePostPrivacy(this.post.postId, 0)),
+                            new ContextOption(ViewUtil.tag('div', { innerText: 'Mutual' }), null, () => Ajax.updatePostPrivacy(this.post.postId, 1)),
+                            new ContextOption(ViewUtil.tag('div', { innerText: 'Friends' }), null, () => Ajax.updatePostPrivacy(this.post.postId, 2)),
+                            new ContextOption(ViewUtil.tag('div', { innerText: 'None' }), null, () => Ajax.updatePostPrivacy(this.post.postId, 3))
+                        ]);
+                    }, 10);
+                }),
                 new ContextOption(Icons.deletePost(), 'Delete post', (e: MouseEvent) =>
                     confirmPrompt.load('Are you sure you want to delete this post?', (confirmation: boolean) => {
                         if (!confirmation) return;

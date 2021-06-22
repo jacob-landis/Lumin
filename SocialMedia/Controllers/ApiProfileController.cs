@@ -200,7 +200,12 @@ namespace SocialMedia.Controllers
                 FirstName = currentProfile.profile.FirstName,
                 LastName = currentProfile.profile.LastName,
                 Bio = currentProfile.profile.Bio,
-                ProfilePicture = currentProfile.profile.ProfilePicture
+                ProfilePicture = currentProfile.profile.ProfilePicture,
+                ProfilePicturePrivacyLevel = currentProfile.profile.ProfilePicturePrivacyLevel,
+                ProfileBioPrivacyLevel = currentProfile.profile.ProfileBioPrivacyLevel,
+                ProfileImagesPrivacyLevel = currentProfile.profile.ProfileImagesPrivacyLevel,
+                ProfileFriendsPrivacyLevel = currentProfile.profile.ProfileFriendsPrivacyLevel,
+                ProfilePostsPrivacyLevel = currentProfile.profile.ProfilePostsPrivacyLevel,
             };
     }
 }

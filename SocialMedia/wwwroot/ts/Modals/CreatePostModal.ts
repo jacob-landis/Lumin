@@ -95,6 +95,8 @@ class CreatePostModal extends Modal {
             ViewUtil.show(this.btnClearAttachment, "inline");
         });
 
+        this.selectPostPrivacy.value = `${User.postsPrivacyLevel}`;
+
         // Open this modal.
         this.open();
     }

@@ -19,6 +19,11 @@ class Main {
 
         User.profileId = profile.profileId;
         User.profilePictureId = profile.profilePicture;
+        User.profilePicturePrivacyLevel = profile.profilePicturePrivacyLevel;
+        User.bioPrivacyLevel = profile.profileBioPrivacyLevel;
+        User.imagesPrivacyLevel = profile.profileImagesPrivacyLevel;
+        User.friendsPrivacyLevel = profile.profileFriendsPrivacyLevel;
+        User.postsPrivacyLevel = profile.profilePostsPrivacyLevel;
 
         navBar = new NavBar(
             document.getElementById('navBar'),

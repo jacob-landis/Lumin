@@ -55,6 +55,7 @@ var UploadImageModal = (function (_super) {
             if (!isValidType)
                 this.displayError('- The file you selected is not a valid image type (png, jpg or tif)');
         }
+        this.selectPrivacySetting.value = "" + User.imagesPrivacyLevel;
         _super.prototype.open.call(this);
     };
     UploadImageModal.prototype.stageFile = function () {

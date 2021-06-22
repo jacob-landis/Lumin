@@ -112,6 +112,9 @@ var Ajax = (function () {
     Ajax.deletePost = function (postId) {
         this.call("apipost/deletepost/" + postId, "POST");
     };
+    Ajax.updatePostPrivacy = function (postId, privacyLevel) {
+        this.call("apipost/updatepostprivacy/" + postId + "/" + privacyLevel, "POST");
+    };
     Ajax.updatePost = function (postId, postCaptionText) {
         this.call("apipost/updatepost/" + postId, "POST", null, this.JSONstring(postCaptionText));
     };

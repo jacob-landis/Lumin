@@ -124,6 +124,8 @@ class UploadImageModal extends Modal {
             if (!isValidType) this.displayError('- The file you selected is not a valid image type (png, jpg or tif)');
         }
 
+        this.selectPrivacySetting.value = `${User.imagesPrivacyLevel}`;
+
         super.open();
     }
 

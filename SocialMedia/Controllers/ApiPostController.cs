@@ -90,6 +90,14 @@ namespace SocialMedia.Controllers
             }
         }
 
+        [HttpPost("updatepostprivacy/{postId}/{privacyLevel}")]
+        public void UpdatePostPrivacy(int postId, int privacyLevel)
+        {
+            Post post = postRepo.ById(postId);
+            post.PrivacyLevel = privacyLevel;
+            postRepo.SavePost(post);
+        }
+
         /*
              Update the caption of a post.
         */

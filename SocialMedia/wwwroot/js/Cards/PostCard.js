@@ -58,6 +58,16 @@ var PostCard = (function (_super) {
             postOptsSlot.append(btnPostOpts);
             btnPostOpts.onclick = function (e) { return contextMenu.load(e, [
                 new ContextOption(_this.editIcon, 'Edit post caption', function (e) { return _this.captionEditor.start(); }),
+                new ContextOption(Icons.privacy(), 'Change privacy', function (e) {
+                    setTimeout(function () {
+                        contextMenu.load(e, [
+                            new ContextOption(ViewUtil.tag('div', { innerText: 'All' }), null, function () { return Ajax.updatePostPrivacy(_this.post.postId, 0); }),
+                            new ContextOption(ViewUtil.tag('div', { innerText: 'Mutual' }), null, function () { return Ajax.updatePostPrivacy(_this.post.postId, 1); }),
+                            new ContextOption(ViewUtil.tag('div', { innerText: 'Friends' }), null, function () { return Ajax.updatePostPrivacy(_this.post.postId, 2); }),
+                            new ContextOption(ViewUtil.tag('div', { innerText: 'None' }), null, function () { return Ajax.updatePostPrivacy(_this.post.postId, 3); })
+                        ]);
+                    }, 10);
+                }),
                 new ContextOption(Icons.deletePost(), 'Delete post', function (e) {
                     return confirmPrompt.load('Are you sure you want to delete this post?', function (confirmation) {
                         if (!confirmation)

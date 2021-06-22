@@ -45,6 +45,7 @@ var CreatePostModal = (function (_super) {
                 _this.selectedImageBox.loadImage(imageCard);
                 ViewUtil.show(_this.btnClearAttachment, "inline");
             });
+        this.selectPostPrivacy.value = "" + User.postsPrivacyLevel;
         this.open();
     };
     CreatePostModal.prototype.loadPaperClip = function () {

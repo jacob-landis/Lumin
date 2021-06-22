@@ -259,6 +259,10 @@
         this.call(`apipost/deletepost/${postId}`, "POST");
     }
 
+    public static updatePostPrivacy(postId: number, privacyLevel: number) {
+        this.call(`apipost/updatepostprivacy/${postId}/${privacyLevel}`, "POST");
+    }
+
     public static updatePost(postId: number, postCaptionText: string): void {
         this.call(`apipost/updatepost/${postId}`, "POST", null, this.JSONstring(postCaptionText));
     }
