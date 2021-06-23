@@ -341,39 +341,45 @@ namespace SocialMedia.Controllers
             // Get handle on profile picture of owner of post.
             Image profilePicture = imageRepo.ById(profile.ProfilePicture);
 
-            // Prep post.
-            PostModel postModel = new PostModel
+            string relationToUser = friendRepo.RelationToUser(currentProfile.id, profile.ProfileId);
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.id, profile.ProfileId);
+
+            if (post.PrivacyLevel <= relationshipTier)
             {
-                // Details from post record.
-                PostId = post.PostId,
-                Caption = post.Caption,
-                DateTime = post.DateTime.ToLocalTime(),
-
-                // Prep profile card.
-                Profile = Util.GetProfileModel(profile, profilePicture, 
-                    friendRepo.RelationToUser(currentProfile.id, profile.ProfileId), friendRepo.RelationshipTier(currentProfile.id, profile.ProfileId)),
-
-                // Prep like card.
-                Likes = new LikeModel
+                // Prep post.
+                PostModel postModel = new PostModel
                 {
-                    ContentId = id,
-                    ContentType = 1,
-                    Count = likeRepo.CountByContentId(1, id),
-                    HasLiked = likeRepo.HasLiked(1, id, currentProfile.id)
-                },
+                    // Details from post record.
+                    PostId = post.PostId,
+                    Caption = post.Caption,
+                    DateTime = post.DateTime.ToLocalTime(),
 
-                // Prep post image. XXX what if it doesn't have an image?
-                Image = Util.GetRawImage(imageRepo.ById(post.ImageId), false)
-            };
+                    // Prep profile card.
+                    Profile = Util.GetProfileModel(profile, profilePicture, relationToUser, relationshipTier),
 
-            // If the post does not have an image, set the image field to null.
-            if (post.ImageId == 0) postModel.Image = null;
+                    // Prep like card.
+                    Likes = new LikeModel
+                    {
+                        ContentId = id,
+                        ContentType = 1,
+                        Count = likeRepo.CountByContentId(1, id),
+                        HasLiked = likeRepo.HasLiked(1, id, currentProfile.id)
+                    },
 
-            // Else attach prepped image. XXX I think this is handled above.
-            else postModel.Image = Util.GetRawImage(imageRepo.ById(post.ImageId), false);
+                    // Prep post image. XXX what if it doesn't have an image?
+                    Image = Util.GetRawImage(imageRepo.ById(post.ImageId), false)
+                };
 
-            // Return prepped post to caller.
-            return postModel;
+                // If the post does not have an image, set the image field to null.
+                if (post.ImageId == 0) postModel.Image = null;
+
+                // Else attach prepped image. XXX I think this is handled above.
+                else postModel.Image = Util.GetRawImage(imageRepo.ById(post.ImageId), false);
+
+                // Return prepped post to caller.
+                return postModel;
+            }
+            return null;
         }
     }
 }
