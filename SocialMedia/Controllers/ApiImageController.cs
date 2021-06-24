@@ -182,8 +182,10 @@ namespace SocialMedia.Controllers
 
             bool imageIsInPost = postRepo.ByProfileId(image.ProfileId).Any((Post p) => p.ImageId == image.ImageId);
 
-            // If ((imageIsProfilePicture AND hasProfilePictureAccess) OR (imageIsInPost AND hasPostAccess))
-            if ((profile.ProfilePicture == id && profile.ProfilePicturePrivacyLevel <= relationshipTier)
+            // If profile has direct or indirect access.
+            // If (hasAccess OR (imageIsProfilePicture AND hasProfilePictureAccess) OR (imageIsInPost AND hasPostAccess))
+            if (image.PrivacyLevel <= relationshipTier
+                || (profile.ProfilePicture == id && profile.ProfilePicturePrivacyLevel <= relationshipTier)
                 || (imageIsInPost && profile.ProfilePostsPrivacyLevel <= relationshipTier))
                 return Util.GetRawImage(image, thumb == 1);
 
