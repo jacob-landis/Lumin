@@ -75,6 +75,8 @@ namespace SocialMedia.Controllers
 
             if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
                 fullProfileModel.ProfilePicture = Util.GetRawImage(image, false);
+            else
+                fullProfileModel.ProfilePicture = Util.GetRawImage(new Models.Image(), false);
 
             return fullProfileModel;
         }
