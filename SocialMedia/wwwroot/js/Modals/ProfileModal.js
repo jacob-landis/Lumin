@@ -139,8 +139,9 @@ var ProfileModal = (function (_super) {
         this.nameEditor.setText2('', '');
         this.bioEditor.setText('');
         this.friendBox.clear();
-        this.profilePostsCard.clear();
+        ViewUtil.empty(this.friendBoxElm);
         this.friendBox = new ContentBox(this.friendBoxElm);
+        this.profilePostsCard.clear();
         this.summaryStageContainers.forEach(function (container) {
             container.style.opacity = '0';
             ViewUtil.hide(container);

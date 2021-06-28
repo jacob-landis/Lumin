@@ -246,9 +246,10 @@ class ProfileModal extends Modal {
         // Construct new Content box and set of friends display.
         // Clear friends box and posts box.
         this.friendBox.clear();
-        this.profilePostsCard.clear();
+        ViewUtil.empty(this.friendBoxElm);
         this.friendBox = new ContentBox(this.friendBoxElm);
 
+        this.profilePostsCard.clear();
 
         // Change style to 'blank' state.
         this.summaryStageContainers.forEach((container: HTMLElement) => {
