@@ -41,18 +41,15 @@ namespace SocialMedia.Controllers
         [HttpPost("friends/{id}")]
         public List<ProfileModel> GetFriends(int id, [FromBody] StringModel search)
         {
-            if (profileRepo.ById(id).ProfileFriendsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
-            {
-                // If ID is provided, return friends by ProfileID.
-                if (id != 0) return ProfileFriends(id);
+            // If ID is provided and the user has access, return friends by ProfileID.
+            if (id != 0 && profileRepo.ById(id).ProfileFriendsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
+                return ProfileFriends(id);
 
-                // If search string is provided, return profile search results.
-                if (search.str != "NULL") return Search(search.str);
+            // If search string is provided, return profile search results.
+            if (search.str != "NULL") return Search(search.str);
             
-                // If no ID or search string was provided, return the current user's friend requests.
-                return FriendRequests();
-            }
-            return null;
+            // If no ID or search string was provided, return the current user's friend requests.
+            return FriendRequests();
         }
 
         /*

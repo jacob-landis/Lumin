@@ -23,6 +23,8 @@ class CreatePostModal extends Modal {
 
     private maxLength: number = 1000;
 
+    private privacyWarning: IAppendable;
+
     /*
         Gets handles on all necessary components.
         Sets up event listeners.
@@ -49,6 +51,13 @@ class CreatePostModal extends Modal {
 
         // Construct a content box for errors and get a handle on it.
         this.errorBox = new ContentBox(document.getElementById(contentBoxElmId));
+
+        this.privacyWarning = {
+            rootElm: ViewUtil.tag('div', {
+                classList: 'errorMsg',
+                innerText: '- Warning: This image is more private than this post. The image will be visible in this post to anyone who can see this post.'
+            })
+        };
 
         // Append the error box's main tag to the caption wrapper.
         this.captionWrapper.append(this.errorBox.rootElm);
@@ -89,14 +98,16 @@ class CreatePostModal extends Modal {
     public load(imageCard?: ImageCard): void {
         
         // Wait for fullsize image.
-        if (imageCard != null) Ajax.getImage(imageCard.image.imageId, false, null, "Attach image", null, (imageCard: ImageCard) => {
-
-            this.selectedImageBox.loadImage(imageCard);
-            ViewUtil.show(this.btnClearAttachment, "inline");
-        });
+        if (imageCard != null) {
+            Ajax.getImage(imageCard.image.imageId, false, null, "Attach image", null, (imageCard: ImageCard) => {
+                this.selectedImageBox.loadImage(imageCard);
+                ViewUtil.show(this.btnClearAttachment, "inline");
+                this.checkPrivacy();
+            });
+        }
 
         this.selectPostPrivacy.value = `${User.postsPrivacyLevel}`;
-
+        
         // Open this modal.
         this.open();
     }
@@ -122,6 +133,8 @@ class CreatePostModal extends Modal {
 
         // Append paper clip icon to selected image container.
         this.selectedImageBox.rootElm.append(paperClip);
+
+        this.errorBox.remove(this.privacyWarning);
     }
 
     /*
@@ -144,6 +157,8 @@ class CreatePostModal extends Modal {
 
                 // Load image into selected image container by id so the fullsize version is requested and displayed.
                 this.selectedImageBox.load(imageCard.image.imageId, null, 'Attach to post');
+
+                this.checkPrivacy(imageCard);
 
                 ViewUtil.show(this.btnClearAttachment);
 
@@ -216,6 +231,20 @@ class CreatePostModal extends Modal {
             // Close this modal.
             this.close();
         }
+
+        this.checkPrivacy();
+    }
+
+    /*
+        Outputs a warning to the user if there is a potential privacy leak.
+        Removes old message if one exists and the potential risk is gone.
+    */
+    public checkPrivacy(imageCard?: ImageCard): void {
+
+        let imagePrivacy: number = imageCard ? imageCard.image.privacyLevel : this.selectedImageBox.imageCard.image.privacyLevel;
+
+        if (imagePrivacy > this.selectPostPrivacy.selectedIndex) this.errorBox.add(this.privacyWarning);
+        else this.errorBox.remove(this.privacyWarning)
     }
 
     /*

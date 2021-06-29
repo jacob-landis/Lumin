@@ -86,13 +86,16 @@ namespace SocialMedia.Models
 
         public bool IsMutualFriend(int currentUserId, int? profileId)
         {
-            List<int?> otherUsersFriends = ProfileFriends(profileId);
-
-            foreach(int id in ProfileFriends(currentUserId))
+            if (RelationToUser(currentUserId, profileId) != "friend")
             {
-                foreach(int otherId in otherUsersFriends)
+                List<int?> otherUsersFriends = ProfileFriends(profileId);
+
+                foreach(int id in ProfileFriends(currentUserId))
                 {
-                    if (id == otherId) return true;
+                    foreach(int otherId in otherUsersFriends)
+                    {
+                        if (id == otherId) return true;
+                    }
                 }
             }
             return false;

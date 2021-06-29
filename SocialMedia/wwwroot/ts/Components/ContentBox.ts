@@ -205,6 +205,17 @@ class ContentBox implements IAppendable {
         }
     }
 
+    public remove(appendable: IAppendable): void {
+
+        this.content.forEach((c: IAppendable) => {
+            if (c == appendable) {
+                this.content.splice(this.content.indexOf(appendable), 1);
+                ViewUtil.remove(c.rootElm);
+                return;
+            }
+        });
+    }
+
     /*
         Clears this content array and rootElm.
     */

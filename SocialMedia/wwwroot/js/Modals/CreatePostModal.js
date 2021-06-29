@@ -23,6 +23,12 @@ var CreatePostModal = (function (_super) {
         _this.btnSubmit = btnSubmit;
         _this.btnClearAttachment = btnClearAttachment;
         _this.errorBox = new ContentBox(document.getElementById(contentBoxElmId));
+        _this.privacyWarning = {
+            rootElm: ViewUtil.tag('div', {
+                classList: 'errorMsg',
+                innerText: '- Warning: This image is more private than this post. The image will be visible in this post to anyone who can see this post.'
+            })
+        };
         _this.captionWrapper.append(_this.errorBox.rootElm);
         _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image', function (targetImageCard) { return _this.selectImage(); });
         _this.btnClearAttachment.onclick = function (e) { return _this.loadPaperClip(); };
@@ -40,11 +46,13 @@ var CreatePostModal = (function (_super) {
     }
     CreatePostModal.prototype.load = function (imageCard) {
         var _this = this;
-        if (imageCard != null)
+        if (imageCard != null) {
             Ajax.getImage(imageCard.image.imageId, false, null, "Attach image", null, function (imageCard) {
                 _this.selectedImageBox.loadImage(imageCard);
                 ViewUtil.show(_this.btnClearAttachment, "inline");
+                _this.checkPrivacy();
             });
+        }
         this.selectPostPrivacy.value = "" + User.postsPrivacyLevel;
         this.open();
     };
@@ -55,11 +63,13 @@ var CreatePostModal = (function (_super) {
         var paperClip = Icons.paperClip();
         paperClip.onclick = function () { return _this.selectImage(); };
         this.selectedImageBox.rootElm.append(paperClip);
+        this.errorBox.remove(this.privacyWarning);
     };
     CreatePostModal.prototype.selectImage = function () {
         var _this = this;
         imageDropdown.load(User.profileId, "Select an image", 'Attach image to post', function (imageCard) {
             _this.selectedImageBox.load(imageCard.image.imageId, null, 'Attach to post');
+            _this.checkPrivacy(imageCard);
             ViewUtil.show(_this.btnClearAttachment);
             imageDropdown.close();
         });
@@ -90,6 +100,14 @@ var CreatePostModal = (function (_super) {
             this.txtCaption.value = '';
             this.close();
         }
+        this.checkPrivacy();
+    };
+    CreatePostModal.prototype.checkPrivacy = function (imageCard) {
+        var imagePrivacy = imageCard ? imageCard.image.privacyLevel : this.selectedImageBox.imageCard.image.privacyLevel;
+        if (imagePrivacy > this.selectPostPrivacy.selectedIndex)
+            this.errorBox.add(this.privacyWarning);
+        else
+            this.errorBox.remove(this.privacyWarning);
     };
     CreatePostModal.prototype.close = function () {
         var _this = this;

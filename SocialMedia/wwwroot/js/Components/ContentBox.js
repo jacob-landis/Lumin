@@ -105,6 +105,16 @@ var ContentBox = (function () {
                 this.onLoadEnd();
         }
     };
+    ContentBox.prototype.remove = function (appendable) {
+        var _this = this;
+        this.content.forEach(function (c) {
+            if (c == appendable) {
+                _this.content.splice(_this.content.indexOf(appendable), 1);
+                ViewUtil.remove(c.rootElm);
+                return;
+            }
+        });
+    };
     ContentBox.prototype.clear = function () {
         this.content = [];
         ViewUtil.empty(this.contentElm);
