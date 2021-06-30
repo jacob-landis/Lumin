@@ -176,6 +176,8 @@ namespace SocialMedia.Controllers
         [HttpGet("{id}/{thumb}")] // thumb will be 1 or 0. 0 meaning fullsize, 1 meaning thumbnail.
         public RawImage Get(int id, int thumb)
         {
+            if (id == 0) return Util.GetRawImage(new Models.Image(), thumb == 1);
+
             Models.Image image = imageRepo.ById(id);
             Profile profile = profileRepo.ById(image.ProfileId);
             int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profile.ProfileId);
