@@ -51,7 +51,10 @@
         let isFriendOrMe: boolean = this.profile.relationToUser == 'friend' || this.profile.relationToUser == 'me'
 
         // card click
-        this.rootElm.onclick = e => profileModal.load(this.profile.profileId);
+        this.rootElm.onclick = e => {
+            if (e.target == this.rootElm || e.target == this.txtName || e.target == this.imageBox.imageCard.rootElm)
+                profileModal.load(this.profile.profileId);
+        }
 
         if (this.profile.relationToUser != 'me') {
             

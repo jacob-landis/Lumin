@@ -22,7 +22,10 @@ var ProfileCard = (function (_super) {
         _this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: _this.profile.firstName + " " + _this.profile.lastName });
         _this.rootElm.append(_this.imageBox.rootElm, _this.txtName);
         var isFriendOrMe = _this.profile.relationToUser == 'friend' || _this.profile.relationToUser == 'me';
-        _this.rootElm.onclick = function (e) { return profileModal.load(_this.profile.profileId); };
+        _this.rootElm.onclick = function (e) {
+            if (e.target == _this.rootElm || e.target == _this.txtName || e.target == _this.imageBox.imageCard.rootElm)
+                profileModal.load(_this.profile.profileId);
+        };
         if (_this.profile.relationToUser != 'me') {
             _this.relationCard = new RelationCard(profile);
             if (includeRelationButton) {
