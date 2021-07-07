@@ -45,6 +45,12 @@ namespace SocialMedia.Models
             Get list of all profiles excluding the one belonging to the current user.
         */
         public IEnumerable<Profile> ExceptCurrentProfile => context.Profiles.Where(p => p.ProfileId != currentProfile.id);
+
+        public void DeleteProfile(Profile profile)
+        {
+            context.Remove(profile);
+            context.SaveChanges();
+        }
         // END SHORTCUTS
 
         /*

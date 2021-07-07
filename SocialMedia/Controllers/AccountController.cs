@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SocialMedia.Models;
 using SocialMedia.Models.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SocialMedia.Controllers
 {
@@ -20,20 +21,38 @@ namespace SocialMedia.Controllers
         private SignInManager<IdentityUser> signInManager;
         private IPasswordHasher<IdentityUser> passwordHasher; // XXX WHERE IS THIS USED?
         private IProfileRepository profileRepo;
+        private IPostRepository postRepo;
+        private IImageRepository imageRepo;
+        private IFriendRepository friendRepo;
+        private ILikeRepository likeRepo;
+        private ICommentRepository commentRepo;
         private CurrentProfile currentProfile;
+        private readonly IHostingEnvironment env; // Used to deal with server files.
 
         public AccountController(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            IPasswordHasher<IdentityUser> passwordHasher,
-            IProfileRepository profileRepo, 
-            CurrentProfile currentProfile)
+            IPasswordHasher<IdentityUser> passwordHasher, 
+            IProfileRepository profileRepo,
+            IPostRepository postRepo,
+            IImageRepository imageRepo,
+            IFriendRepository friendRepo,
+            ILikeRepository likeRepo,
+            ICommentRepository commentRepo,
+            CurrentProfile currentProfile,
+            IHostingEnvironment env)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.passwordHasher = passwordHasher;
             this.profileRepo = profileRepo;
+            this.postRepo = postRepo;
+            this.imageRepo = imageRepo;
+            this.friendRepo = friendRepo;
+            this.likeRepo = likeRepo;
+            this.commentRepo = commentRepo;
             this.currentProfile = currentProfile;
+            this.env = env;
         }
 
         [HttpPost]
@@ -152,6 +171,42 @@ namespace SocialMedia.Controllers
             return Redirect("Login"); // return login page
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Delete() => View("Delete");
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(DeleteModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // get IdentityUser by UserName (email is used for that)
+                IdentityUser user = await userManager.FindByNameAsync(model.Email);
+                if (user != null) // if there was a result
+                {
+                    await signInManager.SignOutAsync(); // sign out current user in this session
+
+                    // attempt sign in with aquired IdentityUser and provided password
+                    if ((await signInManager.PasswordSignInAsync(user, model.Password, false, false)).Succeeded) // if signed in
+                    {
+                        // Recursively delete data.
+                        DeletePosts(currentProfile.id);
+                        DeleteFriends(currentProfile.id);
+                        DeleteImages(currentProfile.id);
+                        profileRepo.DeleteProfile(currentProfile.profile);
+
+                        currentProfile.ClearProfile(); // clear currentProfile
+                        await signInManager.SignOutAsync(); // sign out IdentityUser
+                        await userManager.DeleteAsync(user);
+                        return RedirectToAction("Index", "Home"); // return home page
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
         // ______________ UTIL
 
         // Validate email by creating new System.Net.Mail.MailAddress
@@ -194,5 +249,76 @@ namespace SocialMedia.Controllers
             // Password: 1-100 chars long
             model.Password.Length > 0 &&
             model.Password.Length <= 100;
+
+        public void DeletePosts(int profileId)
+        {
+            List<Post> posts = new List<Post>();
+            foreach(Post p in postRepo.ByProfileId(profileId))
+            {
+                // If current user owns post, delete it.
+                if (p.ProfileId == currentProfile.id)
+                {
+                    // Burrow into the nested dependencies and delete them on the way out.
+                    // Pattern: (1)prep list, (2)fill list, (3)loop list, (4)repeat pattern on dependencies, (5)delete record.
+
+                    List<Comment> comments = new List<Comment>(); // (1)Prep list.
+                    foreach (Comment c in commentRepo.ByPostId(p.PostId)) { comments.Add(c); } // (2)Fill list.
+                    foreach (Comment c in comments) // (3)Loop list.
+                    {
+                        // (4)Repeat pattern on dependencies.
+                        List<Like> commentLikes = new List<Like>();
+                        foreach (Like l in likeRepo.ByTypeAndId(2, c.CommentId)) { commentLikes.Add(l); }
+                        foreach (Like l in commentLikes)
+                        {
+                            likeRepo.DeleteLike(l);
+                        }
+
+                        commentRepo.DeleteComment(c);
+                    }
+
+                    List<Like> postLikes = new List<Like>();
+                    foreach (Like l in likeRepo.ByTypeAndId(1, p.PostId)) { postLikes.Add(l); }
+                    foreach (Like l in postLikes)
+                    {
+                        likeRepo.DeleteLike(l);
+                    }
+
+                    posts.Add(p);
+                }
+            }
+
+            // (5)Delete record.
+            foreach(Post p in posts) postRepo.DeletePost(p);
+        }
+
+        public void DeleteImages(int profileId)
+        {
+            List<Image> images = new List<Image>();
+            foreach(Image i in imageRepo.ByProfileId(profileId))
+            {
+                // Prep paths for fullsize and thumbnail images.
+                string path = env.WebRootPath + "\\ImgFull\\" + i.Name;
+                string thumbnailPath = env.WebRootPath + "\\ImgThumb\\" + i.Name;
+
+                // Remove fullsize and thumbnail images from file system.
+                ApiImageController.DeleteFromFileSystem(path);
+                ApiImageController.DeleteFromFileSystem(thumbnailPath);
+
+                images.Add(i);
+            }
+
+            foreach(Image i in images) imageRepo.DeleteImage(i);
+        }
+
+        public void DeleteFriends(int profileId)
+        {
+            List<Friend> friends = new List<Friend>();
+            foreach (Friend f in friendRepo.ByFromId(profileId, false)) friends.Add(f);
+            foreach (Friend f in friendRepo.ByFromId(profileId, true)) friends.Add(f);
+            foreach (Friend f in friendRepo.ByToId(profileId, false)) friends.Add(f);
+            foreach (Friend f in friendRepo.ByToId(profileId, true)) friends.Add(f);
+
+            foreach (Friend f in friends) friendRepo.DeleteFriend(f);
+        }
     }
 }

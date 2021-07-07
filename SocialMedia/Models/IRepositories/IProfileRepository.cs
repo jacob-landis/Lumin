@@ -25,6 +25,8 @@ namespace SocialMedia.Models
 
         // Get list of all profiles excluding the one belonging to the current user.
         IEnumerable<Profile> ExceptCurrentProfile { get; }
+
+        void DeleteProfile(Profile profile);
         // END SHORTCUTS
 
         // Used to create a new record or update an old record.

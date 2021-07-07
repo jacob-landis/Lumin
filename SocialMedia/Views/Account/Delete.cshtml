@@ -1,0 +1,34 @@
+﻿@model DeleteModel
+
+<link href="~/css/Form.css" rel="stylesheet" />
+
+<div class="myForm">
+    <h4>Delete Account</h4>
+
+    <form asp-action="Delete" method="post">
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <div><span asp-validation-for="Email" class="text-danger"></span></div>
+            <input asp-for="Email" class="form-control" />
+        </div>
+
+
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <div><span asp-validation-for="Password" class="text-danger"></span></div>
+            <input type="password" asp-for="Password" class="form-control" />
+        </div>
+
+        @* Final warning. *@
+        <p>
+            The profile connected to this account and all of the data connected to it will be permanently deleted.
+        </p>
+
+        @* Btn Submit. Attempts account creation. *@
+        <button type="submit" class="btn btn-primary">Delete Account</button>
+
+        @* Btn cancel. Takes user back to login page. *@
+        <a asp-action="Login" asp-controller="Account" class="btn btn-default">Cancel</a>
+    </form>
+</div>

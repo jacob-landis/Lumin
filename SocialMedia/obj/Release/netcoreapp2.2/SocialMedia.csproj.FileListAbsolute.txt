@@ -54,3 +54,4 @@ C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Release\netcoreapp2.2\Social
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Release\netcoreapp2.2\SocialMedia.dll
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Release\netcoreapp2.2\SocialMedia.pdb
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Release\netcoreapp2.2\SocialMedia.csproj.CopyComplete
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Release\netcoreapp2.2\Razor\Views\Account\Delete.g.cshtml.cs

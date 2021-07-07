@@ -29,6 +29,10 @@ var RelationCard = (function (_super) {
         Ajax.deleteFriend(profileId);
     };
     RelationCard.prototype.changeRelation = function () {
+        var _this = this;
+        this.case.action(this.profile.profileId);
+        this.case = RelationCard.cases[this.case.nextCase];
+        this.rootElm.onclick = function (event) { return _this.case.action(_this.profile.profileId); };
     };
     RelationCard.cases = {
         'friend': {
