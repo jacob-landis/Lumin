@@ -101,8 +101,9 @@ var ContentBox = (function () {
         if (this.requestCallback) {
             this.moreContent = this.take == content.length;
             this.loading = false;
-            if (isFirstBatch && this.onLoadEnd != null)
+            if (isFirstBatch && this.onLoadEnd != null) {
                 this.onLoadEnd();
+            }
         }
     };
     ContentBox.prototype.remove = function (appendable) {

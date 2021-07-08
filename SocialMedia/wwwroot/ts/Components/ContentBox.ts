@@ -201,7 +201,9 @@ class ContentBox implements IAppendable {
 
             // If the first content has arrived and an event callback was given, invoke callback.
             // Used for staging content.
-            if (isFirstBatch && this.onLoadEnd != null) this.onLoadEnd();
+            if (isFirstBatch && this.onLoadEnd != null) {
+                this.onLoadEnd();
+            }
         }
     }
 

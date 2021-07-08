@@ -30,6 +30,7 @@ var PostsBox = (function (_super) {
         }) || this;
         _this.feedType = feedType;
         _this.getFeedFilter = getFeedFilter;
+        _this.onPostsLoadEnd = onPostsLoadEnd;
         rootElm.classList.add('post-box');
         _this.profileId = profileId ? profileId : User.profileId;
         _this.messageElm.onclick = function (event) { return _this.collapseBox(); };
@@ -48,7 +49,10 @@ var PostsBox = (function (_super) {
             });
             _this.stage = new Stage(stageFlags, function () {
                 _this.rootElm.style.opacity = '1';
+                _this.onPostsLoadEnd();
             });
+            if (_this.content.length == 0)
+                _this.stage.onStagingEnd();
         };
         this.add(postCard, !Array.isArray(postCard));
     };

@@ -26,7 +26,7 @@ class PostsBox extends ContentBox {
         scrollElm?: HTMLElement,
         public feedType?: ('commentedPosts' | 'likedPosts' | 'mainPosts'),
         public getFeedFilter?: () => ('recent' | 'likes' | 'comments'),
-        onPostsLoadEnd?: () => void
+        private onPostsLoadEnd?: () => void
     ) {
         // Call base class constructor.
         super(rootElm, scrollElm, 1500, 5,
@@ -94,7 +94,10 @@ class PostsBox extends ContentBox {
 
             this.stage = new Stage(stageFlags, () => {
                 this.rootElm.style.opacity = '1';
+                this.onPostsLoadEnd();
             });
+
+            if (this.content.length == 0) this.stage.onStagingEnd();
         }
 
         this.add(postCard, !Array.isArray(postCard));
