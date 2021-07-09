@@ -97,8 +97,9 @@ namespace SocialMedia.Controllers
                         Password = id.Id, // the user will not enter this number when logging in, this will get passed behind the scenes
                         FirstName = model.FirstName, // provideded
                         LastName = model.LastName,   // provideded
-                        Bio = "",          // default
-                        ProfilePicture = 0 // default
+                        Bio = "",                    // default
+                        ProfilePicture = 0,          // default
+                        DateTime = DateTime.UtcNow   // default
                     };
 
                     // add profile to the database
@@ -192,6 +193,8 @@ namespace SocialMedia.Controllers
                     {
                         // Recursively delete data.
                         DeletePosts(currentProfile.id);
+                        DeleteComments(currentProfile.id);
+                        DeleteLikes(currentProfile.id);
                         DeleteFriends(currentProfile.id);
                         DeleteImages(currentProfile.id);
                         profileRepo.DeleteProfile(currentProfile.profile);
@@ -252,6 +255,8 @@ namespace SocialMedia.Controllers
 
         public void DeletePosts(int profileId)
         {
+            if (postRepo.Posts.Where(p => p.ProfileId == profileId).Count() == 0) return;
+
             List<Post> posts = new List<Post>();
             foreach(Post p in postRepo.ByProfileId(profileId))
             {
@@ -291,8 +296,30 @@ namespace SocialMedia.Controllers
             foreach(Post p in posts) postRepo.DeletePost(p);
         }
 
+        public void DeleteComments(int profileId)
+        {
+            if (commentRepo.Comments.Where(c => c.ProfileId == profileId).Count() == 0) return;
+
+            List<Comment> comments = new List<Comment>();
+            foreach(Comment c in commentRepo.Comments.Where(c => c.ProfileId == profileId)) comments.Add(c);
+
+            foreach (Comment c in comments) commentRepo.DeleteComment(c);
+        }
+
+        public void DeleteLikes(int profileId)
+        {
+            if (likeRepo.Likes.Where(l => l.ProfileId == profileId).Count() == 0) return;
+
+            List<Like> likes = new List<Like>();
+            foreach (Like l in likeRepo.Likes.Where(l => l.ProfileId == profileId)) likes.Add(l);
+
+            foreach (Like l in likes) likeRepo.DeleteLike(l);
+        }
+
         public void DeleteImages(int profileId)
         {
+            if (imageRepo.Images.Where(i => i.ProfileId == profileId).Count() == 0) return;
+
             List<Image> images = new List<Image>();
             foreach(Image i in imageRepo.ByProfileId(profileId))
             {
@@ -317,6 +344,8 @@ namespace SocialMedia.Controllers
             foreach (Friend f in friendRepo.ByFromId(profileId, true)) friends.Add(f);
             foreach (Friend f in friendRepo.ByToId(profileId, false)) friends.Add(f);
             foreach (Friend f in friendRepo.ByToId(profileId, true)) friends.Add(f);
+
+            if (friends.Count() == 0) return;
 
             foreach (Friend f in friends) friendRepo.DeleteFriend(f);
         }
