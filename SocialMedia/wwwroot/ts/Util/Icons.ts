@@ -17,6 +17,8 @@
 
     public static sendRequest(): HTMLElement    { return Icons.buildIcon(['plus icon-sm', 'user']) }
 
+    public static blockProfile(): HTMLElement   { return Icons.buildIcon(['unlock', 'user']) }
+
     public static deleteComment(): HTMLElement  { return Icons.buildIcon(['minus icon-sm', 'comment']) }
 
     public static attachToPost(): HTMLElement   { return Icons.buildIcon(['paperclip icon-sm', 'sticky-note']) }

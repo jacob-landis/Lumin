@@ -16,6 +16,8 @@ var ProfileCard = (function (_super) {
     function ProfileCard(profile, includeRelationButton) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'profileCard' })) || this;
         _this.profile = profile;
+        _this.includeRelationButton = includeRelationButton;
+        _this.contextOptions = [];
         _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, true);
         if (_this.profile.profilePicture != null)
             _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', null, function (target) { }));
@@ -28,14 +30,20 @@ var ProfileCard = (function (_super) {
         };
         if (_this.profile.relationToUser != 'me') {
             _this.relationCard = new RelationCard(profile);
-            if (includeRelationButton) {
-                _this.rootElm.append(_this.relationCard.rootElm);
+            _this.blockCase = ProfileCard.blockCases[_this.profile.blockerProfileId == User.profileId ? 'blocked' : 'unblocked'];
+            _this.blockOption = new ContextOption(Icons.blockProfile(), _this.blockCase.label, function (event) {
+                _this.blockCase.action(_this);
+                _this.blockCase = ProfileCard.blockCases[_this.blockCase.nextCase];
+                _this.blockOption.rootElm.title = _this.blockCase.label;
+            });
+            _this.relationOption = new ContextOption(ViewUtil.copy(_this.relationCard.rootElm), _this.relationCard.case.label, function (event) { return _this.relationCard.changeRelation(); });
+            _this.contextOptions.push(_this.blockOption);
+            if (_this.profile.blockerProfileId != User.profileId) {
+                _this.contextOptions.push(_this.relationOption);
+                if (includeRelationButton)
+                    _this.rootElm.append(_this.relationCard.rootElm);
             }
-            else {
-                _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, [
-                    new ContextOption(_this.relationCard.rootElm, _this.relationCard.case.label, function (e) { return _this.relationCard.changeRelation(); })
-                ]); };
-            }
+            _this.rootElm.oncontextmenu = function (e) { return contextMenu.load(e, _this.contextOptions); };
         }
         if (isFriendOrMe)
             _this.rootElm.title = 'View full profile';
@@ -64,6 +72,39 @@ var ProfileCard = (function (_super) {
         });
     };
     ProfileCard.profileCards = [];
+    ProfileCard.blockCases = {
+        'unblocked': {
+            label: 'Block user',
+            nextCase: 'blocked',
+            action: function (profileCard) {
+                confirmPrompt.load('Are you sure you want to block this user?', function (confirmation) {
+                    if (confirmation) {
+                        PostCard.postCards.forEach(function (p) {
+                            if (p.post.profile.profileId == profileCard.profile.profileId)
+                                ViewUtil.remove(p.rootElm);
+                        });
+                        profileCard.contextOptions = [profileCard.blockOption];
+                        profileCard.relationCard.rootElm.remove();
+                        Ajax.blockProfile(profileCard.profile.profileId);
+                    }
+                });
+            }
+        },
+        'blocked': {
+            label: 'Unblock user',
+            nextCase: 'unblocked',
+            action: function (profileCard) {
+                confirmPrompt.load('Are you sure you want to unblock this user?', function (confirmation) {
+                    if (confirmation) {
+                        profileCard.contextOptions.push(profileCard.blockOption, profileCard.relationOption);
+                        if (profileCard.includeRelationButton)
+                            profileCard.rootElm.append(profileCard.relationCard.rootElm);
+                        Ajax.unblockProfile(profileCard.profile.profileId);
+                    }
+                });
+            }
+        }
+    };
     return ProfileCard;
 }(Card));
 //# sourceMappingURL=ProfileCard.js.map

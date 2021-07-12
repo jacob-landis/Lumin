@@ -355,7 +355,7 @@ namespace SocialMedia.Controllers
                     DateTime = post.DateTime.ToLocalTime(),
 
                     // Prep profile card.
-                    Profile = Util.GetProfileModel(profile, profilePicture, relationToUser, relationshipTier),
+                    Profile = Util.GetProfileModel(profile, profilePicture, relationToUser, relationshipTier, friendRepo.BlockerProfileId(currentProfile.id, id)),
 
                     // Prep like card.
                     Likes = new LikeModel

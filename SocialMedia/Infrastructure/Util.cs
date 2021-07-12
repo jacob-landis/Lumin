@@ -94,7 +94,7 @@ namespace SocialMedia.Infrastructure
              Puts together an object with all relevent information in it about a profile.
              The ProfileModel is used by the client to build a profile card.
         */
-        public static ProfileModel GetProfileModel(Profile profile, Models.Image image, string relationToUser, int relationshipTier)
+        public static ProfileModel GetProfileModel(Profile profile, Models.Image image, string relationToUser, int relationshipTier, int? blockerProfileId)
         {
             // Fill new ProfileModel with provided data.
             ProfileModel profileModel = new ProfileModel
@@ -105,6 +105,8 @@ namespace SocialMedia.Infrastructure
                 
                 RelationToUser = relationToUser,
                 RelationshipTier = relationshipTier,
+
+                BlockerProfileId = blockerProfileId,
 
                 ProfilePicturePrivacyLevel = profile.ProfilePicturePrivacyLevel,
                 ProfileBioPrivacyLevel = profile.ProfileBioPrivacyLevel,

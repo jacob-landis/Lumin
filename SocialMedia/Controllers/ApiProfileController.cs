@@ -90,8 +90,12 @@ namespace SocialMedia.Controllers
             Profile profile = profileRepo.ById(id);
             Image image = imageRepo.ById(profile.ProfilePicture);
 
-            return Util.GetProfileModel(profile, image, 
-                friendRepo.RelationToUser(currentProfile.id, id), friendRepo.RelationshipTier(currentProfile.id, id));
+            return Util.GetProfileModel(
+                profile, 
+                image, 
+                friendRepo.RelationToUser(currentProfile.id, id), 
+                friendRepo.RelationshipTier(currentProfile.id, id),
+                friendRepo.BlockerProfileId(currentProfile.id, id));
         }
 
         /*

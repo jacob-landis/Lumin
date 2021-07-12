@@ -21,6 +21,57 @@
         });
     }
 
+    private static blockCases = {
+        'unblocked': {
+            label: 'Block user',
+            nextCase: 'blocked',
+            action: (profileCard: ProfileCard) => {
+                confirmPrompt.load('Are you sure you want to block this user?',
+                    (confirmation: boolean) => {
+                        if (confirmation) {
+
+                            // Remove posts by this profile.
+                            PostCard.postCards.forEach((p: PostCard) => {
+                                if (p.post.profile.profileId == profileCard.profile.profileId) ViewUtil.remove(p.rootElm);
+                            });
+
+                            // Remove relation context option and relation button.
+                            profileCard.contextOptions = [profileCard.blockOption];
+
+                            profileCard.relationCard.rootElm.remove();
+
+                            Ajax.blockProfile(profileCard.profile.profileId);
+                        }
+                    });
+            }
+        },
+        'blocked': {
+            label: 'Unblock user',
+            nextCase: 'unblocked',
+            action: (profileCard: ProfileCard) => {
+                confirmPrompt.load('Are you sure you want to unblock this user?',
+                    (confirmation: boolean) => {
+                        if (confirmation) {
+
+                            // Add context option and relation button.
+                            profileCard.contextOptions.push(profileCard.blockOption, profileCard.relationOption);
+
+                            if (profileCard.includeRelationButton)
+                                profileCard.rootElm.append(profileCard.relationCard.rootElm);
+
+                            Ajax.unblockProfile(profileCard.profile.profileId);
+                        }
+                    });
+            }
+        }
+    }
+
+    private blockCase: { label: string, nextCase: string, action: (profileCard: ProfileCard) => void };
+    public blockOption: ContextOption;
+    public relationOption: ContextOption;
+    public contextOptions: ContextOption[] = [];
+
+
     public relationCard: RelationCard;
 
     private imageBox: ImageBox;
@@ -35,7 +86,7 @@
             <span class="profileCardName">Jane Doe</span>
         </div>
     */
-    public constructor(public profile: ProfileRecord, includeRelationButton?: boolean) {
+    public constructor(public profile: ProfileRecord, public includeRelationButton?: boolean) {
 
         super(ViewUtil.tag('div', { classList: 'profileCard' }));
         
@@ -59,15 +110,36 @@
         if (this.profile.relationToUser != 'me') {
             
             this.relationCard = new RelationCard(profile);
+            
+            this.blockCase = ProfileCard.blockCases[this.profile.blockerProfileId == User.profileId ? 'blocked' : 'unblocked']; 
+            
+            this.blockOption = new ContextOption(
+                Icons.blockProfile(),
+                this.blockCase.label,
+                (event: MouseEvent) => {
+                    this.blockCase.action(this);
+                    this.blockCase = ProfileCard.blockCases[this.blockCase.nextCase];
+                    this.blockOption.rootElm.title = this.blockCase.label;
+                }
+            );
 
-            if (includeRelationButton) {
-                this.rootElm.append(this.relationCard.rootElm);
+            this.relationOption = new ContextOption(
+                ViewUtil.copy(this.relationCard.rootElm),
+                this.relationCard.case.label,
+                (event: MouseEvent) => this.relationCard.changeRelation()
+            );
+
+            this.contextOptions.push(this.blockOption);
+
+            // If not blocked
+            if (this.profile.blockerProfileId != User.profileId) {
+
+                this.contextOptions.push(this.relationOption);
+
+                if (includeRelationButton) this.rootElm.append(this.relationCard.rootElm);
             }
-            else {
-                this.rootElm.oncontextmenu = (e: MouseEvent) => contextMenu.load(e, [
-                    new ContextOption(this.relationCard.rootElm, this.relationCard.case.label, (e: MouseEvent) => this.relationCard.changeRelation())
-                ]);
-            }
+            
+            this.rootElm.oncontextmenu = (e: MouseEvent) => contextMenu.load(e, this.contextOptions);
         }
 
         if (isFriendOrMe)

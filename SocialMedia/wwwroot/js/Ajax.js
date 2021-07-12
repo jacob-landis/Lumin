@@ -88,6 +88,12 @@ var Ajax = (function () {
         var newSearch = this.JSONstring(searchText ? searchText : "NULL");
         this.call("apifriend/friends/" + newId, "POST", function (profileResults) { return onProfileResults(ProfileCard.list(profileResults, true)); }, newSearch);
     };
+    Ajax.blockProfile = function (profileId) {
+        this.call("apifriend/blockprofile/" + profileId, "POST");
+    };
+    Ajax.unblockProfile = function (profileId) {
+        this.call("apifriend/unblockprofile/" + profileId, "POST");
+    };
     Ajax.deleteImage = function (imageId) {
         this.call("apiimage/deleteimage/" + imageId, "POST");
     };

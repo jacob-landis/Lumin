@@ -10,6 +10,7 @@ var Icons = (function () {
     Icons.cancelRequest = function () { return Icons.buildIcon(['times icon-sm', 'user']); };
     Icons.removeFriend = function () { return Icons.buildIcon(['minus icon-sm', 'user']); };
     Icons.sendRequest = function () { return Icons.buildIcon(['plus icon-sm', 'user']); };
+    Icons.blockProfile = function () { return Icons.buildIcon(['unlock', 'user']); };
     Icons.deleteComment = function () { return Icons.buildIcon(['minus icon-sm', 'comment']); };
     Icons.attachToPost = function () { return Icons.buildIcon(['paperclip icon-sm', 'sticky-note']); };
     Icons.deleteImage = function () { return Icons.buildIcon(['minus icon-sm', 'image']); };

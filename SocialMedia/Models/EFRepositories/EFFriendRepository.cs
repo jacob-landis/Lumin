@@ -84,6 +84,26 @@ namespace SocialMedia.Models
             return "unrelated";
         }
 
+        public int? BlockerProfileId(int currentUserId, int? profileId)
+        {
+            if (currentUserId == profileId) return null;
+
+            try
+            {
+                Friend friend = context.Friends.First(f =>
+                    (f.ToId == currentUserId && f.FromId == profileId) || (f.ToId == profileId && f.FromId == currentUserId));
+
+                if (friend != null)
+                    return friend.BlockerProfileId;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return null;
+        }
+
         public bool IsMutualFriend(int currentUserId, int? profileId)
         {
             if (RelationToUser(currentUserId, profileId) != "friend")

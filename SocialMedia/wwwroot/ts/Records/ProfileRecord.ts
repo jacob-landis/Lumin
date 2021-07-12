@@ -5,6 +5,7 @@
     profilePicture: ImageRecord;
     relationToUser: string;
     relationshipTier: number;
+    blockerProfileId: number;
     profilePicturePrivacyLevel: number;
     profileBioPrivacyLevel: number;
     profileImagesPrivacyLevel: number;

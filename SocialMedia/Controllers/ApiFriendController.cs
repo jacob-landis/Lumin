@@ -102,6 +102,36 @@ namespace SocialMedia.Controllers
             // Commit friend record changes to database.
             friendRepo.SaveFriend(friend);
         }
+        
+        [HttpPost("blockprofile/{profileid}")]
+        public void BlockProfile(int profileId)
+        {
+            Friend friend;
+
+            // If friend record exists.
+            if (friendRepo.RelationToUser(currentProfile.id, profileId) != "unrelated")
+            {
+                friend = friendRepo.Friends.First(f => f.FromId == profileId || f.ToId == profileId);
+                friend.BlockerProfileId = currentProfile.id;
+            }
+            else
+            {
+                friend = new Friend
+                {
+                    FromId = currentProfile.id,
+                    ToId = profileId,
+                    BlockerProfileId = currentProfile.id
+                };
+            }
+            friendRepo.SaveFriend(friend);
+        }
+
+        [HttpPost("unblockprofile/{profileid}")]
+        public void UnblockProfile(int profileId)
+        {
+            Friend friend = friendRepo.Friends.First(f => f.FromId == profileId || f.ToId == profileId);
+            friendRepo.DeleteFriend(friend);
+        }
 
         //-----------------------------------------UTIL---------------------------------------------//
 
@@ -244,7 +274,12 @@ namespace SocialMedia.Controllers
             Image image = imageRepo.ById(profile.ProfilePicture);
 
             // Return prepped profile.
-            return Util.GetProfileModel(profile, image, friendRepo.RelationToUser(currentProfile.id, id), friendRepo.RelationshipTier(currentProfile.id, id));
+            return Util.GetProfileModel(
+                profile, 
+                image, 
+                friendRepo.RelationToUser(currentProfile.id, id), 
+                friendRepo.RelationshipTier(currentProfile.id, id),
+                friendRepo.BlockerProfileId(currentProfile.id, id));
         }
     }
 }

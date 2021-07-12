@@ -14,6 +14,8 @@ namespace SocialMedia.Models.ViewModels
         // Prepped thumbnail version of profile picture.
         public RawImage ProfilePicture { get; set; }
 
+        public int? BlockerProfileId { get; set; }
+
         // Used to fill the relationship card on client side.
         public string RelationToUser { get; set; }
 

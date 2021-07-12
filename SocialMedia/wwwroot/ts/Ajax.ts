@@ -195,7 +195,14 @@
             newSearch
         );
     }
+    
+    public static blockProfile(profileId: number): void {
+        this.call(`apifriend/blockprofile/${profileId}`, "POST");
+    }
 
+    public static unblockProfile(profileId: number): void {
+        this.call(`apifriend/unblockprofile/${profileId}`, "POST");
+    }
 
     //IMAGE
     public static deleteImage(imageId: number): void {

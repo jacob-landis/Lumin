@@ -40,6 +40,8 @@ namespace SocialMedia.Models
         */
         string RelationToUser(int currentUserId, int? profileId);
 
+        int? BlockerProfileId(int currentUserId, int? profileId);
+
         bool IsMutualFriend(int currentUserId, int? profileId);
 
         int RelationshipTier(int currentUserId, int? profileId);
