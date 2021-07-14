@@ -40,3 +40,8 @@
 .profileCard > .icon:hover {
     background-color: dimgray;
 }
+
+.relationCard {
+    display: inline;
+    float: right;
+}

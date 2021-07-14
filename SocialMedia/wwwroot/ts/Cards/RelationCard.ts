@@ -40,13 +40,12 @@
 
     public case: { label: string, icon: () => HTMLElement, nextCase: string, action: (profileId: number) => void };
 
-    public constructor(
-        public profile: ProfileRecord
-    ) {
-        super(RelationCard.cases[profile.relationToUser].icon());
+    public constructor(public profile: ProfileRecord) {
+        super(ViewUtil.tag("div", { classList: "relationCard" }));
 
         this.case = RelationCard.cases[this.profile.relationToUser];
 
+        this.rootElm.append(this.case.icon());
         this.rootElm.onclick = (event: MouseEvent) => this.changeRelation();
         this.rootElm.title = this.case.label;
     }
@@ -55,5 +54,7 @@
         this.case.action(this.profile.profileId);
         this.case = RelationCard.cases[this.case.nextCase];
         this.rootElm.onclick = (event: MouseEvent) => this.case.action(this.profile.profileId);
+        ViewUtil.empty(this.rootElm);
+        this.rootElm.append(this.case.icon());
     }
 }

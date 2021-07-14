@@ -14,9 +14,10 @@ var __extends = (this && this.__extends) || (function () {
 var RelationCard = (function (_super) {
     __extends(RelationCard, _super);
     function RelationCard(profile) {
-        var _this = _super.call(this, RelationCard.cases[profile.relationToUser].icon()) || this;
+        var _this = _super.call(this, ViewUtil.tag("div", { classList: "relationCard" })) || this;
         _this.profile = profile;
         _this.case = RelationCard.cases[_this.profile.relationToUser];
+        _this.rootElm.append(_this.case.icon());
         _this.rootElm.onclick = function (event) { return _this.changeRelation(); };
         _this.rootElm.title = _this.case.label;
         return _this;
@@ -33,6 +34,8 @@ var RelationCard = (function (_super) {
         this.case.action(this.profile.profileId);
         this.case = RelationCard.cases[this.case.nextCase];
         this.rootElm.onclick = function (event) { return _this.case.action(_this.profile.profileId); };
+        ViewUtil.empty(this.rootElm);
+        this.rootElm.append(this.case.icon());
     };
     RelationCard.cases = {
         'friend': {

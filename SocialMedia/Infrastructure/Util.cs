@@ -96,6 +96,8 @@ namespace SocialMedia.Infrastructure
         */
         public static ProfileModel GetProfileModel(Profile profile, Models.Image image, string relationToUser, int relationshipTier, int? blockerProfileId)
         {
+            if (blockerProfileId == profile.ProfileId) return null;
+
             // Fill new ProfileModel with provided data.
             ProfileModel profileModel = new ProfileModel
             {
@@ -117,7 +119,7 @@ namespace SocialMedia.Infrastructure
                 ProfileColor = profile.ProfileColor
             };
 
-            if (profile.ProfilePicturePrivacyLevel <= relationshipTier && blockerProfileId != profile.ProfileId)
+            if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
                 profileModel.ProfilePicture = GetRawImage(image, true);
             else
                 profileModel.ProfilePicture = GetRawImage(new Models.Image(), true);
