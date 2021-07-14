@@ -117,7 +117,7 @@ namespace SocialMedia.Infrastructure
                 ProfileColor = profile.ProfileColor
             };
 
-            if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
+            if (profile.ProfilePicturePrivacyLevel <= relationshipTier && blockerProfileId != profile.ProfileId)
                 profileModel.ProfilePicture = GetRawImage(image, true);
             else
                 profileModel.ProfilePicture = GetRawImage(new Models.Image(), true);
