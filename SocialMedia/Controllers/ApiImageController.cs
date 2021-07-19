@@ -232,6 +232,10 @@ namespace SocialMedia.Controllers
             string path = env.WebRootPath + "\\ImgFull\\" + name;
             string thumbnailPath = env.WebRootPath + "\\ImgThumb\\" + name;
 
+            // Create shortcut variables.
+            decimal height;
+            decimal width;
+
             // Open memory stream for image.
             using (var streamBitmap = new MemoryStream(byteImg))
             {
@@ -251,8 +255,8 @@ namespace SocialMedia.Controllers
                     int thumbHeight = (int)maxSize;
 
                     // Create shortcut variables.
-                    decimal height = img.Height;
-                    decimal width = img.Width;
+                    height = img.Height;
+                    width = img.Width;
 
                     // Declare ratio.
                     decimal ratio;
@@ -298,7 +302,9 @@ namespace SocialMedia.Controllers
                 Name = name,
                 ProfileId = currentProfile.profile.ProfileId,
                 DateTime = DateTime.UtcNow,
-                PrivacyLevel = rawImage.PrivacyLevel
+                PrivacyLevel = rawImage.PrivacyLevel,
+                Height = (int)height,
+                Width = (int)width
             };
 
             // Save image record, use the returned id to pull that same record, prep it, and return it to the user.
