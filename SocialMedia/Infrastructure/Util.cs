@@ -87,6 +87,8 @@ namespace SocialMedia.Infrastructure
                 ProfileId = image.ProfileId,
                 DateTime = image.DateTime,
                 PrivacyLevel = image.PrivacyLevel,
+                Height = image.Height,
+                Width = image.Width,
                 ImageAsByteArray = ImageToByte(image.Name, getThumbnail)
             };
 

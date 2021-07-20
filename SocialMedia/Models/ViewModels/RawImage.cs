@@ -18,6 +18,10 @@ namespace SocialMedia.Models.ViewModels
 
         public int PrivacyLevel { get; set; }
 
+        // Dimensions in pixels
+        public int Height { get; set; }
+        public int Width { get; set; }
+
         // The image in byte array form so it can be sent to client. XXX rename to ByteArrImg
         public byte[] ImageAsByteArray { get; set; }
     }
