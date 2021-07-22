@@ -40,8 +40,10 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     private _onLoadEnd: () => void;
     
     // Shortcuts to get the height and width properties of this image box's HTML tag.
-    get height(): number { return Util.getElmHeight(this.rootElm); }
-    get width(): number { return Util.getElmWidth(this.rootElm); }
+    //get height(): number { return Util.getElmHeight(this.rootElm); }
+    //get width(): number { return Util.getElmWidth(this.rootElm); }
+    get height(): number { return this.imageCard != null ? this.imageCard.image.height : 0; }
+    get width(): number  { return this.imageCard != null ? this.imageCard.image.width  : 0; }
 
     // A shortcut to set the height properties of this image box's HTML tag.
     // Used to make comment container tag become scrollable at a specified height.

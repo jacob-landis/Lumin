@@ -3,5 +3,7 @@
     profileId: number;
     dateTime: string;
     privacyLevel: number;
+    height: number;
+    width: number;
     imageAsByteArray: string;
 }

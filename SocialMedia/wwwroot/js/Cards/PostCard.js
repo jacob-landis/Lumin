@@ -84,13 +84,8 @@ var PostCard = (function (_super) {
             postOptsSlot.append(btnRefreshPostDetails);
         }
         if (_this.hasImage) {
-            _this.observer = new MutationObserver(function () {
-                _this.commentsSection.resizeCommentBox();
-                _this.observer.disconnect();
-            });
-            _this.observer.observe(_this.rootElm, { attributes: true });
+            _this.commentsSection.resizeCommentBox();
             _this.postImageWrapper.onLoadEnd = function () {
-                _this.mutate();
                 _this.stage.updateStaging(_this.imageStaged);
             };
         }
@@ -145,7 +140,6 @@ var PostCard = (function (_super) {
         });
         Util.filterNulls(PostCard.postCards);
     };
-    PostCard.prototype.mutate = function () { this.rootElm.id = 'loadedPost'; };
     PostCard.postCards = [];
     return PostCard;
 }(Card));

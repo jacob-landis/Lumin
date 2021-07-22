@@ -172,15 +172,9 @@
         
         // If post has image.
         if (this.hasImage) {
-
-            // triggered when image is done loading
-            this.observer = new MutationObserver(() => {
-                this.commentsSection.resizeCommentBox();
-                this.observer.disconnect();
-            });
-            this.observer.observe(this.rootElm, { attributes: true });
+            this.commentsSection.resizeCommentBox();
+            
             this.postImageWrapper.onLoadEnd = () => {
-                this.mutate();
                 this.stage.updateStaging(this.imageStaged);
             }
         }
@@ -250,7 +244,4 @@
         // XXX This is invalid code in TS. XXX
         //delete this;
     }
-
-    // Triggers the mutation observer which triggers a resize. The assigned id is never used.
-    private mutate(): void { this.rootElm.id = 'loadedPost'; }
 }
