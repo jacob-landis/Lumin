@@ -56,10 +56,15 @@ namespace SocialMedia.Controllers
         //-----------------------------------------ROUTING---------------------------------------------//
 
         /*
-             Returns the number of images that a user has by their ProfileID.
+             Returns the number of images that a user has that are accessible to the current user.
         */
         [HttpGet("profileimagescount/{id}")]
-        public int ProfileImagesCount(int id) => imageRepo.ByProfileId(id).Count();
+        public int ProfileImagesCount(int id)
+        {
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id);
+
+            return imageRepo.ByProfileId(id).Where(i => i.PrivacyLevel <= relationshipTier).Count();
+        }
 
         [HttpPost("updateimageprivacy/{imageId}/{privacyLevel}")]
         public void UpdateImagePrivacy(int imageId, int privacyLevel)
