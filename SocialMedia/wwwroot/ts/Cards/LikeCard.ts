@@ -44,6 +44,8 @@
         this.btnLike = ViewUtil.tag('i', { classList: 'fa fa-thumbs-up likeIcon ' + (this.likesRecord.hasLiked ? 'hasLiked' : '') });
         this.countDisplayElm = ViewUtil.tag('div', { classList: 'likeCount', innerText: this.likesRecord.count != 0 ? this.likesRecord.count : '0' });
 
+        if (this.likesRecord.hasLiked) this.btnLike.title = `You liked this on ${Util.formatDateTime(this.likesRecord.dateTime)}.`;
+
         this.rootElm.append(this.btnLike, this.countDisplayElm, dateTimeStamp);
 
         this.btnLike.onclick = (e: MouseEvent) => {

@@ -201,8 +201,12 @@ namespace SocialMedia.Controllers
             // Loop through ProfileID list.
             foreach (int p in profileIds)
             {
-                // Loop through each profile's posts and add them to the list of posts.
-                foreach(PostModel pm in GetProfilePosts(p)) { posts.Add(pm); }
+                // Try getting results before looping and adding them.
+                List<PostModel> profilePosts = GetProfilePosts(p);
+
+                if (profilePosts != null && profilePosts.Count > 0)
+                    // Loop through each profile's posts and add them to the list of posts.
+                    foreach(PostModel pm in GetProfilePosts(p)) { posts.Add(pm); }
             }
 
             // If there are more posts than the user requested, only return the amount requested, or else return none. XXX this logic smells funny.
@@ -312,19 +316,23 @@ namespace SocialMedia.Controllers
         */
         public List<PostModel> GetProfilePosts(int id)
         {
-            // Prep list for prepped posts.
-            List<PostModel> postModels = new List<PostModel>();
-
-            // Get list of post records.
-            IEnumerable<Post> posts = postRepo.ByProfileId(id);
-
-            // If post records were found, prep them and add them to list.
-            if (posts != null)
+            if (profileRepo.ById(id).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.id, id))
             {
-                // Prep each post and add it to the list.
-                foreach (Post p in posts) { postModels.Add(GetPostModel(p.PostId)); }
+                // Prep list for prepped posts.
+                List<PostModel> postModels = new List<PostModel>();
+
+                // Get list of post records.
+                IEnumerable<Post> posts = postRepo.ByProfileId(id);
+
+                // If post records were found, prep them and add them to list.
+                if (posts != null)
+                {
+                    // Prep each post and add it to the list.
+                    foreach (Post p in posts) { postModels.Add(GetPostModel(p.PostId)); }
+                }
+                return postModels;
             }
-            return postModels;
+            return null;
         }
 
         /*
@@ -341,11 +349,12 @@ namespace SocialMedia.Controllers
             // Get handle on profile picture of owner of post.
             Image profilePicture = imageRepo.ById(profile.ProfilePicture);
 
-            string relationToUser = friendRepo.RelationToUser(currentProfile.id, profile.ProfileId);
             int relationshipTier = friendRepo.RelationshipTier(currentProfile.id, profile.ProfileId);
 
             if (post.PrivacyLevel <= relationshipTier)
             {
+                string relationToUser = friendRepo.RelationToUser(currentProfile.id, profile.ProfileId);
+
                 // Prep post.
                 PostModel postModel = new PostModel
                 {
@@ -363,7 +372,8 @@ namespace SocialMedia.Controllers
                         ContentId = id,
                         ContentType = 1,
                         Count = likeRepo.CountByContentId(1, id),
-                        HasLiked = likeRepo.HasLiked(1, id, currentProfile.id)
+                        HasLiked = likeRepo.HasLiked(1, id, currentProfile.id),
+                        DateTime = likeRepo.ByTypeAndProfileId(1, id, currentProfile.id).DateTime
                     },
 
                     // Prep post image. XXX what if it doesn't have an image?

@@ -5,6 +5,7 @@ class LikesRecord {
     contentType: ContentType;
     count: number;
     hasLiked: boolean;
+    dateTime: string;
 
     public static copy(likesRecord: LikesRecord): LikesRecord {
 
@@ -14,6 +15,7 @@ class LikesRecord {
         recordCopy.contentType  = likesRecord.contentType;
         recordCopy.count        = likesRecord.count;
         recordCopy.hasLiked     = likesRecord.hasLiked;
+        recordCopy.dateTime     = likesRecord.dateTime;
         
         return recordCopy;
     }

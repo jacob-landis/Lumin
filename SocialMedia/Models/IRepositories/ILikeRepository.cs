@@ -25,6 +25,8 @@ namespace SocialMedia.Models
         // Get a single record of the type that this class is dedicated to by it's ID and contentType enum.
         IEnumerable<Like> ByTypeAndId(int contentType, int contentId);
 
+        Like ByTypeAndProfileId(int contentType, int contentId, int profileId);
+
         // Get the count of likes belonging to the content with the provided Id and contentType enum.
         int CountByContentId(int contentType, int contentId);
 

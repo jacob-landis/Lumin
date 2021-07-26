@@ -32,14 +32,19 @@ namespace SocialMedia.Controllers
              The PostID or CommentID is also attached.
         */
         [HttpGet("likes/{contentType}/{contentId}")]
-        public LikeModel GetContentLikes(int contentType, int contentId) =>
-            new LikeModel
+        public LikeModel GetContentLikes(int contentType, int contentId)
+        {
+            LikeModel likeModel = new LikeModel
             {
                 ContentId = contentId,
                 ContentType = contentType,
                 Count = likeRepo.CountByContentId(contentType, contentId),
-                HasLiked = likeRepo.HasLiked(contentType, contentId, currentProfile.id)
+                HasLiked = likeRepo.HasLiked(contentType, contentId, currentProfile.id),
+                DateTime = likeRepo.ByTypeAndProfileId(contentType, contentId, currentProfile.id).DateTime
             };
+
+            return likeModel;
+        }
 
         /*
             Deletes like record by LikeID and Type.   

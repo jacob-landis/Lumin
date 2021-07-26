@@ -19,6 +19,8 @@ var LikeCard = (function (_super) {
         _this.likesRecord = likes;
         _this.btnLike = ViewUtil.tag('i', { classList: 'fa fa-thumbs-up likeIcon ' + (_this.likesRecord.hasLiked ? 'hasLiked' : '') });
         _this.countDisplayElm = ViewUtil.tag('div', { classList: 'likeCount', innerText: _this.likesRecord.count != 0 ? _this.likesRecord.count : '0' });
+        if (_this.likesRecord.hasLiked)
+            _this.btnLike.title = "You liked this on " + Util.formatDateTime(_this.likesRecord.dateTime) + ".";
         _this.rootElm.append(_this.btnLike, _this.countDisplayElm, dateTimeStamp);
         _this.btnLike.onclick = function (e) {
             if (_this.likesRecord.hasLiked)

@@ -263,7 +263,8 @@ namespace SocialMedia.Controllers
                 ContentId = id, // link like data to parent comment by CommentId
                 ContentType = 2,
                 Count = likeRepo.CountByContentId(2, id), // set like count by CommentId
-                HasLiked = likeRepo.HasLiked(2, id, currentProfile.id) // determine if user has like and assign value
+                HasLiked = likeRepo.HasLiked(2, id, currentProfile.id), // determine if user has like and assign value
+                DateTime = likeRepo.ByTypeAndProfileId(2, id, currentProfile.id).DateTime
             };
 
             return new CommentModel // fill with data from comment and likeModel

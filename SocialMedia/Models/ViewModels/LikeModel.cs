@@ -21,5 +21,8 @@ namespace SocialMedia.Models.ViewModels
 
         // Whether or not the current user's profile has like the content.
         public bool HasLiked { get; set; }
+
+        // Datetime of when this like record was created.
+        public DateTime DateTime { get; set; }
     }
 }

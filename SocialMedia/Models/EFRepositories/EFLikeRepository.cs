@@ -41,6 +41,13 @@ namespace SocialMedia.Models
                 l.ContentId == contentId
             );
 
+        public Like ByTypeAndProfileId(int contentType, int contentId, int profileId) =>
+            context.Likes.First(l =>
+                l.ContentType == contentType &&
+                l.ContentId == contentId &&
+                l.ProfileId == profileId
+            );
+
         /*
             Get the count of likes belonging to the content with the provided Id and contentType enum.
         */

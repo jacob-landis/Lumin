@@ -12,6 +12,7 @@ var LikesRecord = (function () {
         recordCopy.contentType = likesRecord.contentType;
         recordCopy.count = likesRecord.count;
         recordCopy.hasLiked = likesRecord.hasLiked;
+        recordCopy.dateTime = likesRecord.dateTime;
         return recordCopy;
     };
     return LikesRecord;
