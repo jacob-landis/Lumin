@@ -93,3 +93,7 @@
 #imageOwnership > div {
     display: inline;
 }
+
+#selectFSIMImagePrivacy {
+    color: black;
+}
