@@ -23,6 +23,12 @@ namespace SocialMedia.Models.ViewModels
         // RELATIONSHIP TIERS (0: Unrelated, 1: Mutual Friend, 2: Friend, 3: Me)
         public int RelationshipTier { get; set; }
 
+        // Datetime that the last change was made to the friendship between this profile and the current user's profile.
+        public DateTime? RelationshipChangeDatetime { get; set; }
+
+        // Datetime that this profile was created.
+        public DateTime AccountCreationDatetime { get; set; }
+
         // PRIVACY LEVELS (0: All, 1: Mutual Friends, 2: Friends, 3: None)
         public int ProfilePicturePrivacyLevel { get; set; }
         public int ProfileBioPrivacyLevel { get; set; }

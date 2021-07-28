@@ -364,20 +364,27 @@ namespace SocialMedia.Controllers
                     DateTime = post.DateTime.ToLocalTime(),
 
                     // Prep profile card.
-                    Profile = Util.GetProfileModel(profile, profilePicture, relationToUser, relationshipTier, friendRepo.BlockerProfileId(currentProfile.id, id)),
+                    Profile = Util.GetProfileModel(
+                        profile, 
+                        profilePicture, 
+                        relationToUser, 
+                        relationshipTier,
+                        friendRepo.RelationshipChangeDatetime(currentProfile.id, id),
+                        friendRepo.BlockerProfileId(currentProfile.id, id)),
 
-                    // Prep like card.
-                    Likes = new LikeModel
-                    {
-                        ContentId = id,
-                        ContentType = 1,
-                        Count = likeRepo.CountByContentId(1, id),
-                        HasLiked = likeRepo.HasLiked(1, id, currentProfile.id),
-                        DateTime = likeRepo.ByTypeAndProfileId(1, id, currentProfile.id).DateTime
-                    },
+                        // Prep like card.
+                        Likes = new LikeModel
+                        {
+                            ContentId = id,
+                            ContentType = 1,
+                            Count = likeRepo.CountByContentId(1, id),
+                            HasLiked = likeRepo.HasLiked(1, id, currentProfile.id),
+                            DateTime = likeRepo.ByTypeAndProfileId(1, id, currentProfile.id).DateTime
+                        },
 
-                    // Prep post image. XXX what if it doesn't have an image?
-                    Image = Util.GetRawImage(imageRepo.ById(post.ImageId), false)
+                        // Prep post image. XXX what if it doesn't have an image?
+                        Image = Util.GetRawImage(imageRepo.ById(post.ImageId), false
+                    )
                 };
 
                 // If the post does not have an image, set the image field to null.

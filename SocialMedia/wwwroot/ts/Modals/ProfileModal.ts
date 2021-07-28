@@ -103,12 +103,40 @@ class ProfileModal extends Modal {
         Ajax.getProfile(profileId, (profileCard: ProfileCard) => {
 
             // If NOT current user.
-            if (profileCard.profile.relationToUser != 'me') 
+            if (profileCard.profile.relationToUser != 'me') {
+
+                if (profileCard.profile.relationToUser != "unrelated") {
+
+                    let preface: string;
+                    let relation: string = profileCard.profile.relationToUser;
+
+                    if (relation == "friend") {
+                        preface = "Friends since";
+                    }
+                    else if (relation == "userRequested" || relation == "requestedUser") {
+                        preface = "Pending since";
+                    }
+                    else if (profileCard.profile.blockerProfileId == User.profileId) {
+                        preface = "Blocked since";
+                    }
+
+                    let lblRelationshipDatetime: HTMLElement =
+                        ViewUtil.tag("div", { innerText: `${preface} ${Util.formatDateTime(profileCard.profile.relationshipChangeDatetime)}` })
+
+                    this.relationWrapper.append(lblRelationshipDatetime);
+                }
+
                 this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
+            }
 
             // Else if current user.
-            else if (profileCard.profile.relationToUser == 'me')
+            else if (profileCard.profile.relationToUser == 'me') {
+
                 this.profileSettingsCard.setPrivacySelectValues(profileCard.profile);
+
+                this.relationWrapper.append(
+                    ViewUtil.tag("div", { innerText: `Account created on ${Util.formatDateTime(profileCard.profile.accountCreationDatetime)}` }));
+            }
 
             this.summaryWrapper.style.backgroundColor = profileCard.profile.profileColor;
 

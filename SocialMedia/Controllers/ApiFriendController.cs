@@ -76,7 +76,7 @@ namespace SocialMedia.Controllers
             {
                 Accepted = false,
                 ToId = id,
-                DateSent = DateTime.UtcNow,
+                StatusChangeDate = DateTime.UtcNow,
                 FromId = currentProfile.id
             };
 
@@ -94,7 +94,7 @@ namespace SocialMedia.Controllers
             Friend friend = friendRepo.Friends.First(f => f.FromId == id && f.ToId == currentProfile.id);
 
             // Set DateAccepted to current date time.
-            friend.DateAccepted = DateTime.UtcNow;
+            friend.StatusChangeDate = DateTime.UtcNow;
 
             // Mark friend record as accepted.
             friend.Accepted = true;
@@ -123,6 +123,8 @@ namespace SocialMedia.Controllers
                     BlockerProfileId = currentProfile.id
                 };
             }
+            friend.StatusChangeDate = DateTime.UtcNow;
+
             friendRepo.SaveFriend(friend);
         }
 
@@ -279,6 +281,7 @@ namespace SocialMedia.Controllers
                 image, 
                 friendRepo.RelationToUser(currentProfile.id, id), 
                 friendRepo.RelationshipTier(currentProfile.id, id),
+                friendRepo.RelationshipChangeDatetime(currentProfile.id, id),
                 friendRepo.BlockerProfileId(currentProfile.id, id));
         }
     }

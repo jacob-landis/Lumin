@@ -45,6 +45,8 @@ namespace SocialMedia.Models
         bool IsMutualFriend(int currentUserId, int? profileId);
 
         int RelationshipTier(int currentUserId, int? profileId);
+
+        DateTime? RelationshipChangeDatetime(int currentUserId, int? profileId);
         // END SHORTCUTS
 
         // Used to create a new record or update an old record.

@@ -15,12 +15,9 @@ namespace SocialMedia.Models
         // Whether or not the profile that this was to accepted it.
         public bool Accepted { get; set; }
 
-        // The datetime that this was sent on.
-        public DateTime DateSent { get; set; }
-
-        // The datetime that this was accepted on.
-        public DateTime DateAccepted { get; set; } // XXX typo (accepted)
-
+        // The datetime that the status between this profile and the current user's profile changed.
+        public DateTime StatusChangeDate { get; set; }
+        
         // ASSOCIATIONS
 
         // ProfileID of recipiant.

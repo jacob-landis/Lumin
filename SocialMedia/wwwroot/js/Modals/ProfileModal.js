@@ -63,10 +63,28 @@ var ProfileModal = (function (_super) {
             _this.summaryStage.updateStaging(_this.fullProfileStaged);
         });
         Ajax.getProfile(profileId, function (profileCard) {
-            if (profileCard.profile.relationToUser != 'me')
+            if (profileCard.profile.relationToUser != 'me') {
+                if (profileCard.profile.relationToUser != "unrelated") {
+                    var preface = void 0;
+                    var relation = profileCard.profile.relationToUser;
+                    if (relation == "friend") {
+                        preface = "Friends since";
+                    }
+                    else if (relation == "userRequested" || relation == "requestedUser") {
+                        preface = "Pending since";
+                    }
+                    else if (profileCard.profile.blockerProfileId == User.profileId) {
+                        preface = "Blocked since";
+                    }
+                    var lblRelationshipDatetime = ViewUtil.tag("div", { innerText: preface + " " + Util.formatDateTime(profileCard.profile.relationshipChangeDatetime) });
+                    _this.relationWrapper.append(lblRelationshipDatetime);
+                }
                 _this.relationWrapper.append(new RelationCard(profileCard.profile).rootElm);
-            else if (profileCard.profile.relationToUser == 'me')
+            }
+            else if (profileCard.profile.relationToUser == 'me') {
                 _this.profileSettingsCard.setPrivacySelectValues(profileCard.profile);
+                _this.relationWrapper.append(ViewUtil.tag("div", { innerText: "Account created on " + Util.formatDateTime(profileCard.profile.accountCreationDatetime) }));
+            }
             _this.summaryWrapper.style.backgroundColor = profileCard.profile.profileColor;
             if (profileCard.profile.profileFriendsPrivacyLevel <= profileCard.profile.relationshipTier) {
                 Ajax.getFriends(profileId, null, function (profileCards) {

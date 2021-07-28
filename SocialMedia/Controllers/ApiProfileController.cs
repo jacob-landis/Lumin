@@ -95,6 +95,7 @@ namespace SocialMedia.Controllers
                 image, 
                 friendRepo.RelationToUser(currentProfile.id, id), 
                 friendRepo.RelationshipTier(currentProfile.id, id),
+                friendRepo.RelationshipChangeDatetime(currentProfile.id, id),
                 friendRepo.BlockerProfileId(currentProfile.id, id));
         }
 

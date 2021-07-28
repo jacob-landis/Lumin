@@ -279,7 +279,8 @@ namespace SocialMedia.Controllers
                     imageRepo.ById(profile.ProfilePicture), 
                     friendRepo.RelationToUser(currentProfile.id, profile.ProfileId), 
                     friendRepo.RelationshipTier(currentProfile.id, profile.ProfileId),
-                    friendRepo.BlockerProfileId(currentProfile.id, id)),
+                    friendRepo.RelationshipChangeDatetime(currentProfile.id, profile.ProfileId),
+                    friendRepo.BlockerProfileId(currentProfile.id, profile.ProfileId)),
 
                 DateTime = comment.DateTime.ToLocalTime(),
                 Likes = likes,

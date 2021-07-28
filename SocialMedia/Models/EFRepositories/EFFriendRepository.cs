@@ -145,6 +145,26 @@ namespace SocialMedia.Models
 
             return tier;
         }
+
+        public DateTime? RelationshipChangeDatetime(int currentUserId, int? profileId)
+        {
+            try
+            {
+                Friend friend = Friends.First(f =>
+                    (f.ToId == currentUserId && f.FromId == profileId) ||
+                    (f.FromId == currentUserId && f.ToId == profileId));
+
+                if (friend != null && friend.StatusChangeDate != null)
+                    return friend.StatusChangeDate;
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
         // END SHORTCUTS
 
         /*
