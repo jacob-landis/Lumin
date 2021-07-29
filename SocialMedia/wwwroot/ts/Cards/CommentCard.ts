@@ -33,6 +33,7 @@ class CommentCard extends Card {
     public commentEditor: Editor;
     private refreshMessageSection: HTMLElement;
 
+    public profileCard: ProfileCard;
     private likeCard: LikeCard;
 
     /*
@@ -88,10 +89,13 @@ class CommentCard extends Card {
         );
 
         this.likeCard = new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime);
+        this.profileCard = new ProfileCard(comment.profile);
+
+        this.imageBoxes.concat(this.profileCard.imageBoxes);
 
         // Append the comment editor.
         contentSection.append(this.commentEditor.rootElm);
-        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, this.likeCard.rootElm, this.refreshMessageSection);
+        mainSection.append(this.profileCard.rootElm, contentSection, this.likeCard.rootElm, this.refreshMessageSection);
         this.rootElm.append(mainSection, optsSection);
 
         // If the user owns this comment, provide an options button.

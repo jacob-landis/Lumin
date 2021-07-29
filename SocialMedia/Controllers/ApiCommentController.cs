@@ -258,34 +258,44 @@ namespace SocialMedia.Controllers
             Comment comment = commentRepo.ById(id); // get comment by CommentId
             if (comment == null) return null; // if no comment was found, return null
             Profile profile = profileRepo.ById(comment.ProfileId); // get handle on owner of comment
+
+            DateTime? likeDateTime = new DateTime();
+            Like like = likeRepo.ByTypeAndProfileId(2, id, currentProfile.id);
+            if (like != null) likeDateTime = like.DateTime.ToLocalTime();
+
             LikeModel likes = new LikeModel // attach info for likes
             {
                 ContentId = id, // link like data to parent comment by CommentId
                 ContentType = 2,
                 Count = likeRepo.CountByContentId(2, id), // set like count by CommentId
                 HasLiked = likeRepo.HasLiked(2, id, currentProfile.id), // determine if user has like and assign value
-                DateTime = likeRepo.ByTypeAndProfileId(2, id, currentProfile.id).DateTime
+                DateTime = likeDateTime
             };
 
-            return new CommentModel // fill with data from comment and likeModel
+            Image profilePicture = imageRepo.ById(profile.ProfilePicture);
+            string relationToUser = friendRepo.RelationToUser(currentProfile.id, profile.ProfileId);
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.id, profile.ProfileId);
+            DateTime? relationChangeDateTime = friendRepo.RelationshipChangeDatetime(currentProfile.id, profile.ProfileId);
+            int? blockerProfileId = friendRepo.BlockerProfileId(currentProfile.id, profile.ProfileId);
+
+            ProfileModel profileModel = Util.GetProfileModel(
+                profile, profilePicture, relationToUser, relationshipTier, relationChangeDateTime, blockerProfileId);
+
+            CommentModel commentModel = new CommentModel // fill with data from comment and likeModel
             {
                 CommentId = comment.CommentId,
                 Content = comment.Content,
                 HasSeen = comment.HasSeen,
 
                 // attach prepped ProfileModel XXX shouldn't need to enter all this data about the user
-                Profile = Util.GetProfileModel(
-                    profile, 
-                    imageRepo.ById(profile.ProfilePicture), 
-                    friendRepo.RelationToUser(currentProfile.id, profile.ProfileId), 
-                    friendRepo.RelationshipTier(currentProfile.id, profile.ProfileId),
-                    friendRepo.RelationshipChangeDatetime(currentProfile.id, profile.ProfileId),
-                    friendRepo.BlockerProfileId(currentProfile.id, profile.ProfileId)),
+                Profile = profileModel,
 
                 DateTime = comment.DateTime.ToLocalTime(),
                 Likes = likes,
                 PostId = comment.PostId
             };
+
+            return commentModel;
         }
     }
 }

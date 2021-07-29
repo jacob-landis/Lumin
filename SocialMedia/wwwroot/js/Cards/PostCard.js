@@ -21,11 +21,13 @@ var PostCard = (function (_super) {
         if (_this.post.image)
             _this.hasImage = true;
         var postSection = ViewUtil.tag('div', { classList: 'postSection' });
-        _this.commentsSection = new CommentSectionCard(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); });
+        _this.commentsSection = new CommentSectionCard(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); }, function () {
+        });
         _this.commentsSection.commentBoxesStage.onStagingEnd = function () { return _this.stage.updateStaging(_this.commentsSection.allStaged); };
         _this.stage = new Stage([_this.imageStaged, _this.commentsSection.allStaged]);
         _this.rootElm.append(postSection, _this.commentsSection.rootElm);
         _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
+        _this.imageBoxes.push(_this.postImageWrapper);
         if (_this.hasImage) {
             _this.postImageWrapper.load(_this.post.image.imageId);
             _this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });
@@ -50,8 +52,10 @@ var PostCard = (function (_super) {
         var profileCardSlot = ViewUtil.tag('div', { classList: 'profileCardSlot' });
         var likeCardSlot = ViewUtil.tag('div', { classList: 'detailsSlot' });
         var postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
+        var profileCard = new ProfileCard(_this.post.profile);
+        _this.imageBoxes.concat(profileCard.imageBoxes);
         _this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
-        profileCardSlot.append(new ProfileCard(_this.post.profile).rootElm);
+        profileCardSlot.append(profileCard.rootElm);
         likeCardSlot.append(_this.likeCard.rootElm, _this.refreshPostDetailsMessage);
         if (post.profile.relationToUser == 'me') {
             var btnPostOpts = ViewUtil.tag('i', { classList: 'btnPostOpts threeDots fa fa-ellipsis-v' });

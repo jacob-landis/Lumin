@@ -19,6 +19,7 @@ var ProfileCard = (function (_super) {
         _this.includeRelationButton = includeRelationButton;
         _this.contextOptions = [];
         _this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, true);
+        _this.imageBoxes.push(_this.imageBox);
         if (_this.profile.profilePicture != null)
             _this.imageBox.loadImage(new ImageCard(_this.profile.profilePicture, 'sqr', null, function (target) { }));
         _this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: _this.profile.firstName + " " + _this.profile.lastName });

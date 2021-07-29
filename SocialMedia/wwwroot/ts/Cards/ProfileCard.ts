@@ -92,6 +92,8 @@
         
         this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, true);
 
+        this.imageBoxes.push(this.imageBox);
+
         if (this.profile.profilePicture != null)
             this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', null, (target: ImageCard) => { }));
 

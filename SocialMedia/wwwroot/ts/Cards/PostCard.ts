@@ -74,7 +74,13 @@
 
         this.commentsSection = new CommentSectionCard(
             this.post,
-            () => (this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight)
+            () => (this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight),
+            () => {
+                this.commentsSection.mainCommentsBox.content.forEach((content: IAppendable) => {
+                    let commentCard = <CommentCard>content;
+                    this.imageBoxes.concat(commentCard.imageBoxes);
+                });
+            }
         );
 
         this.commentsSection.commentBoxesStage.onStagingEnd = () => this.stage.updateStaging(this.commentsSection.allStaged);
@@ -91,6 +97,8 @@
             'Fullscreen',
             (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId)
         );
+
+        this.imageBoxes.push(this.postImageWrapper);
 
         if (this.hasImage) {
             this.postImageWrapper.load(this.post.image.imageId);
@@ -132,8 +140,11 @@
         let likeCardSlot: HTMLElement = ViewUtil.tag('div', { classList: 'detailsSlot' });
         let postOptsSlot: HTMLElement = ViewUtil.tag('div', { classList: 'postOptsSlot' });
 
+        let profileCard: ProfileCard = new ProfileCard(this.post.profile);
+        this.imageBoxes.concat(profileCard.imageBoxes);
+
         this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
-        profileCardSlot.append(new ProfileCard(this.post.profile).rootElm);
+        profileCardSlot.append(profileCard.rootElm);
         likeCardSlot.append(this.likeCard.rootElm, this.refreshPostDetailsMessage);
 
         //------------------------------------------------------------------------------------------

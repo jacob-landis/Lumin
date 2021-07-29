@@ -24,7 +24,7 @@ var ProfileImagesBox = (function (_super) {
         _this.profileId = profileId ? profileId : User.profileId;
         _this.tooltipMsg = tooltipMsg;
         _this.clickCallback = clickCallback;
-        _super.prototype.request.call(_this, 40);
+        _super.prototype.request.call(_this, 30);
         ProfileImagesBox.profileImageBoxes.push(_this);
         return _this;
     }
@@ -33,21 +33,34 @@ var ProfileImagesBox = (function (_super) {
         this.tooltipMsg = tooltipMsg;
         this.clickCallback = onImageClick;
         _super.prototype.clear.call(this);
-        _super.prototype.request.call(this, 40);
+        _super.prototype.request.call(this, 30);
     };
     ProfileImagesBox.prototype.addImageCards = function (imageCards) {
-        var _this = this;
         if (imageCards != null)
-            imageCards.forEach(function (i) { return _this.addImageCard(i); });
-        else if (this.onLoadEnd != null)
+            _super.prototype.add.call(this, this.prepImageCard(imageCards));
+        if (this.onLoadEnd != null)
             this.onLoadEnd();
     };
     ProfileImagesBox.prototype.addImageCard = function (imageCard, prepend) {
-        imageCard.onImageClick = this.clickCallback;
-        imageCard.tooltipMsg = this.tooltipMsg;
-        imageCard.rootElm.classList.add('listImage');
-        imageCard.rootElm.classList.add('sqr');
-        _super.prototype.add.call(this, imageCard, prepend);
+        _super.prototype.add.call(this, this.prepImageCard(imageCard), prepend);
+    };
+    ProfileImagesBox.prototype.prepImageCard = function (imageCard) {
+        var _this = this;
+        var imageCards;
+        if (Array.isArray(imageCard))
+            imageCards = imageCard;
+        else
+            imageCards = [imageCard];
+        imageCards.forEach(function (i) {
+            i.onImageClick = _this.clickCallback;
+            i.tooltipMsg = _this.tooltipMsg;
+            i.rootElm.classList.add('listImage');
+            i.rootElm.classList.add('sqr');
+        });
+        if (imageCards.length == 1)
+            return imageCards[0];
+        else
+            return imageCards;
     };
     ProfileImagesBox.prototype.removeImageCard = function (imageCard) {
         var _this = this;

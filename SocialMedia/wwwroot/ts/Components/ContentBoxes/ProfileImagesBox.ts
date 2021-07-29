@@ -50,7 +50,7 @@ class ProfileImagesBox extends ContentBox {
         this.clickCallback = clickCallback;
 
         // Send first request to host.
-        super.request(40);
+        super.request(30);
 
         // Add this image box to the collection.
         ProfileImagesBox.profileImageBoxes.push(this);
@@ -70,29 +70,44 @@ class ProfileImagesBox extends ContentBox {
         super.clear();
 
         // Start requesting.
-        super.request(40);
+        super.request(30);
     }
 
     public addImageCards(imageCards: ImageCard[]): void {
-        if (imageCards != null) imageCards.forEach(i => this.addImageCard(i));
-        else if (this.onLoadEnd != null) this.onLoadEnd();
+
+        if (imageCards != null) super.add(this.prepImageCard(imageCards));
+        if (this.onLoadEnd != null) this.onLoadEnd();
     }
 
     /*
         Takes an image card and does some final preparation before adding it to this image box's content box.
     */
     public addImageCard(imageCard: ImageCard, prepend?: boolean): void {
-
-        // Imbed click action stored in this image box to image card.
-        imageCard.onImageClick = this.clickCallback;
-        imageCard.tooltipMsg = this.tooltipMsg;
-
-        // Update classList of image card so it is square and fits in the grid.
-        imageCard.rootElm.classList.add('listImage');
-        imageCard.rootElm.classList.add('sqr');
-
+        
         // Add image card to this image box's content box.
-        super.add(imageCard, prepend);
+        super.add(this.prepImageCard(imageCard), prepend);
+    }
+
+    private prepImageCard(imageCard: (ImageCard | ImageCard[])): (ImageCard | ImageCard[]) {
+
+        let imageCards: ImageCard[];
+
+        if (Array.isArray(imageCard)) imageCards = imageCard;
+        else imageCards = [imageCard];
+
+        imageCards.forEach((i: ImageCard) => {
+
+            // Imbed click action stored in this image box to image card.
+            i.onImageClick = this.clickCallback;
+            i.tooltipMsg = this.tooltipMsg;
+
+            // Update classList of image card so it is square and fits in the grid.
+            i.rootElm.classList.add('listImage');
+            i.rootElm.classList.add('sqr');
+        });
+
+        if (imageCards.length == 1) return imageCards[0];
+        else return imageCards;
     }
 
     /*

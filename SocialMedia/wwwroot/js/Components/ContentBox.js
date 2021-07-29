@@ -52,8 +52,12 @@ var ContentBox = (function () {
     ContentBox.prototype.lazyLoad = function () {
         var divHeight = this.scrollElm.scrollHeight;
         var offset = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
-        if ((offset + this.loadThreshold) > divHeight)
+        console.log("lazy load check");
+        if ((offset + this.loadThreshold) > divHeight) {
+            console.log("lazy load");
+            console.log(this.content.length);
             this.request();
+        }
     };
     ContentBox.prototype.getVisibleContent = function () {
         var visibleContent = [];

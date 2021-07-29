@@ -206,7 +206,7 @@ namespace SocialMedia.Controllers
 
                 if (profilePosts != null && profilePosts.Count > 0)
                     // Loop through each profile's posts and add them to the list of posts.
-                    foreach(PostModel pm in GetProfilePosts(p)) { posts.Add(pm); }
+                    foreach(PostModel pm in profilePosts) { posts.Add(pm); }
             }
 
             // If there are more posts than the user requested, only return the amount requested, or else return none. XXX this logic smells funny.
@@ -346,14 +346,37 @@ namespace SocialMedia.Controllers
             // Get handle on post owner by ProfileID
             Profile profile = profileRepo.ById(post.ProfileId);
 
-            // Get handle on profile picture of owner of post.
-            Image profilePicture = imageRepo.ById(profile.ProfilePicture);
-
             int relationshipTier = friendRepo.RelationshipTier(currentProfile.id, profile.ProfileId);
 
             if (post.PrivacyLevel <= relationshipTier)
             {
                 string relationToUser = friendRepo.RelationToUser(currentProfile.id, profile.ProfileId);
+                DateTime? relationChangeDatetime = friendRepo.RelationshipChangeDatetime(currentProfile.id, id);
+                int? blockerProfileId = friendRepo.BlockerProfileId(currentProfile.id, id);
+
+                // Get handle on profile picture of owner of post.
+                Image profilePicture = imageRepo.ById(profile.ProfilePicture);
+
+                ProfileModel profileModel = Util.GetProfileModel(
+                    profile, profilePicture, relationToUser, relationshipTier, relationChangeDatetime, blockerProfileId);
+
+                RawImage postImage = Util.GetRawImage(imageRepo.ById(post.ImageId), false);
+
+                int count = likeRepo.CountByContentId(1, id);
+                bool hasLiked = likeRepo.HasLiked(1, id, currentProfile.id);
+
+                Like like = likeRepo.ByTypeAndProfileId(1, id, currentProfile.id);
+                DateTime dateTime = new DateTime();
+                if (like != null) dateTime = like.DateTime.ToLocalTime();
+
+                LikeModel likes = new LikeModel
+                {
+                    ContentId = id,
+                    ContentType = 1,
+                    Count = count,
+                    HasLiked = hasLiked,
+                    DateTime = dateTime
+                };
 
                 // Prep post.
                 PostModel postModel = new PostModel
@@ -362,29 +385,9 @@ namespace SocialMedia.Controllers
                     PostId = post.PostId,
                     Caption = post.Caption,
                     DateTime = post.DateTime.ToLocalTime(),
-
-                    // Prep profile card.
-                    Profile = Util.GetProfileModel(
-                        profile, 
-                        profilePicture, 
-                        relationToUser, 
-                        relationshipTier,
-                        friendRepo.RelationshipChangeDatetime(currentProfile.id, id),
-                        friendRepo.BlockerProfileId(currentProfile.id, id)),
-
-                        // Prep like card.
-                        Likes = new LikeModel
-                        {
-                            ContentId = id,
-                            ContentType = 1,
-                            Count = likeRepo.CountByContentId(1, id),
-                            HasLiked = likeRepo.HasLiked(1, id, currentProfile.id),
-                            DateTime = likeRepo.ByTypeAndProfileId(1, id, currentProfile.id).DateTime
-                        },
-
-                        // Prep post image. XXX what if it doesn't have an image?
-                        Image = Util.GetRawImage(imageRepo.ById(post.ImageId), false
-                    )
+                    Profile = profileModel,
+                    Likes = likes,
+                    Image = postImage
                 };
 
                 // If the post does not have an image, set the image field to null.

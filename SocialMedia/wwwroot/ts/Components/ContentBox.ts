@@ -103,8 +103,12 @@ class ContentBox implements IAppendable {
     public lazyLoad() {
         let divHeight: number = this.scrollElm.scrollHeight;
         let offset: number = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
-        
-        if ((offset + this.loadThreshold) > divHeight) this.request();
+        console.log("lazy load check");
+        if ((offset + this.loadThreshold) > divHeight) {
+            console.log("lazy load");
+            console.log(this.content.length);
+            this.request();
+        }
     }
 
     public getVisibleContent(): IAppendable[] {

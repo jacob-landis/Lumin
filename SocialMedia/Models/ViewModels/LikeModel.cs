@@ -23,6 +23,6 @@ namespace SocialMedia.Models.ViewModels
         public bool HasLiked { get; set; }
 
         // Datetime of when this like record was created.
-        public DateTime DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
     }
 }

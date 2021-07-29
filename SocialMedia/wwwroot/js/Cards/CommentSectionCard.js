@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var CommentSectionCard = (function (_super) {
     __extends(CommentSectionCard, _super);
-    function CommentSectionCard(post, getContentHeight) {
+    function CommentSectionCard(post, getContentHeight, onCommentLoadEnd) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'commentSection' })) || this;
         _this.feedFilter = 'recent';
         _this.allStaged = new StageFlag();
@@ -78,6 +78,8 @@ var CommentSectionCard = (function (_super) {
                 if (_this.post.image == null)
                     _this.resizeCommentBox();
             }
+            if (onCommentLoadEnd != null)
+                onCommentLoadEnd();
             _this.commentBoxesStage.updateStaging(_this.mainCommentsStaged);
         });
         _this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));

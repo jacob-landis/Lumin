@@ -10,9 +10,9 @@
     private rootElmMinHeight: number;
 
     public commentBoxes: ContentBox;
-    private mainCommentsBox: CommentsBox;
-    private myCommentsBox: CommentsBox;
-    private likedCommentsBox: CommentsBox;
+    public mainCommentsBox: CommentsBox;
+    public myCommentsBox: CommentsBox;
+    public likedCommentsBox: CommentsBox;
 
     private commentInputWrapper: HTMLElement;
     private errorSlot: HTMLElement;
@@ -84,7 +84,7 @@
         </div>
     */
 
-    public constructor(post: PostRecord, getContentHeight: () => number) {
+    public constructor(post: PostRecord, getContentHeight: () => number, onCommentLoadEnd: () => void) {
 
         super(ViewUtil.tag('div', { classList: 'commentSection' }));
 
@@ -160,6 +160,8 @@
 
                 if (this.post.image == null) this.resizeCommentBox();
             }
+
+            if (onCommentLoadEnd != null) onCommentLoadEnd();
 
             this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
         });
