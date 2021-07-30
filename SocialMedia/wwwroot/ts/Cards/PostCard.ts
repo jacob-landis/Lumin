@@ -95,12 +95,11 @@
             ViewUtil.tag('div', { classList: 'postImageWrapper' }),
             'postImage',
             'Fullscreen',
-            (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId)
+            (target: ImageBox) => fullSizeImageModal.loadSingle(target.imageCard.image.imageId)
         );
 
-        this.imageBoxes.push(this.postImageWrapper);
-
         if (this.hasImage) {
+            this.imageBoxes.push(this.postImageWrapper);
             this.postImageWrapper.load(this.post.image.imageId);
             this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });
         }
@@ -191,16 +190,16 @@
         }
 
         // unload or reload posts above and below the position of the viewport
-        window.addEventListener('scroll', (e: UIEvent) => {
-            let offset: number = this.rootElm.offsetTop - window.pageYOffset;
+        //window.addEventListener('scroll', (e: UIEvent) => {
+        //    let offset: number = this.rootElm.offsetTop - window.pageYOffset;
             
-            if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
-                if (this.hasImage) this.postImageWrapper.unload();
-            }
-            else if (offset > -2000 && offset < 2000) {
-                if (this.hasImage) this.postImageWrapper.reload();
-            }
-        });
+        //    if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
+        //        if (this.hasImage) this.postImageWrapper.unload();
+        //    }
+        //    else if (offset > -2000 && offset < 2000) {
+        //        if (this.hasImage) this.postImageWrapper.reload(); this.imageBoxes.forEach((i: ImageBox) => i.reload());
+        //    }
+        //});
 
         PostCard.postCards.push(this);
     }

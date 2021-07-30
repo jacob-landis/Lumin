@@ -74,7 +74,7 @@ class FullSizeImageModal extends Modal {
         this.imageControls = [this.imageCount, this.imageOwnership, this.imageDateTime, this.btnNext, this.btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
-        this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', (target: ImageCard) => this.toggleControls());
+        this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', (target: ImageBox) => this.toggleControls());
 
         this.imageCon.onLoadEnd = () => {
             this.imageDateTime.innerText = `Uploaded on ${Util.formatDateTime(this.imageCon.imageCard.image.dateTime)}`;
@@ -121,7 +121,7 @@ class FullSizeImageModal extends Modal {
     public loadSingle(imageId: number): void {
 
         // Load image into imageCon by ImageID.
-        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', (target: ImageCard) => this.toggleSingularControls());
+        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', (target: ImageBox) => this.toggleSingularControls());
 
         // Hides all controls.
         this.hideControls();
@@ -175,7 +175,7 @@ class FullSizeImageModal extends Modal {
 
             let promptMsg: string = (profileId == User.profileId) ? "My images" : `${profileCard.profile.firstName} ${profileCard.profile.lastName}'s images`;
             
-            imageDropdown.load(profileId, promptMsg, 'Fullscreen', (target: ImageCard) => {
+            imageDropdown.load(profileId, promptMsg, 'Fullscreen', (target: ImageBox) => {
                 //this.currentImageId = target.image.imageId;
                 this.requestImage(imageDropdown.indexOf(target))
             });
@@ -224,16 +224,16 @@ class FullSizeImageModal extends Modal {
             // Update the image count elm.
             this.updateImageCount();
 
-            this.currentImageId = (<ImageCard>imageDropdown.imageBox.content[this.index]).image.imageId;
+            this.currentImageId = (<ImageBox>imageDropdown.imagesBox.content[this.index]).imageCard.image.imageId;
 
             // Request a list of images with a 1 long range. This is the only way to request by index.
-            Ajax.getProfileImages(this.profileId, this.index, 1, '', null, (target: ImageCard) => { },
+            Ajax.getProfileImages(this.profileId, this.index, 1, '', null, (target: ImageBox) => { },
 
                 // When the array of 1 image card arrives.
-                (imageCards: ImageCard[]) => {
+                (imageBoxes: ImageBox[]) => {
 
                     // Load that image card into the fullsize image container.
-                    this.imageCon.load(imageCards[0].image.imageId, null, 'Toggle controls', (target: ImageCard) => this.toggleControls());
+                    this.imageCon.load(imageBoxes[0].imageCard.image.imageId, null, 'Toggle controls', (target: ImageBox) => this.toggleControls());
                 }
             );
 

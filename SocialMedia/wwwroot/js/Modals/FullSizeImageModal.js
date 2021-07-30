@@ -103,9 +103,9 @@ var FullSizeImageModal = (function (_super) {
         if (targetIndex >= 0 && targetIndex < this.profileImagesCount) {
             this.index = targetIndex;
             this.updateImageCount();
-            this.currentImageId = imageDropdown.imageBox.content[this.index].image.imageId;
-            Ajax.getProfileImages(this.profileId, this.index, 1, '', null, function (target) { }, function (imageCards) {
-                _this.imageCon.load(imageCards[0].image.imageId, null, 'Toggle controls', function (target) { return _this.toggleControls(); });
+            this.currentImageId = imageDropdown.imagesBox.content[this.index].imageCard.image.imageId;
+            Ajax.getProfileImages(this.profileId, this.index, 1, '', null, function (target) { }, function (imageBoxes) {
+                _this.imageCon.load(imageBoxes[0].imageCard.image.imageId, null, 'Toggle controls', function (target) { return _this.toggleControls(); });
             });
             imageDropdown.highlightAtIndex(this.index);
         }

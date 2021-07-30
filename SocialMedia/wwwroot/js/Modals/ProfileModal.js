@@ -117,7 +117,7 @@ var ProfileModal = (function (_super) {
             this.bioEditor.enableEditing();
         }
         else {
-            this.profilePictureBox.heldImageClick = function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); };
+            this.profilePictureBox.heldImageClick = function (target) { return fullSizeImageModal.loadSingle(target.imageCard.image.imageId); };
             this.profilePictureBox.heldTooltipMsg = 'Fullscreen';
             this.nameEditor.disableEditing();
             this.bioEditor.disableEditing();
@@ -139,10 +139,10 @@ var ProfileModal = (function (_super) {
         window.addEventListener('mouseup', callback);
         imageDropdown.load(User.profileId, "Select a profile picture", "Set profile picture", function (target) {
             imageDropdown.rootElm.style.zIndex = '0';
-            ProfileCard.changeUserProfilePicture(target);
-            User.profilePictureId = target.image.imageId;
-            navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target));
-            Ajax.updateProfilePicture(target.image.imageId, null, 'Change profile picture', null, function (imageCard) {
+            ProfileCard.changeUserProfilePicture(target.imageCard);
+            User.profilePictureId = target.imageCard.image.imageId;
+            navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target.imageCard));
+            Ajax.updateProfilePicture(target.imageCard.image.imageId, null, 'Change profile picture', null, function (imageCard) {
                 return _this.profilePictureBox.loadImage(imageCard);
             });
         });

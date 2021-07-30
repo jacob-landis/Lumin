@@ -67,7 +67,7 @@ class CreatePostModal extends Modal {
         this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image',
             
             // When the image is clicked.
-            (targetImageCard: ImageCard) => this.selectImage()
+            (targetImage: ImageBox) => this.selectImage()
         );
 
         this.btnClearAttachment.onclick = (e: MouseEvent) => this.loadPaperClip();
@@ -153,12 +153,12 @@ class CreatePostModal extends Modal {
             'Attach image to post',
 
             // When the selected image card returns.
-            (imageCard: ImageCard) => {
+            (imageBox: ImageBox) => {
 
                 // Load image into selected image container by id so the fullsize version is requested and displayed.
-                this.selectedImageBox.load(imageCard.image.imageId, null, 'Attach to post');
+                this.selectedImageBox.load(imageBox.imageCard.image.imageId, null, 'Attach to post');
 
-                this.checkPrivacy(imageCard);
+                this.checkPrivacy(imageBox.imageCard);
 
                 ViewUtil.show(this.btnClearAttachment);
 

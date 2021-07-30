@@ -8,10 +8,49 @@
 */
 class ImageBox implements IAppendable { // XXX rename to image slot XXX rename comments in here too XXX look for and rename thumbNail to thumbnail XXX
 
-    public rootElm: HTMLElement;
-
     // A global collection of imageBox instances.
     public static imageBoxes: ImageBox[] = [];
+
+    public static copy(imageBox: ImageBox): ImageBox {
+
+        let imageCard: ImageCard = ImageCard.copy(imageBox.imageCard);
+
+        let imageBoxCopy = new ImageBox(
+            ViewUtil.tag("div"),
+            imageCard.rootElm.classList.value,
+            imageCard.rootElm.title,
+            imageCard.onImageClick,
+            true
+        );
+
+        imageBox.loadImage(imageCard);
+
+        return imageBoxCopy;
+    }
+
+    public static list(imageCards: ImageCard[]): ImageBox[] {
+
+        let imageBoxes: ImageBox[] = [];
+
+        imageCards.forEach((imageCard: ImageCard) => {
+
+            let imageBox: ImageBox = new ImageBox(
+                ViewUtil.tag("div"),
+                imageCard.rootElm.classList.value,
+                imageCard.rootElm.title,
+                imageCard.onImageClick,
+                true
+            );
+
+            imageBox.loadImage(imageCard);
+
+            imageBoxes.push(imageBox);
+        });
+
+        return imageBoxes;
+    }
+
+    public rootElm: HTMLElement;
 
     // Setting. ClassList to apply to images upon loading them.
     private heldImageClassList: string;
@@ -19,7 +58,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     public heldTooltipMsg: string = null;
 
     // Setting. Click callback to apply to images upon loading them.
-    public heldImageClick: (targetImageCard: ImageCard) => void;
+    public heldImageClick: (targetImage: ImageBox) => void;
     
     // Request setting.
     // A reference to the last image that was loaded or the image to be loaded.
@@ -65,7 +104,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         rootElm: HTMLElement,
         imageClassList: string,
         tooltipMsg: string,
-        click?: (targetImageCard: ImageCard) => void,
+        click?: (targetImage: ImageBox) => void,
         getThumbNail?: boolean
     ) {
 
@@ -78,7 +117,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         this.heldImageClassList = imageClassList;
 
         // If a click callback was provided, get a handle on it, else get a handle on an empty function.
-        this.heldImageClick = click ? click : (target: ImageCard) => { };
+        this.heldImageClick = click ? click : (target: ImageBox) => { };
         
         // Get a handle on rootElm.
         this.rootElm = rootElm;
@@ -99,7 +138,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         classlist can be a string or null. If it is null the current images classlist attribute will not be changed.
         click can be a function or null. If it is null the current images onclick event will not be changed.
     */
-    public load(imageId: number, classList?: string, toolTipMsg?: string, click?: (targetImageCard: ImageCard) => void): void {
+    public load(imageId: number, classList?: string, toolTipMsg?: string, click?: (targetImage: ImageBox) => void): void {
         
         // Replace handle on imageId.
         this.heldImageId = imageId;
@@ -129,6 +168,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     public loadImage(imageCard: ImageCard): void {
 
         this.imageCard = imageCard;
+        this.imageCard.parentImageBox = this;
 
         // Clear this image box's main HTML elm.
         ViewUtil.empty(this.rootElm);
@@ -185,6 +225,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
                     // get a handle on it,
                     this.imageCard = imageCard;
+                    this.imageCard.parentImageBox = this;
 
                     // empty this image boxes main HTML elm, XXX Does this really have to be done here????
                     ViewUtil.empty(this.rootElm);

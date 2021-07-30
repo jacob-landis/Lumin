@@ -92,7 +92,9 @@ class ContentBox implements IAppendable {
         this.scrollElm.addEventListener("wheel", (event: MouseWheelEvent) => {
             if (this.requestCallback != null && this.content.length != 0) {
                 this.lazyLoad();    
-                this.getVisibleContent().forEach((card: Card) => card.alertVisible());
+                this.getVisibleContent().forEach((card: Card) => {
+                    if (card.alertVisible != null) card.alertVisible();
+                });
             }
         });
 
@@ -103,12 +105,28 @@ class ContentBox implements IAppendable {
     public lazyLoad() {
         let divHeight: number = this.scrollElm.scrollHeight;
         let offset: number = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
-        console.log("lazy load check");
+
         if ((offset + this.loadThreshold) > divHeight) {
-            console.log("lazy load");
-            console.log(this.content.length);
             this.request();
         }
+
+        this.content.forEach((c: IAppendable) => {
+
+            let contentOffset: number = c.rootElm.offsetTop - this.scrollElm.scrollTop;
+
+            if ((contentOffset > -3000 && contentOffset < -2500) || (contentOffset < 3000 && contentOffset > 2500)) {
+
+                if (c instanceof Card && c.imageBoxes.length > 0) {
+                    c.imageBoxes.forEach((i: ImageBox) => i.unload());
+                }
+            }
+            else if (contentOffset > -2000 && contentOffset < 2000) {
+                
+                if (c instanceof Card && c.imageBoxes.length > 0) {
+                    c.imageBoxes.forEach((i: ImageBox) => i.reload());
+                }
+            }
+        });
     }
 
     public getVisibleContent(): IAppendable[] {

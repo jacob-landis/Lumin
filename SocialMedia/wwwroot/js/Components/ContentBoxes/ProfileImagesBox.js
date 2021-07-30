@@ -17,8 +17,8 @@ var ProfileImagesBox = (function (_super) {
         var _this = this;
         var rootElm = ViewUtil.tag('div', { classList: 'images-box' });
         _this = _super.call(this, rootElm, scrollElm, 400, 20, function (skip, take) {
-            Ajax.getProfileImages(_this.profileId, skip, take, 'listImage sqr', _this.tooltipMsg, _this.clickCallback, function (imageCards) {
-                _this.addImageCards(imageCards);
+            Ajax.getProfileImages(_this.profileId, skip, take, 'listImage sqr', _this.tooltipMsg, _this.clickCallback, function (imageBoxes) {
+                _this.addImages(imageBoxes);
             });
         }) || this;
         _this.profileId = profileId ? profileId : User.profileId;
@@ -35,32 +35,32 @@ var ProfileImagesBox = (function (_super) {
         _super.prototype.clear.call(this);
         _super.prototype.request.call(this, 30);
     };
-    ProfileImagesBox.prototype.addImageCards = function (imageCards) {
-        if (imageCards != null)
-            _super.prototype.add.call(this, this.prepImageCard(imageCards));
+    ProfileImagesBox.prototype.addImages = function (imageBoxes) {
+        if (imageBoxes != null)
+            _super.prototype.add.call(this, this.prepareImage(imageBoxes));
         if (this.onLoadEnd != null)
             this.onLoadEnd();
     };
-    ProfileImagesBox.prototype.addImageCard = function (imageCard, prepend) {
-        _super.prototype.add.call(this, this.prepImageCard(imageCard), prepend);
+    ProfileImagesBox.prototype.addImage = function (imageBox, prepend) {
+        _super.prototype.add.call(this, this.prepareImage(imageBox), prepend);
     };
-    ProfileImagesBox.prototype.prepImageCard = function (imageCard) {
+    ProfileImagesBox.prototype.prepareImage = function (imageBox) {
         var _this = this;
-        var imageCards;
-        if (Array.isArray(imageCard))
-            imageCards = imageCard;
+        var imageBoxes;
+        if (Array.isArray(imageBox))
+            imageBoxes = imageBox;
         else
-            imageCards = [imageCard];
-        imageCards.forEach(function (i) {
-            i.onImageClick = _this.clickCallback;
-            i.tooltipMsg = _this.tooltipMsg;
-            i.rootElm.classList.add('listImage');
-            i.rootElm.classList.add('sqr');
+            imageBoxes = [imageBox];
+        imageBoxes.forEach(function (i) {
+            i.imageCard.onImageClick = _this.clickCallback;
+            i.imageCard.tooltipMsg = _this.tooltipMsg;
+            i.imageCard.rootElm.classList.add('listImage');
+            i.imageCard.rootElm.classList.add('sqr');
         });
-        if (imageCards.length == 1)
-            return imageCards[0];
+        if (imageBoxes.length == 1)
+            return imageBoxes[0];
         else
-            return imageCards;
+            return imageBoxes;
     };
     ProfileImagesBox.prototype.removeImageCard = function (imageCard) {
         var _this = this;

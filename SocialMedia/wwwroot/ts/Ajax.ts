@@ -126,7 +126,7 @@
         imageId: number,
         imageClassList?: string,
         tooltipMsg?: string,
-        onImageClick?: (targetImageCard: ImageCard) => void,
+        onImageClick?: (targetImage: ImageBox) => void,
         onCopyResults?: (fullsizeImageCard: ImageCard) => void
     ): void {
         this.call(
@@ -228,13 +228,15 @@
         take: number,
         imageClassList: string,
         tooltipMsg: string,
-        onImageClick: (targetImageCard: ImageCard) => void,
-        onImageResults: (imageCards: ImageCard[]) => void
+        onImageClick: (targetImageBox: ImageBox) => void,
+        onImageResults: (imageBoxes: ImageBox[]) => void
     ): void {
         this.call(
             `apiimage/profileimages/${profileId}/${skip}/${take}`, 
             "GET",
-            (imageResults: string) => onImageResults(ImageCard.list(<ImageRecord[]><unknown>imageResults, imageClassList, tooltipMsg, onImageClick))
+            (imageResults: string) => onImageResults(
+                ImageBox.list(
+                    ImageCard.list(<ImageRecord[]><unknown>imageResults, imageClassList, tooltipMsg, onImageClick)))
         );
     }
 
@@ -247,7 +249,7 @@
         thumb: boolean,
         imageClassList: string,
         tooltipMsg: string,
-        onImageClick: (target: ImageCard) => void,
+        onImageClick: (target: ImageBox) => void,
         onImageResults: (imageCard: ImageCard) => void
     ): void {
         this.call(

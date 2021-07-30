@@ -31,8 +31,10 @@ var CommentCard = (function (_super) {
             });
         });
         _this.likeCard = new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime);
+        _this.profileCard = new ProfileCard(comment.profile);
+        _this.imageBoxes.concat(_this.profileCard.imageBoxes);
         contentSection.append(_this.commentEditor.rootElm);
-        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, _this.likeCard.rootElm, _this.refreshMessageSection);
+        mainSection.append(_this.profileCard.rootElm, contentSection, _this.likeCard.rootElm, _this.refreshMessageSection);
         _this.rootElm.append(mainSection, optsSection);
         if (comment.profile.relationToUser == 'me') {
             optsSection.append(btnOpts);

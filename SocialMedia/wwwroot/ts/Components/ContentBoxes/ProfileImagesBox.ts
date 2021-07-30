@@ -12,7 +12,7 @@ class ProfileImagesBox extends ContentBox {
     public tooltipMsg: string;
 
     // The click action that gets imbedded in every image in this image box's content box.
-    public clickCallback: (target: ImageCard) => void;
+    public clickCallback: (target: ImageBox) => void;
 
     // The ProfileID of the profile who's images are being loaded.
     public profileId: number;
@@ -22,7 +22,7 @@ class ProfileImagesBox extends ContentBox {
         profileId can be null.
         clickCallback is assigned as the onclick event for each profile card.
     */
-    constructor(profileId?: number, tooltipMsg?: string, scrollElm?: HTMLElement, clickCallback?: (imageCard: ImageCard) => void) {
+    constructor(profileId?: number, tooltipMsg?: string, scrollElm?: HTMLElement, clickCallback?: (imageBox: ImageBox) => void) {
 
         let rootElm: HTMLElement = ViewUtil.tag('div', { classList: 'images-box' });
 
@@ -32,9 +32,9 @@ class ProfileImagesBox extends ContentBox {
                 // send an images request to the host with the set skip and take values along with the ProfileID of this image box,
                 Ajax.getProfileImages(this.profileId, skip, take, 'listImage sqr', this.tooltipMsg, this.clickCallback,
                     // and when they return as image cards with the click value that was just provided,
-                    (imageCards: ImageCard[]) => {
+                    (imageBoxes: ImageBox[]) => {
                         // add them to this image box.
-                        this.addImageCards(imageCards);
+                        this.addImages(imageBoxes);
                     }
                 );
             }
@@ -59,7 +59,7 @@ class ProfileImagesBox extends ContentBox {
     /*
         Restart image loading with new profileId and onImageClick callback. 
     */
-    public load(profileId: number, tooltipMsg: string, onImageClick: (target: ImageCard) => void): void {
+    public load(profileId: number, tooltipMsg: string, onImageClick: (target: ImageBox) => void): void {
 
         // Change stored values to parameter values.
         this.profileId = profileId;
@@ -73,41 +73,41 @@ class ProfileImagesBox extends ContentBox {
         super.request(30);
     }
 
-    public addImageCards(imageCards: ImageCard[]): void {
+    public addImages(imageBoxes: ImageBox[]): void {
 
-        if (imageCards != null) super.add(this.prepImageCard(imageCards));
+        if (imageBoxes!= null) super.add(this.prepareImage(imageBoxes));
         if (this.onLoadEnd != null) this.onLoadEnd();
     }
 
     /*
         Takes an image card and does some final preparation before adding it to this image box's content box.
     */
-    public addImageCard(imageCard: ImageCard, prepend?: boolean): void {
+    public addImage(imageBox: ImageBox, prepend?: boolean): void {
         
         // Add image card to this image box's content box.
-        super.add(this.prepImageCard(imageCard), prepend);
+        super.add(this.prepareImage(imageBox), prepend);
     }
 
-    private prepImageCard(imageCard: (ImageCard | ImageCard[])): (ImageCard | ImageCard[]) {
+    private prepareImage(imageBox: (ImageBox | ImageBox[])): (ImageBox| ImageBox[]) {
 
-        let imageCards: ImageCard[];
+        let imageBoxes: ImageBox[];
 
-        if (Array.isArray(imageCard)) imageCards = imageCard;
-        else imageCards = [imageCard];
+        if (Array.isArray(imageBox)) imageBoxes = imageBox;
+        else imageBoxes = [imageBox];
 
-        imageCards.forEach((i: ImageCard) => {
+        imageBoxes.forEach((i: ImageBox) => {
 
             // Imbed click action stored in this image box to image card.
-            i.onImageClick = this.clickCallback;
-            i.tooltipMsg = this.tooltipMsg;
+            i.imageCard.onImageClick = this.clickCallback;
+            i.imageCard.tooltipMsg = this.tooltipMsg;
 
             // Update classList of image card so it is square and fits in the grid.
-            i.rootElm.classList.add('listImage');
-            i.rootElm.classList.add('sqr');
+            i.imageCard.rootElm.classList.add('listImage');
+            i.imageCard.rootElm.classList.add('sqr');
         });
 
-        if (imageCards.length == 1) return imageCards[0];
-        else return imageCards;
+        if (imageBoxes.length == 1) return imageBoxes[0];
+        else return imageBoxes;
     }
 
     /*

@@ -30,7 +30,7 @@ var CreatePostModal = (function (_super) {
             })
         };
         _this.captionWrapper.append(_this.errorBox.rootElm);
-        _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image', function (targetImageCard) { return _this.selectImage(); });
+        _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image', function (targetImage) { return _this.selectImage(); });
         _this.btnClearAttachment.onclick = function (e) { return _this.loadPaperClip(); };
         _this.btnSubmit.onclick = function (e) { return _this.submit(); };
         _this.lblCaptionCharacterCount.innerText = "0/" + _this.maxLength;
@@ -67,9 +67,9 @@ var CreatePostModal = (function (_super) {
     };
     CreatePostModal.prototype.selectImage = function () {
         var _this = this;
-        imageDropdown.load(User.profileId, "Select an image", 'Attach image to post', function (imageCard) {
-            _this.selectedImageBox.load(imageCard.image.imageId, null, 'Attach to post');
-            _this.checkPrivacy(imageCard);
+        imageDropdown.load(User.profileId, "Select an image", 'Attach image to post', function (imageBox) {
+            _this.selectedImageBox.load(imageBox.imageCard.image.imageId, null, 'Attach to post');
+            _this.checkPrivacy(imageBox.imageCard);
             ViewUtil.show(_this.btnClearAttachment);
             imageDropdown.close();
         });

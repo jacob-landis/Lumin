@@ -21,7 +21,7 @@ var ImageCard = (function (_super) {
         _this._tooltipMsg = null;
         _this.image = image;
         _this.tooltipMsg = tooltipMsg;
-        _this.onImageClick = onImageClick ? onImageClick : function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); };
+        _this.onImageClick = onImageClick ? onImageClick : function (target) { return fullSizeImageModal.loadSingle(target.imageCard.image.imageId); };
         if (image.profileId == User.profileId)
             _this.rootElm.oncontextmenu = function (event) {
                 return contextMenu.load(event, [
@@ -81,7 +81,7 @@ var ImageCard = (function (_super) {
         set: function (onImageClick) {
             var _this = this;
             this._onImageClick = function (target) { return onImageClick(target); };
-            this.rootElm.onclick = function (event) { return onImageClick(_this); };
+            this.rootElm.onclick = function (event) { return onImageClick(_this.parentImageBox); };
         },
         enumerable: true,
         configurable: true

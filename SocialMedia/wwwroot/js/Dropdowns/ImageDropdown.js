@@ -19,15 +19,17 @@ var ImageDropdown = (function (_super) {
         _this.highLitImage = null;
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;
-        _this.imageBox = new ProfileImagesBox(null, 'Fullscreen', _this.contentElm, function (target) {
+        _this.imagesBox = new ProfileImagesBox(null, 'Fullscreen', _this.contentElm, function (target) {
             return fullSizeImageModal.load(_this.indexOf(target));
         });
-        _this.imageWrapper.append(_this.imageBox.rootElm);
+        _this.imageWrapper.append(_this.imagesBox.rootElm);
         btnOpenUploadImageModal.onchange = function (e) {
             return uploadImageModal.load(e, function (imageCard) {
                 return ProfileImagesBox.profileImageBoxes.forEach(function (p) {
+                    var imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.tooltipMsg);
+                    imageBox.loadImage(ImageCard.copy(imageCard));
                     if (p.profileId == User.profileId)
-                        p.addImageCard(ImageCard.copy(imageCard), true);
+                        p.addImage(imageBox, true);
                 });
             });
         };
@@ -41,21 +43,21 @@ var ImageDropdown = (function (_super) {
         if (promptMsg === void 0) { promptMsg = ""; }
         if (tooltipMsg === void 0) { tooltipMsg = null; }
         if (onImageClick != null) {
-            if (profileId == this.imageBox.profileId) {
+            if (profileId == this.imagesBox.profileId) {
                 this.convert(tooltipMsg, onImageClick);
             }
             else {
-                this.imageBox.load(profileId, tooltipMsg, onImageClick);
+                this.imagesBox.load(profileId, tooltipMsg, onImageClick);
             }
         }
         else {
-            if (profileId == this.imageBox.profileId) {
+            if (profileId == this.imagesBox.profileId) {
                 this.convert('Fullscreen', function (target) {
                     fullSizeImageModal.load(_this.indexOf(target), profileId);
                 });
             }
             else {
-                this.imageBox.load(profileId, 'Fullscreen', function (target) {
+                this.imagesBox.load(profileId, 'Fullscreen', function (target) {
                     fullSizeImageModal.load(_this.indexOf(target), profileId);
                 });
             }
@@ -66,19 +68,19 @@ var ImageDropdown = (function (_super) {
     };
     ImageDropdown.prototype.convert = function (tooltipMsg, callback) {
         var _this = this;
-        this.imageBox.clickCallback = function (target) { return callback(target); };
-        this.imageBox.content.forEach(function (imageCard) {
-            imageCard.onImageClick = _this.imageBox.clickCallback;
-            imageCard.tooltipMsg = tooltipMsg;
+        this.imagesBox.clickCallback = function (target) { return callback(target); };
+        this.imagesBox.content.forEach(function (imageBox) {
+            imageBox.imageCard.onImageClick = _this.imagesBox.clickCallback;
+            imageBox.imageCard.tooltipMsg = tooltipMsg;
         });
         this.prompt.innerText = 'Select an Image';
     };
-    ImageDropdown.prototype.indexOf = function (imageCard) {
-        return this.imageBox.content.indexOf(imageCard);
+    ImageDropdown.prototype.indexOf = function (imageBox) {
+        return this.imagesBox.content.indexOf(imageBox);
     };
     ImageDropdown.prototype.highlightAtIndex = function (targetIndex) {
         this.clearHighlight();
-        this.highLitImage = this.imageBox.content[targetIndex];
+        this.highLitImage = this.imagesBox.content[targetIndex];
         this.highLitImage.rootElm.classList.add('highlighted');
     };
     ImageDropdown.prototype.clearHighlight = function () {

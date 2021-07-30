@@ -156,7 +156,7 @@ class ProfileModal extends Modal {
             this.profilePostsCard.load(profileId);
             
             // Construct new ProfileImageBox and set up profile images display.
-            this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', this.imageScrollBox, (target: ImageCard) =>
+            this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', this.imageScrollBox, (target: ImageBox) =>
 
                 // Set click callback of each image to open a collection in fullzise image modal.
                 fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
@@ -184,7 +184,7 @@ class ProfileModal extends Modal {
                 () => ViewUtil.show(this.profileSettingsCard.btnToggleSettingsSection.rootElm, 'block'));
 
             // set click callback of profile picture to invoke select profile picture,
-            this.profilePictureBox.heldImageClick = (target: ImageCard) => this.selectProfilePicture()
+            this.profilePictureBox.heldImageClick = (target: ImageBox) => this.selectProfilePicture()
             this.profilePictureBox.heldTooltipMsg = 'Change profile picture';
 
             // give button for user to edit bio,
@@ -196,7 +196,7 @@ class ProfileModal extends Modal {
         else {
 
             // set click callback of profile picture to display it in fullsize image modal,
-            this.profilePictureBox.heldImageClick = (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId);
+            this.profilePictureBox.heldImageClick = (target: ImageBox) => fullSizeImageModal.loadSingle(target.imageCard.image.imageId);
             this.profilePictureBox.heldTooltipMsg = 'Fullscreen';
 
             // and detach the button to edit the bio.
@@ -228,21 +228,21 @@ class ProfileModal extends Modal {
         window.addEventListener('mouseup', callback);
 
         // Load image dropdown for current user and set the onclick to change profile picture.
-        imageDropdown.load(User.profileId, "Select a profile picture", "Set profile picture", (target: ImageCard) => {
+        imageDropdown.load(User.profileId, "Select a profile picture", "Set profile picture", (target: ImageBox) => {
             
             // Reset z index of dropdown.
             imageDropdown.rootElm.style.zIndex = '0'; // XXX move to onclose of imageDropdown. XXX
 
             // Change any occurence of the user's profile picture to the newly selected one.
-            ProfileCard.changeUserProfilePicture(target);
+            ProfileCard.changeUserProfilePicture(target.imageCard);
 
             // Update stored shorcut to profile picture.
-            User.profilePictureId = target.image.imageId;
+            User.profilePictureId = target.imageCard.image.imageId;
 
-            navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target));
+            navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(target.imageCard));
             
             // Send an update request to the host to change the profile picture in the profile record.
-            Ajax.updateProfilePicture(target.image.imageId, null, 'Change profile picture', null,
+            Ajax.updateProfilePicture(target.imageCard.image.imageId, null, 'Change profile picture', null,
 
                 // When the host sends back the fullsize version of the new profile picture, load it into the profile modal display.
                 (imageCard: ImageCard) =>

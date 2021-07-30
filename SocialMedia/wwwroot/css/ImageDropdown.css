@@ -33,10 +33,14 @@
     font-size: 18pt;
 }
 
-.highlighted {
+.contentContainer > .image-box {
+    display: inline;
+}
+
+.highlighted > img {
     border: 2px solid cornflowerblue;
 }
 
-.highlighted:hover {
+.highlighted > img:hover {
     border: 2px solid cornflowerblue;
 }

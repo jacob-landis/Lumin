@@ -104,7 +104,7 @@ var Ajax = (function () {
         this.call("apiimage/updateimageprivacy/" + imageId + "/" + privacyLevel, "POST");
     };
     Ajax.getProfileImages = function (profileId, skip, take, imageClassList, tooltipMsg, onImageClick, onImageResults) {
-        this.call("apiimage/profileimages/" + profileId + "/" + skip + "/" + take, "GET", function (imageResults) { return onImageResults(ImageCard.list(imageResults, imageClassList, tooltipMsg, onImageClick)); });
+        this.call("apiimage/profileimages/" + profileId + "/" + skip + "/" + take, "GET", function (imageResults) { return onImageResults(ImageBox.list(ImageCard.list(imageResults, imageClassList, tooltipMsg, onImageClick))); });
     };
     Ajax.getProfileImagesCount = function (profileId, onCountResults) {
         this.call("apiimage/profileimagescount/" + profileId, "GET", onCountResults);

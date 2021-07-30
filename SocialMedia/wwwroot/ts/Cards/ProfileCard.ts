@@ -95,7 +95,7 @@
         this.imageBoxes.push(this.imageBox);
 
         if (this.profile.profilePicture != null)
-            this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', null, (target: ImageCard) => { }));
+            this.imageBox.loadImage(new ImageCard(this.profile.profilePicture, 'sqr', null, (target: ImageBox) => { }));
 
         this.txtName = ViewUtil.tag('span', { classList: 'profileCardName', innerText: `${this.profile.firstName} ${this.profile.lastName}` });
 

@@ -21,7 +21,10 @@ var ContentBox = (function () {
         this.scrollElm.addEventListener("wheel", function (event) {
             if (_this.requestCallback != null && _this.content.length != 0) {
                 _this.lazyLoad();
-                _this.getVisibleContent().forEach(function (card) { return card.alertVisible(); });
+                _this.getVisibleContent().forEach(function (card) {
+                    if (card.alertVisible != null)
+                        card.alertVisible();
+                });
             }
         });
         ContentBox.contentBoxes.push(this);
@@ -50,14 +53,25 @@ var ContentBox = (function () {
         configurable: true
     });
     ContentBox.prototype.lazyLoad = function () {
+        var _this = this;
         var divHeight = this.scrollElm.scrollHeight;
         var offset = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
-        console.log("lazy load check");
         if ((offset + this.loadThreshold) > divHeight) {
-            console.log("lazy load");
-            console.log(this.content.length);
             this.request();
         }
+        this.content.forEach(function (c) {
+            var contentOffset = c.rootElm.offsetTop - _this.scrollElm.scrollTop;
+            if ((contentOffset > -3000 && contentOffset < -2500) || (contentOffset < 3000 && contentOffset > 2500)) {
+                if (c instanceof Card && c.imageBoxes.length > 0) {
+                    c.imageBoxes.forEach(function (i) { return i.unload(); });
+                }
+            }
+            else if (contentOffset > -2000 && contentOffset < 2000) {
+                if (c instanceof Card && c.imageBoxes.length > 0) {
+                    c.imageBoxes.forEach(function (i) { return i.reload(); });
+                }
+            }
+        });
     };
     ContentBox.prototype.getVisibleContent = function () {
         var visibleContent = [];

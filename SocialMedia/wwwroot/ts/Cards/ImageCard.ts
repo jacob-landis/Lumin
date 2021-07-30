@@ -6,7 +6,7 @@
         imageCard: ImageCard,
         newClassList: string = imageCard.rootElm.classList.value,
         newTooltipMsg: string = imageCard.tooltipMsg,
-        newOnImageClick: (target: ImageCard) => void = (target: ImageCard) => imageCard.rootElm.onclick
+        newOnImageClick: (target: ImageBox) => void = (target: ImageBox) => imageCard.rootElm.onclick
     ): ImageCard {
 
         return new ImageCard(imageCard.image, newClassList, newTooltipMsg, newOnImageClick);
@@ -16,7 +16,7 @@
         images: ImageRecord[],
         classList: string,
         toolTip: string,
-        onImageClick?: (targetImageCard: ImageCard) => void
+        onImageClick?: (targetImageCard: ImageBox) => void
     ): ImageCard[] {
 
         if (!images) return null;
@@ -29,6 +29,7 @@
     // ---------------------------------------------------------------------------------------------------------------
     // NON-STATIC
 
+    public parentImageBox: ImageBox;
     public image: ImageRecord;
 
     private _tooltipMsg: string = null;
@@ -44,14 +45,14 @@
     get tooltipMsg() { return this._tooltipMsg; }
 
     // ON IMAGE CLICK
-    private _onImageClick:         (target: ImageCard) => void;
-    get onImageClick():            (target: ImageCard) => void  { return this._onImageClick; }
-    set onImageClick(onImageClick: (target: ImageCard) => void) {
+    private _onImageClick:         (target: ImageBox) => void;
+    get onImageClick():            (target: ImageBox) => void  { return this._onImageClick; }
+    set onImageClick(onImageClick: (target: ImageBox) => void) {
 
         // XXX consider getting rid of _onImageClick. Instead, get the value of this.rootElm.onclick. XXX
         // Set the value of the two properties to a function that send this instance back through the onImageClick callback.
-        this._onImageClick = (target: ImageCard) => onImageClick(target);
-        this.rootElm.onclick = (event: MouseEvent) => onImageClick(this);
+        this._onImageClick = (target: ImageBox) => onImageClick(target);
+        this.rootElm.onclick = (event: MouseEvent) => onImageClick(this.parentImageBox);
     }
 
     /*
@@ -62,7 +63,7 @@
         image: ImageRecord,
         classList?: string,
         tooltipMsg?: string,
-        onImageClick?: (target: ImageCard) => void
+        onImageClick?: (target: ImageBox) => void
     ) {
         
         super(ViewUtil.tag('img', {
@@ -76,7 +77,7 @@
         this.tooltipMsg = tooltipMsg;
 
         // L-Click on imageCard action.
-        this.onImageClick = onImageClick ? onImageClick : (target: ImageCard) => fullSizeImageModal.loadSingle(target.image.imageId);
+        this.onImageClick = onImageClick ? onImageClick : (target: ImageBox) => fullSizeImageModal.loadSingle(target.imageCard.image.imageId);
 
         // R-Click on imageCard action.
         if (image.profileId == User.profileId) 
@@ -129,10 +130,10 @@
         // If the user deleted the image that was their profile picture, change all occurances of their profile picture to the defualt.
         if (this.image.imageId == User.profilePictureId) {
 
-            Ajax.getImage(0, true, 'sqr', null, (target: ImageCard) => { }, (imageCard: ImageCard) =>
+            Ajax.getImage(0, true, 'sqr', null, (target: ImageBox) => { }, (imageCard: ImageCard) =>
                 ProfileCard.changeUserProfilePicture(imageCard));
 
-            Ajax.getImage(0, false, 'sqr', 'Change profile picture', (target: ImageCard) => { }, (imageCard: ImageCard) =>
+            Ajax.getImage(0, false, 'sqr', 'Change profile picture', (target: ImageBox) => { }, (imageCard: ImageCard) =>
                 profileModal.profilePictureBox.loadImage(imageCard));
         }
 

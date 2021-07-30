@@ -11,6 +11,21 @@ var ImageBox = (function () {
         this.rootElm.classList.add('image-box');
         ImageBox.imageBoxes.push(this);
     }
+    ImageBox.copy = function (imageBox) {
+        var imageCard = ImageCard.copy(imageBox.imageCard);
+        var imageBoxCopy = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, true);
+        imageBox.loadImage(imageCard);
+        return imageBoxCopy;
+    };
+    ImageBox.list = function (imageCards) {
+        var imageBoxes = [];
+        imageCards.forEach(function (imageCard) {
+            var imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, true);
+            imageBox.loadImage(imageCard);
+            imageBoxes.push(imageBox);
+        });
+        return imageBoxes;
+    };
     Object.defineProperty(ImageBox.prototype, "height", {
         get: function () { return this.imageCard != null ? this.imageCard.image.height : 0; },
         set: function (height) { this.rootElm.style.height = "" + height; },
@@ -37,6 +52,7 @@ var ImageBox = (function () {
     };
     ImageBox.prototype.loadImage = function (imageCard) {
         this.imageCard = imageCard;
+        this.imageCard.parentImageBox = this;
         ViewUtil.empty(this.rootElm);
         if (this.heldImageClassList)
             ViewUtil.addClassList(this.heldImageClassList, imageCard.rootElm);
@@ -63,6 +79,7 @@ var ImageBox = (function () {
                 _this.unload();
                 _this.isLoaded = true;
                 _this.imageCard = imageCard;
+                _this.imageCard.parentImageBox = _this;
                 ViewUtil.empty(_this.rootElm);
                 _this.rootElm.append(_this.imageCard.rootElm);
                 if (_this._onLoadEnd)

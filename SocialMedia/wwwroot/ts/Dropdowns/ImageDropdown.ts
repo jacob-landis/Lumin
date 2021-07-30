@@ -18,7 +18,7 @@ class ImageDropdown extends Dropdown {
     private prompt: HTMLElement;
 
     // Holds image cards.
-    public imageBox: ProfileImagesBox;
+    public imagesBox: ProfileImagesBox;
     
     // Holds an onClick callback. Set when image onClicks are converted. Used for newly uploaded images so they can fit in.
     private heldOnClick: (target: ImageCard) => void;
@@ -46,14 +46,14 @@ class ImageDropdown extends Dropdown {
         this.prompt = prompt;
 
         // Create ProfileImagesBox to hold dropdown images. Load current users images.
-        this.imageBox = new ProfileImagesBox(null, 'Fullscreen', this.contentElm, (target: ImageCard) =>
+        this.imagesBox = new ProfileImagesBox(null, 'Fullscreen', this.contentElm, (target: ImageBox) =>
 
             // Load album into fullsize image modal starting at the index of the clicked image card.
             fullSizeImageModal.load(this.indexOf(target))
         );
 
         // Append ProfileImagesBox to this imageWrapper.
-        this.imageWrapper.append(this.imageBox.rootElm);
+        this.imageWrapper.append(this.imagesBox.rootElm);
 
         // UPLOAD IMAGE
         // Sets up onchange event on file input.
@@ -71,8 +71,12 @@ class ImageDropdown extends Dropdown {
                     // loop through all the profileImageBoxs,
                     ProfileImagesBox.profileImageBoxes.forEach((p: ProfileImagesBox) => {
 
+                        let imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.tooltipMsg);
+
+                        imageBox.loadImage(ImageCard.copy(imageCard));
+
                         // and if the image box is displaying the current user's images, add the newly uploaded image to it.
-                        if (p.profileId == User.profileId) p.addImageCard(ImageCard.copy(imageCard), true);
+                        if (p.profileId == User.profileId) p.addImage(imageBox, true);
                     })
             );
     }
@@ -90,13 +94,13 @@ class ImageDropdown extends Dropdown {
         give the user a prompt,
         and bring this dropdown to the foreground.
     */
-    public load(profileId: number, promptMsg: string = "", tooltipMsg: string = null, onImageClick?: (target: ImageCard) => void): void {
+    public load(profileId: number, promptMsg: string = "", tooltipMsg: string = null, onImageClick?: (target: ImageBox) => void): void {
 
         // If a callback was provided.
         if (onImageClick != null) {
 
             // If its the same profile.
-            if (profileId == this.imageBox.profileId) {
+            if (profileId == this.imagesBox.profileId) {
 
                 // Convert the onclick of the currently loaded images to the one provided.
                 this.convert(tooltipMsg, onImageClick);
@@ -104,16 +108,16 @@ class ImageDropdown extends Dropdown {
             else {
 
                 // Start over image loading with new profile and onclick.
-                this.imageBox.load(profileId, tooltipMsg, onImageClick);
+                this.imagesBox.load(profileId, tooltipMsg, onImageClick);
             }
         }
         else {
 
             // If its the same profile.
-            if (profileId == this.imageBox.profileId) {
+            if (profileId == this.imagesBox.profileId) {
 
                 // Convert the onclick of the currently loaded images to the defualt onclick.
-                this.convert('Fullscreen', (target: ImageCard) => {
+                this.convert('Fullscreen', (target: ImageBox) => {
 
                     // Open the image in fullsize image modal that is selected.
                     fullSizeImageModal.load(this.indexOf(target), profileId);
@@ -122,7 +126,7 @@ class ImageDropdown extends Dropdown {
             else {
 
                 // Start over image loading with new profile and defualt onclick.
-                this.imageBox.load(profileId, 'Fullscreen', (target: ImageCard) => {
+                this.imagesBox.load(profileId, 'Fullscreen', (target: ImageBox) => {
 
                     // Open the image in fullsize image modal that is selected.
                     fullSizeImageModal.load(this.indexOf(target), profileId);
@@ -146,23 +150,23 @@ class ImageDropdown extends Dropdown {
 
         This is used if the image dropdown is already open and the user needs to select an image.
     */
-    public convert(tooltipMsg: string, callback: (imageCard: ImageCard) => void): void {
+    public convert(tooltipMsg: string, callback: (imageCard: ImageBox) => void): void {
 
         // Save callback in ProfileImagesBox for newly uploaded images that come in to get their callback from.
-        this.imageBox.clickCallback = (target: ImageCard) => callback(target); // XXX just assign callback XXX
+        this.imagesBox.clickCallback = (target: ImageBox) => callback(target); // XXX just assign callback XXX
 
         // Loop through each image card in the image box and change it's callback to the one provided.
-        this.imageBox.content.forEach((imageCard: IAppendable) => {
-            (<ImageCard>imageCard).onImageClick = this.imageBox.clickCallback;
-            (<ImageCard>imageCard).tooltipMsg = tooltipMsg;
+        this.imagesBox.content.forEach((imageBox: IAppendable) => {
+            (<ImageBox>imageBox).imageCard.onImageClick = this.imagesBox.clickCallback;
+            (<ImageBox>imageBox).imageCard.tooltipMsg = tooltipMsg;
         });
 
         // Prompt the user to select an image.
         this.prompt.innerText = 'Select an Image';
     }
 
-    public indexOf(imageCard: ImageCard): number {
-        return this.imageBox.content.indexOf(<IAppendable>imageCard);
+    public indexOf(imageBox: ImageBox): number {
+        return this.imagesBox.content.indexOf(<IAppendable>imageBox);
     }
 
     public highlightAtIndex(targetIndex: number) {
@@ -171,7 +175,7 @@ class ImageDropdown extends Dropdown {
         this.clearHighlight();
 
         // Get handle on the image at the given target index.
-        this.highLitImage = <ImageCard>this.imageBox.content[targetIndex];
+        this.highLitImage = <ImageCard>this.imagesBox.content[targetIndex];
 
         // Highlight the target image.
         this.highLitImage.rootElm.classList.add('highlighted');

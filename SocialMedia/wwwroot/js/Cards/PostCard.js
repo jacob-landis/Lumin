@@ -22,13 +22,17 @@ var PostCard = (function (_super) {
             _this.hasImage = true;
         var postSection = ViewUtil.tag('div', { classList: 'postSection' });
         _this.commentsSection = new CommentSectionCard(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); }, function () {
+            _this.commentsSection.mainCommentsBox.content.forEach(function (content) {
+                var commentCard = content;
+                _this.imageBoxes.concat(commentCard.imageBoxes);
+            });
         });
         _this.commentsSection.commentBoxesStage.onStagingEnd = function () { return _this.stage.updateStaging(_this.commentsSection.allStaged); };
         _this.stage = new Stage([_this.imageStaged, _this.commentsSection.allStaged]);
         _this.rootElm.append(postSection, _this.commentsSection.rootElm);
-        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.image.imageId); });
-        _this.imageBoxes.push(_this.postImageWrapper);
+        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.imageCard.image.imageId); });
         if (_this.hasImage) {
+            _this.imageBoxes.push(_this.postImageWrapper);
             _this.postImageWrapper.load(_this.post.image.imageId);
             _this.captionWrapper = ViewUtil.tag('div', { classList: 'captionWrapper' });
         }
@@ -93,17 +97,6 @@ var PostCard = (function (_super) {
                 _this.stage.updateStaging(_this.imageStaged);
             };
         }
-        window.addEventListener('scroll', function (e) {
-            var offset = _this.rootElm.offsetTop - window.pageYOffset;
-            if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
-                if (_this.hasImage)
-                    _this.postImageWrapper.unload();
-            }
-            else if (offset > -2000 && offset < 2000) {
-                if (_this.hasImage)
-                    _this.postImageWrapper.reload();
-            }
-        });
         PostCard.postCards.push(_this);
         return _this;
     }
