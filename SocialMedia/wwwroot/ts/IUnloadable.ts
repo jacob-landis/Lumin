@@ -1,0 +1,3 @@
+﻿interface IUnloadable {
+    imageBoxes: ImageBox[];
+}

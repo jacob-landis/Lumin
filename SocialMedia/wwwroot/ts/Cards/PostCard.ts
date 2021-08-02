@@ -78,7 +78,7 @@
             () => {
                 this.commentsSection.mainCommentsBox.content.forEach((content: IAppendable) => {
                     let commentCard = <CommentCard>content;
-                    this.imageBoxes.concat(commentCard.imageBoxes);
+                    commentCard.imageBoxes.forEach((imageBox: ImageBox) => this.imageBoxes.push(imageBox));
                 });
             }
         );
@@ -140,7 +140,7 @@
         let postOptsSlot: HTMLElement = ViewUtil.tag('div', { classList: 'postOptsSlot' });
 
         let profileCard: ProfileCard = new ProfileCard(this.post.profile);
-        this.imageBoxes.concat(profileCard.imageBoxes);
+        profileCard.imageBoxes.forEach((imageBox: ImageBox) => this.imageBoxes.push(imageBox));
 
         this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
         profileCardSlot.append(profileCard.rootElm);
@@ -188,19 +188,7 @@
                 this.stage.updateStaging(this.imageStaged);
             }
         }
-
-        // unload or reload posts above and below the position of the viewport
-        //window.addEventListener('scroll', (e: UIEvent) => {
-        //    let offset: number = this.rootElm.offsetTop - window.pageYOffset;
-            
-        //    if ((offset > -3000 && offset < -2500) || (offset < 3000 && offset > 2500)) {
-        //        if (this.hasImage) this.postImageWrapper.unload();
-        //    }
-        //    else if (offset > -2000 && offset < 2000) {
-        //        if (this.hasImage) this.postImageWrapper.reload(); this.imageBoxes.forEach((i: ImageBox) => i.reload());
-        //    }
-        //});
-
+        
         PostCard.postCards.push(this);
     }
 

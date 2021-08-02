@@ -33,10 +33,6 @@
     font-size: 18pt;
 }
 
-.contentContainer > .image-box {
-    display: inline;
-}
-
 .highlighted > img {
     border: 2px solid cornflowerblue;
 }

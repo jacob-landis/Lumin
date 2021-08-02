@@ -6,11 +6,8 @@
     This is a component of lazy loading.
     Images are dumped from posts as the user scrolls away from them and reloaded when scrolled back to.
 */
-class ImageBox implements IAppendable { // XXX rename to image slot XXX rename comments in here too XXX look for and rename thumbNail to thumbnail XXX
-
-    // A global collection of imageBox instances.
-    public static imageBoxes: ImageBox[] = [];
-
+class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot XXX rename comments in here too XXX look for and rename thumbNail to thumbnail XXX
+    
     public static copy(imageBox: ImageBox): ImageBox {
 
         let imageCard: ImageCard = ImageCard.copy(imageBox.imageCard);
@@ -29,6 +26,8 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     }
 
     public static list(imageCards: ImageCard[]): ImageBox[] {
+
+        if (imageCards == null) return null;
 
         let imageBoxes: ImageBox[] = [];
 
@@ -50,6 +49,8 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
         return imageBoxes;
     }
 
+    public imageBoxes: ImageBox[] = [];
+
     public rootElm: HTMLElement;
 
     // Setting. ClassList to apply to images upon loading them.
@@ -63,7 +64,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     // Request setting.
     // A reference to the last image that was loaded or the image to be loaded.
     // reload() requests an image with this ImageID.
-    private heldImageId: number;
+    public heldImageId: number;
 
     // Request setting.
     // True = request thumbnail.
@@ -124,9 +125,8 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
         // Add an 'image-box' class attribute to rootElm.
         this.rootElm.classList.add('image-box');
-
-        // Add this instance ImageBox to imageBoxes.
-        ImageBox.imageBoxes.push(this);
+        
+        this.imageBoxes.push(this);
     }
     
     /*
@@ -150,9 +150,7 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
         // Optionally replace handle on onclick function.
         this.heldImageClick = click ? click : this.heldImageClick;
-
-        // Unload current image.
-        //this.unload();
+        
         this.isLoaded = false;
 
         // Reload current image (Makes request).
@@ -167,36 +165,30 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
     */
     public loadImage(imageCard: ImageCard): void {
 
-        this.imageCard = imageCard;
-        this.imageCard.parentImageBox = this;
-
-        // Clear this image box's main HTML elm.
-        ViewUtil.empty(this.rootElm);
+        this.setImageCard(imageCard);
 
         // If a classList or click callback was ever provided, apply them to the imageCard.
         if (this.heldImageClassList) ViewUtil.addClassList(this.heldImageClassList, imageCard.rootElm);
         if (this.heldTooltipMsg) imageCard.tooltipMsg = this.heldTooltipMsg;
         if (this.heldImageClick) imageCard.onImageClick = this.heldImageClick;
-
-        // Append tag of new image card to this image box's main HTML elm.
-        this.rootElm.append(imageCard.rootElm);
-
-        // Raise is loaded flag.
-        this.isLoaded = true;
-
-        if (this._onLoadEnd) this._onLoadEnd();
     }
 
     /*
         Unload the current image card and clear it from memory.
     */
     public unload(): void {
-        
-        // clear it's HTML rendering,
-        ViewUtil.empty(this.rootElm);
 
         // delete it from memory,
-        if (this.imageCard != null) delete this.imageCard;
+        if (this.imageCard != null) {
+            
+            this.rootElm.style.minHeight = `${this.rootElm.clientHeight}`;
+            this.rootElm.style.minWidth = `${this.rootElm.clientWidth}`;
+
+            delete this.imageCard;
+        }
+
+        // clear it's HTML rendering,
+        ViewUtil.empty(this.rootElm);
 
         // and lower the isLoaded flag.
         this.isLoaded = false;
@@ -217,28 +209,34 @@ class ImageBox implements IAppendable { // XXX rename to image slot XXX rename c
 
                 // When the prepped image card arrives,
                 (imageCard: ImageCard) => {
-
                     this.unload();
-
-                    // raise the isLoaded flag,
-                    this.isLoaded = true;
-
-                    // get a handle on it,
-                    this.imageCard = imageCard;
-                    this.imageCard.parentImageBox = this;
-
-                    // empty this image boxes main HTML elm, XXX Does this really have to be done here????
-                    ViewUtil.empty(this.rootElm);
-
-                    // append the image card tag to this image box's elm,
-                    this.rootElm.append(this.imageCard.rootElm);
-                    
-                    // and if there is an onLoadEnd callback, invoke it.
-                    if (this._onLoadEnd) this._onLoadEnd();
-
+                    this.setImageCard(imageCard);
                     this.rootElm.classList.remove('loadingImage');
                 }
             );
         }
+    }
+
+    private setImageCard(imageCard: ImageCard): void {
+
+        // Get a handle on the image card.
+        this.imageCard = imageCard;
+
+        this.heldImageId = this.imageCard.image.imageId;
+
+        // Give image card access to this image box that holds it.
+        this.imageCard.parentImageBox = this;
+
+        // Empty this image boxes main HTML elm.
+        ViewUtil.empty(this.rootElm);
+
+        // Append the image card tag to this image box's elm.
+        this.rootElm.append(this.imageCard.rootElm);
+        
+        // Raise the isLoaded flag.
+        this.isLoaded = true;
+
+        // If there is an onLoadEnd callback, invoke it.
+        if (this._onLoadEnd) this._onLoadEnd();
     }
 }

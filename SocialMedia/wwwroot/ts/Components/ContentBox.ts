@@ -110,20 +110,32 @@ class ContentBox implements IAppendable {
             this.request();
         }
 
-        this.content.forEach((c: IAppendable) => {
+        let scrollTop: number = this.scrollElm.scrollTop;
 
-            let contentOffset: number = c.rootElm.offsetTop - this.scrollElm.scrollTop;
+        this.content.forEach((c: IAppendable) => { // XXX Use ClientRect or DomRect XXX
+            
+            let contentOffset: number = c.rootElm.offsetTop - scrollTop;
 
-            if ((contentOffset > -3000 && contentOffset < -2500) || (contentOffset < 3000 && contentOffset > 2500)) {
+            // If element is inside top or bottom unload zone.
+            if ((contentOffset > -2500 && contentOffset < -2000) || (contentOffset > 2000 && contentOffset < 2500)) {
 
-                if (c instanceof Card && c.imageBoxes.length > 0) {
-                    c.imageBoxes.forEach((i: ImageBox) => i.unload());
+                // If this content item implements IUnloadable and it has image boxes.
+                if ('imageBoxes' in c && (<IUnloadable>c).imageBoxes.length > 0) {
+                    // Unload all image boxes in this content item.
+                    (<IUnloadable>c).imageBoxes.forEach((i: ImageBox) => {
+                        i.unload();
+                    });
                 }
             }
-            else if (contentOffset > -2000 && contentOffset < 2000) {
-                
-                if (c instanceof Card && c.imageBoxes.length > 0) {
-                    c.imageBoxes.forEach((i: ImageBox) => i.reload());
+            // If element is in reload zone. (Between the two unload zones)
+            else if (contentOffset > -1500 && contentOffset < 1500) {
+
+                // If this content item implements IUnloadable and it has image boxes.
+                if ('imageBoxes' in c && (<IUnloadable>c).imageBoxes.length > 0) {
+                    // Reload all image boxes in this content item.
+                    (<IUnloadable>c).imageBoxes.forEach((i: ImageBox) => {
+                        i.reload();
+                    });
                 }
             }
         });

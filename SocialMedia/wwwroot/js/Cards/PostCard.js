@@ -24,7 +24,7 @@ var PostCard = (function (_super) {
         _this.commentsSection = new CommentSectionCard(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); }, function () {
             _this.commentsSection.mainCommentsBox.content.forEach(function (content) {
                 var commentCard = content;
-                _this.imageBoxes.concat(commentCard.imageBoxes);
+                commentCard.imageBoxes.forEach(function (imageBox) { return _this.imageBoxes.push(imageBox); });
             });
         });
         _this.commentsSection.commentBoxesStage.onStagingEnd = function () { return _this.stage.updateStaging(_this.commentsSection.allStaged); };
@@ -57,7 +57,7 @@ var PostCard = (function (_super) {
         var likeCardSlot = ViewUtil.tag('div', { classList: 'detailsSlot' });
         var postOptsSlot = ViewUtil.tag('div', { classList: 'postOptsSlot' });
         var profileCard = new ProfileCard(_this.post.profile);
-        _this.imageBoxes.concat(profileCard.imageBoxes);
+        profileCard.imageBoxes.forEach(function (imageBox) { return _this.imageBoxes.push(imageBox); });
         _this.postHeading.append(profileCardSlot, likeCardSlot, postOptsSlot);
         profileCardSlot.append(profileCard.rootElm);
         likeCardSlot.append(_this.likeCard.rootElm, _this.refreshPostDetailsMessage);

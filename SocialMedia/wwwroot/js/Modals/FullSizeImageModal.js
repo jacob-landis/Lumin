@@ -103,7 +103,7 @@ var FullSizeImageModal = (function (_super) {
         if (targetIndex >= 0 && targetIndex < this.profileImagesCount) {
             this.index = targetIndex;
             this.updateImageCount();
-            this.currentImageId = imageDropdown.imagesBox.content[this.index].imageCard.image.imageId;
+            this.currentImageId = imageDropdown.imagesBox.content[this.index].heldImageId;
             Ajax.getProfileImages(this.profileId, this.index, 1, '', null, function (target) { }, function (imageBoxes) {
                 _this.imageCon.load(imageBoxes[0].imageCard.image.imageId, null, 'Toggle controls', function (target) { return _this.toggleControls(); });
             });

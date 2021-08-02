@@ -53,22 +53,29 @@ var ContentBox = (function () {
         configurable: true
     });
     ContentBox.prototype.lazyLoad = function () {
-        var _this = this;
         var divHeight = this.scrollElm.scrollHeight;
         var offset = this.scrollElm.scrollTop + this.scrollElm.clientHeight;
         if ((offset + this.loadThreshold) > divHeight) {
             this.request();
         }
+        var scrollTop = this.scrollElm.scrollTop;
+        console.log("SCROLLTOP " + scrollTop);
         this.content.forEach(function (c) {
-            var contentOffset = c.rootElm.offsetTop - _this.scrollElm.scrollTop;
-            if ((contentOffset > -3000 && contentOffset < -2500) || (contentOffset < 3000 && contentOffset > 2500)) {
-                if (c instanceof Card && c.imageBoxes.length > 0) {
-                    c.imageBoxes.forEach(function (i) { return i.unload(); });
+            var contentOffset = c.rootElm.offsetTop - scrollTop;
+            console.log("offset" + c.rootElm.offsetTop);
+            console.log("contentOffset" + contentOffset);
+            if ((contentOffset > -2500 && contentOffset < -2000) || (contentOffset > 2000 && contentOffset < 2500)) {
+                if ('imageBoxes' in c && c.imageBoxes.length > 0) {
+                    c.imageBoxes.forEach(function (i) {
+                        i.unload();
+                    });
                 }
             }
-            else if (contentOffset > -2000 && contentOffset < 2000) {
-                if (c instanceof Card && c.imageBoxes.length > 0) {
-                    c.imageBoxes.forEach(function (i) { return i.reload(); });
+            else if (contentOffset > -1500 && contentOffset < 1500) {
+                if ('imageBoxes' in c && c.imageBoxes.length > 0) {
+                    c.imageBoxes.forEach(function (i) {
+                        i.reload();
+                    });
                 }
             }
         });

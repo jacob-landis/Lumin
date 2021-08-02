@@ -1,4 +1,4 @@
-﻿class Card implements IAppendable{
+﻿class Card implements IAppendable, IUnloadable {
     
     public imageBoxes: ImageBox[] = [];
 

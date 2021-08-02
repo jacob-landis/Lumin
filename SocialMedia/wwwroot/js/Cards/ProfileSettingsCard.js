@@ -57,7 +57,6 @@ var ProfileSettingsCard = (function (_super) {
         };
         _this.txtProfileColor.onkeyup = function (event) {
             _this.btnSaveColor.style.backgroundColor = _this.txtProfileColor.value;
-            console.log(_this.btnSaveColor.style.backgroundColor);
         };
         return _this;
     }

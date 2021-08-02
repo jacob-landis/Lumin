@@ -1,5 +1,6 @@
 var ImageBox = (function () {
     function ImageBox(rootElm, imageClassList, tooltipMsg, click, getThumbNail) {
+        this.imageBoxes = [];
         this.heldTooltipMsg = null;
         this.imageCard = null;
         this.isLoaded = false;
@@ -9,7 +10,7 @@ var ImageBox = (function () {
         this.heldImageClick = click ? click : function (target) { };
         this.rootElm = rootElm;
         this.rootElm.classList.add('image-box');
-        ImageBox.imageBoxes.push(this);
+        this.imageBoxes.push(this);
     }
     ImageBox.copy = function (imageBox) {
         var imageCard = ImageCard.copy(imageBox.imageCard);
@@ -18,6 +19,8 @@ var ImageBox = (function () {
         return imageBoxCopy;
     };
     ImageBox.list = function (imageCards) {
+        if (imageCards == null)
+            return null;
         var imageBoxes = [];
         imageCards.forEach(function (imageCard) {
             var imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, true);
@@ -51,24 +54,21 @@ var ImageBox = (function () {
         this.reload();
     };
     ImageBox.prototype.loadImage = function (imageCard) {
-        this.imageCard = imageCard;
-        this.imageCard.parentImageBox = this;
-        ViewUtil.empty(this.rootElm);
+        this.setImageCard(imageCard);
         if (this.heldImageClassList)
             ViewUtil.addClassList(this.heldImageClassList, imageCard.rootElm);
         if (this.heldTooltipMsg)
             imageCard.tooltipMsg = this.heldTooltipMsg;
         if (this.heldImageClick)
             imageCard.onImageClick = this.heldImageClick;
-        this.rootElm.append(imageCard.rootElm);
-        this.isLoaded = true;
-        if (this._onLoadEnd)
-            this._onLoadEnd();
     };
     ImageBox.prototype.unload = function () {
-        ViewUtil.empty(this.rootElm);
-        if (this.imageCard != null)
+        if (this.imageCard != null) {
+            this.rootElm.style.minHeight = "" + this.rootElm.clientHeight;
+            this.rootElm.style.minWidth = "" + this.rootElm.clientWidth;
             delete this.imageCard;
+        }
+        ViewUtil.empty(this.rootElm);
         this.isLoaded = false;
     };
     ImageBox.prototype.reload = function () {
@@ -77,18 +77,21 @@ var ImageBox = (function () {
             this.rootElm.classList.add('loadingImage');
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
                 _this.unload();
-                _this.isLoaded = true;
-                _this.imageCard = imageCard;
-                _this.imageCard.parentImageBox = _this;
-                ViewUtil.empty(_this.rootElm);
-                _this.rootElm.append(_this.imageCard.rootElm);
-                if (_this._onLoadEnd)
-                    _this._onLoadEnd();
+                _this.setImageCard(imageCard);
                 _this.rootElm.classList.remove('loadingImage');
             });
         }
     };
-    ImageBox.imageBoxes = [];
+    ImageBox.prototype.setImageCard = function (imageCard) {
+        this.imageCard = imageCard;
+        this.heldImageId = this.imageCard.image.imageId;
+        this.imageCard.parentImageBox = this;
+        ViewUtil.empty(this.rootElm);
+        this.rootElm.append(this.imageCard.rootElm);
+        this.isLoaded = true;
+        if (this._onLoadEnd)
+            this._onLoadEnd();
+    };
     return ImageBox;
 }());
 //# sourceMappingURL=ImageBox.js.map

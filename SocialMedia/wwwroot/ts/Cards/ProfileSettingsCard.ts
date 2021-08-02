@@ -67,7 +67,6 @@
         this.txtProfileColor.onkeyup = (event: KeyboardEvent) => {
 
             this.btnSaveColor.style.backgroundColor = this.txtProfileColor.value;
-            console.log(this.btnSaveColor.style.backgroundColor);
         }
     }
 

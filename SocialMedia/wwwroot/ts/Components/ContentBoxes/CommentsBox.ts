@@ -1,12 +1,13 @@
 ﻿class CommentsBox extends ContentBox {
     
     public constructor(
+        scrollElm: HTMLElement,
         public postId: number,
         public feedType: ('myComments' | 'likedComments' | 'mainComments'),
         public getFeedFilter: () => ('recent' | 'likes'),
         public onCommentsLoadEnd: (noChanges: boolean) => void
     ) {
-        super(ViewUtil.tag('div', { classList: 'commentsBox' }), null, 400, 30, (skip: number, take: number) => {
+        super(ViewUtil.tag('div', { classList: 'commentsBox' }), scrollElm, 400, 30, (skip: number, take: number) => {
             Ajax.getComments(this.postId, skip, take, this.getFeedFilter(), this.feedType, (commentCards: CommentCard[]) => {
 
                 if (commentCards != null) this.add(commentCards);

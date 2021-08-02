@@ -224,7 +224,7 @@ class FullSizeImageModal extends Modal {
             // Update the image count elm.
             this.updateImageCount();
 
-            this.currentImageId = (<ImageBox>imageDropdown.imagesBox.content[this.index]).imageCard.image.imageId;
+            this.currentImageId = (<ImageBox>imageDropdown.imagesBox.content[this.index]).heldImageId;
 
             // Request a list of images with a 1 long range. This is the only way to request by index.
             Ajax.getProfileImages(this.profileId, this.index, 1, '', null, (target: ImageBox) => { },

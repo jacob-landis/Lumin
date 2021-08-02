@@ -126,7 +126,9 @@
         this.btnConfirmCommentSearch.classList.add('btnConfirmCommentSearch', 'myBtnTextPair');
         this.btnConfirmCommentSearch.title = 'Search';
 
-        this.myCommentsBox = new CommentsBox(this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
+        this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
+
+        this.myCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
 
             if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
             else this.myCommentsBox.messageElm.innerText = 'My Comments';
@@ -134,14 +136,15 @@
             this.commentBoxesStage.updateStaging(this.myCommentsStaged);
         });
 
-        this.likedCommentsBox = new CommentsBox(this.post.postId, 'likedComments', () => this.feedFilter, (noChanges: boolean) => {
+        this.likedCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'likedComments', () => this.feedFilter, (noChanges: boolean) => {
+
             if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
             else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
 
             this.commentBoxesStage.updateStaging(this.likedCommentsStaged);
         });
         
-        this.mainCommentsBox = new CommentsBox(this.post.postId, 'mainComments', () => this.feedFilter, () => {
+        this.mainCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'mainComments', () => this.feedFilter, () => {
             
             if (this.mainCommentsBox.length == 0) {
                 this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
@@ -166,7 +169,6 @@
             this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
         });
 
-        this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
         this.commentBoxes.add([this.myCommentsBox, this.likedCommentsBox, this.mainCommentsBox]);
 
         let txtComment: HTMLInputElement = <HTMLInputElement>ViewUtil.tag('textarea', { classList: 'txtComment' });

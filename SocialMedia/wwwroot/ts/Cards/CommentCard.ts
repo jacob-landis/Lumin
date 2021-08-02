@@ -91,7 +91,7 @@ class CommentCard extends Card {
         this.likeCard = new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime);
         this.profileCard = new ProfileCard(comment.profile);
 
-        this.imageBoxes.concat(this.profileCard.imageBoxes);
+        this.profileCard.imageBoxes.forEach((imageBox: ImageBox) => this.imageBoxes.push(imageBox));
 
         // Append the comment editor.
         contentSection.append(this.commentEditor.rootElm);

@@ -13,8 +13,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var CommentsBox = (function (_super) {
     __extends(CommentsBox, _super);
-    function CommentsBox(postId, feedType, getFeedFilter, onCommentsLoadEnd) {
-        var _this = _super.call(this, ViewUtil.tag('div', { classList: 'commentsBox' }), null, 400, 30, function (skip, take) {
+    function CommentsBox(scrollElm, postId, feedType, getFeedFilter, onCommentsLoadEnd) {
+        var _this = _super.call(this, ViewUtil.tag('div', { classList: 'commentsBox' }), scrollElm, 400, 30, function (skip, take) {
             Ajax.getComments(_this.postId, skip, take, _this.getFeedFilter(), _this.feedType, function (commentCards) {
                 if (commentCards != null)
                     _this.add(commentCards);

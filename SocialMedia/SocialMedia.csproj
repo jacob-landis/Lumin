@@ -30,6 +30,7 @@
     <Content Remove="wwwroot\ts\Dropdowns\FriendDropdown.ts" />
     <Content Remove="wwwroot\ts\Dropdowns\ImageDropdown.ts" />
     <Content Remove="wwwroot\ts\IAppendable.ts" />
+    <Content Remove="wwwroot\ts\IUnloadable.ts" />
     <Content Remove="wwwroot\ts\Main.ts" />
     <Content Remove="wwwroot\ts\Modals\ConfirmPrompt.ts" />
     <Content Remove="wwwroot\ts\Modals\ContextMenu.ts" />
@@ -94,6 +95,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Dropdowns\FriendDropdown.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Dropdowns\ImageDropdown.ts" />
     <TypeScriptCompile Include="wwwroot\ts\IAppendable.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\IUnloadable.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Main.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ConfirmPrompt.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ContextMenu.ts" />

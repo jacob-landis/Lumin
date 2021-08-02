@@ -50,21 +50,22 @@ var CommentSectionCard = (function (_super) {
         _this.btnConfirmCommentSearch = Icons.search();
         _this.btnConfirmCommentSearch.classList.add('btnConfirmCommentSearch', 'myBtnTextPair');
         _this.btnConfirmCommentSearch.title = 'Search';
-        _this.myCommentsBox = new CommentsBox(_this.post.postId, 'myComments', function () { return _this.feedFilter; }, function (noChanges) {
+        _this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
+        _this.myCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'myComments', function () { return _this.feedFilter; }, function (noChanges) {
             if (noChanges)
                 _this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
             else
                 _this.myCommentsBox.messageElm.innerText = 'My Comments';
             _this.commentBoxesStage.updateStaging(_this.myCommentsStaged);
         });
-        _this.likedCommentsBox = new CommentsBox(_this.post.postId, 'likedComments', function () { return _this.feedFilter; }, function (noChanges) {
+        _this.likedCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'likedComments', function () { return _this.feedFilter; }, function (noChanges) {
             if (noChanges)
                 _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
             else
                 _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
             _this.commentBoxesStage.updateStaging(_this.likedCommentsStaged);
         });
-        _this.mainCommentsBox = new CommentsBox(_this.post.postId, 'mainComments', function () { return _this.feedFilter; }, function () {
+        _this.mainCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'mainComments', function () { return _this.feedFilter; }, function () {
             if (_this.mainCommentsBox.length == 0) {
                 _this.commentBoxesStage.updateStaging(_this.mainCommentsStaged);
                 return;
@@ -82,7 +83,6 @@ var CommentSectionCard = (function (_super) {
                 onCommentLoadEnd();
             _this.commentBoxesStage.updateStaging(_this.mainCommentsStaged);
         });
-        _this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
         _this.commentBoxes.add([_this.myCommentsBox, _this.likedCommentsBox, _this.mainCommentsBox]);
         var txtComment = ViewUtil.tag('textarea', { classList: 'txtComment' });
         var btnConfirm = Icons.confirm();
