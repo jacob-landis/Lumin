@@ -45,6 +45,9 @@ var ProfileModal = (function (_super) {
             });
         });
         _this.friendBox = new ContentBox(_this.friendBoxElm);
+        _this.friendBox.scrollElm.onscroll = function (event) {
+            _this.friendBox.lazyLoad();
+        };
         _this.profilePostsCard.onLoadEnd = function () {
             if (_this.profilePostsCard.mainPostsBox.content.length == 0)
                 _this.profilePostsCard.mainPostsBox.messageElm.innerText = "No posts were retrieved.";

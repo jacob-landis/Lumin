@@ -59,11 +59,8 @@ var ContentBox = (function () {
             this.request();
         }
         var scrollTop = this.scrollElm.scrollTop;
-        console.log("SCROLLTOP " + scrollTop);
         this.content.forEach(function (c) {
             var contentOffset = c.rootElm.offsetTop - scrollTop;
-            console.log("offset" + c.rootElm.offsetTop);
-            console.log("contentOffset" + contentOffset);
             if ((contentOffset > -2500 && contentOffset < -2000) || (contentOffset > 2000 && contentOffset < 2500)) {
                 if ('imageBoxes' in c && c.imageBoxes.length > 0) {
                     c.imageBoxes.forEach(function (i) {

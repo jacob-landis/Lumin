@@ -19,6 +19,9 @@ var FriendDropdown = (function (_super) {
         _this.btnSearch = btnSearch;
         _this.lblPrompt = lblPrompt;
         _this.friendsBox = new ContentBox(friendBoxElm, _this.contentElm);
+        _this.contentElm.onscroll = function (event) {
+            _this.friendsBox.lazyLoad();
+        };
         _this.btnSearch.onclick = function (e) { return _this.requestFriendables(); };
         _this.txtSearch.onkeyup = function (e) { if (e.keyCode == 13)
             _this.btnSearch.click(); };
