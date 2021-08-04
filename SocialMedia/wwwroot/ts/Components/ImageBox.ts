@@ -75,6 +75,8 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
 
     // A shortcut to check if an image is currently loaded.
     public isLoaded: boolean = false;
+    public isLoading: boolean = false;
+    private loadingGif: HTMLImageElement = null;
 
     // Called at the end of reload().
     private _onLoadEnd: () => void;
@@ -200,9 +202,19 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
     public reload(): void {
 
         // If an image is not loaded,
-        if (!this.isLoaded) {
+        if (!this.isLoaded && !this.isLoading) {
 
             this.rootElm.classList.add('loadingImage');
+
+            if (this.loadingGif == null) this.loadingGif = <HTMLImageElement>ViewUtil.tag("img", { classList: "loadingGif" });
+
+            if (!this.rootElm.contains(this.loadingGif)) {
+
+                this.loadingGif.src = "/ImgStatic/Loading.gif";
+                this.rootElm.append(this.loadingGif);
+            }
+
+            this.isLoading = true;
 
             // Request an image with the request settings and apply the attribute settings when it returns.
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick,
@@ -212,6 +224,7 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
                     this.unload();
                     this.setImageCard(imageCard);
                     this.rootElm.classList.remove('loadingImage');
+                    this.isLoading = false;
                 }
             );
         }

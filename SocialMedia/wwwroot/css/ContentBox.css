@@ -18,6 +18,11 @@
     display: inline;
 }
 
+.contentContainer > .image-box > .loadingGif {
+    height: 20px;
+    width: 20px;
+}
+
 .contentMessage {
     background-color: lightgray;
     text-align: center;

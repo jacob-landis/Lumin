@@ -4,6 +4,8 @@ var ImageBox = (function () {
         this.heldTooltipMsg = null;
         this.imageCard = null;
         this.isLoaded = false;
+        this.isLoading = false;
+        this.loadingGif = null;
         this.getThumbNail = getThumbNail;
         this.heldTooltipMsg = tooltipMsg;
         this.heldImageClassList = imageClassList;
@@ -73,12 +75,22 @@ var ImageBox = (function () {
     };
     ImageBox.prototype.reload = function () {
         var _this = this;
-        if (!this.isLoaded) {
+        if (!this.isLoaded && !this.isLoading) {
             this.rootElm.classList.add('loadingImage');
+            if (this.loadingGif == null)
+                this.loadingGif = ViewUtil.tag("img", { classList: "loadingGif" });
+            if (!this.rootElm.contains(this.loadingGif)) {
+                this.loadingGif.src = "/ImgStatic/Loading.gif";
+                this.rootElm.append(this.loadingGif);
+            }
+            if (!this.getThumbNail)
+                console.log('gif ' + this.heldImageId);
+            this.isLoading = true;
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
                 _this.unload();
                 _this.setImageCard(imageCard);
                 _this.rootElm.classList.remove('loadingImage');
+                _this.isLoading = false;
             });
         }
     };

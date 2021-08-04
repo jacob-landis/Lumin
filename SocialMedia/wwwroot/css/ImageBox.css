@@ -1,3 +1,12 @@
 ﻿.loadingImage:hover {
     cursor: progress;
 }
+
+.loadingGif {
+    height: 80px;
+    width: 80px;
+    position: sticky;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
