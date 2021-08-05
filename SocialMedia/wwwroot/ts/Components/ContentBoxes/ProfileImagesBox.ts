@@ -22,7 +22,7 @@ class ProfileImagesBox extends ContentBox {
         profileId can be null.
         clickCallback is assigned as the onclick event for each profile card.
     */
-    constructor(profileId?: number, tooltipMsg?: string, scrollElm?: HTMLElement, clickCallback?: (imageBox: ImageBox) => void) {
+    constructor(tooltipMsg?: string, scrollElm?: HTMLElement, clickCallback?: (imageBox: ImageBox) => void) {
 
         let rootElm: HTMLElement = ViewUtil.tag('div', { classList: 'images-box' });
 
@@ -40,17 +40,10 @@ class ProfileImagesBox extends ContentBox {
             }
         );
 
-        // Get handle on ProfileID.
-        // If a ProfileID was provided, this.profileID is profileId, else this.profileId is the current user's ProfileID.
-        this.profileId = profileId ? profileId : User.profileId;
-
         this.tooltipMsg = tooltipMsg;
 
         // Get handle on click action.
         this.clickCallback = clickCallback;
-
-        // Send first request to host.
-        super.request(30);
 
         // Add this image box to the collection.
         ProfileImagesBox.profileImageBoxes.push(this);
@@ -59,12 +52,12 @@ class ProfileImagesBox extends ContentBox {
     /*
         Restart image loading with new profileId and onImageClick callback. 
     */
-    public load(profileId: number, tooltipMsg: string, onImageClick: (target: ImageBox) => void): void {
+    public load(profileId: number, tooltipMsg?: string, onImageClick?: (target: ImageBox) => void): void {
 
         // Change stored values to parameter values.
         this.profileId = profileId;
-        this.tooltipMsg = tooltipMsg;
-        this.clickCallback = onImageClick;
+        if (tooltipMsg) this.tooltipMsg = tooltipMsg;
+        if (onImageClick) this.clickCallback = onImageClick;
 
         // Clear array and root element.
         super.clear();

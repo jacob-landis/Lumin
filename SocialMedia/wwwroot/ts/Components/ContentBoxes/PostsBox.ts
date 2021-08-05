@@ -29,7 +29,7 @@ class PostsBox extends ContentBox {
         private onPostsLoadEnd?: () => void
     ) {
         // Call base class constructor.
-        super(rootElm, scrollElm, 1500, 5,
+        super(rootElm, scrollElm, 1500, 3,
             // When content box is ready for more content,
             (skip: number, take: number): void => {
                 
@@ -107,12 +107,12 @@ class PostsBox extends ContentBox {
         Send first request to host. 
     */
     public start(): void {
-        this.request(15);
+        this.request(5);
     }
 
     public refreshPosts(onRefreshLoadEnd?: () => void): void {
         this.clear();
-        Ajax.getProfilePosts(this.profileId, 0, 15, this.getFeedFilter(), this.feedType, (postCards: PostCard[]) => {
+        Ajax.getProfilePosts(this.profileId, 0, 5, this.getFeedFilter(), this.feedType, (postCards: PostCard[]) => {
             this.addPost(postCards);
             if (onRefreshLoadEnd) onRefreshLoadEnd();
         });

@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileImagesBox = (function (_super) {
     __extends(ProfileImagesBox, _super);
-    function ProfileImagesBox(profileId, tooltipMsg, scrollElm, clickCallback) {
+    function ProfileImagesBox(tooltipMsg, scrollElm, clickCallback) {
         var _this = this;
         var rootElm = ViewUtil.tag('div', { classList: 'images-box' });
         _this = _super.call(this, rootElm, scrollElm, 400, 20, function (skip, take) {
@@ -21,17 +21,17 @@ var ProfileImagesBox = (function (_super) {
                 _this.addImages(imageBoxes);
             });
         }) || this;
-        _this.profileId = profileId ? profileId : User.profileId;
         _this.tooltipMsg = tooltipMsg;
         _this.clickCallback = clickCallback;
-        _super.prototype.request.call(_this, 30);
         ProfileImagesBox.profileImageBoxes.push(_this);
         return _this;
     }
     ProfileImagesBox.prototype.load = function (profileId, tooltipMsg, onImageClick) {
         this.profileId = profileId;
-        this.tooltipMsg = tooltipMsg;
-        this.clickCallback = onImageClick;
+        if (tooltipMsg)
+            this.tooltipMsg = tooltipMsg;
+        if (onImageClick)
+            this.clickCallback = onImageClick;
         _super.prototype.clear.call(this);
         _super.prototype.request.call(this, 30);
     };

@@ -23,6 +23,15 @@
     width: 20px;
 }
 
+.contentContainer > .loadingGif {
+    height: 60px;
+    width: 60px;
+    position: sticky;
+    left: 50%;
+    top: 40px;
+    transform: translate(-50%);
+}
+
 .contentMessage {
     background-color: lightgray;
     text-align: center;

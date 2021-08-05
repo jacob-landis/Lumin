@@ -176,7 +176,6 @@ class FullSizeImageModal extends Modal {
             let promptMsg: string = (profileId == User.profileId) ? "My images" : `${profileCard.profile.firstName} ${profileCard.profile.lastName}'s images`;
             
             imageDropdown.load(profileId, promptMsg, 'Fullscreen', (target: ImageBox) => {
-                //this.currentImageId = target.image.imageId;
                 this.requestImage(imageDropdown.indexOf(target))
             });
         });

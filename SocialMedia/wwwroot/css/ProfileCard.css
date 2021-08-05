@@ -24,6 +24,10 @@
     margin-right: 5px;
 }
 
+.profileCard > .image-box > .loadingGif {
+    display: none;
+}
+
 .profileCard > .icon {
     display: inline;
     float: right;

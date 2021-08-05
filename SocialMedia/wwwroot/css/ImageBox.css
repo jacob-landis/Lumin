@@ -2,7 +2,7 @@
     cursor: progress;
 }
 
-.loadingGif {
+.image-box > .loadingGif {
     height: 80px;
     width: 80px;
     position: sticky;

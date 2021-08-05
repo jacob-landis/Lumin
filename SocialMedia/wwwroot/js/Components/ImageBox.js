@@ -53,6 +53,7 @@ var ImageBox = (function () {
         this.heldTooltipMsg = toolTipMsg ? toolTipMsg : this.heldTooltipMsg;
         this.heldImageClick = click ? click : this.heldImageClick;
         this.isLoaded = false;
+        ViewUtil.empty(this.rootElm);
         this.reload();
     };
     ImageBox.prototype.loadImage = function (imageCard) {
@@ -83,8 +84,6 @@ var ImageBox = (function () {
                 this.loadingGif.src = "/ImgStatic/Loading.gif";
                 this.rootElm.append(this.loadingGif);
             }
-            if (!this.getThumbNail)
-                console.log('gif ' + this.heldImageId);
             this.isLoading = true;
             Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
                 _this.unload();

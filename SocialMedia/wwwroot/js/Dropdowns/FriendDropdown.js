@@ -18,6 +18,8 @@ var FriendDropdown = (function (_super) {
         _this.txtSearch = txtSearch;
         _this.btnSearch = btnSearch;
         _this.lblPrompt = lblPrompt;
+        _this.loadingGif = ViewUtil.tag("img", { classList: "loadingGif" });
+        _this.loadingGif.src = "/ImgStatic/Loading.gif";
         _this.friendsBox = new ContentBox(friendBoxElm, _this.contentElm);
         _this.contentElm.onscroll = function (event) {
             _this.friendsBox.lazyLoad();
@@ -47,8 +49,10 @@ var FriendDropdown = (function (_super) {
             return;
         }
         this.friendsBox.clear();
+        this.friendsBox.contentElm.append(this.loadingGif);
         this.lblPrompt.innerText = "Search Results";
         Ajax.getFriends(null, search, function (profiles) {
+            _this.friendsBox.clear();
             _this.friendsBox.add(profiles);
             if (profiles.length == 0)
                 _this.lblPrompt.innerText = "No Results";

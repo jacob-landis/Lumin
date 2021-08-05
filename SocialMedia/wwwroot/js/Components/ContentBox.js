@@ -2,6 +2,7 @@ var ContentBox = (function () {
     function ContentBox(rootElm, scrollElm, loadThreshold, take, requestCallback) {
         var _this = this;
         this.loading = false;
+        this.loadingGif = null;
         this.moreContent = true;
         this.content = [];
         this.requestCallback = null;
@@ -97,6 +98,12 @@ var ContentBox = (function () {
         if (!this.loading && this.moreContent) {
             if (take)
                 this.take = take;
+            if (this.loadingGif == null)
+                this.loadingGif = ViewUtil.tag("img", { classList: "loadingGif" });
+            if (!this.contentElm.contains(this.loadingGif)) {
+                this.loadingGif.src = "/ImgStatic/Loading.gif";
+                this.contentElm.append(this.loadingGif);
+            }
             this.loading = true;
             this.requestCallback(this.length, this.take);
         }
@@ -106,8 +113,10 @@ var ContentBox = (function () {
         var isFirstBatch = this.content.length == 0;
         if (!Array.isArray(content))
             content = [content];
-        if (this.loading && content.length < this.take)
+        if (this.loading && content.length < this.take) {
             this.moreContent = false;
+        }
+        ViewUtil.remove(this.loadingGif);
         content.forEach(function (content) {
             if (content != null) {
                 if (prepend == true) {

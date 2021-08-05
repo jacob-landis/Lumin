@@ -23,6 +23,8 @@ class ContentBox implements IAppendable {
     // It is assumed that a new content box has not yet sent a request.
     public loading: boolean = false;
 
+    private loadingGif: HTMLImageElement = null;
+
     // Whether or not the request feed has run out.
     // Even though there may be an empty feed, it must be checked at least once before it's ruled out.
     private moreContent: boolean = true;
@@ -181,6 +183,14 @@ class ContentBox implements IAppendable {
             // if a take value was provided, overwrite the previous take value,
             if (take) this.take = take;
 
+            if (this.loadingGif == null) this.loadingGif = <HTMLImageElement>ViewUtil.tag("img", { classList: "loadingGif" });
+
+            if (!this.contentElm.contains(this.loadingGif)) {
+
+                this.loadingGif.src = "/ImgStatic/Loading.gif";
+                this.contentElm.append(this.loadingGif);
+            }
+
             // then raise the loading flag, XXX rename to awaiting in comment if this.loading is renamed
             this.loading = true;
 
@@ -203,7 +213,12 @@ class ContentBox implements IAppendable {
 
         // If the content being added comes from a request and the amount of content is less than asked for,
         // lower the more content flag.
-        if (this.loading && content.length < this.take) this.moreContent = false;
+        if (this.loading && content.length < this.take) {
+
+            this.moreContent = false;
+        }
+
+        ViewUtil.remove(this.loadingGif);
 
         // Loop through the provided content,
         content.forEach((content: IAppendable) => {

@@ -160,10 +160,12 @@ class ProfileModal extends Modal {
             this.profilePostsCard.load(profileId);
             
             // Construct new ProfileImageBox and set up profile images display.
-            this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', this.imageScrollBox, (target: ImageBox) =>
+            this.imagesBox = new ProfileImagesBox('Fullscreen', this.imageScrollBox, (target: ImageBox) =>
 
                 // Set click callback of each image to open a collection in fullzise image modal.
                 fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
+
+            this.imagesBox.load(profileId);
 
             this.imagesBox.onLoadEnd = () => {
                 this.summaryStage.updateStaging(this.imagesBoxStaged);

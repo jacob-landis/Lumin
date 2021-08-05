@@ -309,7 +309,7 @@ namespace SocialMedia.Controllers
              Shortcut function taking a segment of a list of posts.
         */
         public List<PostModel> PostRange(List<PostModel> posts, int postCount, int amount) =>
-            posts.OrderByDescending(p => p.DateTime).Skip(postCount).Take(postCount + amount).ToList(); // XXX Why postCount + amount? XXX
+            posts.OrderByDescending(p => p.DateTime).Skip(postCount).Take(amount).ToList(); // XXX Why postCount + amount? XXX
 
         /*
              Returns a prepped list of a profile's posts by ProfileID.

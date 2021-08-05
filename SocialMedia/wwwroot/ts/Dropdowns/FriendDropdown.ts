@@ -17,6 +17,8 @@ class FriendDropdown extends Dropdown {
 
     private lblPrompt: HTMLElement;
 
+    private loadingGif: HTMLImageElement;
+
     // A container elm enhanced by the ContentBox class used to store profile cards from search results.
     private friendsBox: ContentBox;
 
@@ -41,6 +43,9 @@ class FriendDropdown extends Dropdown {
         this.txtSearch = txtSearch;
         this.btnSearch = btnSearch;
         this.lblPrompt = lblPrompt;
+
+        this.loadingGif = <HTMLImageElement>ViewUtil.tag("img", { classList: "loadingGif" });
+        this.loadingGif.src = "/ImgStatic/Loading.gif";
 
         // Create a new content box using a dropdown HTML component and get a handle on it.
         this.friendsBox = new ContentBox(friendBoxElm, this.contentElm);
@@ -98,6 +103,8 @@ class FriendDropdown extends Dropdown {
         // else, clear the list,
         this.friendsBox.clear();
 
+        this.friendsBox.contentElm.append(this.loadingGif);
+
         this.lblPrompt.innerText = "Search Results";
 
         // and send a search request.
@@ -105,7 +112,8 @@ class FriendDropdown extends Dropdown {
 
             // When the results return as profile cards, add them to the friends box.
             (profiles: ProfileCard[]) => {
-                
+
+                this.friendsBox.clear();
                 this.friendsBox.add(profiles)
                 if (profiles.length == 0) this.lblPrompt.innerText = "No Results";
 

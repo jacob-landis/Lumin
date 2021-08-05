@@ -155,6 +155,8 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
         
         this.isLoaded = false;
 
+        ViewUtil.empty(this.rootElm);
+
         // Reload current image (Makes request).
         this.reload();
     }

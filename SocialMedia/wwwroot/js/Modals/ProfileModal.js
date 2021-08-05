@@ -101,9 +101,10 @@ var ProfileModal = (function (_super) {
                 _this.summaryStage.updateStaging(_this.friendsStaged);
             }
             _this.profilePostsCard.load(profileId);
-            _this.imagesBox = new ProfileImagesBox(profileId, 'Fullscreen', _this.imageScrollBox, function (target) {
+            _this.imagesBox = new ProfileImagesBox('Fullscreen', _this.imageScrollBox, function (target) {
                 return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
             });
+            _this.imagesBox.load(profileId);
             _this.imagesBox.onLoadEnd = function () {
                 _this.summaryStage.updateStaging(_this.imagesBoxStaged);
                 if (_this.imagesBox.content.length == 0)
