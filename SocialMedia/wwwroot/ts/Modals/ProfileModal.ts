@@ -16,7 +16,9 @@ class ProfileModal extends Modal {
     private imagesBox: ProfileImagesBox;
     
     // A ContentBox used to show a profile's friends.
-    private friendBox: ContentBox;
+    private friendBox: FriendsBox;
+    private requestFriends: (skip: number, take: number) => void;
+    private requestFriendsTrigger: (skip: number, take: number) => void = (skip: number, take: number) => this.requestFriends(skip, take);
     
     // STAGE FLAGS
     private fullProfileStaged: StageFlag = new StageFlag();
@@ -68,11 +70,11 @@ class ProfileModal extends Modal {
         );
 
         // Construct new Content box and set of friends display.
-        this.friendBox = new ContentBox(this.friendBoxElm);
+        this.friendBox = new FriendsBox(this.friendBoxElm, this.friendBoxElm, this.requestFriendsTrigger);
 
-        this.friendBox.scrollElm.onscroll = (event: UIEvent) => {
-            this.friendBox.lazyLoad();
-        }
+        //this.friendBox.scrollElm.onscroll = (event: UIEvent) => {
+        //    this.friendBox.lazyLoad();
+        //}
 
         this.profilePostsCard.onLoadEnd = () => {
             if (this.profilePostsCard.mainPostsBox.content.length == 0)
@@ -146,11 +148,15 @@ class ProfileModal extends Modal {
 
             if (profileCard.profile.profileFriendsPrivacyLevel <= profileCard.profile.relationshipTier) {
 
-                // Request friends by ProfileID and load them into friendBox when they arrive as profile cards.
-                Ajax.getFriends(profileId, null, (profileCards: ProfileCard[]) => {
-                    if (profileCards != null) this.friendBox.add(profileCards);
-                    this.summaryStage.updateStaging(this.friendsStaged);
-                });
+                this.requestFriends = (skip: number, take: number) => {
+
+                    // Request friends by ProfileID and load them into friendBox when they arrive as profile cards.
+                    Ajax.getFriends(profileId, "profileModal", skip, take, null, (profileCards: ProfileCard[]) => {
+                        if (profileCards != null) this.friendBox.add(profileCards);
+                        this.summaryStage.updateStaging(this.friendsStaged);
+                    });
+                }
+                this.friendBox.request(20);
             }
             else {
                 this.friendBox.messageElm.innerText = `This user's friends are private.`;
@@ -281,7 +287,7 @@ class ProfileModal extends Modal {
         // Clear friends box and posts box.
         this.friendBox.clear();
         ViewUtil.empty(this.friendBoxElm);
-        this.friendBox = new ContentBox(this.friendBoxElm);
+        this.friendBox = new FriendsBox(this.friendBoxElm, this.friendBoxElm, this.requestFriendsTrigger);
 
         this.profilePostsCard.clear();
 

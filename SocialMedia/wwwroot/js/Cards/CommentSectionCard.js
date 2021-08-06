@@ -67,6 +67,7 @@ var CommentSectionCard = (function (_super) {
         });
         _this.mainCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'mainComments', function () { return _this.feedFilter; }, function () {
             if (_this.mainCommentsBox.length == 0) {
+                _this.mainCommentsBox.clear();
                 _this.commentBoxesStage.updateStaging(_this.mainCommentsStaged);
                 return;
             }

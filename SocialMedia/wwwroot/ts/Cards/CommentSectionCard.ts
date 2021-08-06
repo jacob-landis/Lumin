@@ -147,6 +147,7 @@
         this.mainCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'mainComments', () => this.feedFilter, () => {
             
             if (this.mainCommentsBox.length == 0) {
+                this.mainCommentsBox.clear();
                 this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
                 return;
             }

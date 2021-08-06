@@ -183,13 +183,20 @@
         this.call(`apifriend/createrequest/${profileId}`, "POST");
     } // request
     
-    public static getFriends(profileId: number, searchText: string, onProfileResults: (profileCards: ProfileCard[]) => void): void {
+    public static getFriends(
+        profileId: number,
+        type: string,
+        skip: number,
+        take: number,
+        searchText: string,
+        onProfileResults: (profileCards: ProfileCard[]) => void
+    ): void {
 
         let newId: number = profileId ? profileId : 0;
         let newSearch: string = this.JSONstring(searchText ? searchText : "NULL");
         
         this.call(
-            `apifriend/friends/${newId}`,
+            `apifriend/friends/${newId}/${type}/${skip}/${take}`,
             "POST", 
             (profileResults: string) => onProfileResults(ProfileCard.list(<ProfileRecord[]><unknown>profileResults, true)),
             newSearch

@@ -71,6 +71,8 @@ namespace SocialMedia
 
             // This service is used in most controllers to verify the user.
             services.AddScoped<CurrentProfile>(sp => SessionProfile.GetCurrentProfile(sp));
+            services.AddScoped<FriendDropdownResults>(sp => FriendDropdownResults.GetFriendDropdownResults(sp));
+            services.AddScoped<FriendProfileModalResults>(sp => FriendProfileModalResults.GetFriendProfileModalResults(sp));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMemoryCache();

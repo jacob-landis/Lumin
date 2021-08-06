@@ -24,6 +24,7 @@ var ProfileModal = (function (_super) {
         _this.summaryWrapper = summaryWrapper;
         _this.profilePostsCard = profilePostsCard;
         _this.profileSettingsCard = profileSettingsCard;
+        _this.requestFriendsTrigger = function (skip, take) { return _this.requestFriends(skip, take); };
         _this.fullProfileStaged = new StageFlag();
         _this.imagesBoxStaged = new StageFlag();
         _this.friendsStaged = new StageFlag();
@@ -44,10 +45,7 @@ var ProfileModal = (function (_super) {
                 return ViewUtil.show(container, null, function () { return container.style.opacity = '1'; });
             });
         });
-        _this.friendBox = new ContentBox(_this.friendBoxElm);
-        _this.friendBox.scrollElm.onscroll = function (event) {
-            _this.friendBox.lazyLoad();
-        };
+        _this.friendBox = new FriendsBox(_this.friendBoxElm, _this.friendBoxElm, _this.requestFriendsTrigger);
         _this.profilePostsCard.onLoadEnd = function () {
             if (_this.profilePostsCard.mainPostsBox.content.length == 0)
                 _this.profilePostsCard.mainPostsBox.messageElm.innerText = "No posts were retrieved.";
@@ -90,11 +88,14 @@ var ProfileModal = (function (_super) {
             }
             _this.summaryWrapper.style.backgroundColor = profileCard.profile.profileColor;
             if (profileCard.profile.profileFriendsPrivacyLevel <= profileCard.profile.relationshipTier) {
-                Ajax.getFriends(profileId, null, function (profileCards) {
-                    if (profileCards != null)
-                        _this.friendBox.add(profileCards);
-                    _this.summaryStage.updateStaging(_this.friendsStaged);
-                });
+                _this.requestFriends = function (skip, take) {
+                    Ajax.getFriends(profileId, "profileModal", skip, take, null, function (profileCards) {
+                        if (profileCards != null)
+                            _this.friendBox.add(profileCards);
+                        _this.summaryStage.updateStaging(_this.friendsStaged);
+                    });
+                };
+                _this.friendBox.request(20);
             }
             else {
                 _this.friendBox.messageElm.innerText = "This user's friends are private.";
@@ -162,7 +163,7 @@ var ProfileModal = (function (_super) {
         this.bioEditor.setText('');
         this.friendBox.clear();
         ViewUtil.empty(this.friendBoxElm);
-        this.friendBox = new ContentBox(this.friendBoxElm);
+        this.friendBox = new FriendsBox(this.friendBoxElm, this.friendBoxElm, this.requestFriendsTrigger);
         this.profilePostsCard.clear();
         this.summaryStageContainers.forEach(function (container) {
             container.style.opacity = '0';

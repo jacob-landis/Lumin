@@ -158,6 +158,7 @@ class Main {
             document.getElementById('friendDropdownContent'),
             <HTMLInputElement> document.getElementById('txtSearchFriends'),
             document.getElementById('btnSearchFriends'),
+            document.getElementById('btnFriendRequests'),
             document.getElementById('friendsPrompt'),
             document.getElementById('friends'),
             document.getElementById('btnShowFriends')

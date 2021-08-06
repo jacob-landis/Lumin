@@ -109,16 +109,16 @@ class ProfileImagesBox extends ContentBox {
     public removeImageCard(imageCard: ImageCard): void {
 
         // Loop through the content of this ProfileImagesBox.
-        this.content.forEach((i: ImageCard) => {
+        this.content.forEach((imageBox: ImageBox) => {
 
             // If a match is found.
-            if (i.image.imageId == imageCard.image.imageId) {
+            if (imageBox.imageCard.image.imageId == imageCard.image.imageId) {
 
                 // Splice from this.content.
-                this.content.splice(this.content.indexOf(i), 1);
+                this.content.splice(this.content.indexOf(imageBox), 1);
 
                 // Remove the root element.
-                ViewUtil.remove(i.rootElm);
+                ViewUtil.remove(imageBox.rootElm);
             }
         });
     }

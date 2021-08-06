@@ -83,10 +83,10 @@ var Ajax = (function () {
     Ajax.sendFriendRequest = function (profileId) {
         this.call("apifriend/createrequest/" + profileId, "POST");
     };
-    Ajax.getFriends = function (profileId, searchText, onProfileResults) {
+    Ajax.getFriends = function (profileId, type, skip, take, searchText, onProfileResults) {
         var newId = profileId ? profileId : 0;
         var newSearch = this.JSONstring(searchText ? searchText : "NULL");
-        this.call("apifriend/friends/" + newId, "POST", function (profileResults) { return onProfileResults(ProfileCard.list(profileResults, true)); }, newSearch);
+        this.call("apifriend/friends/" + newId + "/" + type + "/" + skip + "/" + take, "POST", function (profileResults) { return onProfileResults(ProfileCard.list(profileResults, true)); }, newSearch);
     };
     Ajax.blockProfile = function (profileId) {
         this.call("apifriend/blockprofile/" + profileId, "POST");

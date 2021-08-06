@@ -19,17 +19,23 @@ namespace SocialMedia.Controllers
         private IProfileRepository profileRepo;
         private IFriendRepository friendRepo;
         private IImageRepository imageRepo;
+        private FriendDropdownResults friendDropdownResults;
+        private FriendProfileModalResults friendProfileModalResults;
         private CurrentProfile currentProfile;
 
         public ApiFriendController(
             IProfileRepository profileRepo,
             IFriendRepository friendRepo,
             IImageRepository imageRepo,
+            FriendDropdownResults friendDropdownResults,
+            FriendProfileModalResults friendProfileModalResults,
             CurrentProfile currentProfile)
         {
             this.profileRepo = profileRepo;
             this.friendRepo = friendRepo;
             this.imageRepo = imageRepo;
+            this.friendDropdownResults = friendDropdownResults;
+            this.friendProfileModalResults = friendProfileModalResults;
             this.currentProfile = currentProfile;
         }
 
@@ -38,18 +44,49 @@ namespace SocialMedia.Controllers
         /*
             Either returns a list of friends, friend requests, or profile search results.
         */
-        [HttpPost("friends/{id}")]
-        public List<ProfileModel> GetFriends(int id, [FromBody] StringModel search)
+        [HttpPost("friends/{id}/{type}/{skip}/{take}")]
+        public List<ProfileModel> GetFriends(int id, string type, int skip, int take, [FromBody] StringModel search)
         {
-            // If ID is provided and the user has access, return friends by ProfileID.
-            if (id != 0 && profileRepo.ById(id).ProfileFriendsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
-                return ProfileFriends(id);
+            List<int?> profileIds = new List<int?>();
 
-            // If search string is provided, return profile search results.
-            if (search.str != "NULL") return Search(search.str);
-            
-            // If no ID or search string was provided, return the current user's friend requests.
-            return FriendRequests();
+            List<ProfileModel> results = new List<ProfileModel>();
+
+            if (type == "profileModal")
+            {
+                if (skip == 0) friendProfileModalResults.SetResults(id, FriendRequests());
+
+                foreach (int profileId in friendDropdownResults.GetSegment(skip, take))
+                {
+                    results.Add(GetProfileModel(profileId));
+                }
+            }
+            else if (type == "friendDropdown")
+            {
+                if (skip == 0)
+                {
+                    // If ID is provided and the user has access, return friends by ProfileID.
+                    if (id != 0 && profileRepo.ById(id).ProfileFriendsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
+                    {
+                        friendDropdownResults.SetResults(id, search.str, ProfileFriends(id));
+                    }
+
+                    // If search string is provided, return profile search results.
+                    else if (search.str != "NULL")
+                    {
+                        friendDropdownResults.SetResults(id, search.str, Search(search.str));
+                    }
+
+                    // If no ID or search string was provided, return the current user's friend requests.
+                    else friendDropdownResults.SetResults(id, search.str, FriendRequests());
+                }
+
+                foreach(int profileId in friendDropdownResults.GetSegment(skip, take))
+                {
+                    results.Add(GetProfileModel(profileId));
+                }
+            }
+
+            return results;
         }
 
         /*
@@ -147,16 +184,16 @@ namespace SocialMedia.Controllers
             If there is a match, add that profile to a list and give it a point for each match.
             Return the list in order of most points.
         */
-        public List<ProfileModel> Search(string search) // terms.str
+        public List<int?> Search(string search) // terms.str
         {
             // XXX XXX XXX check if search terms are alphabetic
             // If no search string was provided, return list of AAAAALLLLLLLLLL profiles XD. XXX this cannot be!
             if (search == "") // return null instead?
             {
-                List<ProfileModel> defaultResults = new List<ProfileModel>();
+                List<int?> defaultResults = new List<int?>();
                 foreach (Profile p in profileRepo.ExceptCurrentProfile)
                 {
-                    defaultResults.Add(GetProfileModel(p.ProfileId));
+                    defaultResults.Add(p.ProfileId);
                 }
                 return defaultResults;
             }
@@ -205,13 +242,13 @@ namespace SocialMedia.Controllers
             matches.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
 
             // Prep list for preped results.
-            List<ProfileModel> results = new List<ProfileModel>();
+            List<int?> results = new List<int?>();
 
             // Loop through matches.
             foreach (KeyValuePair<int, int> match in matches)
             {
                 // Add preped result to results.
-                results.Add(GetProfileModel(match.Key));
+                results.Add(match.Key);
             }
 
             // Return search results to user.
@@ -221,43 +258,27 @@ namespace SocialMedia.Controllers
         /*
             Returns preped list of friends of the provided profile by its ProfileID.
         */
-        public List<ProfileModel> ProfileFriends(int id)
+        public List<int?> ProfileFriends(int id)
         {
-            // Get list of ProfileIDs by ProfileID. XXX can get full profiles, just have GetProfileModel pull id where needed. No, because 
-            // we want to offload logic to that func in other cases, but maybe I should overload the method...
-            List<int?> profileIds = friendRepo.ProfileFriends(id);
-
-            // Prep list for prepped profiles.
-            List<ProfileModel> friendProfiles = new List<ProfileModel>();
-
-            // If matches were found
-            if (profileIds != null)
-            {
-                // Loop through matches, prep each one and add it to the list.
-                foreach (int p in profileIds) { friendProfiles.Add(GetProfileModel(p)); }
-            }
-
-            // Return results to caller.
-            return friendProfiles;
-            // != null ? friendProfiles : null
+            return friendRepo.ProfileFriends(id);
         }
 
         /*
             Get list of friend requests to current user. 
         */
-        public List<ProfileModel> FriendRequests() // XXX logic could be rearranged. This could also go in GetFriends
+        public List<int?> FriendRequests()
         {
             // Get list of unaccepted friend requests by the current user's ProfileID.
             IEnumerable<Friend> friends = friendRepo.ByToId(currentProfile.id, false);
 
             // Prep list for prepped profiles.
-            List<ProfileModel> requests = new List<ProfileModel>();
+            List<int?> requests = new List<int?>();
 
             // If there were results,
             if (friends != null) 
             {
                 // prep each result and add to list of requests.
-                foreach (Friend f in friends) { requests.Add(GetProfileModel(f.FromId)); }
+                foreach (Friend f in friends) { requests.Add(f.FromId); }
             }
 
             // Return results to caller.

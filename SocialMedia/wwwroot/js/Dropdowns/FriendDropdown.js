@@ -13,20 +13,23 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var FriendDropdown = (function (_super) {
     __extends(FriendDropdown, _super);
-    function FriendDropdown(rootElm, contentElm, txtSearch, btnSearch, lblPrompt, friendBoxElm, btnOpen) {
+    function FriendDropdown(rootElm, contentElm, txtSearch, btnSearch, btnFriendRequests, lblPrompt, friendBoxElm, btnOpen) {
         var _this = _super.call(this, rootElm, contentElm, btnOpen) || this;
+        _this.btnFriendRequests = btnFriendRequests;
+        _this.requestCallbackTrigger = function (skip, take) { return _this.requestCallback(skip, take); };
         _this.txtSearch = txtSearch;
         _this.btnSearch = btnSearch;
         _this.lblPrompt = lblPrompt;
         _this.loadingGif = ViewUtil.tag("img", { classList: "loadingGif" });
         _this.loadingGif.src = "/ImgStatic/Loading.gif";
-        _this.friendsBox = new ContentBox(friendBoxElm, _this.contentElm);
+        _this.friendsBox = new FriendsBox(friendBoxElm, _this.contentElm, _this.requestCallbackTrigger);
         _this.contentElm.onscroll = function (event) {
             _this.friendsBox.lazyLoad();
         };
-        _this.btnSearch.onclick = function (e) { return _this.requestFriendables(); };
+        _this.btnSearch.onclick = function (e) { return _this.searchFriends(); };
         _this.txtSearch.onkeyup = function (e) { if (e.keyCode == 13)
             _this.btnSearch.click(); };
+        _this.btnFriendRequests.onclick = function (event) { return _this.requestFriendRequests(); };
         return _this;
     }
     FriendDropdown.prototype.open = function () {
@@ -38,10 +41,21 @@ var FriendDropdown = (function (_super) {
         var _this = this;
         this.friendsBox.clear();
         this.lblPrompt.innerText = "My Friends";
-        Ajax.getFriends(null, null, function (profiles) { return _this.friendsBox.add(profiles); });
-        Ajax.getFriends(User.profileId, null, function (profiles) { return _this.friendsBox.add(profiles); });
+        this.requestCallback = function (skip, take) {
+            Ajax.getFriends(User.profileId, "friendDropdown", skip, take, null, function (profiles) { return _this.friendsBox.add(profiles); });
+        };
+        this.friendsBox.request(20);
     };
-    FriendDropdown.prototype.requestFriendables = function () {
+    FriendDropdown.prototype.requestFriendRequests = function () {
+        var _this = this;
+        this.friendsBox.clear();
+        this.lblPrompt.innerText = "Friend Requests";
+        this.requestCallback = function (skip, take) {
+            Ajax.getFriends(null, "friendDropdown", skip, take, null, function (profiles) { return _this.friendsBox.add(profiles); });
+        };
+        this.friendsBox.request(20);
+    };
+    FriendDropdown.prototype.searchFriends = function () {
         var _this = this;
         var search = this.txtSearch.value;
         if (search == "") {
@@ -50,13 +64,18 @@ var FriendDropdown = (function (_super) {
         }
         this.friendsBox.clear();
         this.friendsBox.contentElm.append(this.loadingGif);
-        this.lblPrompt.innerText = "Search Results";
-        Ajax.getFriends(null, search, function (profiles) {
-            _this.friendsBox.clear();
-            _this.friendsBox.add(profiles);
-            if (profiles.length == 0)
-                _this.lblPrompt.innerText = "No Results";
-        });
+        this.requestCallback = function (skip, take) {
+            Ajax.getFriends(null, "friendDropdown", skip, take, search, function (profiles) {
+                _this.friendsBox.clear();
+                if (profiles.length == 0)
+                    _this.lblPrompt.innerText = "No Results";
+                else {
+                    _this.lblPrompt.innerText = "Search Results";
+                    _this.friendsBox.add(profiles);
+                }
+            });
+        };
+        this.friendsBox.request(20);
     };
     return FriendDropdown;
 }(Dropdown));

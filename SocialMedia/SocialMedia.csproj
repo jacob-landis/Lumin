@@ -20,6 +20,7 @@
     <Content Remove="wwwroot\ts\Cards\RelationCard.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\CommentsBox.ts" />
+    <Content Remove="wwwroot\ts\Components\ContentBoxes\FriendsBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
     <Content Remove="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
     <Content Remove="wwwroot\ts\Components\DoubleEditor.ts" />
@@ -85,6 +86,7 @@
     <TypeScriptCompile Include="wwwroot\ts\Cards\RelationCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\CommentsBox.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\FriendsBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\PostsBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\ContentBoxes\ProfileImagesBox.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Components\DoubleEditor.ts" />

@@ -64,10 +64,10 @@ var ProfileImagesBox = (function (_super) {
     };
     ProfileImagesBox.prototype.removeImageCard = function (imageCard) {
         var _this = this;
-        this.content.forEach(function (i) {
-            if (i.image.imageId == imageCard.image.imageId) {
-                _this.content.splice(_this.content.indexOf(i), 1);
-                ViewUtil.remove(i.rootElm);
+        this.content.forEach(function (imageBox) {
+            if (imageBox.imageCard.image.imageId == imageCard.image.imageId) {
+                _this.content.splice(_this.content.indexOf(imageBox), 1);
+                ViewUtil.remove(imageBox.rootElm);
             }
         });
     };

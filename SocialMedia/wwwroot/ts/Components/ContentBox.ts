@@ -210,14 +210,7 @@ class ContentBox implements IAppendable {
 
         // If content is singulare, convert it to an array of one.
         if (!Array.isArray(content)) content = [content];
-
-        // If the content being added comes from a request and the amount of content is less than asked for,
-        // lower the more content flag.
-        if (this.loading && content.length < this.take) {
-
-            this.moreContent = false;
-        }
-
+        
         ViewUtil.remove(this.loadingGif);
 
         // Loop through the provided content,
@@ -237,6 +230,14 @@ class ContentBox implements IAppendable {
                 }
             }
         });
+
+        // If the content being added comes from a request and the amount of content is less than asked for,
+        // lower the more content flag.
+        if (this.loading && content.length < this.take) {
+
+            this.moreContent = false;
+            this.contentElm.append(ViewUtil.tag("div", {innerText: "No more content"}));
+        }
 
         // If this content box has an established request feed,
         // (nothing should be added to a content box when a request is pending)

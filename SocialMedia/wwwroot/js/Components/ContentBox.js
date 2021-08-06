@@ -113,9 +113,6 @@ var ContentBox = (function () {
         var isFirstBatch = this.content.length == 0;
         if (!Array.isArray(content))
             content = [content];
-        if (this.loading && content.length < this.take) {
-            this.moreContent = false;
-        }
         ViewUtil.remove(this.loadingGif);
         content.forEach(function (content) {
             if (content != null) {
@@ -129,6 +126,10 @@ var ContentBox = (function () {
                 }
             }
         });
+        if (this.loading && content.length < this.take) {
+            this.moreContent = false;
+            this.contentElm.append(ViewUtil.tag("div", { innerText: "No more content" }));
+        }
         if (this.requestCallback) {
             this.moreContent = this.take == content.length;
             this.loading = false;
