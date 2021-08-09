@@ -57,7 +57,9 @@ var RelationCard = (function (_super) {
             label: 'Accept',
             icon: function () { return Icons.acceptRequest(); },
             nextCase: 'friend',
-            action: function (profileId) { return Ajax.acceptFriendRequest(profileId); }
+            action: function (profileId) {
+                friendDropdown.updateFriendRequests(profileId);
+            }
         },
         'unrelated': {
             label: 'Request',

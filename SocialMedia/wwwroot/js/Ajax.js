@@ -94,6 +94,9 @@ var Ajax = (function () {
     Ajax.unblockProfile = function (profileId) {
         this.call("apifriend/unblockprofile/" + profileId, "POST");
     };
+    Ajax.getHasFriendRequest = function (profileId, onHasFriendRequests) {
+        this.call("apifriend/gethasfriendrequest/" + profileId, "GET", onHasFriendRequests);
+    };
     Ajax.deleteImage = function (imageId) {
         this.call("apiimage/deleteimage/" + imageId, "POST");
     };

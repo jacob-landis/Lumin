@@ -63,14 +63,26 @@ class FriendDropdown extends Dropdown {
         this.btnSearch.onclick = (e: MouseEvent) => this.searchFriends()
         this.txtSearch.onkeyup = (e: KeyboardEvent) => { if (e.keyCode == 13) this.btnSearch.click(); }
 
-        this.btnFriendRequests.onclick = (event: MouseEvent) => this.requestFriendRequests();
+        this.btnFriendRequests.onclick = (event: MouseEvent) => {
+            if (this.lblPrompt.innerText == "Friend Requests") this.requestFriends();
+            else this.requestFriendRequests();
+        }
     }
     
     public open(): void {
         this.requestFriends();
         this.txtSearch.value = "";
 
-        super.open()
+        Ajax.getHasFriendRequest(User.profileId, (hasFriendRequest: string) => {
+            if (hasFriendRequest == '1') {
+                this.btnFriendRequests.classList.add("hasFriendRequests");
+            }
+            else if (hasFriendRequest == '0') {
+                this.btnFriendRequests.classList.remove("hasFriendRequests");
+            }
+        });
+
+        super.open();
     }
 
     /*
@@ -139,5 +151,19 @@ class FriendDropdown extends Dropdown {
             });
         }
         this.friendsBox.request(20);
+    }
+
+    public updateFriendRequests(profileId: number): void {
+        if (this.lblPrompt.innerText == "Friend Requests") {
+
+            this.friendsBox.content.forEach((c: IAppendable) => {
+                if ((<ProfileCard>c).profile.profileId == profileId)
+                    this.friendsBox.remove(c);
+            });
+
+            if (this.friendsBox.length == 0) {
+                this.btnFriendRequests.classList.remove("hasFriendRequests");
+            }
+        }
     }
 }

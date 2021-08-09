@@ -18,3 +18,8 @@
     border: none;
     background: lightgray;
 }
+
+#btnFriendRequests.hasFriendRequests {
+    background-color: limegreen;
+    color: white;
+}

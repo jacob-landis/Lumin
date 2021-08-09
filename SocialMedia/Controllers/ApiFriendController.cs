@@ -90,6 +90,20 @@ namespace SocialMedia.Controllers
         }
 
         /*
+            Gets a boolean that indicates whether the current user has any pending frien requests. 
+        */
+        [HttpGet("gethasfriendrequest/{profileId}")]
+        public int GetHasFriendRequest(int profileId)
+        {
+            int requestCount = friendRepo.Friends.Count((Friend f) =>
+                f.Accepted == false
+                && f.BlockerProfileId == null
+                && f.ToId == profileId);
+
+            return requestCount > 0 ? 1 : 0;
+        }
+
+        /*
             Deletes the friend record that matches the provided ProfileID and the current user's ProfileID.
         */
         [HttpPost("deletefriend/{id}")]

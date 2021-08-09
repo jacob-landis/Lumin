@@ -29,12 +29,26 @@ var FriendDropdown = (function (_super) {
         _this.btnSearch.onclick = function (e) { return _this.searchFriends(); };
         _this.txtSearch.onkeyup = function (e) { if (e.keyCode == 13)
             _this.btnSearch.click(); };
-        _this.btnFriendRequests.onclick = function (event) { return _this.requestFriendRequests(); };
+        _this.btnFriendRequests.onclick = function (event) {
+            if (_this.lblPrompt.innerText == "Friend Requests")
+                _this.requestFriends();
+            else
+                _this.requestFriendRequests();
+        };
         return _this;
     }
     FriendDropdown.prototype.open = function () {
+        var _this = this;
         this.requestFriends();
         this.txtSearch.value = "";
+        Ajax.getHasFriendRequest(User.profileId, function (hasFriendRequest) {
+            if (hasFriendRequest == '1') {
+                _this.btnFriendRequests.classList.add("hasFriendRequests");
+            }
+            else if (hasFriendRequest == '0') {
+                _this.btnFriendRequests.classList.remove("hasFriendRequests");
+            }
+        });
         _super.prototype.open.call(this);
     };
     FriendDropdown.prototype.requestFriends = function () {
@@ -76,6 +90,18 @@ var FriendDropdown = (function (_super) {
             });
         };
         this.friendsBox.request(20);
+    };
+    FriendDropdown.prototype.updateFriendRequests = function (profileId) {
+        var _this = this;
+        if (this.lblPrompt.innerText == "Friend Requests") {
+            this.friendsBox.content.forEach(function (c) {
+                if (c.profile.profileId == profileId)
+                    _this.friendsBox.remove(c);
+            });
+            if (this.friendsBox.length == 0) {
+                this.btnFriendRequests.classList.remove("hasFriendRequests");
+            }
+        }
     };
     return FriendDropdown;
 }(Dropdown));

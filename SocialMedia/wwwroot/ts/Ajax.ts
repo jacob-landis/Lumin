@@ -211,6 +211,10 @@
         this.call(`apifriend/unblockprofile/${profileId}`, "POST");
     }
 
+    public static getHasFriendRequest(profileId: number, onHasFriendRequests: (hasFriendRequest: string) => void): void {
+        this.call(`apifriend/gethasfriendrequest/${profileId}`, "GET", onHasFriendRequests);
+    }
+
     //IMAGE
     public static deleteImage(imageId: number): void {
         this.call(`apiimage/deleteimage/${imageId}`, "POST");

@@ -20,7 +20,10 @@
             label: 'Accept',
             icon: () => Icons.acceptRequest(),
             nextCase: 'friend',
-            action: (profileId: number) => Ajax.acceptFriendRequest(profileId)
+            action: (profileId: number) => {
+                Ajax.acceptFriendRequest(profileId);
+                friendDropdown.updateFriendRequests(profileId);
+            }
         },
         'unrelated': {
             label: 'Request',
