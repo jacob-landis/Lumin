@@ -28,7 +28,7 @@ var FullSizeImageModal = (function (_super) {
         _this.imageDateTime = imageDateTime;
         _this.imageClassList = imageClassList;
         _this.imageControls = [_this.imageCount, _this.imageOwnership, _this.imageDateTime, _this.btnNext, _this.btnPrev, Modal.btnClose];
-        _this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', function (target) { return _this.toggleControls(); });
+        _this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', function (target) { return _this.toggleControls(); }, 3);
         _this.imageCon.onLoadEnd = function () {
             _this.imageDateTime.innerText = "Uploaded on " + Util.formatDateTime(_this.imageCon.imageCard.image.dateTime);
             if (_this.imageCon.imageCard.image.profileId == User.profileId) {

@@ -26,7 +26,7 @@ var ImageDropdown = (function (_super) {
         btnOpenUploadImageModal.onchange = function (e) {
             return uploadImageModal.load(e, function (imageCard) {
                 return ProfileImagesBox.profileImageBoxes.forEach(function (p) {
-                    var imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.tooltipMsg);
+                    var imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.tooltipMsg, null, 1);
                     imageBox.loadImage(ImageCard.copy(imageCard));
                     if (p.profileId == User.profileId)
                         p.addImage(imageBox, true);

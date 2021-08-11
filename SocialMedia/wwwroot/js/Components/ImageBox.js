@@ -1,12 +1,12 @@
 var ImageBox = (function () {
-    function ImageBox(rootElm, imageClassList, tooltipMsg, click, getThumbNail) {
+    function ImageBox(rootElm, imageClassList, tooltipMsg, click, size) {
         this.imageBoxes = [];
         this.heldTooltipMsg = null;
         this.imageCard = null;
         this.isLoaded = false;
         this.isLoading = false;
         this.loadingGif = null;
-        this.getThumbNail = getThumbNail;
+        this.size = size;
         this.heldTooltipMsg = tooltipMsg;
         this.heldImageClassList = imageClassList;
         this.heldImageClick = click ? click : function (target) { };
@@ -16,7 +16,7 @@ var ImageBox = (function () {
     }
     ImageBox.copy = function (imageBox) {
         var imageCard = ImageCard.copy(imageBox.imageCard);
-        var imageBoxCopy = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, true);
+        var imageBoxCopy = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, imageBox.size);
         imageBox.loadImage(imageCard);
         return imageBoxCopy;
     };
@@ -25,7 +25,7 @@ var ImageBox = (function () {
             return null;
         var imageBoxes = [];
         imageCards.forEach(function (imageCard) {
-            var imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, true);
+            var imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, 1);
             imageBox.loadImage(imageCard);
             imageBoxes.push(imageBox);
         });
@@ -85,7 +85,7 @@ var ImageBox = (function () {
                 this.rootElm.append(this.loadingGif);
             }
             this.isLoading = true;
-            Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
+            Ajax.getImage(this.heldImageId, this.size, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
                 _this.unload();
                 _this.setImageCard(imageCard);
                 _this.rootElm.classList.remove('loadingImage');

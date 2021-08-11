@@ -74,7 +74,7 @@ class FullSizeImageModal extends Modal {
         this.imageControls = [this.imageCount, this.imageOwnership, this.imageDateTime, this.btnNext, this.btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
-        this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', (target: ImageBox) => this.toggleControls());
+        this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', (target: ImageBox) => this.toggleControls(), 3);
 
         this.imageCon.onLoadEnd = () => {
             this.imageDateTime.innerText = `Uploaded on ${Util.formatDateTime(this.imageCon.imageCard.image.dateTime)}`;

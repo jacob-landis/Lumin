@@ -17,7 +17,7 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
             imageCard.rootElm.classList.value,
             imageCard.rootElm.title,
             imageCard.onImageClick,
-            true
+            imageBox.size
         );
 
         imageBox.loadImage(imageCard);
@@ -38,7 +38,7 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
                 imageCard.rootElm.classList.value,
                 imageCard.rootElm.title,
                 imageCard.onImageClick,
-                true
+                1
             );
 
             imageBox.loadImage(imageCard);
@@ -68,7 +68,7 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
 
     // Request setting.
     // True = request thumbnail.
-    private getThumbNail: boolean;
+    private size: 0|1|2|3;
 
     // The image card living in memory.
     public imageCard: ImageCard = null;
@@ -108,11 +108,11 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
         imageClassList: string,
         tooltipMsg: string,
         click?: (targetImage: ImageBox) => void,
-        getThumbNail?: boolean
+        size?: 0|1|2|3
     ) {
 
         // Get a handle on the provided size setting.
-        this.getThumbNail = getThumbNail;
+        this.size = size;
 
         this.heldTooltipMsg = tooltipMsg;
 
@@ -219,7 +219,7 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
             this.isLoading = true;
 
             // Request an image with the request settings and apply the attribute settings when it returns.
-            Ajax.getImage(this.heldImageId, this.getThumbNail, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick,
+            Ajax.getImage(this.heldImageId, this.size, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick,
 
                 // When the prepped image card arrives,
                 (imageCard: ImageCard) => {

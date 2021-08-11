@@ -76,6 +76,8 @@
   <ItemGroup>
     <Folder Include="wwwroot\ImgThumb\" />
     <Folder Include="wwwroot\ImgFull\" />
+    <Folder Include="wwwroot\ImgSmall\" />
+    <Folder Include="wwwroot\ImgMedium\" />
   </ItemGroup>
 
   <ItemGroup>

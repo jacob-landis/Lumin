@@ -71,7 +71,7 @@ class ImageDropdown extends Dropdown {
                     // loop through all the profileImageBoxs,
                     ProfileImagesBox.profileImageBoxes.forEach((p: ProfileImagesBox) => {
 
-                        let imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.tooltipMsg);
+                        let imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.tooltipMsg, null, 1);
 
                         imageBox.loadImage(ImageCard.copy(imageCard));
 

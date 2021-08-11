@@ -257,14 +257,14 @@
 
     public static getImage(
         imageId: number,
-        thumb: boolean,
+        size: 0|1|2|3,
         imageClassList: string,
         tooltipMsg: string,
         onImageClick: (target: ImageBox) => void,
         onImageResults: (imageCard: ImageCard) => void
     ): void {
         this.call(
-            `apiimage/${imageId}/${thumb ? 1 : 0}`, 
+            `apiimage/${imageId}/${size}`, 
             "GET",
             (imageResults: string) => {
                 if (imageResults != null)

@@ -112,8 +112,8 @@ var Ajax = (function () {
     Ajax.getProfileImagesCount = function (profileId, onCountResults) {
         this.call("apiimage/profileimagescount/" + profileId, "GET", onCountResults);
     };
-    Ajax.getImage = function (imageId, thumb, imageClassList, tooltipMsg, onImageClick, onImageResults) {
-        this.call("apiimage/" + imageId + "/" + (thumb ? 1 : 0), "GET", function (imageResults) {
+    Ajax.getImage = function (imageId, size, imageClassList, tooltipMsg, onImageClick, onImageResults) {
+        this.call("apiimage/" + imageId + "/" + size, "GET", function (imageResults) {
             if (imageResults != null)
                 onImageResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick));
         });

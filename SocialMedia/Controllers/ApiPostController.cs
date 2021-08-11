@@ -360,7 +360,7 @@ namespace SocialMedia.Controllers
                 ProfileModel profileModel = Util.GetProfileModel(
                     profile, profilePicture, relationToUser, relationshipTier, relationChangeDatetime, blockerProfileId);
 
-                RawImage postImage = Util.GetRawImage(imageRepo.ById(post.ImageId), false);
+                RawImage postImage = Util.GetRawImage(imageRepo.ById(post.ImageId), 2);
 
                 int count = likeRepo.CountByContentId(1, id);
                 bool hasLiked = likeRepo.HasLiked(1, id, currentProfile.id);
@@ -394,7 +394,7 @@ namespace SocialMedia.Controllers
                 if (post.ImageId == 0) postModel.Image = null;
 
                 // Else attach prepped image. XXX I think this is handled above.
-                else postModel.Image = Util.GetRawImage(imageRepo.ById(post.ImageId), false);
+                else postModel.Image = Util.GetRawImage(imageRepo.ById(post.ImageId), 2);
 
                 // Return prepped post to caller.
                 return postModel;

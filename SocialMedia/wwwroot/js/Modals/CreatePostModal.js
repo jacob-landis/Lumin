@@ -30,7 +30,7 @@ var CreatePostModal = (function (_super) {
             })
         };
         _this.captionWrapper.append(_this.errorBox.rootElm);
-        _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image', function (targetImage) { return _this.selectImage(); });
+        _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image', function (targetImage) { return _this.selectImage(); }, 2);
         _this.btnClearAttachment.onclick = function (e) { return _this.loadPaperClip(); };
         _this.btnSubmit.onclick = function (e) { return _this.submit(); };
         _this.lblCaptionCharacterCount.innerText = "0/" + _this.maxLength;
@@ -47,7 +47,7 @@ var CreatePostModal = (function (_super) {
     CreatePostModal.prototype.load = function (imageCard) {
         var _this = this;
         if (imageCard != null) {
-            Ajax.getImage(imageCard.image.imageId, false, null, "Attach image", null, function (imageCard) {
+            Ajax.getImage(imageCard.image.imageId, 2, null, "Attach image", null, function (imageCard) {
                 _this.selectedImageBox.loadImage(imageCard);
                 ViewUtil.show(_this.btnClearAttachment, "inline");
                 _this.checkPrivacy();

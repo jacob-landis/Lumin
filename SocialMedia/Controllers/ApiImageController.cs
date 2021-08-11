@@ -129,14 +129,9 @@ namespace SocialMedia.Controllers
                     profileRepo.SaveProfile(profile); // Commit profile changes.
                     currentProfile.SetProfile(profile); // Update CurrentProfile in session.
                 }
-
-                // Prep paths for fullsize and thumbnail images.
-                string path = env.WebRootPath + "\\ImgFull\\" + image.Name;
-                string thumbnailPath = env.WebRootPath + "\\ImgThumb\\" + image.Name;
-
+                
                 // Remove fullsize and thumbnail images from file system.
-                DeleteFromFileSystem(path);
-                DeleteFromFileSystem(thumbnailPath);
+                DeleteFromFileSystem(image.Name, env.WebRootPath);
 
                 // Delete image record from database.
                 imageRepo.DeleteImage(image);
@@ -163,7 +158,7 @@ namespace SocialMedia.Controllers
                     if (i.PrivacyLevel <= relationshipTier)
                     {
                         // Add prepped image to list of results.
-                        images.Add(Util.GetRawImage(i, true));
+                        images.Add(Util.GetRawImage(i, 1));
                     }
                 }
 
@@ -178,10 +173,10 @@ namespace SocialMedia.Controllers
         /*
              Returns an image to the user.
         */
-        [HttpGet("{id}/{thumb}")] // thumb will be 1 or 0. 0 meaning fullsize, 1 meaning thumbnail.
-        public RawImage Get(int id, int thumb)
+        [HttpGet("{id}/{size}")] // size will be 0 to 3 (thumbnail, small, medium, full)
+        public RawImage Get(int id, int size)
         {
-            if (id == 0) return Util.GetRawImage(new Models.Image(), thumb == 1);
+            if (id == 0) return Util.GetRawImage(new Models.Image(), size);
 
             Models.Image image = imageRepo.ById(id);
             Profile profile = profileRepo.ById(image.ProfileId);
@@ -194,9 +189,9 @@ namespace SocialMedia.Controllers
             if (image.PrivacyLevel <= relationshipTier
                 || (profile.ProfilePicture == id && profile.ProfilePicturePrivacyLevel <= relationshipTier)
                 || (imageIsInPost && profile.ProfilePostsPrivacyLevel <= relationshipTier))
-                return Util.GetRawImage(image, thumb == 1);
+                return Util.GetRawImage(image, size);
 
-            return Util.GetRawImage(new Models.Image(), thumb == 1);
+            return Util.GetRawImage(new Models.Image(), size);
         }
 
         /*
@@ -249,52 +244,20 @@ namespace SocialMedia.Controllers
                 {
                     // Write fullsize image to file system.
                     img.Save(path);
-
-                    // Initialize max size. XXX make const
-                    decimal maxSize = 200;
-
-                    // Initialize thumbnail height and width to maxSize.
-                    // This does two things: (1) These variables are declared in the correct scope (2) These proportions handle a square image.
-                    // These will be used to resize image.
-                    int thumbWidth = (int)maxSize;
-                    int thumbHeight = (int)maxSize;
-
+                    
                     // Create shortcut variables.
                     height = img.Height;
                     width = img.Width;
-
-                    // Declare ratio.
-                    decimal ratio;
-
-                    // If image as fullsize does not exceed size limits in either direction, do not shrink.
-                    if(img.Width < maxSize && img.Height < maxSize)
-                    {
-                        thumbHeight = img.Height;
-                        thumbWidth = img.Width;
-                    }
-
-                    // Else if image is landscape orientation, make width max size and height proportionately sized.
-                    else if (img.Width > img.Height)
-                    {
-                        ratio = height / width;
-                        thumbWidth = (int)maxSize;
-                        thumbHeight = (int)(maxSize * ratio);
-                    }
-
-                    // Else if image is portrait orientation, make height max size and width proportionately sized.
-                    else if (img.Height > img.Width)
-                    {
-                        ratio = width / height;
-                        thumbHeight = (int)maxSize;
-                        thumbWidth = (int)(maxSize * ratio);
-                    } 
-                    // OMITTED: Else if image is square, do nothing (the dimensions are already correct).
-
+                    
                     // Send image and it's new dimensions to be converted and get a handle on the result.
-                    System.Drawing.Image thumbnail = ResizeImage(img, thumbWidth, thumbHeight);
+                    System.Drawing.Image thumbnail = ResizeImage(img, (int)width, (int)height, 30, 30);
+                    System.Drawing.Image small = ResizeImage(img, (int)width, (int)height, 100, 100);
+                    System.Drawing.Image medium = ResizeImage(img, (int)width, (int)height, 600);
 
                     // Save the thumbnail result to the file system.
                     thumbnail.Save(thumbnailPath);
+                    small.Save(env.WebRootPath + "\\ImgSmall\\" + name);
+                    medium.Save(env.WebRootPath + "\\ImgMedium\\" + name);
                 }
 
                 // Close the memory stream.
@@ -313,7 +276,7 @@ namespace SocialMedia.Controllers
             };
 
             // Save image record, use the returned id to pull that same record, prep it, and return it to the user.
-            return Util.GetRawImage( imageRepo.ById(imageRepo.SaveImage(image)), false);
+            return Util.GetRawImage( imageRepo.ById(imageRepo.SaveImage(image)), 1);
         }
 
         //-----------------------------------------UTIL---------------------------------------------//
@@ -321,23 +284,30 @@ namespace SocialMedia.Controllers
         /*
             Delete image file from file system.
         */
-        public static void DeleteFromFileSystem(string path)
+        public static void DeleteFromFileSystem(string name, string webRootPath)
         {
-            // Make multiple attempts to delete incase it fails.
-            for (int i = 1; i <= 1000; ++i)
-            {
-                try
-                {
-                    // Try to delte the file
-                    System.IO.File.Delete(path);
+            string[] folderNames = { "ImgThumb", "ImgSmall", "ImgMedium", "ImgFull" };
 
-                    // If successful, break out of the loop.
-                    break;
-                }
-                catch (IOException e) when (i <= 10000) // XXX try removing "(IOException e)" and try changing 10000 to 1000
+            foreach (string folderName in folderNames)
+            {
+                string path = webRootPath + "\\" + folderName + "\\" + name;
+
+                // Make multiple attempts to delete incase it fails.
+                for (int i = 1; i <= 1000; ++i)
                 {
-                    // If an error occured while trying to delete, wait before looping again.
-                    Thread.Sleep(3);
+                    try
+                    {
+                        // Try to delte the file
+                        System.IO.File.Delete(path);
+
+                        // If successful, break out of the loop.
+                        break;
+                    }
+                    catch (IOException e) when (i <= 10000) // XXX try removing "(IOException e)" and try changing 10000 to 1000
+                    {
+                        // If an error occured while trying to delete, wait before looping again.
+                        Thread.Sleep(3);
+                    }
                 }
             }
         }
@@ -345,12 +315,55 @@ namespace SocialMedia.Controllers
         /*
              Resizes an image to the provided dimensions.
         */
-        public static Bitmap ResizeImage(System.Drawing.Image image, int width, int height)
+        public static Bitmap ResizeImage(System.Drawing.Image image, decimal width, decimal height, int maxWidth, int? maxHeight = null)
         {
-            // Initialize destination image and rectangle.
-            Rectangle destRect = new Rectangle(0, 0, width, height);
-            Bitmap destImage = new Bitmap(width, height);
+            // Declare ratio.
+            decimal ratio = height / width;
 
+            if (height > width) ratio = width / height;
+
+            // Initialize thumbnail height and width to maxWidth.
+            // This does two things: (1) These variables are declared in the correct scope (2) These proportions handle a square image.
+            // These will be used to resize image.
+            int newHeight = maxWidth;
+            int newWidth = maxWidth;
+
+            if (maxHeight == null) newHeight = (int)(newWidth * ratio);
+            else newHeight = (int)maxHeight;
+
+            maxHeight = newHeight;
+
+            if (maxHeight != maxWidth)
+            {
+                // If image as fullsize does not exceed size limits in either dimension, do not shrink.
+                if (width < maxWidth && height < maxHeight)
+                {
+                    newHeight = (int)height;
+                    newWidth = (int)width;
+                }
+
+                // Else if image is landscape orientation, make width max size and height proportionately sized.
+                else if (width > height)
+                {
+                    ratio = height / width;
+                    newHeight = (int)(maxWidth* ratio);
+                    newWidth = maxWidth;
+                }
+
+                // Else if image is portrait orientation, make height max size and width proportionately sized.
+                else if (height > width)
+                {
+                    ratio = width / height;
+                    newHeight = (int)maxHeight;
+                    newWidth = (int)(maxWidth * ratio);
+                }
+                // OMITTED: Else if image is square, do nothing (the dimensions are already correct
+            }
+            
+            // Initialize destination image and rectangle.
+            Rectangle destRect = new Rectangle(0, 0, newWidth, newHeight);
+            Bitmap destImage = new Bitmap(newWidth, newHeight);
+            
             // Set resolution of destImage Bitmap using fullsize image.
             destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
@@ -370,9 +383,72 @@ namespace SocialMedia.Controllers
                     // Set wrap mode.
                     wrapMode.SetWrapMode(WrapMode.TileFlipXY);
 
+                    int srcWidth = (int)width;
+                    int srcHeight = (int)height;
+
+                    int xStart = 0;
+                    int yStart = 0;
+
+                    if (newHeight == newWidth)
+                    {
+                        if (height > width)
+                        {
+                            srcHeight = (int)(height * ratio);
+                            yStart = (int)((height - srcHeight) / 2);
+                        }
+                        else if (height < width)
+                        {
+                            srcWidth = (int)(width * ratio);
+                            xStart = (int)((width - srcWidth) / 2);
+                        }
+                    }
+
                     // Draw thumbnail.
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                    graphics.DrawImage(image, destRect, xStart, yStart, srcWidth, srcHeight, GraphicsUnit.Pixel, wrapMode);
                 }
+            }
+
+            const int OrientationKey = 0x0112;
+            const int NotSpecified = 0;
+            const int NormalOrientation = 1;
+            const int MirrorHorizontal = 2;
+            const int UpsideDown = 3;
+            const int MirrorVertical = 4;
+            const int MirrorHorizontalAndRotateRight = 5;
+            const int RotateLeft = 6;
+            const int MirorHorizontalAndRotateLeft = 7;
+            const int RotateRight = 8;
+
+            var orientation = (int)image.GetPropertyItem(OrientationKey).Value[0];
+            switch (orientation)
+            {
+                case NotSpecified: // Assume it is good.
+                case NormalOrientation:
+                    // No rotation required.
+                    break;
+                case MirrorHorizontal:
+                    destImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    break;
+                case UpsideDown:
+                    destImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    break;
+                case MirrorVertical:
+                    destImage.RotateFlip(RotateFlipType.Rotate180FlipX);
+                    break;
+                case MirrorHorizontalAndRotateRight:
+                    destImage.RotateFlip(RotateFlipType.Rotate90FlipX);
+                    break;
+                case RotateLeft:
+                    destImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    break;
+                case MirorHorizontalAndRotateLeft:
+                    destImage.RotateFlip(RotateFlipType.Rotate270FlipX);
+                    break;
+                case RotateRight:
+                    destImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    break;
+                default:
+                    throw new NotImplementedException("An orientation of " + orientation + " isn't implemented.");
             }
 
             // Return thumbnail result.

@@ -31,23 +31,29 @@ namespace SocialMedia.Infrastructure
              Converts a image in file storage to a byte array so it can be passed to the client.
              Includes option parameter for image size.
         */
-        public static byte[] ImageToByte(string name, bool getThumbnail)
+        public static byte[] ImageToByte(string name, int size)
         {
-            // Declare path variable.
-            string path;
+            // Declare path variable and set to default.
+            string path = "wwwroot/ImgStatic/";
 
             // If no name was provided, retrieve the default profile picture.
             if (name == null)
             {
                 // Name of the default profile picture.
                 name = "user.png";
-
-                // Folder for non-profile images.
-                path = "wwwroot/ImgStatic/";
             }
 
             // Else, select size.
-            else path = getThumbnail ? "wwwroot/ImgThumb/" : "wwwroot/ImgFull/";
+            else
+            {
+                switch (size)
+                {
+                    case 0: path = "wwwroot/ImgThumb/";  break;
+                    case 1: path = "wwwroot/ImgSmall/";  break;
+                    case 2: path = "wwwroot/ImgMedium/"; break;
+                    case 3: path = "wwwroot/ImgFull/";   break;
+                }
+            }
 
             // Retrieve image from the file system.
             System.Drawing.Image img = System.Drawing.Image.FromFile(path + name);
@@ -78,7 +84,7 @@ namespace SocialMedia.Infrastructure
         /*
              Returns image as byte array with ImageID and owner ProfileID attached to it.
         */
-        public static RawImage GetRawImage(Models.Image image, bool getThumbnail) =>
+        public static RawImage GetRawImage(Models.Image image, int size) =>
 
             // Fill new RawImage with details from provided image record and have byte array of image retrieved.
             new RawImage
@@ -89,7 +95,7 @@ namespace SocialMedia.Infrastructure
                 PrivacyLevel = image.PrivacyLevel,
                 Height = image.Height,
                 Width = image.Width,
-                ImageAsByteArray = ImageToByte(image.Name, getThumbnail)
+                ImageAsByteArray = ImageToByte(image.Name, size)
             };
 
         /*
@@ -132,9 +138,9 @@ namespace SocialMedia.Infrastructure
             };
 
             if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
-                profileModel.ProfilePicture = GetRawImage(image, true);
+                profileModel.ProfilePicture = GetRawImage(image, 0);
             else
-                profileModel.ProfilePicture = GetRawImage(new Models.Image(), true);
+                profileModel.ProfilePicture = GetRawImage(new Models.Image(), 0);
 
             return profileModel;
         }

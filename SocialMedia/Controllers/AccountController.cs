@@ -323,13 +323,8 @@ namespace SocialMedia.Controllers
             List<Image> images = new List<Image>();
             foreach(Image i in imageRepo.ByProfileId(profileId))
             {
-                // Prep paths for fullsize and thumbnail images.
-                string path = env.WebRootPath + "\\ImgFull\\" + i.Name;
-                string thumbnailPath = env.WebRootPath + "\\ImgThumb\\" + i.Name;
-
                 // Remove fullsize and thumbnail images from file system.
-                ApiImageController.DeleteFromFileSystem(path);
-                ApiImageController.DeleteFromFileSystem(thumbnailPath);
+                ApiImageController.DeleteFromFileSystem(i.Name, env.WebRootPath);
 
                 images.Add(i);
             }

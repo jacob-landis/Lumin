@@ -90,7 +90,7 @@
 
         super(ViewUtil.tag('div', { classList: 'profileCard' }));
         
-        this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, true);
+        this.imageBox = new ImageBox(ViewUtil.tag('div', { classList: 'profileCardThumbWrapper' }), 'sqr', null, null, 0);
 
         this.imageBoxes.push(this.imageBox);
 

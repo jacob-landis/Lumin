@@ -74,9 +74,9 @@ namespace SocialMedia.Controllers
                 fullProfileModel.Bio = "";
 
             if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
-                fullProfileModel.ProfilePicture = Util.GetRawImage(image, false);
+                fullProfileModel.ProfilePicture = Util.GetRawImage(image, 2);
             else
-                fullProfileModel.ProfilePicture = Util.GetRawImage(new Models.Image(), false);
+                fullProfileModel.ProfilePicture = Util.GetRawImage(new Models.Image(), 2);
 
             return fullProfileModel;
         }
@@ -187,7 +187,7 @@ namespace SocialMedia.Controllers
                 profileRepo.SaveProfile(profile);
 
                 // Return new profile picture to user. XXX they should be able to use the local version to swap out.
-                return Util.GetRawImage(imageRepo.ById(id), false);
+                return Util.GetRawImage(imageRepo.ById(id), 3);
             }
 
             // If the user does not own that image or that image does not exist, return null.

@@ -97,10 +97,10 @@ var ImageCard = (function (_super) {
             p.removeImageCard(_this);
         });
         if (this.image.imageId == User.profilePictureId) {
-            Ajax.getImage(0, true, 'sqr', null, function (target) { }, function (imageCard) {
+            Ajax.getImage(0, 0, 'sqr', null, function (target) { }, function (imageCard) {
                 return ProfileCard.changeUserProfilePicture(imageCard);
             });
-            Ajax.getImage(0, false, 'sqr', 'Change profile picture', function (target) { }, function (imageCard) {
+            Ajax.getImage(0, 2, 'sqr', 'Change profile picture', function (target) { }, function (imageCard) {
                 return profileModal.profilePictureBox.loadImage(imageCard);
             });
         }

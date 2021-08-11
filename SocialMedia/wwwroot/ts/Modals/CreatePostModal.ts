@@ -64,10 +64,14 @@ class CreatePostModal extends Modal {
 
         // Construct an image box with an existing elm and get a handle on it.
         // (Any image that is selected for this post can be clicked on to pick a different image, because of the click parameter value)
-        this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image',
+        this.selectedImageBox = new ImageBox(
+            imageBoxElm, 
+            imageClassList, 
+            'Attach an image',
             
             // When the image is clicked.
-            (targetImage: ImageBox) => this.selectImage()
+            (targetImage: ImageBox) => this.selectImage(),
+            2
         );
 
         this.btnClearAttachment.onclick = (e: MouseEvent) => this.loadPaperClip();
@@ -99,7 +103,7 @@ class CreatePostModal extends Modal {
         
         // Wait for fullsize image.
         if (imageCard != null) {
-            Ajax.getImage(imageCard.image.imageId, false, null, "Attach image", null, (imageCard: ImageCard) => {
+            Ajax.getImage(imageCard.image.imageId, 2, null, "Attach image", null, (imageCard: ImageCard) => {
                 this.selectedImageBox.loadImage(imageCard);
                 ViewUtil.show(this.btnClearAttachment, "inline");
                 this.checkPrivacy();
