@@ -105,12 +105,12 @@ var ProfileModal = (function (_super) {
             _this.imagesBox = new ProfileImagesBox('Fullscreen', _this.imageScrollBox, function (target) {
                 return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
             });
-            _this.imagesBox.load(profileId);
             _this.imagesBox.onLoadEnd = function () {
                 _this.summaryStage.updateStaging(_this.imagesBoxStaged);
                 if (_this.imagesBox.content.length == 0)
                     _this.imageWrapper.innerHTML = 'No images were retrieved.';
             };
+            _this.imagesBox.load(profileId);
             _this.imageWrapper.append(_this.imagesBox.rootElm);
             _super.prototype.open.call(_this);
         });

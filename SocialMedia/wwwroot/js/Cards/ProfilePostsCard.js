@@ -71,7 +71,6 @@ var ProfilePostsCard = (function (_super) {
         var _this = this;
         this.profileId = profileId;
         this.postBoxesStage = new Stage([this.mainPostsStaged], function () { return _this.displayPosts(); });
-        this.mainPostsBox.onLoadEnd = function () { return _this.postBoxesStage.updateStaging(_this.mainPostsStaged); };
         this.mainPostsBox.profileId = profileId;
         this.mainPostsBox.start();
     };

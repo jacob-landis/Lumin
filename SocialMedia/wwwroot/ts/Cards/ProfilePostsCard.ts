@@ -91,8 +91,7 @@
 
     public load(profileId: number): void {
         this.profileId = profileId;
-        this.postBoxesStage = new Stage([this.mainPostsStaged], () => this.displayPosts()); 
-        this.mainPostsBox.onLoadEnd = () => this.postBoxesStage.updateStaging(this.mainPostsStaged); 
+        this.postBoxesStage = new Stage([this.mainPostsStaged], () => this.displayPosts());
 
         // Create post box and start feed.
         this.mainPostsBox.profileId = profileId; 

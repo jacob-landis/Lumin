@@ -171,14 +171,14 @@ class ProfileModal extends Modal {
                 // Set click callback of each image to open a collection in fullzise image modal.
                 fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
 
-            this.imagesBox.load(profileId);
-
             this.imagesBox.onLoadEnd = () => {
                 this.summaryStage.updateStaging(this.imagesBoxStaged);
 
                 if (this.imagesBox.content.length == 0)
                     this.imageWrapper.innerHTML = 'No images were retrieved.';
             }
+
+            this.imagesBox.load(profileId);
 
             // Append new profile images box to container elm.
             this.imageWrapper.append(this.imagesBox.rootElm);
