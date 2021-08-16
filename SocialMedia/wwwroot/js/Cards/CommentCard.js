@@ -54,6 +54,7 @@ var CommentCard = (function (_super) {
             btnRefresh.onclick = function (event) { return _this.refresh(); };
             btnRefresh.classList.add('btnRefreshCommentCard');
         }
+        _this.rootElm.onmouseenter = function (event) { return _this.alertVisible(); };
         CommentCard.commentCards.push(_this);
         return _this;
     }
@@ -93,14 +94,10 @@ var CommentCard = (function (_super) {
     CommentCard.prototype.alertVisible = function () {
         var _this = this;
         Ajax.updateCommentHasSeen(this.comment.commentId);
-        CommentCard.commentCards.forEach(function (commentCard) {
-            if (commentCard.comment.commentId == _this.comment.commentId) {
-                setTimeout(function () {
-                    commentCard.rootElm.classList.remove("unseenComment");
-                }, 1000);
-                commentCard.comment.hasSeen = false;
-            }
-        });
+        setTimeout(function () {
+            _this.rootElm.classList.remove("unseenComment");
+        }, 1000);
+        this.comment.hasSeen = false;
     };
     CommentCard.prototype.remove = function () {
         var _this = this;

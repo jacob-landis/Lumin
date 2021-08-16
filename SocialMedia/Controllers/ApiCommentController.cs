@@ -41,24 +41,43 @@ namespace SocialMedia.Controllers
         //-----------------------------------------ROUTING---------------------------------------------//
 
         [HttpPost("refreshcomments/{postId}/{take}/{feedFilter}/{feedType}")]
-        public List<CommentModel> RefreshComments([FromBody] CommentReferencesModel comments, int postId, int take, string feedFilter, string feedType)
+        public CommentRefreshSummaryModel RefreshComments([FromBody] CommentReferencesModel comments, int postId, int take, string feedFilter, string feedType)
         {
-            // Create list to compare to commentIds.
-            List<CommentModel> currentCommentResults = GetCommentModels(postId, 0, comments.commentIds.Length, feedFilter, feedType);
+            List<CommentModel> newComments = GetCommentModels(postId, 0, take, feedFilter, feedType);
 
-            // Loop through currentComentResults and commentIds and compare them.
-            for (int i = 0; i < comments.commentIds.Length; i++)
+            CommentRefreshSummaryModel refreshSummary = new CommentRefreshSummaryModel();
+            
+            if (newComments != null)
             {
-                // If a mismatch is found, the results have change, so return the current comment results.
-                if (currentCommentResults[i].CommentId   != comments.commentIds[i] ||
-                    currentCommentResults[i].Likes.Count != comments.likeCounts[i] || 
-                    currentCommentResults[i].Content     != comments.contents[i]
-                )
+                refreshSummary.Comments = newComments;
+                refreshSummary.NewLength = newComments.Count;
+
+                // If comment count has not changed, check for changes in the content of the comments.
+                if (refreshSummary.NewLength == comments.commentIds.Length)
                 {
-                    return GetCommentModels(postId, 0, take, feedFilter, feedType);
+                    // Loop through currentComentResults and commentIds and compare them.
+                    for (int i = 0; i < comments.commentIds.Length; i++)
+                    {
+                        // If a mismatch is found, the results have changed, so lower the .
+                        if (newComments[i].CommentId != comments.commentIds[i] ||
+                            newComments[i].Likes.Count != comments.likeCounts[i] ||
+                            newComments[i].Content != comments.contents[i]
+                        )
+                        {
+                            refreshSummary.HasChanged = true;
+                            break;
+                        }
+                    }
                 }
+                else refreshSummary.HasChanged = true;
             }
-            return null;
+            // Else if no comments exist but there were comments before.
+            else if (comments.commentIds != null && comments.commentIds.Length > 0)
+            {
+                refreshSummary.HasChanged = true;
+            }
+
+            return refreshSummary;
         }
 
         // Get comment count by PostId XXX shouldn't this go in ApiPostController??

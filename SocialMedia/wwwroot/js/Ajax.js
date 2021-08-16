@@ -39,9 +39,9 @@ var Ajax = (function () {
         this.call("apicomment/commentcount/" + postId, "GET", onCommentCountResults);
     };
     Ajax.refreshComments = function (postId, commentIds, likeCounts, contents, take, feedFilter, feedType, onRefreshResults) {
-        this.call("apicomment/refreshcomments/" + postId + "/" + take + "/" + feedFilter + "/" + feedType, "POST", function (commentResults) {
-            onRefreshResults(commentResults == undefined ?
-                null : CommentCard.list(commentResults));
+        this.call("apicomment/refreshcomments/" + postId + "/" + take + "/" + feedFilter + "/" + feedType, "POST", function (commentRefreshResults) {
+            onRefreshResults(commentRefreshResults == undefined ?
+                null : commentRefreshResults);
         }, JSON.stringify({
             commentIds: commentIds,
             likeCounts: likeCounts,

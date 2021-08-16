@@ -38,13 +38,14 @@ var CommentsBox = (function (_super) {
             likeCounts.push(content.comment.likes.count);
             contents.push(content.comment.content);
         });
-        Ajax.refreshComments(this.postId, commentIds, likeCounts, contents, this.take, this.getFeedFilter(), this.feedType, function (commentCards) {
-            if (commentCards != null) {
-                _this.clear();
-                _this.add(commentCards);
+        Ajax.refreshComments(this.postId, commentIds, likeCounts, contents, this.take, this.getFeedFilter(), this.feedType, function (refreshSummary) {
+            _this.clear();
+            if (refreshSummary.comments != null) {
+                _this.add(CommentCard.list(refreshSummary.comments));
+                _this.content.forEach(function (content) { return content.disputeHasSeen(); });
             }
             if (_this.onCommentsLoadEnd != null)
-                onRefreshLoadEnd(commentCards == null);
+                onRefreshLoadEnd(refreshSummary);
         });
     };
     return CommentsBox;

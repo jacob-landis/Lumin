@@ -419,36 +419,40 @@ namespace SocialMedia.Controllers
             const int MirorHorizontalAndRotateLeft = 7;
             const int RotateRight = 8;
 
-            var orientation = (int)image.GetPropertyItem(OrientationKey).Value[0];
-            switch (orientation)
+            if (image.PropertyIdList.Contains(OrientationKey))
             {
-                case NotSpecified: // Assume it is good.
-                case NormalOrientation:
-                    // No rotation required.
-                    break;
-                case MirrorHorizontal:
-                    destImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                    break;
-                case UpsideDown:
-                    destImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                    break;
-                case MirrorVertical:
-                    destImage.RotateFlip(RotateFlipType.Rotate180FlipX);
-                    break;
-                case MirrorHorizontalAndRotateRight:
-                    destImage.RotateFlip(RotateFlipType.Rotate90FlipX);
-                    break;
-                case RotateLeft:
-                    destImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                    break;
-                case MirorHorizontalAndRotateLeft:
-                    destImage.RotateFlip(RotateFlipType.Rotate270FlipX);
-                    break;
-                case RotateRight:
-                    destImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    break;
-                default:
-                    throw new NotImplementedException("An orientation of " + orientation + " isn't implemented.");
+                var orientation = (int)image.GetPropertyItem(OrientationKey).Value[0];
+
+                switch (orientation)
+                {
+                    case NotSpecified: // Assume it is good.
+                    case NormalOrientation:
+                        // No rotation required.
+                        break;
+                    case MirrorHorizontal:
+                        destImage.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        break;
+                    case UpsideDown:
+                        destImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                    case MirrorVertical:
+                        destImage.RotateFlip(RotateFlipType.Rotate180FlipX);
+                        break;
+                    case MirrorHorizontalAndRotateRight:
+                        destImage.RotateFlip(RotateFlipType.Rotate90FlipX);
+                        break;
+                    case RotateLeft:
+                        destImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                    case MirorHorizontalAndRotateLeft:
+                        destImage.RotateFlip(RotateFlipType.Rotate270FlipX);
+                        break;
+                    case RotateRight:
+                        destImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                    default:
+                        throw new NotImplementedException("An orientation of " + orientation + " isn't implemented.");
+                }
             }
 
             // Return thumbnail result.

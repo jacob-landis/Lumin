@@ -124,7 +124,7 @@ class PostsBox extends ContentBox {
         this.messageElm.title = 'Expand section';
     }
 
-    private expandBox(): void {
+    public expandBox(): void {
         ViewUtil.show(this.contentElm, 'block');
         this.messageElm.onclick = (event: MouseEvent) => this.collapseBox();
         this.messageElm.title = 'Collapse section';

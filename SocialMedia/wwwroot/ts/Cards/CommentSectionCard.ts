@@ -23,7 +23,7 @@
 
     private commentBoxDetails: HTMLElement;
     private commentCountSlot: HTMLElement;
-    private commentCountText: HTMLElement;
+    private commentCountText: HTMLElement = null;
     private commentBoxFeedControls: HTMLElement;
     private btnRefreshFeed: HTMLElement;
     private btnToggleFeedFilter: ToggleButton;
@@ -326,16 +326,21 @@
 
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
         ViewUtil.hide(this.commentBoxes.rootElm);
+        
+        this.mainCommentsBox.refreshComments((refreshSummary: CommentRefreshSummaryRecord) => {
 
-        this.mainCommentsBox.refreshComments((noChanges: boolean) => {
+            this.setCommentCount(refreshSummary.newLength);
 
             let myActivityIsShowing: boolean = this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0;
 
-            if (noChanges) {
+            if (!refreshSummary.hasChanged) {
                 if (myActivityIsShowing) this.mainCommentsBox.messageElm.innerText = 'All Comments - No changes have been made';
                 else this.mainCommentsBox.messageElm.innerText = 'No changes have been made';
             }
-            else if (myActivityIsShowing) this.mainCommentsBox.messageElm.innerText = 'All Comments';
+            else if (myActivityIsShowing)
+                this.mainCommentsBox.messageElm.innerText = 'All Comments';
+            else
+                this.mainCommentsBox.messageElm.innerText = '';
 
             this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
         });
@@ -426,10 +431,11 @@
 
     private requestCommentCount(): void {
         Ajax.getCommentCount(this.post.postId, (commentCount: string) => {
-            this.commentCountText = ViewUtil.tag('div');
+            if (this.commentCountText == null) {
+                this.commentCountText = ViewUtil.tag('div');
+                this.commentCountSlot.append(this.commentCountText);
+            }
             this.setCommentCount(+commentCount);
-
-            this.commentCountSlot.append(this.commentCountText);
         });
     }
 

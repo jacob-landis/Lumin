@@ -71,11 +71,7 @@ class ProfileModal extends Modal {
 
         // Construct new Content box and set of friends display.
         this.friendBox = new FriendsBox(this.friendBoxElm, this.friendBoxElm, this.requestFriendsTrigger);
-
-        //this.friendBox.scrollElm.onscroll = (event: UIEvent) => {
-        //    this.friendBox.lazyLoad();
-        //}
-
+        
         this.profilePostsCard.onLoadEnd = () => {
             if (this.profilePostsCard.mainPostsBox.content.length == 0)
                 this.profilePostsCard.mainPostsBox.messageElm.innerText = `No posts were retrieved.`;

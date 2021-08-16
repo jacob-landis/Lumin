@@ -17,7 +17,7 @@
         });
     }
 
-    public refreshComments(onRefreshLoadEnd?: (noChange: boolean) => void) {
+    public refreshComments(onRefreshLoadEnd?: (refreshSummary: CommentRefreshSummaryRecord) => void) {
 
         let commentIds: number[] = [];
         let likeCounts: number[] = [];
@@ -29,14 +29,17 @@
         });
 
         Ajax.refreshComments(this.postId, commentIds, likeCounts, contents, this.take, this.getFeedFilter(), this.feedType,
-            (commentCards: CommentCard[]) => {
-                
-                if (commentCards != null) {
-                    this.clear();
-                    this.add(commentCards);
+            (refreshSummary: CommentRefreshSummaryRecord) => {
+
+                this.clear();
+
+                if (refreshSummary.comments != null) {
+                    this.add(CommentCard.list(refreshSummary.comments));
+                    this.content.forEach((content: IAppendable) => (<CommentCard>content).disputeHasSeen());
                 }
 
-                if (this.onCommentsLoadEnd != null) onRefreshLoadEnd(commentCards == null);
+                if (this.onCommentsLoadEnd != null)
+                    onRefreshLoadEnd(refreshSummary);
             }
         );
     }

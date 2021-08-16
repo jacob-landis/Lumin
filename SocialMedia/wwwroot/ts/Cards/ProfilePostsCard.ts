@@ -93,6 +93,10 @@
         this.profileId = profileId;
         this.postBoxesStage = new Stage([this.mainPostsStaged], () => this.displayPosts());
 
+        [this.mainPostsBox, this.commentedPostsBox, this.likedPostsBox].forEach((postsBox: PostsBox) => {
+            postsBox.expandBox();
+        });
+
         // Create post box and start feed.
         this.mainPostsBox.profileId = profileId; 
         this.mainPostsBox.start(); 

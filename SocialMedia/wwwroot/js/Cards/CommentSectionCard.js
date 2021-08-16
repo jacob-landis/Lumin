@@ -15,6 +15,7 @@ var CommentSectionCard = (function (_super) {
     __extends(CommentSectionCard, _super);
     function CommentSectionCard(post, getContentHeight, onCommentLoadEnd) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'commentSection' })) || this;
+        _this.commentCountText = null;
         _this.feedFilter = 'recent';
         _this.allStaged = new StageFlag();
         _this.myCommentsStaged = new StageFlag();
@@ -205,9 +206,10 @@ var CommentSectionCard = (function (_super) {
         var _this = this;
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], function () { return _this.displayResults(); });
         ViewUtil.hide(this.commentBoxes.rootElm);
-        this.mainCommentsBox.refreshComments(function (noChanges) {
+        this.mainCommentsBox.refreshComments(function (refreshSummary) {
+            _this.setCommentCount(refreshSummary.newLength);
             var myActivityIsShowing = _this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0;
-            if (noChanges) {
+            if (!refreshSummary.hasChanged) {
                 if (myActivityIsShowing)
                     _this.mainCommentsBox.messageElm.innerText = 'All Comments - No changes have been made';
                 else
@@ -215,6 +217,8 @@ var CommentSectionCard = (function (_super) {
             }
             else if (myActivityIsShowing)
                 _this.mainCommentsBox.messageElm.innerText = 'All Comments';
+            else
+                _this.mainCommentsBox.messageElm.innerText = '';
             _this.commentBoxesStage.updateStaging(_this.mainCommentsStaged);
         });
         if (this.myCommentsBox.length > 0) {
@@ -291,9 +295,11 @@ var CommentSectionCard = (function (_super) {
     CommentSectionCard.prototype.requestCommentCount = function () {
         var _this = this;
         Ajax.getCommentCount(this.post.postId, function (commentCount) {
-            _this.commentCountText = ViewUtil.tag('div');
+            if (_this.commentCountText == null) {
+                _this.commentCountText = ViewUtil.tag('div');
+                _this.commentCountSlot.append(_this.commentCountText);
+            }
             _this.setCommentCount(+commentCount);
-            _this.commentCountSlot.append(_this.commentCountText);
         });
     };
     CommentSectionCard.prototype.alertVisible = function () {

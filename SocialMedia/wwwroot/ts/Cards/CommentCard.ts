@@ -131,6 +131,8 @@ class CommentCard extends Card {
             btnRefresh.classList.add('btnRefreshCommentCard');
         }
 
+        this.rootElm.onmouseenter = (event: MouseEvent) => this.alertVisible();
+
         // Add this comment to the collection.
         CommentCard.commentCards.push(this);
     }
@@ -167,17 +169,12 @@ class CommentCard extends Card {
     public alertVisible(): void {
 
         Ajax.updateCommentHasSeen(this.comment.commentId);
+        
+        setTimeout(() => {
+            this.rootElm.classList.remove("unseenComment");
+        }, 1000);
 
-        CommentCard.commentCards.forEach((commentCard: CommentCard) => {
-            if (commentCard.comment.commentId == this.comment.commentId) {
-
-                setTimeout(() => {
-                    commentCard.rootElm.classList.remove("unseenComment");
-                }, 1000);
-
-                commentCard.comment.hasSeen = false;             
-            }
-        });
+        this.comment.hasSeen = false;             
     }
 
     /*

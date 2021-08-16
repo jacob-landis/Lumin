@@ -94,15 +94,15 @@
         take,
         feedFilter: 'recent' | 'likes',
         feedType: 'myComments' | 'likedComments' | 'mainComments',
-        onRefreshResults: (commentCards: CommentCard[]) => void
+        onRefreshResults: (commentRefreshSummary: CommentRefreshSummaryRecord) => void
     ): void {
         this.call(
             `apicomment/refreshcomments/${postId}/${take}/${feedFilter}/${feedType}`,
             "POST",
-            (commentResults: string) => {
+            (commentRefreshResults: string) => {
                 onRefreshResults(
-                    commentResults == undefined ?
-                        null : CommentCard.list(<CommentRecord[]><unknown>commentResults)
+                    commentRefreshResults == undefined ?
+                        null : <CommentRefreshSummaryRecord><unknown>commentRefreshResults
                 );
             },
             JSON.stringify({
