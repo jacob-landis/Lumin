@@ -15,6 +15,9 @@ var PostsBox = (function (_super) {
     __extends(PostsBox, _super);
     function PostsBox(profileId, rootElm, scrollElm, feedType, getFeedFilter, onPostsLoadEnd) {
         var _this = _super.call(this, rootElm, scrollElm, 1500, 3, function (skip, take) {
+            _this.rootElm.classList.add('contentLoading');
+            if (_this.rootElm.classList.contains('doneLoading'))
+                _this.rootElm.classList.remove('doneLoading');
             if (profileId != null)
                 Ajax.getProfilePosts(_this.profileId, skip, take, _this.getFeedFilter(), _this.feedType, function (postCards) {
                     _this.addPost(postCards);
@@ -48,7 +51,8 @@ var PostsBox = (function (_super) {
                 post.stage.onStagingEnd = function () { return _this.stage.updateStaging(post.allStaged); };
             });
             _this.stage = new Stage(stageFlags, function () {
-                _this.rootElm.style.opacity = '1';
+                _this.rootElm.classList.remove('contentLoading');
+                _this.rootElm.classList.add('doneLoading');
                 _this.onPostsLoadEnd();
             });
             if (_this.content.length == 0)

@@ -104,7 +104,9 @@ var ProfilePostsCard = (function (_super) {
     ProfilePostsCard.prototype.refreshProfilePostFeed = function () {
         var _this = this;
         this.postBoxesStage = new Stage([this.mainPostsStaged], function () { return _this.displayPosts(); });
-        ViewUtil.hide(this.postBoxes.rootElm);
+        this.postBoxes.rootElm.classList.add('contentLoading');
+        if (this.postBoxes.rootElm.classList.contains('doneLoading'))
+            this.postBoxes.rootElm.classList.remove('contentLoading');
         this.mainPostsBox.refreshPosts(function () {
             if (_this.myActivityIsShowing)
                 _this.mainPostsBox.messageElm.innerText = 'All Posts';
@@ -148,7 +150,9 @@ var ProfilePostsCard = (function (_super) {
     ProfilePostsCard.prototype.showMyPostActivity = function () {
         var _this = this;
         this.postBoxesStage = new Stage([this.commentedPostsStaged, this.likedPostsStaged], function () { return _this.displayPosts(); });
-        ViewUtil.hide(this.postBoxes.rootElm);
+        this.postBoxes.rootElm.classList.add('contentLoading');
+        if (this.postBoxes.rootElm.classList.contains('doneLoading'))
+            this.postBoxes.rootElm.classList.remove('contentLoading');
         this.commentedPostsBox.request(15);
         this.likedPostsBox.request(15);
         this.mainPostsBox.messageElm.innerText = 'All Posts';
@@ -161,7 +165,8 @@ var ProfilePostsCard = (function (_super) {
         this.mainPostsBox.messageElm.innerText = '';
     };
     ProfilePostsCard.prototype.displayPosts = function () {
-        ViewUtil.show(this.postBoxes.rootElm, 'block');
+        this.postBoxes.rootElm.classList.remove('contentLoading');
+        this.postBoxes.rootElm.classList.add('doneLoading');
         this.onLoadEnd();
     };
     ProfilePostsCard.prototype.setMessage = function (message) {

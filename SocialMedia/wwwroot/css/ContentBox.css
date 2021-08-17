@@ -37,3 +37,18 @@
     text-align: center;
     font-weight: bold;
 }
+
+/* Make child elements in a loading container invisible for staging. */
+.contentLoading > div {
+    opacity: 0;
+
+}
+
+/* Make an exception for the loading gif that is in the container. */
+.contentLoading > loadingGif {
+    opacity: 1;
+}
+
+.doneLoading {
+    opacity: 1;
+}

@@ -65,7 +65,7 @@ class ProfileModal extends Modal {
 
         this.summaryStage = new Stage([this.fullProfileStaged, this.imagesBoxStaged, this.friendsStaged], () =>
             this.summaryStageContainers.forEach((container: HTMLElement) =>
-                ViewUtil.show(container, null, () => container.style.opacity = '1')
+                ViewUtil.show(container, null, () => container.style.opacity = '1') 
             )
         );
 

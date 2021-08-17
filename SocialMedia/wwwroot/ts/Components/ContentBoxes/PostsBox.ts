@@ -32,7 +32,10 @@ class PostsBox extends ContentBox {
         super(rootElm, scrollElm, 1500, 3,
             // When content box is ready for more content,
             (skip: number, take: number): void => {
-                
+
+                this.rootElm.classList.add('contentLoading');
+                if (this.rootElm.classList.contains('doneLoading')) this.rootElm.classList.remove('doneLoading');
+
                 // if a ProfileID was included,
                 if (profileId != null)
 
@@ -93,7 +96,8 @@ class PostsBox extends ContentBox {
             });
 
             this.stage = new Stage(stageFlags, () => {
-                this.rootElm.style.opacity = '1';
+                this.rootElm.classList.remove('contentLoading');
+                this.rootElm.classList.add('doneLoading');
                 this.onPostsLoadEnd();
             });
 

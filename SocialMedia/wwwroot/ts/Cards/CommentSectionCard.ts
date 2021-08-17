@@ -280,7 +280,8 @@
     private toggleFeedFilter(): void {
 
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
-        ViewUtil.hide(this.commentBoxes.rootElm);
+        this.commentBoxes.rootElm.classList.add('contentLoading');
+        if (this.commentBoxes.rootElm.classList.contains('doneLoading')) this.commentBoxes.rootElm.classList.remove('doneLoading');
         
         this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
 
@@ -306,8 +307,10 @@
             this.displayResults()
             if (onActivityStaged != null) onActivityStaged();
         });
+        
+        this.commentBoxes.rootElm.classList.add('contentLoading');
+        if (this.commentBoxes.rootElm.classList.contains('doneLoading')) this.commentBoxes.rootElm.classList.remove('doneLoading');
 
-        ViewUtil.hide(this.commentBoxes.rootElm);
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
         this.setBtnMyActivity(false);
@@ -325,7 +328,8 @@
     private refreshCommentFeed(): void {
 
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
-        ViewUtil.hide(this.commentBoxes.rootElm);
+        this.commentBoxes.rootElm.classList.add('contentLoading');
+        if (this.commentBoxes.rootElm.classList.contains('doneLoading')) this.commentBoxes.rootElm.classList.remove('doneLoading');
         
         this.mainCommentsBox.refreshComments((refreshSummary: CommentRefreshSummaryRecord) => {
 
@@ -363,7 +367,8 @@
     }
 
     private displayResults(): void {
-        ViewUtil.show(this.commentBoxes.rootElm, 'block');
+        this.commentBoxes.rootElm.classList.remove('contentLoading');
+        this.commentBoxes.rootElm.classList.add('doneLoading');
     }
 
     private searchComments(): void {

@@ -134,7 +134,8 @@
     private refreshProfilePostFeed(): void { 
 
         this.postBoxesStage = new Stage([this.mainPostsStaged], () => this.displayPosts());
-        ViewUtil.hide(this.postBoxes.rootElm);
+        this.postBoxes.rootElm.classList.add('contentLoading');
+        if (this.postBoxes.rootElm.classList.contains('doneLoading')) this.postBoxes.rootElm.classList.remove('contentLoading');
 
         this.mainPostsBox.refreshPosts(() => {
 
@@ -186,7 +187,8 @@
 
     private showMyPostActivity(): void {
         this.postBoxesStage = new Stage([this.commentedPostsStaged, this.likedPostsStaged], () => this.displayPosts());
-        ViewUtil.hide(this.postBoxes.rootElm);
+        this.postBoxes.rootElm.classList.add('contentLoading');
+        if (this.postBoxes.rootElm.classList.contains('doneLoading')) this.postBoxes.rootElm.classList.remove('contentLoading');
         this.commentedPostsBox.request(15);
         this.likedPostsBox.request(15);
         this.mainPostsBox.messageElm.innerText = 'All Posts';
@@ -201,7 +203,8 @@
     }
 
     private displayPosts(): void { 
-        ViewUtil.show(this.postBoxes.rootElm, 'block');
+        this.postBoxes.rootElm.classList.remove('contentLoading');
+        this.postBoxes.rootElm.classList.add('doneLoading');
         this.onLoadEnd();
     }
 

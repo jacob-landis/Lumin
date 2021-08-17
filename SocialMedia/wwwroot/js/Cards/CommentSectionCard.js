@@ -166,7 +166,9 @@ var CommentSectionCard = (function (_super) {
     CommentSectionCard.prototype.toggleFeedFilter = function () {
         var _this = this;
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], function () { return _this.displayResults(); });
-        ViewUtil.hide(this.commentBoxes.rootElm);
+        this.commentBoxes.rootElm.classList.add('contentLoading');
+        if (this.commentBoxes.rootElm.classList.contains('doneLoading'))
+            this.commentBoxes.rootElm.classList.remove('doneLoading');
         this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
         this.mainCommentsBox.clear();
         this.mainCommentsBox.request(15);
@@ -189,7 +191,9 @@ var CommentSectionCard = (function (_super) {
             if (onActivityStaged != null)
                 onActivityStaged();
         });
-        ViewUtil.hide(this.commentBoxes.rootElm);
+        this.commentBoxes.rootElm.classList.add('contentLoading');
+        if (this.commentBoxes.rootElm.classList.contains('doneLoading'))
+            this.commentBoxes.rootElm.classList.remove('doneLoading');
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
         this.setBtnMyActivity(false);
@@ -205,7 +209,9 @@ var CommentSectionCard = (function (_super) {
     CommentSectionCard.prototype.refreshCommentFeed = function () {
         var _this = this;
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], function () { return _this.displayResults(); });
-        ViewUtil.hide(this.commentBoxes.rootElm);
+        this.commentBoxes.rootElm.classList.add('contentLoading');
+        if (this.commentBoxes.rootElm.classList.contains('doneLoading'))
+            this.commentBoxes.rootElm.classList.remove('doneLoading');
         this.mainCommentsBox.refreshComments(function (refreshSummary) {
             _this.setCommentCount(refreshSummary.newLength);
             var myActivityIsShowing = _this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0;
@@ -234,7 +240,8 @@ var CommentSectionCard = (function (_super) {
         this.mainCommentsBox.messageElm.innerText = makeBtnShowActivity ? '' : 'All Comments';
     };
     CommentSectionCard.prototype.displayResults = function () {
-        ViewUtil.show(this.commentBoxes.rootElm, 'block');
+        this.commentBoxes.rootElm.classList.remove('contentLoading');
+        this.commentBoxes.rootElm.classList.add('doneLoading');
     };
     CommentSectionCard.prototype.searchComments = function () {
         var _this = this;
