@@ -4,8 +4,6 @@
 
     private feedFilter: 'recent' | 'likes' | 'comments' = 'recent';
 
-    public onLoadEnd: () => void;
-
     // A PostsBox for displaying a profile's posts.
     private postBoxes: ContentBox; 
     public mainPostsBox: PostsBox;
@@ -140,7 +138,6 @@
         this.mainPostsBox.refreshPosts(() => {
 
             if (this.myActivityIsShowing) this.mainPostsBox.messageElm.innerText = 'All Posts';
-            this.postBoxesStage.updateStaging(this.mainPostsStaged);
         });
 
         if (this.commentedPostsBox.hasContent) {
@@ -205,7 +202,8 @@
     private displayPosts(): void { 
         this.postBoxes.rootElm.classList.remove('contentLoading');
         this.postBoxes.rootElm.classList.add('doneLoading');
-        this.onLoadEnd();
+        if (this.mainPostsBox.length == 0)
+            this.mainPostsBox.messageElm.innerText = `No posts were retrieved.`;
     }
 
     public setMessage(message: string): void {

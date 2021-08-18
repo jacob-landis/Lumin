@@ -110,7 +110,6 @@ var ProfilePostsCard = (function (_super) {
         this.mainPostsBox.refreshPosts(function () {
             if (_this.myActivityIsShowing)
                 _this.mainPostsBox.messageElm.innerText = 'All Posts';
-            _this.postBoxesStage.updateStaging(_this.mainPostsStaged);
         });
         if (this.commentedPostsBox.hasContent) {
             this.postBoxesStage.flags.push(this.commentedPostsStaged);
@@ -165,9 +164,14 @@ var ProfilePostsCard = (function (_super) {
         this.mainPostsBox.messageElm.innerText = '';
     };
     ProfilePostsCard.prototype.displayPosts = function () {
+        var _this = this;
         this.postBoxes.rootElm.classList.remove('contentLoading');
         this.postBoxes.rootElm.classList.add('doneLoading');
-        this.onLoadEnd();
+        if (!this.mainPostsBox.hasContent)
+            setTimeout(function () {
+                if (!_this.mainPostsBox.hasContent)
+                    _this.mainPostsBox.messageElm.innerText = "No posts were retrieved.";
+            }, 100);
     };
     ProfilePostsCard.prototype.setMessage = function (message) {
         this.mainPostsBox.messageElm.innerText = message;

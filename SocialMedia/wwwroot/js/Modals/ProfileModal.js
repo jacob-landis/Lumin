@@ -46,10 +46,6 @@ var ProfileModal = (function (_super) {
             });
         });
         _this.friendBox = new FriendsBox(_this.friendBoxElm, _this.friendBoxElm, _this.requestFriendsTrigger);
-        _this.profilePostsCard.onLoadEnd = function () {
-            if (_this.profilePostsCard.mainPostsBox.content.length == 0)
-                _this.profilePostsCard.mainPostsBox.messageElm.innerText = "No posts were retrieved.";
-        };
         return _this;
     }
     ProfileModal.prototype.load = function (profileId) {
