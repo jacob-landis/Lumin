@@ -167,8 +167,6 @@ var CommentSectionCard = (function (_super) {
         var _this = this;
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], function () { return _this.displayResults(); });
         this.commentBoxes.rootElm.classList.add('contentLoading');
-        if (this.commentBoxes.rootElm.classList.contains('doneLoading'))
-            this.commentBoxes.rootElm.classList.remove('doneLoading');
         this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
         this.mainCommentsBox.clear();
         this.mainCommentsBox.request(15);
@@ -192,8 +190,6 @@ var CommentSectionCard = (function (_super) {
                 onActivityStaged();
         });
         this.commentBoxes.rootElm.classList.add('contentLoading');
-        if (this.commentBoxes.rootElm.classList.contains('doneLoading'))
-            this.commentBoxes.rootElm.classList.remove('doneLoading');
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
         this.setBtnMyActivity(false);
@@ -210,8 +206,6 @@ var CommentSectionCard = (function (_super) {
         var _this = this;
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], function () { return _this.displayResults(); });
         this.commentBoxes.rootElm.classList.add('contentLoading');
-        if (this.commentBoxes.rootElm.classList.contains('doneLoading'))
-            this.commentBoxes.rootElm.classList.remove('doneLoading');
         this.mainCommentsBox.refreshComments(function (refreshSummary) {
             _this.setCommentCount(refreshSummary.newLength);
             var myActivityIsShowing = _this.myCommentsBox.length > 0 || _this.likedCommentsBox.length > 0;
@@ -241,7 +235,6 @@ var CommentSectionCard = (function (_super) {
     };
     CommentSectionCard.prototype.displayResults = function () {
         this.commentBoxes.rootElm.classList.remove('contentLoading');
-        this.commentBoxes.rootElm.classList.add('doneLoading');
     };
     CommentSectionCard.prototype.searchComments = function () {
         var _this = this;
@@ -278,7 +271,10 @@ var CommentSectionCard = (function (_super) {
     CommentSectionCard.prototype.resizeCommentBox = function () {
         this.inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight + this.btnToggleViewExpansion.rootElm.clientHeight;
         this.targetHeight = this.getContentHeight() - this.inputHeight;
-        this.setHeight(this.targetHeight, this.rootElm.offsetHeight);
+        var sectionHeight = 250 + this.inputHeight;
+        if (this.post.image != null)
+            sectionHeight = this.post.image.height;
+        this.setHeight(this.targetHeight, sectionHeight);
         this.rootElmMinHeight = this.rootElm.clientHeight;
     };
     CommentSectionCard.prototype.setHeight = function (commentBoxesHeight, sectionHeight) {

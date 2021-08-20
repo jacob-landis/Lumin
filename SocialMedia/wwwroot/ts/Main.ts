@@ -94,18 +94,17 @@ class Main {
             document.getElementById('profileModalPictureWrapper'),
             document.getElementById('profileSummary'),
 
-            new ProfilePostsCard(
-                document.getElementById('profilePostBoxes'),
-                document.getElementById('btnToggleSearchBar'),
-                document.getElementById('btnTogglePostFeedFilter'),
-                document.getElementById('btnRefreshProfilePostFeed'),
-                document.getElementById('btnMyPostActivity'),
-                document.getElementById('btnSearchPosts'),
-                <HTMLInputElement>document.getElementById('txtSearchPosts'),
-                document.getElementById('commentedProfilePostsBox'),
-                document.getElementById('likedProfilePostsBox'),
-                document.getElementById('mainProfilePostsBox'),
-            ),
+            // Profile Posts Card elements
+            document.getElementById('profilePostBoxes'),
+            document.getElementById('btnToggleSearchBar'),
+            document.getElementById('btnTogglePostFeedFilter'),
+            document.getElementById('btnRefreshProfilePostFeed'),
+            document.getElementById('btnMyPostActivity'),
+            document.getElementById('btnSearchPosts'),
+            <HTMLInputElement>document.getElementById('txtSearchPosts'),
+            document.getElementById('commentedProfilePostsBox'),
+            document.getElementById('likedProfilePostsBox'),
+            document.getElementById('mainProfilePostsBox'),
 
             new ProfileSettingsCard(
                 document.getElementById('profileSettings'),

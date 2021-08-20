@@ -48,7 +48,3 @@
 .contentLoading > loadingGif {
     opacity: 1;
 }
-
-.doneLoading {
-    opacity: 1;
-}

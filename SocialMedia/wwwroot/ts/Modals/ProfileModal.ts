@@ -19,7 +19,9 @@ class ProfileModal extends Modal {
     private friendBox: FriendsBox;
     private requestFriends: (skip: number, take: number) => void;
     private requestFriendsTrigger: (skip: number, take: number) => void = (skip: number, take: number) => this.requestFriends(skip, take);
-    
+
+    private profilePostsCard: ProfilePostsCard;
+
     // STAGE FLAGS
     private fullProfileStaged: StageFlag = new StageFlag();
     private imagesBoxStaged: StageFlag = new StageFlag();
@@ -33,17 +35,29 @@ class ProfileModal extends Modal {
         Gets handles on all necessary components.
     */
     public constructor(
-        rootElm: HTMLElement,                       private profileNameWrapper: HTMLElement,
+        public contentElm: HTMLElement,             private profileNameWrapper: HTMLElement,
         private imageWrapper: HTMLElement,          private profileBioWrapper: HTMLElement,
         private imageScrollBox: HTMLElement,        private friendBoxElm: HTMLElement,
         private relationWrapper: HTMLElement,       imageBoxElm: HTMLElement,
         public summaryWrapper: HTMLElement,
-        private profilePostsCard: ProfilePostsCard, private profileSettingsCard: ProfileSettingsCard,
-        imageClassList: string,                     editorClassList: string,
+
+        // ProfilePostsCard elements
+        profilePosts: HTMLElement,                  btnToggleSearchBar: HTMLElement,
+        btnTogglePostFeedFilter: HTMLElement,       btnRefreshProfilePostFeed: HTMLElement,
+        btnMyPostActivity: HTMLElement,             btnSearchPosts: HTMLElement,
+        txtSearchPosts: HTMLInputElement,           commentedPostsBoxWrapper: HTMLElement,
+        likedPostsBoxWrapper: HTMLElement,          mainPostsBoxWrapper: HTMLElement,
+
+        private profileSettingsCard: ProfileSettingsCard,
+        imageClassList: string,
+        editorClassList: string,
         doubleEditorClassList: string
     ) {
-        super(rootElm);
-        
+        super(contentElm);
+
+        this.profilePostsCard = new ProfilePostsCard(this.rootElm, profilePosts, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, 
+            btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
+
         this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         
         this.nameEditor = new DoubleEditor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' }), '', '', doubleEditorClassList, 30,

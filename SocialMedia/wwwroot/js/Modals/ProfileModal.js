@@ -13,8 +13,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
-    function ProfileModal(rootElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, relationWrapper, imageBoxElm, summaryWrapper, profilePostsCard, profileSettingsCard, imageClassList, editorClassList, doubleEditorClassList) {
-        var _this = _super.call(this, rootElm) || this;
+    function ProfileModal(contentElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, relationWrapper, imageBoxElm, summaryWrapper, profilePosts, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper, profileSettingsCard, imageClassList, editorClassList, doubleEditorClassList) {
+        var _this = _super.call(this, contentElm) || this;
+        _this.contentElm = contentElm;
         _this.profileNameWrapper = profileNameWrapper;
         _this.imageWrapper = imageWrapper;
         _this.profileBioWrapper = profileBioWrapper;
@@ -22,12 +23,12 @@ var ProfileModal = (function (_super) {
         _this.friendBoxElm = friendBoxElm;
         _this.relationWrapper = relationWrapper;
         _this.summaryWrapper = summaryWrapper;
-        _this.profilePostsCard = profilePostsCard;
         _this.profileSettingsCard = profileSettingsCard;
         _this.requestFriendsTrigger = function (skip, take) { return _this.requestFriends(skip, take); };
         _this.fullProfileStaged = new StageFlag();
         _this.imagesBoxStaged = new StageFlag();
         _this.friendsStaged = new StageFlag();
+        _this.profilePostsCard = new ProfilePostsCard(_this.rootElm, profilePosts, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
         _this.nameEditor = new DoubleEditor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' }), '', '', doubleEditorClassList, 30, function (firstName, lastName) {
             ProfileCard.changeUserProfileName(firstName, lastName);

@@ -19,7 +19,7 @@ var ContentBox = (function () {
             this.take = take;
         if (requestCallback)
             this.requestCallback = requestCallback;
-        this.scrollElm.addEventListener("wheel", function (event) {
+        var mouseWheelEventHandler = function (event) {
             if (_this.requestCallback != null && _this.content.length != 0) {
                 _this.lazyLoad();
                 _this.getVisibleContent().forEach(function (card) {
@@ -27,7 +27,8 @@ var ContentBox = (function () {
                         card.alertVisible();
                 });
             }
-        });
+        };
+        this.scrollElm.addEventListener("wheel", mouseWheelEventHandler);
         ContentBox.contentBoxes.push(this);
     }
     Object.defineProperty(ContentBox.prototype, "length", {

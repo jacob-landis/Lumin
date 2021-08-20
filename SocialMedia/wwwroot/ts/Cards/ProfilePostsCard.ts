@@ -19,6 +19,7 @@
     private get myActivityIsShowing() { return this.commentedPostsBox.hasContent || this.likedPostsBox.hasContent }
 
     public constructor(
+        scrollElm: HTMLElement,
         rootElm: HTMLElement,
         btnToggleSearchBar: HTMLElement,
         btnTogglePostFeedFilter: HTMLElement,
@@ -54,8 +55,8 @@
         btnRefreshProfilePostFeed.onclick = (event: MouseEvent) => this.refreshProfilePostFeed(); 
 
         this.postBoxes = new ContentBox(this.rootElm); 
-
-        this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, this.rootElm, 'commentedPosts', () => this.feedFilter, () => { 
+        
+        this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, scrollElm, 'commentedPosts', () => this.feedFilter, () => { 
             this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
             this.postBoxesStage.updateStaging(this.commentedPostsStaged);
 
@@ -66,12 +67,12 @@
             });
         });
 
-        this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, this.rootElm, 'likedPosts', () => this.feedFilter, () => { 
+        this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, scrollElm, 'likedPosts', () => this.feedFilter, () => { 
             this.likedPostsBox.messageElm.innerText = 'Liked Posts';
             this.postBoxesStage.updateStaging(this.likedPostsStaged);
         });
 
-        this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, this.rootElm, 'mainPosts', () => this.feedFilter, () => { 
+        this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, scrollElm, 'mainPosts', () => this.feedFilter, () => { 
             
             if (this.myActivityIsShowing)
                 this.mainPostsBox.messageElm.innerText = 'All Posts';
@@ -133,7 +134,6 @@
 
         this.postBoxesStage = new Stage([this.mainPostsStaged], () => this.displayPosts());
         this.postBoxes.rootElm.classList.add('contentLoading');
-        if (this.postBoxes.rootElm.classList.contains('doneLoading')) this.postBoxes.rootElm.classList.remove('contentLoading');
 
         this.mainPostsBox.refreshPosts(() => {
 
@@ -185,7 +185,6 @@
     private showMyPostActivity(): void {
         this.postBoxesStage = new Stage([this.commentedPostsStaged, this.likedPostsStaged], () => this.displayPosts());
         this.postBoxes.rootElm.classList.add('contentLoading');
-        if (this.postBoxes.rootElm.classList.contains('doneLoading')) this.postBoxes.rootElm.classList.remove('contentLoading');
         this.commentedPostsBox.request(15);
         this.likedPostsBox.request(15);
         this.mainPostsBox.messageElm.innerText = 'All Posts';
@@ -201,7 +200,6 @@
 
     private displayPosts(): void { 
         this.postBoxes.rootElm.classList.remove('contentLoading');
-        this.postBoxes.rootElm.classList.add('doneLoading');
         if (this.mainPostsBox.length == 0)
             this.mainPostsBox.messageElm.innerText = `No posts were retrieved.`;
     }

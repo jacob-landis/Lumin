@@ -281,7 +281,6 @@
 
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
         this.commentBoxes.rootElm.classList.add('contentLoading');
-        if (this.commentBoxes.rootElm.classList.contains('doneLoading')) this.commentBoxes.rootElm.classList.remove('doneLoading');
         
         this.feedFilter = this.feedFilter == 'likes' ? 'recent' : 'likes';
 
@@ -309,7 +308,6 @@
         });
         
         this.commentBoxes.rootElm.classList.add('contentLoading');
-        if (this.commentBoxes.rootElm.classList.contains('doneLoading')) this.commentBoxes.rootElm.classList.remove('doneLoading');
 
         this.myCommentsBox.request(15);
         this.likedCommentsBox.request(15);
@@ -329,7 +327,6 @@
 
         this.commentBoxesStage = new Stage([this.mainCommentsStaged], () => this.displayResults());
         this.commentBoxes.rootElm.classList.add('contentLoading');
-        if (this.commentBoxes.rootElm.classList.contains('doneLoading')) this.commentBoxes.rootElm.classList.remove('doneLoading');
         
         this.mainCommentsBox.refreshComments((refreshSummary: CommentRefreshSummaryRecord) => {
 
@@ -368,7 +365,6 @@
 
     private displayResults(): void {
         this.commentBoxes.rootElm.classList.remove('contentLoading');
-        this.commentBoxes.rootElm.classList.add('doneLoading');
     }
 
     private searchComments(): void {
@@ -413,7 +409,8 @@
         this.inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight + this.btnToggleViewExpansion.rootElm.clientHeight;
         this.targetHeight = this.getContentHeight() - this.inputHeight;
         
-        this.setHeight(this.targetHeight, this.rootElm.offsetHeight);
+        //this.setHeight(this.targetHeight, this.rootElm.offsetHeight);
+        this.setHeight(this.targetHeight, 250 + this.inputHeight);
         this.rootElmMinHeight = this.rootElm.clientHeight; // clientHeight must be read after setHeight() call.
     }
 

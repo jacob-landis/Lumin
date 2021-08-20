@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfilePostsCard = (function (_super) {
     __extends(ProfilePostsCard, _super);
-    function ProfilePostsCard(rootElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper) {
+    function ProfilePostsCard(scrollElm, rootElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper) {
         var _this = _super.call(this, rootElm) || this;
         _this.btnSearchPosts = btnSearchPosts;
         _this.txtSearchPosts = txtSearchPosts;
@@ -39,7 +39,7 @@ var ProfilePostsCard = (function (_super) {
             _this.btnSearchPosts.click(); };
         btnRefreshProfilePostFeed.onclick = function (event) { return _this.refreshProfilePostFeed(); };
         _this.postBoxes = new ContentBox(_this.rootElm);
-        _this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, _this.rootElm, 'commentedPosts', function () { return _this.feedFilter; }, function () {
+        _this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, scrollElm, 'commentedPosts', function () { return _this.feedFilter; }, function () {
             _this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
             _this.postBoxesStage.updateStaging(_this.commentedPostsStaged);
             _this.commentedPostsBox.content.forEach(function (content) {
@@ -47,11 +47,11 @@ var ProfilePostsCard = (function (_super) {
                 postCard.commentsSection.showCommentActivity(function () { return postCard.stage.updateStaging(postCard.commentsSection.allStaged); });
             });
         });
-        _this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, _this.rootElm, 'likedPosts', function () { return _this.feedFilter; }, function () {
+        _this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, scrollElm, 'likedPosts', function () { return _this.feedFilter; }, function () {
             _this.likedPostsBox.messageElm.innerText = 'Liked Posts';
             _this.postBoxesStage.updateStaging(_this.likedPostsStaged);
         });
-        _this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, _this.rootElm, 'mainPosts', function () { return _this.feedFilter; }, function () {
+        _this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, scrollElm, 'mainPosts', function () { return _this.feedFilter; }, function () {
             if (_this.myActivityIsShowing)
                 _this.mainPostsBox.messageElm.innerText = 'All Posts';
             else if (!_this.mainPostsBox.hasContent && _this.profileId == User.profileId)
@@ -105,8 +105,6 @@ var ProfilePostsCard = (function (_super) {
         var _this = this;
         this.postBoxesStage = new Stage([this.mainPostsStaged], function () { return _this.displayPosts(); });
         this.postBoxes.rootElm.classList.add('contentLoading');
-        if (this.postBoxes.rootElm.classList.contains('doneLoading'))
-            this.postBoxes.rootElm.classList.remove('contentLoading');
         this.mainPostsBox.refreshPosts(function () {
             if (_this.myActivityIsShowing)
                 _this.mainPostsBox.messageElm.innerText = 'All Posts';
@@ -150,8 +148,6 @@ var ProfilePostsCard = (function (_super) {
         var _this = this;
         this.postBoxesStage = new Stage([this.commentedPostsStaged, this.likedPostsStaged], function () { return _this.displayPosts(); });
         this.postBoxes.rootElm.classList.add('contentLoading');
-        if (this.postBoxes.rootElm.classList.contains('doneLoading'))
-            this.postBoxes.rootElm.classList.remove('contentLoading');
         this.commentedPostsBox.request(15);
         this.likedPostsBox.request(15);
         this.mainPostsBox.messageElm.innerText = 'All Posts';
@@ -164,14 +160,9 @@ var ProfilePostsCard = (function (_super) {
         this.mainPostsBox.messageElm.innerText = '';
     };
     ProfilePostsCard.prototype.displayPosts = function () {
-        var _this = this;
         this.postBoxes.rootElm.classList.remove('contentLoading');
-        this.postBoxes.rootElm.classList.add('doneLoading');
-        if (!this.mainPostsBox.hasContent)
-            setTimeout(function () {
-                if (!_this.mainPostsBox.hasContent)
-                    _this.mainPostsBox.messageElm.innerText = "No posts were retrieved.";
-            }, 100);
+        if (this.mainPostsBox.length == 0)
+            this.mainPostsBox.messageElm.innerText = "No posts were retrieved.";
     };
     ProfilePostsCard.prototype.setMessage = function (message) {
         this.mainPostsBox.messageElm.innerText = message;
