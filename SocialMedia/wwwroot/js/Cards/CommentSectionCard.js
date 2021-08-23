@@ -272,8 +272,20 @@ var CommentSectionCard = (function (_super) {
         this.inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight + this.btnToggleViewExpansion.rootElm.clientHeight;
         this.targetHeight = this.getContentHeight() - this.inputHeight;
         var sectionHeight = 250 + this.inputHeight;
-        if (this.post.image != null)
-            sectionHeight = this.post.image.height;
+        if (this.post.image != null) {
+            var image = this.post.image;
+            var ratio = 1;
+            if (image.height > image.width)
+                ratio = image.width / image.height;
+            else if (image.height < image.width)
+                ratio = image.height / image.width;
+            sectionHeight = 600 * ratio;
+            console.log("POST #: " + this.post.postId);
+            console.log(image.height);
+            console.log(image.width);
+            console.log(ratio);
+            console.log(sectionHeight);
+        }
         this.setHeight(this.targetHeight, sectionHeight);
         this.rootElmMinHeight = this.rootElm.clientHeight;
     };

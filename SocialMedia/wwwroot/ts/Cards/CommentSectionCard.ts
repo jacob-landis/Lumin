@@ -408,9 +408,26 @@
     public resizeCommentBox(): void {
         this.inputHeight = this.commentInputWrapper.clientHeight + this.commentBoxDetails.clientHeight + this.btnToggleViewExpansion.rootElm.clientHeight;
         this.targetHeight = this.getContentHeight() - this.inputHeight;
-        
+
+        let sectionHeight: number = 250 + this.inputHeight;
+
+        if (this.post.image != null) {
+            let image: ImageRecord = this.post.image;
+            let ratio: number = 1;
+
+            // Portrait
+            if (image.height > image.width)
+                ratio = image.width / image.height;
+
+            // Landscape
+            else if (image.height < image.width)
+                ratio = image.height / image.width;
+
+            sectionHeight = 600 * ratio;
+        }
+
         //this.setHeight(this.targetHeight, this.rootElm.offsetHeight);
-        this.setHeight(this.targetHeight, 250 + this.inputHeight);
+        this.setHeight(this.targetHeight, sectionHeight);
         this.rootElmMinHeight = this.rootElm.clientHeight; // clientHeight must be read after setHeight() call.
     }
 

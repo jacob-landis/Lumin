@@ -236,6 +236,10 @@ namespace SocialMedia.Controllers
             decimal height;
             decimal width;
 
+            // Declared in this scope so the dimensions can be stored in image record.
+            // Because the image may be rotated, the original height and width cannot be used.
+            System.Drawing.Image medium;
+
             // Open memory stream for image.
             using (var streamBitmap = new MemoryStream(byteImg))
             {
@@ -248,11 +252,11 @@ namespace SocialMedia.Controllers
                     // Create shortcut variables.
                     height = img.Height;
                     width = img.Width;
-                    
+
                     // Send image and it's new dimensions to be converted and get a handle on the result.
                     System.Drawing.Image thumbnail = ResizeImage(img, (int)width, (int)height, 30, 30);
                     System.Drawing.Image small = ResizeImage(img, (int)width, (int)height, 100, 100);
-                    System.Drawing.Image medium = ResizeImage(img, (int)width, (int)height, 600);
+                    medium = ResizeImage(img, (int)width, (int)height, 600);
 
                     // Save the thumbnail result to the file system.
                     thumbnail.Save(thumbnailPath);
@@ -263,7 +267,19 @@ namespace SocialMedia.Controllers
                 // Close the memory stream.
                 streamBitmap.Close();
             }
-            
+
+            int finalHeight = (int)height;
+            int finalWidth = (int)width;
+
+            // If orientation was changed in scaled version of the image.
+            // If both versions are not landscape or both versions are not portrait.
+            if (!(medium.Height < medium.Width && height < width) || !(medium.Height > medium.Width && height > width))
+            {
+                // Swap height and width.
+                finalHeight = (int)width;
+                finalWidth = (int)height;
+            }
+
             // Fill in image model.
             Models.Image image = new Models.Image
             {
@@ -271,8 +287,8 @@ namespace SocialMedia.Controllers
                 ProfileId = currentProfile.profile.ProfileId,
                 DateTime = DateTime.UtcNow,
                 PrivacyLevel = rawImage.PrivacyLevel,
-                Height = (int)height,
-                Width = (int)width
+                Height = finalHeight,
+                Width = finalWidth
             };
 
             // Save image record, use the returned id to pull that same record, prep it, and return it to the user.
@@ -357,7 +373,7 @@ namespace SocialMedia.Controllers
                     newHeight = (int)maxHeight;
                     newWidth = (int)(maxWidth * ratio);
                 }
-                // OMITTED: Else if image is square, do nothing (the dimensions are already correct
+                // OMITTED: Else if image is square, do nothing (the dimensions are already correct)
             }
             
             // Initialize destination image and rectangle.
