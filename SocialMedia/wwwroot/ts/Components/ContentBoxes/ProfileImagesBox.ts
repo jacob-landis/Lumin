@@ -68,7 +68,7 @@ class ProfileImagesBox extends ContentBox {
 
     public addImages(imageBoxes: ImageBox[]): void {
 
-        if (imageBoxes!= null) super.add(this.prepareImage(imageBoxes));
+        super.add(this.prepareImage(imageBoxes));
         if (this.onLoadEnd != null) this.onLoadEnd();
     }
 
@@ -83,24 +83,28 @@ class ProfileImagesBox extends ContentBox {
 
     private prepareImage(imageBox: (ImageBox | ImageBox[])): (ImageBox| ImageBox[]) {
 
-        let imageBoxes: ImageBox[];
+        if (imageBox != null) {
 
-        if (Array.isArray(imageBox)) imageBoxes = imageBox;
-        else imageBoxes = [imageBox];
+            let imageBoxes: ImageBox[];
 
-        imageBoxes.forEach((i: ImageBox) => {
+            if (Array.isArray(imageBox)) imageBoxes = imageBox;
+            else imageBoxes = [imageBox];
 
-            // Imbed click action stored in this image box to image card.
-            i.imageCard.onImageClick = this.clickCallback;
-            i.imageCard.tooltipMsg = this.tooltipMsg;
+            imageBoxes.forEach((i: ImageBox) => {
 
-            // Update classList of image card so it is square and fits in the grid.
-            i.imageCard.rootElm.classList.add('listImage');
-            i.imageCard.rootElm.classList.add('sqr');
-        });
+                // Imbed click action stored in this image box to image card.
+                i.imageCard.onImageClick = this.clickCallback;
+                i.imageCard.tooltipMsg = this.tooltipMsg;
 
-        if (imageBoxes.length == 1) return imageBoxes[0];
-        else return imageBoxes;
+                // Update classList of image card so it is square and fits in the grid.
+                i.imageCard.rootElm.classList.add('listImage');
+                i.imageCard.rootElm.classList.add('sqr');
+            });
+
+            if (imageBoxes.length == 1) return imageBoxes[0];
+            else return imageBoxes;
+        }
+        return null
     }
 
     /*

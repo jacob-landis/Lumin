@@ -36,8 +36,7 @@ var ProfileImagesBox = (function (_super) {
         _super.prototype.request.call(this, 30);
     };
     ProfileImagesBox.prototype.addImages = function (imageBoxes) {
-        if (imageBoxes != null)
-            _super.prototype.add.call(this, this.prepareImage(imageBoxes));
+        _super.prototype.add.call(this, this.prepareImage(imageBoxes));
         if (this.onLoadEnd != null)
             this.onLoadEnd();
     };
@@ -46,21 +45,24 @@ var ProfileImagesBox = (function (_super) {
     };
     ProfileImagesBox.prototype.prepareImage = function (imageBox) {
         var _this = this;
-        var imageBoxes;
-        if (Array.isArray(imageBox))
-            imageBoxes = imageBox;
-        else
-            imageBoxes = [imageBox];
-        imageBoxes.forEach(function (i) {
-            i.imageCard.onImageClick = _this.clickCallback;
-            i.imageCard.tooltipMsg = _this.tooltipMsg;
-            i.imageCard.rootElm.classList.add('listImage');
-            i.imageCard.rootElm.classList.add('sqr');
-        });
-        if (imageBoxes.length == 1)
-            return imageBoxes[0];
-        else
-            return imageBoxes;
+        if (imageBox != null) {
+            var imageBoxes = void 0;
+            if (Array.isArray(imageBox))
+                imageBoxes = imageBox;
+            else
+                imageBoxes = [imageBox];
+            imageBoxes.forEach(function (i) {
+                i.imageCard.onImageClick = _this.clickCallback;
+                i.imageCard.tooltipMsg = _this.tooltipMsg;
+                i.imageCard.rootElm.classList.add('listImage');
+                i.imageCard.rootElm.classList.add('sqr');
+            });
+            if (imageBoxes.length == 1)
+                return imageBoxes[0];
+            else
+                return imageBoxes;
+        }
+        return null;
     };
     ProfileImagesBox.prototype.removeImageCard = function (imageCard) {
         var _this = this;

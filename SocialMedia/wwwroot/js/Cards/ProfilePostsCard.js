@@ -21,6 +21,7 @@ var ProfilePostsCard = (function (_super) {
         _this.commentedPostsStaged = new StageFlag();
         _this.likedPostsStaged = new StageFlag();
         _this.mainPostsStaged = new StageFlag();
+        _this.postBoxesStage = null;
         new ToggleButton(null, btnToggleSearchBar, btnToggleSearchBar.childNodes[1], [
             new ToggleState('fa-search', 'Open search bar', function () { return _this.showSearchBar(); }),
             new ToggleState('fa-times', 'Close search bar', function () { return _this.hideSearchBar(); })
@@ -41,7 +42,8 @@ var ProfilePostsCard = (function (_super) {
         _this.postBoxes = new ContentBox(_this.rootElm);
         _this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, scrollElm, 'commentedPosts', function () { return _this.feedFilter; }, function () {
             _this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
-            _this.postBoxesStage.updateStaging(_this.commentedPostsStaged);
+            if (_this.postBoxesStage != null)
+                _this.postBoxesStage.updateStaging(_this.commentedPostsStaged);
             _this.commentedPostsBox.content.forEach(function (content) {
                 var postCard = content;
                 postCard.commentsSection.showCommentActivity(function () { return postCard.stage.updateStaging(postCard.commentsSection.allStaged); });
@@ -49,7 +51,8 @@ var ProfilePostsCard = (function (_super) {
         });
         _this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, scrollElm, 'likedPosts', function () { return _this.feedFilter; }, function () {
             _this.likedPostsBox.messageElm.innerText = 'Liked Posts';
-            _this.postBoxesStage.updateStaging(_this.likedPostsStaged);
+            if (_this.postBoxesStage != null)
+                _this.postBoxesStage.updateStaging(_this.likedPostsStaged);
         });
         _this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, scrollElm, 'mainPosts', function () { return _this.feedFilter; }, function () {
             if (_this.myActivityIsShowing)
@@ -58,7 +61,8 @@ var ProfilePostsCard = (function (_super) {
                 _this.mainPostsBox.messageElm.innerHTML = "You have no posts. Click the <i class=\"fa fa-plus\" alt=\"plus\"></i>\n                    <i class=\"fa fa-sticky-note\" alt=\"post\"></i> button on the left side of the navigation bar to start creating your first post.";
             else if (!_this.mainPostsBox.hasContent && _this.profileId)
                 _this.mainPostsBox.messageElm.innerText = 'This user has no posts.';
-            _this.postBoxesStage.updateStaging(_this.mainPostsStaged);
+            if (_this.postBoxesStage != null)
+                _this.postBoxesStage.updateStaging(_this.mainPostsStaged);
         });
         return _this;
     }

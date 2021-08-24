@@ -280,11 +280,6 @@ var CommentSectionCard = (function (_super) {
             else if (image.height < image.width)
                 ratio = image.height / image.width;
             sectionHeight = 600 * ratio;
-            console.log("POST #: " + this.post.postId);
-            console.log(image.height);
-            console.log(image.width);
-            console.log(ratio);
-            console.log(sectionHeight);
         }
         this.setHeight(this.targetHeight, sectionHeight);
         this.rootElmMinHeight = this.rootElm.clientHeight;

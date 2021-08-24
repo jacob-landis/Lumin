@@ -214,6 +214,9 @@ namespace SocialMedia.Controllers
             // content length is verified
             if (comment.Content.Length > 0 && comment.Content.Length <= 125) // if comment is 1-125 chars long
             {
+                // If the post this comment belongs to belongs to the current user, raise hasSeen flag.
+                if (postRepo.ById(comment.PostId).ProfileId == currentProfile.id) comment.HasSeen = true;
+
                 comment.DateTime = DateTime.UtcNow;  // set DateTime of comment to current DateTime of central time
                 comment.ProfileId = currentProfile.id; // set ProfileId of comment to current profile id
                 comment.Content = Util.Sanitize(comment.Content); // set Content of comment to the sanitized content provided

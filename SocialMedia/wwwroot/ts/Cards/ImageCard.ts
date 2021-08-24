@@ -130,8 +130,10 @@
         // If the user deleted the image that was their profile picture, change all occurances of their profile picture to the defualt.
         if (this.image.imageId == User.profilePictureId) {
 
-            Ajax.getImage(0, 0, 'sqr', null, (target: ImageBox) => { }, (imageCard: ImageCard) =>
-                ProfileCard.changeUserProfilePicture(imageCard));
+            Ajax.getImage(0, 0, 'sqr', null, (target: ImageBox) => { }, (imageCard: ImageCard) => {
+                ProfileCard.changeUserProfilePicture(imageCard)
+                navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(imageCard));
+            });
 
             Ajax.getImage(0, 2, 'sqr', 'Change profile picture', (target: ImageBox) => { }, (imageCard: ImageCard) =>
                 profileModal.profilePictureBox.loadImage(imageCard));

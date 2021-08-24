@@ -74,6 +74,8 @@ class CreatePostModal extends Modal {
             2
         );
 
+        this.selectPostPrivacy.onchange = (e: Event) => this.checkPrivacy();
+
         this.btnClearAttachment.onclick = (e: MouseEvent) => this.loadPaperClip();
 
         // Set btnSubmit to invoke submit().
@@ -243,9 +245,15 @@ class CreatePostModal extends Modal {
         Outputs a warning to the user if there is a potential privacy leak.
         Removes old message if one exists and the potential risk is gone.
     */
-    public checkPrivacy(imageCard?: ImageCard): void {
+    public checkPrivacy(imageCard: ImageCard = null): void {
 
-        let imagePrivacy: number = imageCard ? imageCard.image.privacyLevel : this.selectedImageBox.imageCard.image.privacyLevel;
+        let imagePrivacy: number = 0;
+
+        if (imageCard != null)
+            imagePrivacy = imageCard.image.privacyLevel;
+
+        else if (this.selectedImageBox.imageCard != null)
+            imagePrivacy = this.selectedImageBox.imageCard.image.privacyLevel;
 
         if (imagePrivacy > this.selectPostPrivacy.selectedIndex) this.errorBox.add(this.privacyWarning);
         else this.errorBox.remove(this.privacyWarning)

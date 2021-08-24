@@ -14,7 +14,7 @@
     private likedPostsStaged: StageFlag = new StageFlag(); 
     private mainPostsStaged: StageFlag = new StageFlag(); 
 
-    private postBoxesStage: Stage;
+    private postBoxesStage: Stage = null;
 
     private get myActivityIsShowing() { return this.commentedPostsBox.hasContent || this.likedPostsBox.hasContent }
 
@@ -58,7 +58,7 @@
         
         this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, scrollElm, 'commentedPosts', () => this.feedFilter, () => { 
             this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
-            this.postBoxesStage.updateStaging(this.commentedPostsStaged);
+            if (this.postBoxesStage != null) this.postBoxesStage.updateStaging(this.commentedPostsStaged);
 
             // ShowCommentActivity on each post card in commentedPosts.
             this.commentedPostsBox.content.forEach((content: IAppendable) => {
@@ -69,7 +69,7 @@
 
         this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, scrollElm, 'likedPosts', () => this.feedFilter, () => { 
             this.likedPostsBox.messageElm.innerText = 'Liked Posts';
-            this.postBoxesStage.updateStaging(this.likedPostsStaged);
+            if (this.postBoxesStage != null) this.postBoxesStage.updateStaging(this.likedPostsStaged);
         });
 
         this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, scrollElm, 'mainPosts', () => this.feedFilter, () => { 
@@ -84,7 +84,7 @@
             else if (!this.mainPostsBox.hasContent && this.profileId)
                 this.mainPostsBox.messageElm.innerText = 'This user has no posts.';
 
-            this.postBoxesStage.updateStaging(this.mainPostsStaged);
+            if (this.postBoxesStage != null) this.postBoxesStage.updateStaging(this.mainPostsStaged);
         });
     }
 

@@ -210,32 +210,40 @@ class ContentBox implements IAppendable {
 
         let isFirstBatch: boolean = this.content.length == 0;
 
-        // If content is singulare, convert it to an array of one.
-        if (!Array.isArray(content)) content = [content];
-        
         ViewUtil.remove(this.loadingGif);
 
-        // Loop through the provided content,
-        content.forEach((content: IAppendable) => {
+        // Controlled reference to content.length. Used to avoid null reference error.
+        let contentLength: number = 0;
 
-            // If content is not null.
-            if (content != null) {
+        if (content != null) {
+
+            // If content is singulare, convert it to an array of one.
+            if (!Array.isArray(content)) content = [content];
+
+            contentLength = content.length;
+
+            // Loop through the provided content,
+            content.forEach((content: IAppendable) => {
+
+                // If content is not null.
+                if (content != null) {
                 
-                // Unshift or push content to this.content and prepend or append its root element to this content box's root element.
-                if (prepend == true) {
-                    this.content.unshift(content);
-                    this.contentElm.prepend(content.rootElm);
+                    // Unshift or push content to this.content and prepend or append its root element to this content box's root element.
+                    if (prepend == true) {
+                        this.content.unshift(content);
+                        this.contentElm.prepend(content.rootElm);
+                    }
+                    else {
+                        this.content.push(content);
+                        this.contentElm.append(content.rootElm);
+                    }
                 }
-                else {
-                    this.content.push(content);
-                    this.contentElm.append(content.rootElm);
-                }
-            }
-        });
+            });
+        }
 
         // If the content being added comes from a request and the amount of content is less than asked for,
         // lower the more content flag.
-        if (this.loading && content.length < this.take) {
+        if (this.loading && contentLength < this.take) {
 
             this.moreContent = false;
             this.contentElm.append(ViewUtil.tag("div", {innerText: "No more content"}));
@@ -246,7 +254,7 @@ class ContentBox implements IAppendable {
         if (this.requestCallback) {
 
             // check if the end of the feed has been reached and update the flag, XXX we seem to already do this...
-            this.moreContent = this.take == content.length;
+            this.moreContent = this.take == contentLength;
 
             // and lower the loading flag now that we don't need it for any more checks.
             this.loading = false;

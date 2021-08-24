@@ -98,7 +98,8 @@ var ImageCard = (function (_super) {
         });
         if (this.image.imageId == User.profilePictureId) {
             Ajax.getImage(0, 0, 'sqr', null, function (target) { }, function (imageCard) {
-                return ProfileCard.changeUserProfilePicture(imageCard);
+                ProfileCard.changeUserProfilePicture(imageCard);
+                navBar.btnOpenUserProfileModalImageBox.loadImage(ImageCard.copy(imageCard));
             });
             Ajax.getImage(0, 2, 'sqr', 'Change profile picture', function (target) { }, function (imageCard) {
                 return profileModal.profilePictureBox.loadImage(imageCard);

@@ -112,27 +112,31 @@ var ContentBox = (function () {
     ContentBox.prototype.add = function (content, prepend) {
         var _this = this;
         var isFirstBatch = this.content.length == 0;
-        if (!Array.isArray(content))
-            content = [content];
         ViewUtil.remove(this.loadingGif);
-        content.forEach(function (content) {
-            if (content != null) {
-                if (prepend == true) {
-                    _this.content.unshift(content);
-                    _this.contentElm.prepend(content.rootElm);
+        var contentLength = 0;
+        if (content != null) {
+            if (!Array.isArray(content))
+                content = [content];
+            contentLength = content.length;
+            content.forEach(function (content) {
+                if (content != null) {
+                    if (prepend == true) {
+                        _this.content.unshift(content);
+                        _this.contentElm.prepend(content.rootElm);
+                    }
+                    else {
+                        _this.content.push(content);
+                        _this.contentElm.append(content.rootElm);
+                    }
                 }
-                else {
-                    _this.content.push(content);
-                    _this.contentElm.append(content.rootElm);
-                }
-            }
-        });
-        if (this.loading && content.length < this.take) {
+            });
+        }
+        if (this.loading && contentLength < this.take) {
             this.moreContent = false;
             this.contentElm.append(ViewUtil.tag("div", { innerText: "No more content" }));
         }
         if (this.requestCallback) {
-            this.moreContent = this.take == content.length;
+            this.moreContent = this.take == contentLength;
             this.loading = false;
             if (isFirstBatch && this.onLoadEnd != null) {
                 this.onLoadEnd();
