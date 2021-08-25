@@ -36,8 +36,8 @@
     <Content Remove="wwwroot\ts\Modals\ConfirmPrompt.ts" />
     <Content Remove="wwwroot\ts\Modals\ContextMenu.ts" />
     <Content Remove="wwwroot\ts\Modals\CreatePostModal.ts" />
-    <Content Remove="wwwroot\ts\Modals\FullSizeImageModal.ts" />
     <Content Remove="wwwroot\ts\Modals\HelpModal.ts" />
+    <Content Remove="wwwroot\ts\Modals\ImageGalleryModal.ts" />
     <Content Remove="wwwroot\ts\Modals\Modal.ts" />
     <Content Remove="wwwroot\ts\Modals\ProfileModal.ts" />
     <Content Remove="wwwroot\ts\Modals\UploadImageModal.ts" />
@@ -105,7 +105,7 @@
     <TypeScriptCompile Include="wwwroot\ts\ConfirmPrompt.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ContextMenu.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\CreatePostModal.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\Modals\FullSizeImageModal.ts" />
+    <TypeScriptCompile Include="wwwroot\ts\Modals\ImageGalleryModal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\HelpModal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\Modal.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Modals\ProfileModal.ts" />

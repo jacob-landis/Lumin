@@ -174,7 +174,7 @@ class ProfileModal extends Modal {
             this.imagesBox = new ProfileImagesBox('Fullscreen', this.imageScrollBox, (target: ImageBox) =>
 
                 // Set click callback of each image to open a collection in fullzise image modal.
-                fullSizeImageModal.load(this.imagesBox.content.indexOf(target), profileId));
+                imageGalleryModal.load(this.imagesBox.content.indexOf(target), profileId));
 
             this.imagesBox.onLoadEnd = () => {
                 this.summaryStage.updateStaging(this.imagesBoxStaged);
@@ -213,7 +213,7 @@ class ProfileModal extends Modal {
         else {
 
             // set click callback of profile picture to display it in fullsize image modal,
-            this.profilePictureBox.heldImageClick = (target: ImageBox) => fullSizeImageModal.loadSingle(target.imageCard.image.imageId);
+            this.profilePictureBox.heldImageClick = (target: ImageBox) => imageGalleryModal.loadSingle(target.imageCard.image.imageId);
             this.profilePictureBox.heldTooltipMsg = 'Fullscreen';
 
             // and detach the button to edit the bio.

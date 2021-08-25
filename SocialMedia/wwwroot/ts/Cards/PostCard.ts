@@ -95,7 +95,7 @@
             ViewUtil.tag('div', { classList: 'postImageWrapper' }),
             'postImage',
             'Fullscreen',
-            (target: ImageBox) => fullSizeImageModal.loadSingle(target.imageCard.image.imageId),
+            (target: ImageBox) => imageGalleryModal.loadSingle(target.imageCard.image.imageId),
             2
         );
 

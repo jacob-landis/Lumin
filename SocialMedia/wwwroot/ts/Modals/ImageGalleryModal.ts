@@ -4,7 +4,7 @@
         (There will be left and right arrows to go backward or forward in the collection.)
 */
 
-class FullSizeImageModal extends Modal {
+class ImageGalleryModal extends Modal {
 
     // Image box for the fullsize image to be displayed in.
     private imageCon: ImageBox;

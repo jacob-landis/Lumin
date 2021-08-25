@@ -30,7 +30,7 @@
 <script src="~/js/Modals/Modal.js"></script>
 <script src="~/js/Modals/CreatePostModal.js"></script>
 <script src="~/js/Modals/UploadImageModal.js"></script>
-<script src="~/js/Modals/FullSizeImageModal.js"></script>
+<script src="~/js/Modals/ImageGalleryModal.js"></script>
 <script src="~/js/Modals/ProfileModal.js"></script>
 <script src="~/js/Modals/HelpModal.js"></script>
 
@@ -354,27 +354,27 @@
 
 </div>
 
-@* FULLSIZE IMAGE MODAL *@
+@* IMAGE GALLERY MODAL *@
 @* Used for viewing images full screen. Collections of images can be navigated through with the left right buttons. *@
-<div id="fullSizeImageModalContent" class="my-modal-content">
+<div id="imageGalleryModalContent" class="my-modal-content">
 
     @* Full size image container. *@
     <div id="fullsizeImageBox"></div>
 
     @* Btn previous image. *@
-    <i id="btnFullsizePrevious" class="fa fa-arrow-circle-left fsimb"></i>
+    <i id="btnGalleryPrevious" class="fa fa-arrow-circle-left imageGalleryBtn"></i>
 
     @* Btn next image. *@
-    <i id="btnFullsizeNext" class="fa fa-arrow-circle-right fsimb"></i>
+    <i id="btnGalleryNext" class="fa fa-arrow-circle-right imageGalleryBtn"></i>
 
     @* Display image count in an image collection. (Ex. "7/10") *@
     <div id="imageCount"></div>
 
     <div id="imageOwnership">
         <div id="imageOwner"></div>
-        <div id="FSIMImagePrivacy">
-            <label for="selectFSIMImagePrivacy">Privacy level:</label>
-            <select id="selectFSIMImagePrivacy">
+        <div id="galleryImagePrivacy">
+            <label for="selectGalleryImagePrivacy">Privacy level:</label>
+            <select id="selectGalleryImagePrivacy">
                 <option value="0">All</option>
                 <option value="1">Mutal friends</option>
                 <option value="2">Friends</option>

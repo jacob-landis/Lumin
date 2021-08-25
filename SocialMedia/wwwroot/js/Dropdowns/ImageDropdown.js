@@ -20,7 +20,7 @@ var ImageDropdown = (function (_super) {
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;
         _this.imagesBox = new ProfileImagesBox('Fullscreen', _this.contentElm, function (target) {
-            return fullSizeImageModal.load(_this.indexOf(target));
+            return imageGalleryModal.load(_this.indexOf(target));
         });
         _this.imageWrapper.append(_this.imagesBox.rootElm);
         btnOpenUploadImageModal.onchange = function (e) {
@@ -53,12 +53,12 @@ var ImageDropdown = (function (_super) {
         else {
             if (profileId == this.imagesBox.profileId) {
                 this.convert('Fullscreen', function (target) {
-                    fullSizeImageModal.load(_this.indexOf(target), profileId);
+                    imageGalleryModal.load(_this.indexOf(target), profileId);
                 });
             }
             else {
                 this.imagesBox.load(profileId, 'Fullscreen', function (target) {
-                    fullSizeImageModal.load(_this.indexOf(target), profileId);
+                    imageGalleryModal.load(_this.indexOf(target), profileId);
                 });
             }
         }

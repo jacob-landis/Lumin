@@ -77,7 +77,7 @@
         this.tooltipMsg = tooltipMsg;
 
         // L-Click on imageCard action.
-        this.onImageClick = onImageClick ? onImageClick : (target: ImageBox) => fullSizeImageModal.loadSingle(target.imageCard.image.imageId);
+        this.onImageClick = onImageClick ? onImageClick : (target: ImageBox) => imageGalleryModal.loadSingle(target.imageCard.image.imageId);
 
         // R-Click on imageCard action.
         if (image.profileId == User.profileId) 
@@ -140,7 +140,7 @@
         }
 
         // XXX instead, fullsizeImage modal should change to the next or prev image (prev as default), and if singular THEN close.
-        fullSizeImageModal.close();// temporary solution
+        imageGalleryModal.close();// temporary solution
         
         //delete this; XXX
     }

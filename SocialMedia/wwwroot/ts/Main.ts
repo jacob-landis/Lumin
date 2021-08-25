@@ -3,7 +3,7 @@ var contextMenu: ContextMenu;
 var confirmPrompt: ConfirmPrompt;
 
 var createPostModal: CreatePostModal;
-var fullSizeImageModal : FullSizeImageModal;
+var imageGalleryModal : ImageGalleryModal;
 var profileModal : ProfileModal;
 var uploadImageModal : UploadImageModal;
 var publicPosts : PublicPosts;
@@ -69,18 +69,18 @@ class Main {
             'createPostErrorBox'
         );
 
-        fullSizeImageModal = new FullSizeImageModal(
-            document.getElementById('fullSizeImageModalContent'),
-            document.getElementById('btnFullsizePrevious'),
-            document.getElementById('btnFullsizeNext'),
+        imageGalleryModal = new ImageGalleryModal(
+            document.getElementById('imageGalleryModalContent'),
+            document.getElementById('btnGalleryPrevious'),
+            document.getElementById('btnGalleryNext'),
             document.getElementById('imageCount'), 
             document.getElementById('imageOwnership'),
             document.getElementById('imageOwner'),
-            document.getElementById('FSIMImagePrivacy'),
-            <HTMLSelectElement>document.getElementById('selectFSIMImagePrivacy'),
+            document.getElementById('galleryImagePrivacy'),
+            <HTMLSelectElement>document.getElementById('selectGalleryImagePrivacy'),
             document.getElementById('imageDateTime'),
             document.getElementById('fullsizeImageBox'),
-            'fullSizeImage'
+            'galleryImage'
         );
 
         profileModal = new ProfileModal(

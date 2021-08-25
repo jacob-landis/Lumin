@@ -49,7 +49,7 @@ class ImageDropdown extends Dropdown {
         this.imagesBox = new ProfileImagesBox('Fullscreen', this.contentElm, (target: ImageBox) =>
 
             // Load album into fullsize image modal starting at the index of the clicked image card.
-            fullSizeImageModal.load(this.indexOf(target))
+            imageGalleryModal.load(this.indexOf(target))
         );
 
         // Append ProfileImagesBox to this imageWrapper.
@@ -120,7 +120,7 @@ class ImageDropdown extends Dropdown {
                 this.convert('Fullscreen', (target: ImageBox) => {
 
                     // Open the image in fullsize image modal that is selected.
-                    fullSizeImageModal.load(this.indexOf(target), profileId);
+                    imageGalleryModal.load(this.indexOf(target), profileId);
                 });
             }
             else {
@@ -129,7 +129,7 @@ class ImageDropdown extends Dropdown {
                 this.imagesBox.load(profileId, 'Fullscreen', (target: ImageBox) => {
 
                     // Open the image in fullsize image modal that is selected.
-                    fullSizeImageModal.load(this.indexOf(target), profileId);
+                    imageGalleryModal.load(this.indexOf(target), profileId);
                 });
             } 
         }

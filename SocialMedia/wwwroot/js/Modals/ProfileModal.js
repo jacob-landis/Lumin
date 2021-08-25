@@ -100,7 +100,7 @@ var ProfileModal = (function (_super) {
             }
             _this.profilePostsCard.load(profileId);
             _this.imagesBox = new ProfileImagesBox('Fullscreen', _this.imageScrollBox, function (target) {
-                return fullSizeImageModal.load(_this.imagesBox.content.indexOf(target), profileId);
+                return imageGalleryModal.load(_this.imagesBox.content.indexOf(target), profileId);
             });
             _this.imagesBox.onLoadEnd = function () {
                 _this.summaryStage.updateStaging(_this.imagesBoxStaged);
@@ -119,7 +119,7 @@ var ProfileModal = (function (_super) {
             this.bioEditor.enableEditing();
         }
         else {
-            this.profilePictureBox.heldImageClick = function (target) { return fullSizeImageModal.loadSingle(target.imageCard.image.imageId); };
+            this.profilePictureBox.heldImageClick = function (target) { return imageGalleryModal.loadSingle(target.imageCard.image.imageId); };
             this.profilePictureBox.heldTooltipMsg = 'Fullscreen';
             this.nameEditor.disableEditing();
             this.bioEditor.disableEditing();

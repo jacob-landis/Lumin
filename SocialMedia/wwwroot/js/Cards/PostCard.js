@@ -30,7 +30,7 @@ var PostCard = (function (_super) {
         _this.commentsSection.commentBoxesStage.onStagingEnd = function () { return _this.stage.updateStaging(_this.commentsSection.allStaged); };
         _this.stage = new Stage([_this.imageStaged, _this.commentsSection.allStaged]);
         _this.rootElm.append(postSection, _this.commentsSection.rootElm);
-        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return fullSizeImageModal.loadSingle(target.imageCard.image.imageId); }, 2);
+        _this.postImageWrapper = new ImageBox(ViewUtil.tag('div', { classList: 'postImageWrapper' }), 'postImage', 'Fullscreen', function (target) { return imageGalleryModal.loadSingle(target.imageCard.image.imageId); }, 2);
         if (_this.hasImage) {
             _this.imageBoxes.push(_this.postImageWrapper);
             _this.postImageWrapper.load(_this.post.image.imageId);

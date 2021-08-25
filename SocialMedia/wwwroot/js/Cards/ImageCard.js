@@ -21,7 +21,7 @@ var ImageCard = (function (_super) {
         _this._tooltipMsg = null;
         _this.image = image;
         _this.tooltipMsg = tooltipMsg;
-        _this.onImageClick = onImageClick ? onImageClick : function (target) { return fullSizeImageModal.loadSingle(target.imageCard.image.imageId); };
+        _this.onImageClick = onImageClick ? onImageClick : function (target) { return imageGalleryModal.loadSingle(target.imageCard.image.imageId); };
         if (image.profileId == User.profileId)
             _this.rootElm.oncontextmenu = function (event) {
                 return contextMenu.load(event, [
@@ -105,7 +105,7 @@ var ImageCard = (function (_super) {
                 return profileModal.profilePictureBox.loadImage(imageCard);
             });
         }
-        fullSizeImageModal.close();
+        imageGalleryModal.close();
     };
     ImageCard.imageCards = [];
     return ImageCard;
