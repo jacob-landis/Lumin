@@ -246,7 +246,7 @@ class ContentBox implements IAppendable {
         if (this.loading && contentLength < this.take) {
 
             this.moreContent = false;
-            this.contentElm.append(ViewUtil.tag("div", {innerText: "No more content"}));
+            this.contentElm.append(ViewUtil.tag("div", { classList: "lblNoMoreContent", innerText: "No more content"}));
         }
 
         // If this content box has an established request feed,

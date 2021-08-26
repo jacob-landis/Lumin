@@ -10,7 +10,7 @@
         super(ViewUtil.tag('div', { classList: 'commentsBox' }), scrollElm, 400, 30, (skip: number, take: number) => {
             Ajax.getComments(this.postId, skip, take, this.getFeedFilter(), this.feedType, (commentCards: CommentCard[]) => {
 
-                if (commentCards != null) this.add(commentCards);
+                this.add(commentCards);
 
                 if (this.onCommentsLoadEnd != null) this.onCommentsLoadEnd(commentCards == null);
             });

@@ -15,6 +15,7 @@ using SocialMedia.Infrastructure;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Threading;
+using SocialMedia.Models.Session;
 
 namespace SocialMedia.Controllers
 {
@@ -30,18 +31,20 @@ namespace SocialMedia.Controllers
         private IProfileRepository profileRepo;
         private ILikeRepository likeRepo;
         private IFriendRepository friendRepo;
+        private SessionResults sessionResults;
         private CurrentProfile currentProfile;
         private readonly IHostingEnvironment env; // Used to deal with server files.
 
         public ApiImageController(
-           IImageRepository imageRepo,
-           IPostRepository postRepo,
-           ICommentRepository commentRepo,
-           IProfileRepository profileRepo,
-           ILikeRepository likeRepo,
-           IFriendRepository friendRepo,
-           CurrentProfile currentProfile,
-           IHostingEnvironment env)
+            IImageRepository imageRepo,
+            IPostRepository postRepo,
+            ICommentRepository commentRepo,
+            IProfileRepository profileRepo,
+            ILikeRepository likeRepo,
+            IFriendRepository friendRepo,
+            SessionResults sessionResults,
+            CurrentProfile currentProfile,
+            IHostingEnvironment env)
         {
             this.imageRepo = imageRepo;
             this.postRepo = postRepo;
@@ -49,6 +52,7 @@ namespace SocialMedia.Controllers
             this.profileRepo = profileRepo;
             this.likeRepo = likeRepo;
             this.friendRepo = friendRepo;
+            this.sessionResults = sessionResults;
             this.currentProfile = currentProfile;
             this.env = env;
         }
@@ -144,30 +148,39 @@ namespace SocialMedia.Controllers
         [HttpGet("profileimages/{id}/{imageCount}/{amount}")]
         public List<RawImage> ProfilesImages(int id, int imageCount, int amount) // (id, skip, take) XXX rename
         {
-            int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id);
+            string resultsKey = $"{id}profileImages";
 
-            // Prep list.
-            List<RawImage> images = new List<RawImage>();
-
-            // If the requested segment does not start past the end of the list.
-            if (imageCount < imageRepo.CountByProfileId(id))
+            if (imageCount == 0)
             {
-                // Loop though requested segment of profile's images.
-                foreach (Models.Image i in imageRepo.RangeByProfileId(id, imageCount, amount))
-                {
-                    if (i.PrivacyLevel <= relationshipTier)
-                    {
-                        // Add prepped image to list of results.
-                        images.Add(Util.GetRawImage(i, 1));
-                    }
-                }
+                int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id);
 
-                // Return the results.
-                if (images.Count != 0) return images;
+                // Prep list.
+                List<int?> imageIds = new List<int?>();
+
+                // If the requested segment does not start past the end of the list.
+                if (imageCount < imageRepo.CountByProfileId(id))
+                {
+                    // Loop though requested segment of profile's images.
+                    foreach (Models.Image i in imageRepo.RangeByProfileId(id, imageCount, amount))
+                    {
+                        if (i.PrivacyLevel <= relationshipTier)
+                        {
+                            imageIds.Add(i.ImageId);
+                        }
+                    }
+
+                    sessionResults.AddResults(resultsKey, imageIds);
+                }
             }
 
-            // If no images fall in the requested range, return null.
-            return null;
+            List<RawImage> images = new List<RawImage>();
+
+            foreach(int imageId in sessionResults.GetResultsSegment(resultsKey, imageCount, amount))
+            {
+                images.Add(Util.GetRawImage(imageRepo.ById(imageId), 1));
+            }
+
+            return images;
         }
 
         /*

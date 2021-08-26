@@ -133,7 +133,7 @@ var ContentBox = (function () {
         }
         if (this.loading && contentLength < this.take) {
             this.moreContent = false;
-            this.contentElm.append(ViewUtil.tag("div", { innerText: "No more content" }));
+            this.contentElm.append(ViewUtil.tag("div", { classList: "lblNoMoreContent", innerText: "No more content" }));
         }
         if (this.requestCallback) {
             this.moreContent = this.take == contentLength;

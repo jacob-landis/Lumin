@@ -2,14 +2,6 @@
     overflow: auto;
 }
 
-/*.content-box-horizontal {
-
-}
-
-.content-box-horizontal > div {
-    display: inline;
-}*/
-
 .contentContainer > .content-box {
     overflow: visible;
 }
@@ -38,10 +30,16 @@
     font-weight: bold;
 }
 
+.lblNoMoreContent {
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 16px;
+}
+
 /* Make child elements in a loading container invisible for staging. */
 .contentLoading > div {
     opacity: 0;
-
 }
 
 /* Make an exception for the loading gif that is in the container. */

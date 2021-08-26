@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SocialMedia.Infrastructure;
 using SocialMedia.Models;
+using SocialMedia.Models.Session;
 using SocialMedia.Models.ViewModels;
 
 namespace SocialMedia.Controllers
@@ -26,6 +27,7 @@ namespace SocialMedia.Controllers
         private IFriendRepository friendRepo;
         private ILikeRepository likeRepo;
         private ICommentRepository commentRepo;
+        private SessionResults sessionResults;
         private CurrentProfile currentProfile;
 
         public ApiPostController(
@@ -35,6 +37,7 @@ namespace SocialMedia.Controllers
             IFriendRepository friendRepo,
             ILikeRepository likeRepo,
             ICommentRepository commentRepo,
+            SessionResults sessionResults,
             CurrentProfile currentProfile)
         {
             this.postRepo = postRepo;
@@ -43,6 +46,7 @@ namespace SocialMedia.Controllers
             this.friendRepo = friendRepo;
             this.likeRepo = likeRepo;
             this.commentRepo = commentRepo;
+            this.sessionResults = sessionResults;
             this.currentProfile = currentProfile;
         }
 
@@ -58,7 +62,7 @@ namespace SocialMedia.Controllers
             Post post = postRepo.ById(id);
 
             // If current user owns post, delete it.
-            if(post.ProfileId == currentProfile.id)
+            if (post.ProfileId == currentProfile.id)
             {
                 // Burrow into the nested dependencies and delete them on the way out.
                 // Pattern: (1)prep list, (2)fill list, (3)loop list, (4)repeat pattern on dependencies, (5)delete record.
@@ -125,8 +129,10 @@ namespace SocialMedia.Controllers
         [HttpGet("profileposts/{id}/{postCount}/{amount}/{feedFilter}/{feedType}")]
         public List<PostModel> ProfilePosts(int id, int postCount, int amount, string feedFilter, string feedType)
         {
-            // If there are more posts than the user requested, only return the amount requested, or else return none.
-            if (postCount < postRepo.CountByProfileId(id) 
+            string resultsKey = "profilePosts";
+
+            // If a new feed is starting and the user has access permission.
+            if (postCount == 0
                 && profileRepo.ById(id).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
             {
                 IEnumerable<Post> postRecords = new List<Post>();
@@ -173,16 +179,20 @@ namespace SocialMedia.Controllers
                 if (feedType == "CommentedPosts") postRecords = postRecords
                         .OrderByDescending(p => commentRepo.HasCommented(p.PostId, currentProfile.id));
 
-                List<PostModel> postModels = new List<PostModel>();
-
-                foreach (Post p in postRecords.Skip(postCount).Take(amount))
-                {
-                    postModels.Add(GetPostModel(p.PostId));
-                }
-
-                return postModels;
+                // Store list of post ids.
+                List<int?> postIds = new List<int?>();
+                foreach (Post p in postRecords) postIds.Add(p.PostId);
+                sessionResults.AddResults(resultsKey, postIds);
             }
-            return null;
+
+            List<PostModel> postModels = new List<PostModel>();
+
+            foreach (int postId in sessionResults.GetResultsSegment(resultsKey, postCount, amount))
+            {
+                postModels.Add(GetPostModel(postId));
+            }
+
+            return postModels;
         }
 
         /*
@@ -191,26 +201,42 @@ namespace SocialMedia.Controllers
         [HttpGet("publicposts/{postCount}/{amount}")]
         public List<PostModel> PublicPosts(int postCount, int amount)
         {
-            // Get list of ProfileIDs (the current user's friends), and the current user's ProfileID.
-            List<int?> profileIds = friendRepo.ProfileFriends(currentProfile.id);
-            profileIds.Add(currentProfile.id); // XXX redirect if id == 0
+            string resultsKey = "publicPosts";
 
-            // Prep list for prepped posts.
-            List<PostModel> posts = new List<PostModel>();
-
-            // Loop through ProfileID list.
-            foreach (int p in profileIds)
+            if (postCount == 0)
             {
-                // Try getting results before looping and adding them.
-                List<PostModel> profilePosts = GetProfilePosts(p);
+                // Get list of ProfileIDs (the current user's friends), and the current user's ProfileID.
+                List<int?> profileIds = friendRepo.ProfileFriends(currentProfile.id);
+                profileIds.Add(currentProfile.id); // XXX redirect if id == 0
 
-                if (profilePosts != null && profilePosts.Count > 0)
-                    // Loop through each profile's posts and add them to the list of posts.
-                    foreach(PostModel pm in profilePosts) { posts.Add(pm); }
+                // Prep list for prepped posts.
+                List<PostModel> posts = new List<PostModel>();
+
+                // Loop through ProfileID list.
+                foreach (int p in profileIds)
+                {
+                    // Try getting results before looping and adding them.
+                    List<PostModel> profilePosts = GetProfilePosts(p);
+
+                    if (profilePosts != null && profilePosts.Count > 0)
+                        // Loop through each profile's posts and add them to the list of posts.
+                        foreach(PostModel pm in profilePosts) { posts.Add(pm); }
+                }
+
+                // Store list of post ids.
+                List<int?> postIds = new List<int?>();
+                foreach (PostModel p in posts.OrderByDescending(p => p.DateTime)) postIds.Add(p.PostId);
+                sessionResults.AddResults(resultsKey, postIds);
             }
 
-            // If there are more posts than the user requested, only return the amount requested, or else return none. XXX this logic smells funny.
-            return postCount < posts.Count() ? PostRange(posts, postCount, amount) : null;
+            List<PostModel> postModels = new List<PostModel>();
+
+            foreach(int postId in sessionResults.GetResultsSegment(resultsKey, postCount, amount))
+            {
+                postModels.Add(GetPostModel(postId));
+            }
+
+            return postModels;
         }
 
         [HttpPost("searchposts/{profileId}/{skip}/{take}")]
@@ -218,62 +244,77 @@ namespace SocialMedia.Controllers
         {
             if (searchText.str == "NULL") return null;
 
-            // Prep list for matches. Each index contains a key value pair of <ProfileId, searchPoints>.
-            List<KeyValuePair<int, int>> matches = new List<KeyValuePair<int, int>>();
+            string resultsKey = "postSearch";
 
-            // Split search terms into array of search terms.
-            string[] searchTerms = searchText.str.Split(' ');
-
-            // Define how many points an exact match is worth.
-            int exactMatchWorth = 3;
-
-            // Loop though all profiles in the database.
-            foreach (Post p in postRepo.ByProfileId(profileId))
+            if (skip == 0)
             {
-                if (p.Caption == "" || p.Caption == null) continue;
+                // Prep list for matches. Each index contains a key value pair of <ProfileId, searchPoints>.
+                List<KeyValuePair<int, int>> matches = new List<KeyValuePair<int, int>>();
 
-                // Define points variable and start it at 0.
-                int points = 0;
+                // Split search terms into array of search terms.
+                string[] searchTerms = searchText.str.Split(' ');
 
-                string[] contentTerms = p.Caption.Split(' ');
+                // Define how many points an exact match is worth.
+                int exactMatchWorth = 3;
 
-                foreach (string contentTerm in contentTerms)
+                // Loop though all profiles in the database.
+                foreach (Post p in postRepo.ByProfileId(profileId))
                 {
-                    string lcContentTerm = contentTerm.ToLower();
+                    if (p.Caption == "" || p.Caption == null) continue;
 
-                    // Loop through search terms.
-                    foreach (string searchTerm in searchTerms)
+                    // Define points variable and start it at 0.
+                    int points = 0;
+
+                    string[] contentTerms = p.Caption.Split(' ');
+
+                    foreach (string contentTerm in contentTerms)
                     {
-                        // Convert search term to lowercase.
-                        string lcSearchTerm = searchTerm.ToLower();
+                        string lcContentTerm = contentTerm.ToLower();
 
-                        // If the terms are an exact match, add an exact match worth of points.
-                        if (lcSearchTerm == lcContentTerm) points += exactMatchWorth;
+                        // Loop through search terms.
+                        foreach (string searchTerm in searchTerms)
+                        {
+                            // Convert search term to lowercase.
+                            string lcSearchTerm = searchTerm.ToLower();
 
-                        // Else if the terms are a partial match, add 1 point.
-                        else if (lcSearchTerm.Contains(lcContentTerm) || lcContentTerm.Contains(lcSearchTerm)) points++;
+                            // If the terms are an exact match, add an exact match worth of points.
+                            if (lcSearchTerm == lcContentTerm) points += exactMatchWorth;
+
+                            // Else if the terms are a partial match, add 1 point.
+                            else if (lcSearchTerm.Contains(lcContentTerm) || lcContentTerm.Contains(lcSearchTerm)) points++;
+                        }
                     }
+
+                    // If the comment earned any points, add its id to the list of matches.
+                    if (points > 0) matches.Add(new KeyValuePair<int, int>(p.PostId, points));
                 }
 
-                // If the comment earned any points, add its id to the list of matches.
-                if (points > 0) matches.Add(new KeyValuePair<int, int>(p.PostId, points));
+                // Sort match results by points.
+                matches.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+
+                // Prep list for preped results.
+                List<int?> postIds = new List<int?>();
+
+                // Loop through matches.
+                foreach (KeyValuePair<int, int> match in matches)
+                {
+                    // Add preped result to results.
+                    postIds.Add(match.Key);
+                }
+
+                sessionResults.AddResults(resultsKey, postIds);
             }
 
-            // Sort match results by points.
-            matches.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-
             // Prep list for preped results.
-            List<PostModel> results = new List<PostModel>();
-
-            // Loop through matches.
-            foreach (KeyValuePair<int, int> match in matches)
+            List<PostModel> postModels = new List<PostModel>();
+            
+            foreach (int postId in sessionResults.GetResultsSegment(resultsKey, skip, take))
             {
-                // Add preped result to results.
-                results.Add(GetPostModel(match.Key));
+                postModels.Add(GetPostModel(postId));
             }
 
             // Return search results to user.
-            return results;
+            return postModels;
         }
 
         /*
@@ -304,13 +345,7 @@ namespace SocialMedia.Controllers
         }
 
         //-----------------------------------------UTIL---------------------------------------------//
-
-        /*
-             Shortcut function taking a segment of a list of posts.
-        */
-        public List<PostModel> PostRange(List<PostModel> posts, int postCount, int amount) =>
-            posts.OrderByDescending(p => p.DateTime).Skip(postCount).Take(amount).ToList(); // XXX Why postCount + amount? XXX
-
+        
         /*
              Returns a prepped list of a profile's posts by ProfileID.
         */

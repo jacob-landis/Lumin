@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SocialMedia.Infrastructure;
 using SocialMedia.Models;
+using SocialMedia.Models.Session;
 using SocialMedia.Models.ViewModels;
 
 namespace SocialMedia.Controllers
@@ -19,23 +20,20 @@ namespace SocialMedia.Controllers
         private IProfileRepository profileRepo;
         private IFriendRepository friendRepo;
         private IImageRepository imageRepo;
-        private FriendDropdownResults friendDropdownResults;
-        private FriendProfileModalResults friendProfileModalResults;
+        private SessionResults sessionResults;
         private CurrentProfile currentProfile;
 
         public ApiFriendController(
             IProfileRepository profileRepo,
             IFriendRepository friendRepo,
             IImageRepository imageRepo,
-            FriendDropdownResults friendDropdownResults,
-            FriendProfileModalResults friendProfileModalResults,
+            SessionResults sessionResults,
             CurrentProfile currentProfile)
         {
             this.profileRepo = profileRepo;
             this.friendRepo = friendRepo;
             this.imageRepo = imageRepo;
-            this.friendDropdownResults = friendDropdownResults;
-            this.friendProfileModalResults = friendProfileModalResults;
+            this.sessionResults = sessionResults;
             this.currentProfile = currentProfile;
         }
 
@@ -53,34 +51,38 @@ namespace SocialMedia.Controllers
 
             if (type == "profileModal")
             {
-                if (skip == 0) friendProfileModalResults.SetResults(id, FriendRequests());
+                string resultsKey = "profileModalFriends";
 
-                foreach (int profileId in friendDropdownResults.GetSegment(skip, take))
+                if (skip == 0) sessionResults.AddResults(resultsKey, FriendRequests());
+
+                foreach (int profileId in sessionResults.GetResultsSegment(resultsKey, skip, take))
                 {
                     results.Add(GetProfileModel(profileId));
                 }
             }
             else if (type == "friendDropdown")
             {
+                string resultsKey = "friendDropdown";
+
                 if (skip == 0)
                 {
                     // If ID is provided and the user has access, return friends by ProfileID.
                     if (id != 0 && profileRepo.ById(id).ProfileFriendsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
                     {
-                        friendDropdownResults.SetResults(id, search.str, ProfileFriends(id));
+                        sessionResults.AddResults(resultsKey, ProfileFriends(id));
                     }
 
                     // If search string is provided, return profile search results.
                     else if (search.str != "NULL")
                     {
-                        friendDropdownResults.SetResults(id, search.str, Search(search.str));
+                        sessionResults.AddResults(resultsKey, Search(search.str));
                     }
 
                     // If no ID or search string was provided, return the current user's friend requests.
-                    else friendDropdownResults.SetResults(id, search.str, FriendRequests());
+                    else sessionResults.AddResults(resultsKey, FriendRequests());
                 }
 
-                foreach(int profileId in friendDropdownResults.GetSegment(skip, take))
+                foreach(int profileId in sessionResults.GetResultsSegment(resultsKey, skip, take))
                 {
                     results.Add(GetProfileModel(profileId));
                 }

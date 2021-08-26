@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SocialMedia.Infrastructure;
 using SocialMedia.Models;
+using SocialMedia.Models.Session;
 using SocialMedia.Models.ViewModels;
 
 namespace SocialMedia.Controllers
@@ -18,6 +19,7 @@ namespace SocialMedia.Controllers
         private IFriendRepository friendRepo;
         private ILikeRepository likeRepo;
         private IPostRepository postRepo;
+        private SessionResults sessionResults;
         private CurrentProfile currentProfile;
 
         public ApiCommentController(
@@ -27,6 +29,7 @@ namespace SocialMedia.Controllers
             IFriendRepository friendRepo,
             ILikeRepository likeRepo,
             IPostRepository postRepo,
+            SessionResults sessionResults,
             CurrentProfile currentProfile)
         {
             this.commentRepo = commentRepo;
@@ -35,6 +38,7 @@ namespace SocialMedia.Controllers
             this.friendRepo = friendRepo;
             this.likeRepo = likeRepo;
             this.postRepo = postRepo;
+            this.sessionResults = sessionResults;
             this.currentProfile = currentProfile;
         }
 
@@ -140,60 +144,74 @@ namespace SocialMedia.Controllers
         {
             if (searchText.str == "NULL") return null;
 
-            // Prep list for matches. Each index contains a key value pair of <CommentId, searchPoints>.
-            List<KeyValuePair<int, int>> matches = new List<KeyValuePair<int, int>>();
+            string resultsKey = $"{postId}commentSearch";
 
-            // Split search terms into array of search terms.
-            string[] searchTerms = searchText.str.Split(' ');
-
-            // Define how many points an exact match is worth.
-            int exactMatchWorth = 3;
-
-            // Loop though all profiles in the database.
-            foreach (Comment c in commentRepo.ByPostId(postId))
+            if (skip == 0)
             {
-                // Define points variable and start it at 0.
-                int points = 0;
+                // Prep list for matches. Each index contains a key value pair of <CommentId, searchPoints>.
+                List<KeyValuePair<int, int>> matches = new List<KeyValuePair<int, int>>();
 
-                string[] contentTerms = c.Content.Split(' ');
+                // Split search terms into array of search terms.
+                string[] searchTerms = searchText.str.Split(' ');
 
-                foreach (string contentTerm in contentTerms)
+                // Define how many points an exact match is worth.
+                int exactMatchWorth = 3;
+
+                // Loop through all profiles in the database.
+                foreach (Comment c in commentRepo.ByPostId(postId))
                 {
-                    string lcContentTerm = contentTerm.ToLower();
+                    // Define points variable and start it at 0.
+                    int points = 0;
 
-                    // Loop through search terms.
-                    foreach (string searchTerm in searchTerms)
+                    string[] contentTerms = c.Content.Split(' ');
+
+                    foreach (string contentTerm in contentTerms)
                     {
-                        // Convert search term to lowercase.
-                        string lcSearchTerm = searchTerm.ToLower();
+                        string lcContentTerm = contentTerm.ToLower();
 
-                        // If the terms are an exact match, add an exact match worth of points.
-                        if (lcSearchTerm == lcContentTerm) points += exactMatchWorth;
+                        // Loop through search terms.
+                        foreach (string searchTerm in searchTerms)
+                        {
+                            // Convert search term to lowercase.
+                            string lcSearchTerm = searchTerm.ToLower();
 
-                        // Else if the terms are a partial match, add 1 point.
-                        else if (lcSearchTerm.Contains(lcContentTerm) || lcContentTerm.Contains(lcSearchTerm)) points++;
+                            // If the terms are an exact match, add an exact match worth of points.
+                            if (lcSearchTerm == lcContentTerm) points += exactMatchWorth;
+
+                            // Else if the terms are a partial match, add 1 point.
+                            else if (lcSearchTerm.Contains(lcContentTerm) || lcContentTerm.Contains(lcSearchTerm)) points++;
+                        }
                     }
+
+                    // If the comment earned any points, add its id to the list of matches.
+                    if (points > 0) matches.Add(new KeyValuePair<int, int>(c.CommentId, points));
                 }
 
-                // If the comment earned any points, add its id to the list of matches.
-                if (points > 0) matches.Add(new KeyValuePair<int, int>(c.CommentId, points));
+                // Sort match results by points.
+                matches.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+
+                // Prep list for preped results.
+                List<int?> commentIds = new List<int?>();
+
+                // Loop through matches.
+                foreach (KeyValuePair<int, int> match in matches)
+                {
+                    // Add preped result to results.
+                    commentIds.Add(match.Key);
+                }
+
+                sessionResults.AddResults(resultsKey, commentIds);
             }
 
-            // Sort match results by points.
-            matches.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            List<CommentModel> commentModels = new List<CommentModel>();
 
-            // Prep list for preped results.
-            List<CommentModel> results = new List<CommentModel>();
-
-            // Loop through matches.
-            foreach (KeyValuePair<int, int> match in matches)
+            foreach(int commentId in sessionResults.GetResultsSegment(resultsKey, skip, take))
             {
-                // Add preped result to results.
-                results.Add(GetCommentModel(match.Key));
+                commentModels.Add(GetCommentModel(commentId));
             }
 
             // Return search results to user.
-            return results;
+            return commentModels;
         }
 
         // get list of comments by id, skip, take
@@ -229,47 +247,61 @@ namespace SocialMedia.Controllers
 
         public List<CommentModel> GetCommentModels(int postId, int skip, int take, string feedFilter, string feedType)
         {
-            IEnumerable<Comment> comments = new List<Comment>();
-            
-            switch (feedType)
+            string resultsKey = $"{postId}{feedFilter}{feedType}";
+
+            if (skip == 0)
             {
-                case "myComments":
-                    comments = commentRepo.Comments.Where(c => c.PostId == postId && c.ProfileId == currentProfile.id);
-                    break;
-                case "likedComments":
-                    comments = commentRepo.Comments.Where(c => c.PostId == postId && likeRepo.HasLiked(2, c.CommentId, currentProfile.id));
-                    break;
-                case "mainComments":
-                    comments = commentRepo.Comments.Where(c => c.PostId == postId);
-                    break;
+                IEnumerable<Comment> comments = new List<Comment>();
+            
+                switch (feedType)
+                {
+                    case "myComments":
+                        comments = commentRepo.Comments.Where(c => c.PostId == postId && c.ProfileId == currentProfile.id);
+                        break;
+                    case "likedComments":
+                        comments = commentRepo.Comments.Where(c => c.PostId == postId && likeRepo.HasLiked(2, c.CommentId, currentProfile.id));
+                        break;
+                    case "mainComments":
+                        comments = commentRepo.Comments.Where(c => c.PostId == postId);
+                        break;
+                }
+                
+                List<int?> commentIds = new List<int?>();
+                if (skip < comments.Count()) // if user has not reached end of comments
+                {
+                    if (feedFilter == "recent")
+                    {
+                        foreach (Comment c in comments // get comment results
+                            .OrderByDescending(c => c.DateTime)
+                            .Skip(skip)
+                            .Take(take)) 
+                        {
+                            commentIds.Add(c.CommentId);
+                        }
+                    }
+                    else if (feedFilter == "likes")
+                    {
+                        foreach (Comment c in comments
+                            .OrderByDescending(c => c.DateTime)
+                            .OrderByDescending(c => likeRepo.CountByContentId(2, c.CommentId))
+                            .Skip(skip)
+                            .Take(take))
+                        {
+                            commentIds.Add(c.CommentId);
+                        }
+                    }
+
+                    sessionResults.AddResults(resultsKey, commentIds);
+                }
+                else return null; // if user has reached end of comments, return null
             }
 
-            List<CommentModel> commentModels = new List<CommentModel>(); // prepare list
-            if (skip < comments.Count()) // if user has not reached end of comments
+            List<CommentModel> commentModels = new List<CommentModel>();
+
+            foreach(int commentId in sessionResults.GetResultsSegment(resultsKey, skip, take))
             {
-                if (feedFilter == "recent")
-                {
-                    foreach (Comment c in comments // get comment results
-                        .OrderByDescending(c => c.DateTime)
-                        .Skip(skip)
-                        .Take(take)) 
-                    {
-                        commentModels.Add(GetCommentModel(c.CommentId)); // prep comment and add to returning list
-                    }
-                }
-                else if (feedFilter == "likes")
-                {
-                    foreach (Comment c in comments
-                        .OrderByDescending(c => c.DateTime)
-                        .OrderByDescending(c => likeRepo.CountByContentId(2, c.CommentId))
-                        .Skip(skip)
-                        .Take(take))
-                    {
-                        commentModels.Add(GetCommentModel(c.CommentId));
-                    }
-                }
+                commentModels.Add(GetCommentModel(commentId));
             }
-            else return null; // if user has reached end of comments, return null
             
             return commentModels; // return preped comment results
         }
