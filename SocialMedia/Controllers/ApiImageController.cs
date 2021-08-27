@@ -62,12 +62,12 @@ namespace SocialMedia.Controllers
         /*
              Returns the number of images that a user has that are accessible to the current user.
         */
-        [HttpGet("profileimagescount/{id}")]
-        public int ProfileImagesCount(int id)
+        [HttpGet("profileimagescount/{profileId}")]
+        public int ProfileImagesCount(int profileId)
         {
-            int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id);
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profileId);
 
-            return imageRepo.ByProfileId(id).Where(i => i.PrivacyLevel <= relationshipTier).Count();
+            return imageRepo.ByProfileId(profileId).Where(i => i.PrivacyLevel <= relationshipTier).Count();
         }
 
         [HttpPost("updateimageprivacy/{imageId}/{privacyLevel}")]
@@ -81,11 +81,11 @@ namespace SocialMedia.Controllers
         /*
              Deletes an image by ImageID from database and file system, and deletes all dependencies of image (posts, postLikes, comments, commentLikes)
         */
-        [HttpPost("deleteimage/{id}")]
-        public void DeleteImage(int id)
+        [HttpPost("deleteimage/{imageId}")]
+        public void DeleteImage(int imageId)
         {
             // Get a handle on the image record by ImageID provided.
-            Models.Image image = imageRepo.ById(id);
+            Models.Image image = imageRepo.ById(imageId);
 
             // Validate image ownership.
             if(image.ProfileId == currentProfile.id)
@@ -94,12 +94,12 @@ namespace SocialMedia.Controllers
                 // Pattern: (1)prep list, (2)fill list, (3)loop list, (4)repeat pattern on dependencies, (5)delete record.
 
                 List<Post> posts = new List<Post>(); // (1)Prep list.
-                foreach(Post p in postRepo.Posts.Where(p => p.ImageId == id)) { posts.Add(p); } // (2)Fill list.
+                foreach(Post p in postRepo.Posts.Where(p => p.ImageId == imageId)) { posts.Add(p); } // (2)Fill list.
                 foreach(Post p in posts) // (3)Loop list.
                 {
                     // (4)Repeat pattern on dependencies.
                     List<Comment> comments = new List<Comment>();
-                    foreach (Comment c in commentRepo.ByPostId(id)) { comments.Add(c); }
+                    foreach (Comment c in commentRepo.ByPostId(imageId)) { comments.Add(c); }
                     foreach (Comment c in comments)
                     {
                         List<Like> commentLikes = new List<Like>();
@@ -124,7 +124,7 @@ namespace SocialMedia.Controllers
                 }
 
                 // If the user is using the image to be deleted as a profile picture, give them their default profile picture.
-                if (currentProfile.profile.ProfilePicture == id)
+                if (currentProfile.profile.ProfilePicture == imageId)
                 {
                     // Get profile by current user's ProfileID.
                     // (By doing this, instead of using currentUser.profile, it gaurentees that this is the latest version of the profile.)
@@ -145,23 +145,23 @@ namespace SocialMedia.Controllers
         /*
              Returns a portion of a profile's images. Used for lazy loading.
         */
-        [HttpGet("profileimages/{id}/{imageCount}/{amount}")]
-        public List<RawImage> ProfilesImages(int id, int imageCount, int amount) // (id, skip, take) XXX rename
+        [HttpGet("profileimages/{profileId}/{skip}/{take}")]
+        public List<RawImage> ProfilesImages(int profileId, int skip, int take) // (id, skip, take) XXX rename
         {
-            string resultsKey = $"{id}profileImages";
+            string resultsKey = $"{profileId}profileImages";
 
-            if (imageCount == 0)
+            if (skip == 0)
             {
-                int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id);
+                int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profileId);
 
                 // Prep list.
                 List<int?> imageIds = new List<int?>();
 
                 // If the requested segment does not start past the end of the list.
-                if (imageCount < imageRepo.CountByProfileId(id))
+                if (skip < imageRepo.CountByProfileId(profileId))
                 {
                     // Loop though requested segment of profile's images.
-                    foreach (Models.Image i in imageRepo.RangeByProfileId(id, imageCount, amount))
+                    foreach (Models.Image i in imageRepo.RangeByProfileId(profileId, skip, take))
                     {
                         if (i.PrivacyLevel <= relationshipTier)
                         {
@@ -175,7 +175,7 @@ namespace SocialMedia.Controllers
 
             List<RawImage> images = new List<RawImage>();
 
-            foreach(int imageId in sessionResults.GetResultsSegment(resultsKey, imageCount, amount))
+            foreach(int imageId in sessionResults.GetResultsSegment(resultsKey, skip, take))
             {
                 images.Add(Util.GetRawImage(imageRepo.ById(imageId), 1));
             }
@@ -186,12 +186,12 @@ namespace SocialMedia.Controllers
         /*
              Returns an image to the user.
         */
-        [HttpGet("{id}/{size}")] // size will be 0 to 3 (thumbnail, small, medium, full)
-        public RawImage Get(int id, int size)
+        [HttpGet("{imageId}/{size}")] // size will be 0 to 3 (thumbnail, small, medium, full)
+        public RawImage Get(int imageId, int size)
         {
-            if (id == 0) return Util.GetRawImage(new Models.Image(), size);
+            if (imageId == 0) return Util.GetRawImage(new Models.Image(), size);
 
-            Models.Image image = imageRepo.ById(id);
+            Models.Image image = imageRepo.ById(imageId);
             Profile profile = profileRepo.ById(image.ProfileId);
             int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profile.ProfileId);
 
@@ -200,7 +200,7 @@ namespace SocialMedia.Controllers
             // If profile has direct or indirect access.
             // If (hasAccess OR (imageIsProfilePicture AND hasProfilePictureAccess) OR (imageIsInPost AND hasPostAccess))
             if (image.PrivacyLevel <= relationshipTier
-                || (profile.ProfilePicture == id && profile.ProfilePicturePrivacyLevel <= relationshipTier)
+                || (profile.ProfilePicture == imageId && profile.ProfilePicturePrivacyLevel <= relationshipTier)
                 || (imageIsInPost && profile.ProfilePostsPrivacyLevel <= relationshipTier))
                 return Util.GetRawImage(image, size);
 
@@ -213,8 +213,8 @@ namespace SocialMedia.Controllers
         [HttpPost]
         public RawImage Upload([FromBody] RawImageUpload rawImage)
         {
-            // If data was not revieved, abort.
-            if (rawImage == null) return null;
+            // If data was not revieved, or the user has exceeded their upload limit, abort.
+            if (rawImage == null || imageRepo.CountByProfileId(currentProfile.id) > 100) return null;
 
             // Get handle on name for shortcut (this is used frequently).
             string name = rawImage.Name;

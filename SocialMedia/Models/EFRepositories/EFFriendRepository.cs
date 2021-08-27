@@ -30,37 +30,37 @@ namespace SocialMedia.Models
         /*
             Get a single record of the type that this class is dedicated to by it's ID.
         */
-        public Friend ById(int id) => context.Friends.First(f => f.FriendId == id);
+        public Friend ById(int friendId) => context.Friends.First(f => f.FriendId == friendId);
 
         /*
             Get friend records that requested to be friends with the user of the provided ProfileID.
         */
-        public IEnumerable<Friend> ByToId(int? id, bool accepted) => 
+        public IEnumerable<Friend> ByToId(int? toProfileId, bool accepted) => 
             context.Friends.Where(f => 
-                f.ToId == id && 
+                f.ToId == toProfileId && 
                 f.Accepted == accepted
             );
 
         /*
             Get friend records that were requested to be friends by the user of the provided ProfileID.
         */
-        public IEnumerable<Friend> ByFromId(int? id, bool accepted) => 
+        public IEnumerable<Friend> ByFromId(int? fromProfileId, bool accepted) => 
             context.Friends.Where(f => 
-                f.FromId == id && 
+                f.FromId == fromProfileId && 
                 f.Accepted == accepted
             );
 
         /*
             Get list of ProfileIDs of all friend records that have been accepted, either from the user, or to the user.
         */
-        public List<int?> ProfileFriends(int? id)
+        public List<int?> ProfileFriends(int? profileId)
         {
             // Prep ProfileID list.
             List<int?> profileIds = new List<int?>();
 
             // Parse though results and fill into ProfileID list.
-            foreach (Friend f in ByFromId(id, true)) { profileIds.Add(f.ToId); }
-            foreach (Friend f in ByToId(id, true)) { profileIds.Add(f.FromId); }
+            foreach (Friend f in ByFromId(profileId, true)) { profileIds.Add(f.ToId); }
+            foreach (Friend f in ByToId(profileId, true)) { profileIds.Add(f.FromId); }
 
             // Return list of results.
             return profileIds;

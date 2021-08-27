@@ -18,16 +18,16 @@ namespace SocialMedia.Models
         // START SHORTCUTS
 
         // Get a single record of the type that this class is dedicated to by it's ID.
-        Friend ById(int id);
+        Friend ById(int friendId);
 
         // Get friend records that requested to be friends with the user of the provided ProfileID.
-        IEnumerable<Friend> ByToId(int? id, bool accepted);
+        IEnumerable<Friend> ByToId(int? toProfileId, bool accepted);
 
         // Get friend records that were requested to be friends by the user of the provided ProfileID.
-        IEnumerable<Friend> ByFromId(int? id, bool accepted);
+        IEnumerable<Friend> ByFromId(int? fromProfileId, bool accepted);
 
         // Get list of ProfileIDs of all friend records that have been accepted, either from the user, or to the user.
-        List<int?> ProfileFriends(int? id);
+        List<int?> ProfileFriends(int? profileId);
 
         /*
             Determine how the provided profile relates to current user's profile in terms of a friend record.

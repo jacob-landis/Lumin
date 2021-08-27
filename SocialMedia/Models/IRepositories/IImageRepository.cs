@@ -18,17 +18,17 @@ namespace SocialMedia.Models
         // START SHORTCUTS
 
         // Get a single record of the type that this class is dedicated to by it's ID.
-        Image ById(int? id);
+        Image ById(int? imageId);
 
         // Get list of image records belonging to the profile of the provided ProfileID.
-        IEnumerable<Image> ByProfileId(int? id);
+        IEnumerable<Image> ByProfileId(int? profileId);
 
         // Get the count of images that belong to the profile with the provided ProfileID.
-        int CountByProfileId(int? id);
+        int CountByProfileId(int? profileId);
 
         // Get a range of images belonging to a profile ordered by datetime.
         // Caller can specify how many to skip, and how many to take.
-        IEnumerable<Image> RangeByProfileId(int? id, int? imageCount, int? amount);
+        IEnumerable<Image> RangeByProfileId(int? profileId, int? skip, int? take);
         // END SHORTCUTS
 
         // Used to create a new record or update an old record, and return the ID of the newly created or the updated record.

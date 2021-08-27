@@ -73,7 +73,7 @@ class PostsBox extends ContentBox {
         this.profileId = profileId ? profileId : User.profileId;
 
         this.messageElm.onclick = (event: MouseEvent) => this.collapseBox();
-        this.messageElm.title = 'Contract section';
+        this.messageElm.title = 'Collapse section';
 
         PostsBox.postBoxes.push(this);
     }

@@ -46,3 +46,7 @@
 .contentLoading > loadingGif {
     opacity: 1;
 }
+
+.commentsBox > .contentMessage, .post-box > .contentMessage {
+    cursor: pointer;
+}

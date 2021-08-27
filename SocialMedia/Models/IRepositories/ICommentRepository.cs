@@ -18,17 +18,17 @@ namespace SocialMedia.Models
         // START SHORTCUTS
 
         // Get a single record of the type that this class is dedicated to by it's ID.
-        Comment ById(int? id);
+        Comment ById(int? commentId);
 
         // Get comments belonging to a post by the PostID.
-        IEnumerable<Comment> ByPostId(int? id);
+        IEnumerable<Comment> ByPostId(int? postId);
 
         // Get the count of comments that belong to the post with the provided PostID.
-        int CountByPostId(int? id);
+        int CountByPostId(int? postId);
 
         // Get a range of comments belonging to a post ordered by datetime. 
         // Caller can specify how many to skip, and how many to take.
-        IEnumerable<Comment> RangeByPostId(int? id, int? commentCount, int? amount);
+        IEnumerable<Comment> RangeByPostId(int? postId, int? skip, int? take);
 
         bool HasCommented(int postId, int profileId);
         // END SHORTCUTS

@@ -30,17 +30,17 @@ namespace SocialMedia.Models
         /*
             Get a single record of the type that this class is dedicated to by it's ID.
         */
-        public Post ById(int? id) => context.Posts.First(p => p.PostId == id);
+        public Post ById(int? postId) => context.Posts.First(p => p.PostId == postId);
 
         /*
             Get posts belonging to a profile by the ProfileID.
         */
-        public IEnumerable<Post> ByProfileId(int? id) => context.Posts.Where(p => p.ProfileId == id);
+        public IEnumerable<Post> ByProfileId(int? profileId) => context.Posts.Where(p => p.ProfileId == profileId);
         
         /*
             Get the count of posts that belong to the profile with the provided ProfileID.
         */
-        public int CountByProfileId(int id) => context.Posts.Where(p => p.ProfileId == id).Count();
+        public int CountByProfileId(int profileId) => context.Posts.Where(p => p.ProfileId == profileId).Count();
         // END SHORTCUTS
 
         /*

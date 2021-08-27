@@ -28,10 +28,20 @@ namespace SocialMedia
         */
         public Startup(IHostingEnvironment env)
         {
-            Configuration = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json")
-                .Build();
+            if (env.IsDevelopment())
+            {
+                Configuration = new ConfigurationBuilder()
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile("appsettings.Development.json")
+                    .Build();
+            }
+            else if (env.IsProduction())
+            {
+                Configuration = new ConfigurationBuilder()
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+            }
         }
 
         /*
@@ -84,10 +94,11 @@ namespace SocialMedia
         */
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // DEVELOPMENT ENV ONLY XXX put these in env detector.
-            app.UseStatusCodePages();
-            app.UseDeveloperExceptionPage();
-            // DEVELOPMENT ENV ONLY
+            if (env.IsDevelopment())
+            {
+                app.UseStatusCodePages();
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseStaticFiles();
             app.UseSession();

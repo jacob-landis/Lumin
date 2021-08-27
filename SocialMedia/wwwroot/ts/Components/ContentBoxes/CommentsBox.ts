@@ -15,6 +15,9 @@
                 if (this.onCommentsLoadEnd != null) this.onCommentsLoadEnd(commentCards == null);
             });
         });
+        
+        this.messageElm.onclick = (event: MouseEvent) => this.collapseBox();
+        this.messageElm.title = 'Collapse section';
     }
 
     public refreshComments(onRefreshLoadEnd?: (refreshSummary: CommentRefreshSummaryRecord) => void) {
@@ -42,5 +45,17 @@
                     onRefreshLoadEnd(refreshSummary);
             }
         );
+    }
+
+    private collapseBox(): void {
+        ViewUtil.hide(this.contentElm);
+        this.messageElm.onclick = (event: MouseEvent) => this.expandBox();
+        this.messageElm.title = 'Expand section';
+    }
+
+    private expandBox(): void {
+        ViewUtil.show(this.contentElm, 'block');
+        this.messageElm.onclick = (event: MouseEvent) => this.collapseBox();
+        this.messageElm.title = 'Collapse section';
     }
 }

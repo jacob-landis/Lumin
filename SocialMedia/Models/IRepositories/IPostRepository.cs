@@ -18,13 +18,13 @@ namespace SocialMedia.Models
         // START SHORTCUTS
 
         // Get a single record of the type that this class is dedicated to by it's ID.
-        Post ById(int? id);
+        Post ById(int? postId);
 
         // Get posts belonging to a profile by the ProfileID.
-        IEnumerable<Post> ByProfileId(int? id);
+        IEnumerable<Post> ByProfileId(int? profileId);
 
         // Get the count of posts that belong to the profile with the provided ProfileID.
-        int CountByProfileId(int id);
+        int CountByProfileId(int profileId);
         // END SHORTCUTS
 
         // Used to create a new record or update an old record, and return the ID of the newly created or the updated record.

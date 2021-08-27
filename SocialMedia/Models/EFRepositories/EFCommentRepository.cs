@@ -33,28 +33,28 @@ namespace SocialMedia.Models
         /*
             Get a single record of the type that this class is dedicated to by it's ID.
         */
-        public Comment ById(int? id) => context.Comments.FirstOrDefault(c => c.CommentId == id);
+        public Comment ById(int? commentId) => context.Comments.FirstOrDefault(c => c.CommentId == commentId);
 
         /*
             Get comments belonging to a post by the PostID.
         */
-        public IEnumerable<Comment> ByPostId(int? id) => context.Comments.Where(c => c.PostId == id);
+        public IEnumerable<Comment> ByPostId(int? postId) => context.Comments.Where(c => c.PostId == postId);
 
         /*
             Get the count of comments that belong to the post with the provided PostID.
         */
-        public int CountByPostId(int? id) => context.Comments.Where(c => c.PostId == id).Count();
+        public int CountByPostId(int? postId) => context.Comments.Where(c => c.PostId == postId).Count();
 
         /*
             Get a range of comments belonging to a post ordered by datetime. 
             Caller can specify how many to skip, and how many to take.
         */
-        public IEnumerable<Comment> RangeByPostId(int? id, int? commentCount, int? amount) => 
+        public IEnumerable<Comment> RangeByPostId(int? postId, int? skip, int? take) => 
             context.Comments
-                .Where(c => c.PostId == id)
+                .Where(c => c.PostId == postId)
                 .OrderByDescending(c => c.DateTime)
-                .Skip((int)commentCount)
-                .Take((int)amount);
+                .Skip((int)skip)
+                .Take((int)take);
 
 
         public bool HasCommented(int postId, int profileId) => context.Comments.Any(c => c.PostId == postId && c.ProfileId == profileId);

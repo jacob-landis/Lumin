@@ -55,11 +55,11 @@ namespace SocialMedia.Controllers
         /*
              Delete a post and it's dependencies by PostID.
         */
-        [HttpPost("deletepost/{id}")]
-        public void DeletePost(int id)
+        [HttpPost("deletepost/{postId}")]
+        public void DeletePost(int postId)
         {
             // Get handle on post by PostID.
-            Post post = postRepo.ById(id);
+            Post post = postRepo.ById(postId);
 
             // If current user owns post, delete it.
             if (post.ProfileId == currentProfile.id)
@@ -68,7 +68,7 @@ namespace SocialMedia.Controllers
                 // Pattern: (1)prep list, (2)fill list, (3)loop list, (4)repeat pattern on dependencies, (5)delete record.
 
                 List<Comment> comments = new List<Comment>(); // (1)Prep list.
-                foreach (Comment c in commentRepo.ByPostId(id)) { comments.Add(c); } // (2)Fill list.
+                foreach (Comment c in commentRepo.ByPostId(postId)) { comments.Add(c); } // (2)Fill list.
                 foreach (Comment c in comments) // (3)Loop list.
                 {
                     // (4)Repeat pattern on dependencies.
@@ -83,14 +83,14 @@ namespace SocialMedia.Controllers
                 }
 
                 List<Like> postLikes = new List<Like>();
-                foreach (Like l in likeRepo.ByTypeAndId(1, id)) { postLikes.Add(l); }
+                foreach (Like l in likeRepo.ByTypeAndId(1, postId)) { postLikes.Add(l); }
                 foreach (Like l in postLikes)
                 {
                     likeRepo.DeleteLike(l);
                 }
 
                 // (5)Delete record.
-                postRepo.DeletePost(postRepo.ById(id));
+                postRepo.DeletePost(postRepo.ById(postId));
             }
         }
 
@@ -105,11 +105,11 @@ namespace SocialMedia.Controllers
         /*
              Update the caption of a post.
         */
-        [HttpPost("updatepost/{id}")]
-        public void UpdatePost([FromBody] StringModel caption, int id)
+        [HttpPost("updatepost/{postId}")]
+        public void UpdatePost([FromBody] StringModel caption, int postId)
         {
             // Get handle on post by provided PostID.
-            Post post = postRepo.ById(id);
+            Post post = postRepo.ById(postId);
 
             // caption length and post ownership are verified
             // If the provided caption length is not too long and the post belongs to the current user's profile, update post.
@@ -126,21 +126,21 @@ namespace SocialMedia.Controllers
         /*
              Returns a portion of a profile's posts. Used for lazy loading.
         */
-        [HttpGet("profileposts/{id}/{postCount}/{amount}/{feedFilter}/{feedType}")]
-        public List<PostModel> ProfilePosts(int id, int postCount, int amount, string feedFilter, string feedType)
+        [HttpGet("profileposts/{profileId}/{skip}/{take}/{feedFilter}/{feedType}")]
+        public List<PostModel> ProfilePosts(int profileId, int skip, int take, string feedFilter, string feedType)
         {
             string resultsKey = "profilePosts";
 
             // If a new feed is starting and the user has access permission.
-            if (postCount == 0
-                && profileRepo.ById(id).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
+            if (skip == 0
+                && profileRepo.ById(profileId).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profileId))
             {
                 IEnumerable<Post> postRecords = new List<Post>();
                 
                 switch (feedType)
                 {
                     case "commentedPosts":
-                        postRecords = postRepo.Posts.Where(p => p.ProfileId == id && 
+                        postRecords = postRepo.Posts.Where(p => p.ProfileId == profileId && 
                         (
                             commentRepo.HasCommented(p.PostId, currentProfile.id)
                             || commentRepo.ByPostId(p.PostId).Any(c => likeRepo.HasLiked(2, c.CommentId, currentProfile.id))
@@ -148,11 +148,11 @@ namespace SocialMedia.Controllers
                         break;
 
                     case "likedPosts":
-                        postRecords = postRepo.Posts.Where(p => p.ProfileId == id && likeRepo.HasLiked(1, p.PostId, currentProfile.id));
+                        postRecords = postRepo.Posts.Where(p => p.ProfileId == profileId && likeRepo.HasLiked(1, p.PostId, currentProfile.id));
                         break;
 
                     case "mainPosts":
-                        postRecords = postRepo.Posts.Where(p => p.ProfileId == id);
+                        postRecords = postRepo.Posts.Where(p => p.ProfileId == profileId);
                         break;
                 }
 
@@ -187,7 +187,7 @@ namespace SocialMedia.Controllers
 
             List<PostModel> postModels = new List<PostModel>();
 
-            foreach (int postId in sessionResults.GetResultsSegment(resultsKey, postCount, amount))
+            foreach (int postId in sessionResults.GetResultsSegment(resultsKey, skip, take))
             {
                 postModels.Add(GetPostModel(postId));
             }
@@ -198,12 +198,12 @@ namespace SocialMedia.Controllers
         /*
              Returns a portion of the current user's public post feed. Used for lazy loading.
         */
-        [HttpGet("publicposts/{postCount}/{amount}")]
-        public List<PostModel> PublicPosts(int postCount, int amount)
+        [HttpGet("publicposts/{skip}/{take}")]
+        public List<PostModel> PublicPosts(int skip, int take)
         {
             string resultsKey = "publicPosts";
 
-            if (postCount == 0)
+            if (skip == 0)
             {
                 // Get list of ProfileIDs (the current user's friends), and the current user's ProfileID.
                 List<int?> profileIds = friendRepo.ProfileFriends(currentProfile.id);
@@ -231,7 +231,7 @@ namespace SocialMedia.Controllers
 
             List<PostModel> postModels = new List<PostModel>();
 
-            foreach(int postId in sessionResults.GetResultsSegment(resultsKey, postCount, amount))
+            foreach(int postId in sessionResults.GetResultsSegment(resultsKey, skip, take))
             {
                 postModels.Add(GetPostModel(postId));
             }
@@ -320,8 +320,8 @@ namespace SocialMedia.Controllers
         /*
              Get a single post by PostID.
         */
-        [HttpGet("{id}")]
-        public PostModel GetPost(int id) => GetPostModel(id);
+        [HttpGet("{postId}")]
+        public PostModel GetPost(int postId) => GetPostModel(postId);
 
         /*
              Create a post record.
@@ -349,15 +349,15 @@ namespace SocialMedia.Controllers
         /*
              Returns a prepped list of a profile's posts by ProfileID.
         */
-        public List<PostModel> GetProfilePosts(int id)
+        public List<PostModel> GetProfilePosts(int profileId)
         {
-            if (profileRepo.ById(id).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.id, id))
+            if (profileRepo.ById(profileId).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.id, profileId))
             {
                 // Prep list for prepped posts.
                 List<PostModel> postModels = new List<PostModel>();
 
                 // Get list of post records.
-                IEnumerable<Post> posts = postRepo.ByProfileId(id);
+                IEnumerable<Post> posts = postRepo.ByProfileId(profileId);
 
                 // If post records were found, prep them and add them to list.
                 if (posts != null)
@@ -373,10 +373,10 @@ namespace SocialMedia.Controllers
         /*
              Preps a post to be sent back to the user.
         */
-        public PostModel GetPostModel(int id)
+        public PostModel GetPostModel(int postId)
         {
             // Get handle on post by PostID.
-            Post post = postRepo.ById(id);
+            Post post = postRepo.ById(postId);
 
             // Get handle on post owner by ProfileID
             Profile profile = profileRepo.ById(post.ProfileId);
@@ -386,8 +386,8 @@ namespace SocialMedia.Controllers
             if (post.PrivacyLevel <= relationshipTier)
             {
                 string relationToUser = friendRepo.RelationToUser(currentProfile.id, profile.ProfileId);
-                DateTime? relationChangeDatetime = friendRepo.RelationshipChangeDatetime(currentProfile.id, id);
-                int? blockerProfileId = friendRepo.BlockerProfileId(currentProfile.id, id);
+                DateTime? relationChangeDatetime = friendRepo.RelationshipChangeDatetime(currentProfile.id, postId);
+                int? blockerProfileId = friendRepo.BlockerProfileId(currentProfile.id, postId);
 
                 // Get handle on profile picture of owner of post.
                 Image profilePicture = imageRepo.ById(profile.ProfilePicture);
@@ -397,16 +397,16 @@ namespace SocialMedia.Controllers
 
                 RawImage postImage = Util.GetRawImage(imageRepo.ById(post.ImageId), 2);
 
-                int count = likeRepo.CountByContentId(1, id);
-                bool hasLiked = likeRepo.HasLiked(1, id, currentProfile.id);
+                int count = likeRepo.CountByContentId(1, postId);
+                bool hasLiked = likeRepo.HasLiked(1, postId, currentProfile.id);
 
-                Like like = likeRepo.ByTypeAndProfileId(1, id, currentProfile.id);
+                Like like = likeRepo.ByTypeAndProfileId(1, postId, currentProfile.id);
                 DateTime dateTime = new DateTime();
                 if (like != null) dateTime = like.DateTime.ToLocalTime();
 
                 LikeModel likes = new LikeModel
                 {
-                    ContentId = id,
+                    ContentId = postId,
                     ContentType = 1,
                     Count = count,
                     HasLiked = hasLiked,

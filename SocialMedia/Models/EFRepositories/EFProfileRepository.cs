@@ -34,7 +34,7 @@ namespace SocialMedia.Models
         /*
             Get a single record of the type that this class is dedicated to by it's ID.
         */
-        public Profile ById(int? id) => context.Profiles.First(p => p.ProfileId == id);
+        public Profile ById(int? profileId) => context.Profiles.First(p => p.ProfileId == profileId);
 
         /*
             Get profile by Password. 

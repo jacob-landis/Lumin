@@ -56,6 +56,11 @@ var UploadImageModal = (function (_super) {
                 this.displayError('- The file you selected is not a valid image type (png, jpg or tif)');
         }
         this.selectPrivacySetting.value = "" + User.imagesPrivacyLevel;
+        Ajax.getProfileImagesCount(User.profileId, function (imageCount) {
+            if (imageCount > 100) {
+                _this.displayError('- You have already reached the image upload limit (100 images)');
+            }
+        });
         _super.prototype.open.call(this);
     };
     UploadImageModal.prototype.stageFile = function () {

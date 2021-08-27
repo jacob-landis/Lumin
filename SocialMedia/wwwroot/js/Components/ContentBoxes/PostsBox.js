@@ -36,7 +36,7 @@ var PostsBox = (function (_super) {
         rootElm.classList.add('post-box');
         _this.profileId = profileId ? profileId : User.profileId;
         _this.messageElm.onclick = function (event) { return _this.collapseBox(); };
-        _this.messageElm.title = 'Contract section';
+        _this.messageElm.title = 'Collapse section';
         PostsBox.postBoxes.push(_this);
         return _this;
     }

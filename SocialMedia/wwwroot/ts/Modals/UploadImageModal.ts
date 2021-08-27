@@ -126,6 +126,13 @@ class UploadImageModal extends Modal {
 
         this.selectPrivacySetting.value = `${User.imagesPrivacyLevel}`;
 
+        // Temporary solution to limiting image uploading. Meant to be easily removable.
+        Ajax.getProfileImagesCount(User.profileId, (imageCount: string) => {
+            if ((<number><unknown>imageCount) > 100) {
+                this.displayError('- You have already reached the image upload limit (100 images)');
+            }
+        });
+
         super.open();
     }
 

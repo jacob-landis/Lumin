@@ -18,7 +18,7 @@ namespace SocialMedia.Models
         // START SHORTCUTS
 
         // Get a single record of the type that this class is dedicated to by it's ID.
-        Profile ById(int? id);
+        Profile ById(int? profileId);
 
         // Get profile by Password.
         Profile ByPassword(string password);

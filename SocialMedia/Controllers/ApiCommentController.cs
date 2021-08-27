@@ -85,14 +85,14 @@ namespace SocialMedia.Controllers
         }
 
         // Get comment count by PostId XXX shouldn't this go in ApiPostController??
-        [HttpGet("commentcount/{id}")]
-        public int CommentCount(int id) => commentRepo.Comments.Where(c => c.PostId == id).Count();
+        [HttpGet("commentcount/{postId}")]
+        public int CommentCount(int postId) => commentRepo.Comments.Where(c => c.PostId == postId).Count();
 
         // Delete comment by CommentId
-        [HttpPost("deletecomment/{id}")]
-        public void DeleteComment(int id)
+        [HttpPost("deletecomment/{commentId}")]
+        public void DeleteComment(int commentId)
         {
-            Comment comment = commentRepo.ById(id); // get comment by CommentId
+            Comment comment = commentRepo.ById(commentId); // get comment by CommentId
 
             if(comment.ProfileId == currentProfile.id) // validate user ownership of comment
             {
@@ -101,22 +101,22 @@ namespace SocialMedia.Controllers
                 // get likes belonging to this comment 
                 // (type 2 is comment likes)
                 // XXX use enumeration instead of magic numbers for type
-                foreach(Like l in likeRepo.ByTypeAndId(2, id)) { likes.Add(l); }
+                foreach(Like l in likeRepo.ByTypeAndId(2, commentId)) { likes.Add(l); }
 
                 // after retrieve operation, delete each retrieved like
                 foreach(Like l in likes) { likeRepo.DeleteLike(l); }
 
                 // delete comment retrieved by CommentId
-                commentRepo.DeleteComment(commentRepo.ById(id));
+                commentRepo.DeleteComment(commentRepo.ById(commentId));
             }
 
         }
 
         // replace text value of comment with provided id with text provided in request body
-        [HttpPost("updatecomment/{id}")]
-        public void UpdateComment([FromBody] StringModel content, int id)
+        [HttpPost("updatecomment/{commentId}")]
+        public void UpdateComment([FromBody] StringModel content, int commentId)
         {
-            Comment comment = commentRepo.ById(id); // get comment by CommentId
+            Comment comment = commentRepo.ById(commentId); // get comment by CommentId
 
             // content length and comment ownership is verified
             if (content.str.Length > 0 && content.str.Length <= 125 && comment.ProfileId == currentProfile.id)
@@ -215,15 +215,15 @@ namespace SocialMedia.Controllers
         }
 
         // get list of comments by id, skip, take
-        [HttpGet("postcomments/{id}/{commentCount}/{amount}/{feedFilter}/{feedType}")]
-        public List<CommentModel> PostComments(int id, int commentCount, int amount, string feedFilter, string feedType)
+        [HttpGet("postcomments/{postId}/{skip}/{take}/{feedFilter}/{feedType}")]
+        public List<CommentModel> PostComments(int postId, int skip, int take, string feedFilter, string feedType)
         {
-            return GetCommentModels(id, commentCount, amount, feedFilter, feedType);
+            return GetCommentModels(postId, skip, take, feedFilter, feedType);
         }
 
         // get comment by id
-        [HttpGet("{id}")]
-        public CommentModel GetComment(int id) => GetCommentModel(id);
+        [HttpGet("{commentId}")]
+        public CommentModel GetComment(int commentId) => GetCommentModel(commentId);
         
         // create comment from text provided in request body, current datetime, and current user id
         [HttpPost]
@@ -307,22 +307,22 @@ namespace SocialMedia.Controllers
         }
 
         // prep comment to be sent to client
-        public CommentModel GetCommentModel(int id)
+        public CommentModel GetCommentModel(int commentId)
         {
-            Comment comment = commentRepo.ById(id); // get comment by CommentId
+            Comment comment = commentRepo.ById(commentId); // get comment by CommentId
             if (comment == null) return null; // if no comment was found, return null
             Profile profile = profileRepo.ById(comment.ProfileId); // get handle on owner of comment
 
             DateTime? likeDateTime = new DateTime();
-            Like like = likeRepo.ByTypeAndProfileId(2, id, currentProfile.id);
+            Like like = likeRepo.ByTypeAndProfileId(2, commentId, currentProfile.id);
             if (like != null) likeDateTime = like.DateTime.ToLocalTime();
 
             LikeModel likes = new LikeModel // attach info for likes
             {
-                ContentId = id, // link like data to parent comment by CommentId
+                ContentId = commentId, // link like data to parent comment by CommentId
                 ContentType = 2,
-                Count = likeRepo.CountByContentId(2, id), // set like count by CommentId
-                HasLiked = likeRepo.HasLiked(2, id, currentProfile.id), // determine if user has like and assign value
+                Count = likeRepo.CountByContentId(2, commentId), // set like count by CommentId
+                HasLiked = likeRepo.HasLiked(2, commentId, currentProfile.id), // determine if user has like and assign value
                 DateTime = likeDateTime
             };
 

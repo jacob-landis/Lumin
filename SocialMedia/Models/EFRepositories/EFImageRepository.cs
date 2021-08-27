@@ -30,33 +30,33 @@ namespace SocialMedia.Models
         /*
             Get a single record of the type that this class is dedicated to by it's ID.
         */
-        public Image ById(int? id)
+        public Image ById(int? imageId)
         {
-            if (id == 0) return new Image(); // XXX check if other classes are doing null or "nully" checks.
-            return context.Images.First(i => i.ImageId == id);
+            if (imageId == 0) return new Image(); // XXX check if other classes are doing null or "nully" checks.
+            return context.Images.First(i => i.ImageId == imageId);
         }
 
         /*
             Get list of image records belonging to the profile of the provided ProfileID.
         */
-        public IEnumerable<Image> ByProfileId(int? id) => context.Images.Where(i => i.ProfileId == id);
+        public IEnumerable<Image> ByProfileId(int? profileId) => context.Images.Where(i => i.ProfileId == profileId);
 
         /*
             Get the count of images that belong to the profile with the provided ProfileID.
         */
-        public int CountByProfileId(int? id) => context.Images.Where(i => i.ProfileId == id).Count();
+        public int CountByProfileId(int? profileId) => context.Images.Where(i => i.ProfileId == profileId).Count();
 
         /*
             Get a range of images belonging to a profile ordered by datetime. 
             Caller can specify how many to skip, and how many to take.
         */
-        public IEnumerable<Image> RangeByProfileId(int? id, int? imageCount, int? amount) => 
+        public IEnumerable<Image> RangeByProfileId(int? profileId, int? skip, int? take) => 
             //context.Images
             //.Where(i => i.ProfileId == id)
-            ByProfileId(id) // replaces the above two XXX test this! XXX check if other repo classes do this
+            ByProfileId(profileId) // replaces the above two XXX test this! XXX check if other repo classes do this
             .OrderByDescending(i => i.DateTime)
-            .Skip((int)imageCount)
-            .Take((int)amount);
+            .Skip((int)skip)
+            .Take((int)take);
         // END SHORTCUTS
 
         /*

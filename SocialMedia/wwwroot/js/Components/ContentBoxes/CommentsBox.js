@@ -25,6 +25,8 @@ var CommentsBox = (function (_super) {
         _this.feedType = feedType;
         _this.getFeedFilter = getFeedFilter;
         _this.onCommentsLoadEnd = onCommentsLoadEnd;
+        _this.messageElm.onclick = function (event) { return _this.collapseBox(); };
+        _this.messageElm.title = 'Collapse section';
         return _this;
     }
     CommentsBox.prototype.refreshComments = function (onRefreshLoadEnd) {
@@ -46,6 +48,18 @@ var CommentsBox = (function (_super) {
             if (_this.onCommentsLoadEnd != null)
                 onRefreshLoadEnd(refreshSummary);
         });
+    };
+    CommentsBox.prototype.collapseBox = function () {
+        var _this = this;
+        ViewUtil.hide(this.contentElm);
+        this.messageElm.onclick = function (event) { return _this.expandBox(); };
+        this.messageElm.title = 'Expand section';
+    };
+    CommentsBox.prototype.expandBox = function () {
+        var _this = this;
+        ViewUtil.show(this.contentElm, 'block');
+        this.messageElm.onclick = function (event) { return _this.collapseBox(); };
+        this.messageElm.title = 'Collapse section';
     };
     return CommentsBox;
 }(ContentBox));

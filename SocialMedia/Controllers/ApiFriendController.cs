@@ -42,8 +42,8 @@ namespace SocialMedia.Controllers
         /*
             Either returns a list of friends, friend requests, or profile search results.
         */
-        [HttpPost("friends/{id}/{type}/{skip}/{take}")]
-        public List<ProfileModel> GetFriends(int id, string type, int skip, int take, [FromBody] StringModel search)
+        [HttpPost("friends/{profileId}/{type}/{skip}/{take}")]
+        public List<ProfileModel> GetFriends(int profileId, string type, int skip, int take, [FromBody] StringModel search)
         {
             List<int?> profileIds = new List<int?>();
 
@@ -53,11 +53,11 @@ namespace SocialMedia.Controllers
             {
                 string resultsKey = "profileModalFriends";
 
-                if (skip == 0) sessionResults.AddResults(resultsKey, FriendRequests());
+                if (skip == 0) sessionResults.AddResults(resultsKey, ProfileFriends(profileId));
 
-                foreach (int profileId in sessionResults.GetResultsSegment(resultsKey, skip, take))
+                foreach (int sessionProfileId in sessionResults.GetResultsSegment(resultsKey, skip, take))
                 {
-                    results.Add(GetProfileModel(profileId));
+                    results.Add(GetProfileModel(sessionProfileId));
                 }
             }
             else if (type == "friendDropdown")
@@ -67,9 +67,10 @@ namespace SocialMedia.Controllers
                 if (skip == 0)
                 {
                     // If ID is provided and the user has access, return friends by ProfileID.
-                    if (id != 0 && profileRepo.ById(id).ProfileFriendsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, id))
+                    if (profileId != 0 
+                        && profileRepo.ById(profileId).ProfileFriendsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profileId))
                     {
-                        sessionResults.AddResults(resultsKey, ProfileFriends(id));
+                        sessionResults.AddResults(resultsKey, ProfileFriends(profileId));
                     }
 
                     // If search string is provided, return profile search results.
@@ -82,9 +83,9 @@ namespace SocialMedia.Controllers
                     else sessionResults.AddResults(resultsKey, FriendRequests());
                 }
 
-                foreach(int profileId in sessionResults.GetResultsSegment(resultsKey, skip, take))
+                foreach(int sessionProfileId in sessionResults.GetResultsSegment(resultsKey, skip, take))
                 {
-                    results.Add(GetProfileModel(profileId));
+                    results.Add(GetProfileModel(sessionProfileId));
                 }
             }
 
@@ -108,11 +109,11 @@ namespace SocialMedia.Controllers
         /*
             Deletes the friend record that matches the provided ProfileID and the current user's ProfileID.
         */
-        [HttpPost("deletefriend/{id}")]
-        public void DeleteFriend(int id)
+        [HttpPost("deletefriend/{profileId}")]
+        public void DeleteFriend(int profileId)
         {
             // Find friend record by ID.
-            Friend friend = friendRepo.Friends.First(f => f.ToId == id || f.FromId == id); // XXX need to confirm user ownership of relationship
+            Friend friend = friendRepo.Friends.First(f => f.ToId == profileId || f.FromId == profileId); // XXX need to confirm user ownership of relationship
 
             // Delete friend record.
             friendRepo.DeleteFriend(friend);
@@ -121,14 +122,14 @@ namespace SocialMedia.Controllers
         /*
             Adds friend record to the database that is marked as unaccepted. 
         */
-        [HttpPost("createrequest/{id}")]
-        public void CreateRequest(int id)
+        [HttpPost("createrequest/{profileId}")]
+        public void CreateRequest(int profileId)
         {
             // Create friend obj with default values, a ToId of the provided id, and a FromId of the current user's profile. DateAccepted is left blank.
             Friend friend = new Friend
             {
                 Accepted = false,
-                ToId = id,
+                ToId = profileId,
                 StatusChangeDate = DateTime.UtcNow,
                 FromId = currentProfile.id
             };
@@ -140,11 +141,11 @@ namespace SocialMedia.Controllers
         /*
              Mark friend record as accepted and set DateAccpeted to the current date time.
         */
-        [HttpPost("acceptrequest/{id}")]
-        public void AcceptRequest(int id)
+        [HttpPost("acceptrequest/{profileId}")]
+        public void AcceptRequest(int profileId)
         {
             // Find friend by provided ProfileID.
-            Friend friend = friendRepo.Friends.First(f => f.FromId == id && f.ToId == currentProfile.id);
+            Friend friend = friendRepo.Friends.First(f => f.FromId == profileId && f.ToId == currentProfile.id);
 
             // Set DateAccepted to current date time.
             friend.StatusChangeDate = DateTime.UtcNow;
@@ -274,9 +275,9 @@ namespace SocialMedia.Controllers
         /*
             Returns preped list of friends of the provided profile by its ProfileID.
         */
-        public List<int?> ProfileFriends(int id)
+        public List<int?> ProfileFriends(int profileId)
         {
-            return friendRepo.ProfileFriends(id);
+            return friendRepo.ProfileFriends(profileId);
         }
 
         /*
@@ -304,10 +305,10 @@ namespace SocialMedia.Controllers
         /*
             Preps a profile to be sent back to client.
         */
-        public ProfileModel GetProfileModel(int? id)
+        public ProfileModel GetProfileModel(int? profileId)
         {
             // Get profile by ProfileID.
-            Profile profile = profileRepo.ById(id);
+            Profile profile = profileRepo.ById(profileId);
 
             // Prep profile picture.
             Image image = imageRepo.ById(profile.ProfilePicture);
@@ -316,10 +317,10 @@ namespace SocialMedia.Controllers
             return Util.GetProfileModel(
                 profile, 
                 image, 
-                friendRepo.RelationToUser(currentProfile.id, id), 
-                friendRepo.RelationshipTier(currentProfile.id, id),
-                friendRepo.RelationshipChangeDatetime(currentProfile.id, id),
-                friendRepo.BlockerProfileId(currentProfile.id, id));
+                friendRepo.RelationToUser(currentProfile.id, profileId), 
+                friendRepo.RelationshipTier(currentProfile.id, profileId),
+                friendRepo.RelationshipChangeDatetime(currentProfile.id, profileId),
+                friendRepo.BlockerProfileId(currentProfile.id, profileId));
         }
     }
 }

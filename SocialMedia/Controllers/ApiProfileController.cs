@@ -44,11 +44,11 @@ namespace SocialMedia.Controllers
         /*
             Returns a prepped profile by ProfileID.
         */
-        [HttpPost("fullprofile/{id}")]
-        public FullProfileModel GetFullProfile(int id)
+        [HttpPost("fullprofile/{profileId}")]
+        public FullProfileModel GetFullProfile(int profileId)
         {
             // Get profile by ProfileID.
-            Profile profile = profileRepo.ById(id);
+            Profile profile = profileRepo.ById(profileId);
 
             // Get profile picture image by ImageID.
             Image image = imageRepo.ById(profile.ProfilePicture);
@@ -62,10 +62,10 @@ namespace SocialMedia.Controllers
                 LastName = profile.LastName,
 
                 // Get data for relationship button.
-                RelationToUser = friendRepo.RelationToUser(currentProfile.id, id)
+                RelationToUser = friendRepo.RelationToUser(currentProfile.id, profileId)
             };
 
-            int relationshipTier = friendRepo.RelationshipTier(currentProfile.id, id);
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.id, profileId);
 
             // If privacy level does not exceed relationship level
             if (profile.ProfileBioPrivacyLevel <= relationshipTier)
@@ -84,19 +84,19 @@ namespace SocialMedia.Controllers
         /*
             
         */
-        [HttpGet("{id}")]
-        public ProfileModel Get(int id)
+        [HttpGet("{profileId}")]
+        public ProfileModel Get(int profileId)
         {
-            Profile profile = profileRepo.ById(id);
+            Profile profile = profileRepo.ById(profileId);
             Image image = imageRepo.ById(profile.ProfilePicture);
 
             return Util.GetProfileModel(
                 profile, 
                 image, 
-                friendRepo.RelationToUser(currentProfile.id, id), 
-                friendRepo.RelationshipTier(currentProfile.id, id),
-                friendRepo.RelationshipChangeDatetime(currentProfile.id, id),
-                friendRepo.BlockerProfileId(currentProfile.id, id));
+                friendRepo.RelationToUser(currentProfile.id, profileId), 
+                friendRepo.RelationshipTier(currentProfile.id, profileId),
+                friendRepo.RelationshipChangeDatetime(currentProfile.id, profileId),
+                friendRepo.BlockerProfileId(currentProfile.id, profileId));
         }
 
         /*
@@ -171,23 +171,23 @@ namespace SocialMedia.Controllers
         /*
             Update profile picture of the current user's profile.
         */
-        [HttpPost("updateprofilepicture/{id}")]
-        public RawImage SetProfilePicture(int id = 0)
+        [HttpPost("updateprofilepicture/{imageId}")]
+        public RawImage SetProfilePicture(int imageId = 0)
         {
             // If the current user owns the image with the provided ImageID, set it as their profile picture.
-            if (id == 0 || imageRepo.ById(id).ProfileId == currentProfile.id)
+            if (imageId == 0 || imageRepo.ById(imageId).ProfileId == currentProfile.id)
             {
                 // Get handle on current profile. XXX Get most recent version like above.
                 Profile profile = currentProfile.profile;
 
                 // Change profile picture id.
-                profile.ProfilePicture = id;
+                profile.ProfilePicture = imageId;
 
                 // Commit profile to database.
                 profileRepo.SaveProfile(profile);
 
                 // Return new profile picture to user. XXX they should be able to use the local version to swap out.
-                return Util.GetRawImage(imageRepo.ById(id), 3);
+                return Util.GetRawImage(imageRepo.ById(imageId), 3);
             }
 
             // If the user does not own that image or that image does not exist, return null.

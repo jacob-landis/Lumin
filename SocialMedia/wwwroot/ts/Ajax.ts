@@ -192,11 +192,11 @@
         onProfileResults: (profileCards: ProfileCard[]) => void
     ): void {
 
-        let newId: number = profileId ? profileId : 0;
+        let newProfileId: number = profileId ? profileId : 0;
         let newSearch: string = this.JSONstring(searchText ? searchText : "NULL");
         
         this.call(
-            `apifriend/friends/${newId}/${type}/${skip}/${take}`,
+            `apifriend/friends/${newProfileId}/${type}/${skip}/${take}`,
             "POST", 
             (profileResults: string) => onProfileResults(ProfileCard.list(<ProfileRecord[]><unknown>profileResults, true)),
             newSearch
