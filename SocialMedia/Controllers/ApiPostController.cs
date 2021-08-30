@@ -98,8 +98,12 @@ namespace SocialMedia.Controllers
         public void UpdatePostPrivacy(int postId, int privacyLevel)
         {
             Post post = postRepo.ById(postId);
-            post.PrivacyLevel = privacyLevel;
-            postRepo.SavePost(post);
+
+            if (post.ProfileId == currentProfile.id)
+            {
+                post.PrivacyLevel = privacyLevel;
+                postRepo.SavePost(post);
+            }
         }
 
         /*
@@ -130,17 +134,16 @@ namespace SocialMedia.Controllers
         public List<PostModel> ProfilePosts(int profileId, int skip, int take, string feedFilter, string feedType)
         {
             string resultsKey = "profilePosts";
-
+            
             // If a new feed is starting and the user has access permission.
-            if (skip == 0
-                && profileRepo.ById(profileId).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profileId))
+            if (skip == 0)
             {
-                IEnumerable<Post> postRecords = new List<Post>();
+                IEnumerable<Post> posts = new List<Post>();
                 
                 switch (feedType)
                 {
                     case "commentedPosts":
-                        postRecords = postRepo.Posts.Where(p => p.ProfileId == profileId && 
+                        posts = postRepo.Posts.Where(p => p.ProfileId == profileId && 
                         (
                             commentRepo.HasCommented(p.PostId, currentProfile.id)
                             || commentRepo.ByPostId(p.PostId).Any(c => likeRepo.HasLiked(2, c.CommentId, currentProfile.id))
@@ -148,40 +151,40 @@ namespace SocialMedia.Controllers
                         break;
 
                     case "likedPosts":
-                        postRecords = postRepo.Posts.Where(p => p.ProfileId == profileId && likeRepo.HasLiked(1, p.PostId, currentProfile.id));
+                        posts = postRepo.Posts.Where(p => p.ProfileId == profileId && likeRepo.HasLiked(1, p.PostId, currentProfile.id));
                         break;
 
                     case "mainPosts":
-                        postRecords = postRepo.Posts.Where(p => p.ProfileId == profileId);
+                        posts = postRepo.Posts.Where(p => p.ProfileId == profileId);
                         break;
                 }
 
                 switch (feedFilter)
                 {
                     case "recent":
-                        postRecords = postRecords.OrderByDescending(p => p.DateTime);
+                        posts = posts.OrderByDescending(p => p.DateTime);
                         break;
 
                     case "likes":
-                        postRecords = postRecords
+                        posts = posts
                             .OrderByDescending(p => p.DateTime)
                             .OrderByDescending(p => likeRepo.CountByContentId(1, p.PostId));
                         break;
 
                     case "comments":
-                        postRecords = postRecords
+                        posts = posts
                             .OrderByDescending(p => p.DateTime)
                             .OrderByDescending(p => commentRepo.CountByPostId(p.PostId));
                         break;
                 }
 
                 // Sorting by HasCommentActivity must happen after sorting by DateTime.
-                if (feedType == "CommentedPosts") postRecords = postRecords
+                if (feedType == "CommentedPosts") posts = posts
                         .OrderByDescending(p => commentRepo.HasCommented(p.PostId, currentProfile.id));
 
                 // Store list of post ids.
                 List<int?> postIds = new List<int?>();
-                foreach (Post p in postRecords) postIds.Add(p.PostId);
+                foreach (Post p in posts) postIds.Add(p.PostId);
                 sessionResults.AddResults(resultsKey, postIds);
             }
 
@@ -210,22 +213,23 @@ namespace SocialMedia.Controllers
                 profileIds.Add(currentProfile.id); // XXX redirect if id == 0
 
                 // Prep list for prepped posts.
-                List<PostModel> posts = new List<PostModel>();
+                List<Post> posts = new List<Post>();
 
                 // Loop through ProfileID list.
-                foreach (int p in profileIds)
+                foreach (int profileId in profileIds)
                 {
                     // Try getting results before looping and adding them.
-                    List<PostModel> profilePosts = GetProfilePosts(p);
+                    IEnumerable<Post> profilePosts = postRepo.ByProfileId(profileId);
 
-                    if (profilePosts != null && profilePosts.Count > 0)
+                    // If posts were found.
+                    if (profilePosts != null && profilePosts.Count() > 0)
                         // Loop through each profile's posts and add them to the list of posts.
-                        foreach(PostModel pm in profilePosts) { posts.Add(pm); }
+                        foreach(Post post in profilePosts) { posts.Add(post); }
                 }
 
                 // Store list of post ids.
                 List<int?> postIds = new List<int?>();
-                foreach (PostModel p in posts.OrderByDescending(p => p.DateTime)) postIds.Add(p.PostId);
+                foreach (Post p in posts.OrderByDescending(p => p.DateTime)) postIds.Add(p.PostId);
                 sessionResults.AddResults(resultsKey, postIds);
             }
 
@@ -346,30 +350,6 @@ namespace SocialMedia.Controllers
 
         //-----------------------------------------UTIL---------------------------------------------//
         
-        /*
-             Returns a prepped list of a profile's posts by ProfileID.
-        */
-        public List<PostModel> GetProfilePosts(int profileId)
-        {
-            if (profileRepo.ById(profileId).ProfilePostsPrivacyLevel <= friendRepo.RelationshipTier(currentProfile.id, profileId))
-            {
-                // Prep list for prepped posts.
-                List<PostModel> postModels = new List<PostModel>();
-
-                // Get list of post records.
-                IEnumerable<Post> posts = postRepo.ByProfileId(profileId);
-
-                // If post records were found, prep them and add them to list.
-                if (posts != null)
-                {
-                    // Prep each post and add it to the list.
-                    foreach (Post p in posts) { postModels.Add(GetPostModel(p.PostId)); }
-                }
-                return postModels;
-            }
-            return null;
-        }
-
         /*
              Preps a post to be sent back to the user.
         */

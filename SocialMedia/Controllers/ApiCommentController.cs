@@ -47,6 +47,9 @@ namespace SocialMedia.Controllers
         [HttpPost("refreshcomments/{postId}/{take}/{feedFilter}/{feedType}")]
         public CommentRefreshSummaryModel RefreshComments([FromBody] CommentReferencesModel comments, int postId, int take, string feedFilter, string feedType)
         {
+            Post post = postRepo.ById(postId);
+            if (post.PrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, post.ProfileId)) return null;
+
             List<CommentModel> newComments = GetCommentModels(postId, 0, take, feedFilter, feedType);
 
             CommentRefreshSummaryModel refreshSummary = new CommentRefreshSummaryModel();
@@ -86,7 +89,13 @@ namespace SocialMedia.Controllers
 
         // Get comment count by PostId XXX shouldn't this go in ApiPostController??
         [HttpGet("commentcount/{postId}")]
-        public int CommentCount(int postId) => commentRepo.Comments.Where(c => c.PostId == postId).Count();
+        public int? CommentCount(int postId)
+        {
+            Post post = postRepo.ById(postId);
+            if (post.PrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, post.ProfileId)) return null;
+
+            return commentRepo.Comments.Where(c => c.PostId == postId).Count();
+        }
 
         // Delete comment by CommentId
         [HttpPost("deletecomment/{commentId}")]
@@ -143,6 +152,9 @@ namespace SocialMedia.Controllers
         public List<CommentModel> SearchComments(int postId, int skip, int take, [FromBody] StringModel searchText)
         {
             if (searchText.str == "NULL") return null;
+
+            Post post = postRepo.ById(postId);
+            if (post.PrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, post.ProfileId)) return null;
 
             string resultsKey = $"{postId}commentSearch";
 
@@ -218,22 +230,34 @@ namespace SocialMedia.Controllers
         [HttpGet("postcomments/{postId}/{skip}/{take}/{feedFilter}/{feedType}")]
         public List<CommentModel> PostComments(int postId, int skip, int take, string feedFilter, string feedType)
         {
+            Post post = postRepo.ById(postId);
+            if (post.PrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, post.ProfileId)) return null;
+
             return GetCommentModels(postId, skip, take, feedFilter, feedType);
         }
 
         // get comment by id
         [HttpGet("{commentId}")]
-        public CommentModel GetComment(int commentId) => GetCommentModel(commentId);
+        public CommentModel GetComment(int commentId)
+        {
+            Post post = postRepo.ById(commentRepo.ById(commentId).PostId);
+            if (post.PrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, post.ProfileId)) return null;
+
+            return GetCommentModel(commentId);
+        }
         
         // create comment from text provided in request body, current datetime, and current user id
         [HttpPost]
         public CommentModel CreateComment([FromBody] Comment comment)
         {
+            Post post = postRepo.ById(comment.PostId);
+            if (post.PrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, post.ProfileId)) return null;
+
             // content length is verified
             if (comment.Content.Length > 0 && comment.Content.Length <= 125) // if comment is 1-125 chars long
             {
                 // If the post this comment belongs to belongs to the current user, raise hasSeen flag.
-                if (postRepo.ById(comment.PostId).ProfileId == currentProfile.id) comment.HasSeen = true;
+                if (post.ProfileId == currentProfile.id) comment.HasSeen = true;
 
                 comment.DateTime = DateTime.UtcNow;  // set DateTime of comment to current DateTime of central time
                 comment.ProfileId = currentProfile.id; // set ProfileId of comment to current profile id

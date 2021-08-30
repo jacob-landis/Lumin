@@ -63,10 +63,10 @@ namespace SocialMedia.Controllers
              Returns the number of images that a user has that are accessible to the current user.
         */
         [HttpGet("profileimagescount/{profileId}")]
-        public int ProfileImagesCount(int profileId)
+        public int? ProfileImagesCount(int profileId)
         {
             int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profileId);
-
+            
             return imageRepo.ByProfileId(profileId).Where(i => i.PrivacyLevel <= relationshipTier).Count();
         }
 
@@ -74,6 +74,9 @@ namespace SocialMedia.Controllers
         public void UpdateImagePrivacy(int imageId, int privacyLevel)
         {
             Models.Image image = imageRepo.ById(imageId);
+
+            if (image.ProfileId != currentProfile.id) return;
+
             image.PrivacyLevel = privacyLevel;
             imageRepo.SaveImage(image);
         }

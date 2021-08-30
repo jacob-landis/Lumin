@@ -47,6 +47,9 @@ namespace SocialMedia.Controllers
         [HttpPost("fullprofile/{profileId}")]
         public FullProfileModel GetFullProfile(int profileId)
         {
+            int? blockerId = friendRepo.BlockerProfileId(currentProfile.id, profileId);
+            if (blockerId != null && (blockerId == currentProfile.id || blockerId == profileId)) return null;
+
             // Get profile by ProfileID.
             Profile profile = profileRepo.ById(profileId);
 
@@ -87,6 +90,9 @@ namespace SocialMedia.Controllers
         [HttpGet("{profileId}")]
         public ProfileModel Get(int profileId)
         {
+            int? blockerId = friendRepo.BlockerProfileId(currentProfile.id, profileId);
+            if (blockerId != null && (blockerId == currentProfile.id || blockerId == profileId)) return null;
+
             Profile profile = profileRepo.ById(profileId);
             Image image = imageRepo.ById(profile.ProfilePicture);
 

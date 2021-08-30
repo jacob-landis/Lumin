@@ -45,6 +45,9 @@ namespace SocialMedia.Controllers
         [HttpPost("friends/{profileId}/{type}/{skip}/{take}")]
         public List<ProfileModel> GetFriends(int profileId, string type, int skip, int take, [FromBody] StringModel search)
         {
+            Profile profile = profileRepo.ById(profileId);
+            if (profile.ProfileFriendsPrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, profileId)) return null;
+
             List<int?> profileIds = new List<int?>();
 
             List<ProfileModel> results = new List<ProfileModel>();
@@ -93,15 +96,15 @@ namespace SocialMedia.Controllers
         }
 
         /*
-            Gets a boolean that indicates whether the current user has any pending frien requests. 
+            Gets a boolean that indicates whether the current user has any pending friend requests. 
         */
-        [HttpGet("gethasfriendrequest/{profileId}")]
-        public int GetHasFriendRequest(int profileId)
+        [HttpGet("gethasfriendrequest")]
+        public int GetHasFriendRequest()
         {
             int requestCount = friendRepo.Friends.Count((Friend f) =>
                 f.Accepted == false
                 && f.BlockerProfileId == null
-                && f.ToId == profileId);
+                && f.ToId == currentProfile.id);
 
             return requestCount > 0 ? 1 : 0;
         }
@@ -113,7 +116,9 @@ namespace SocialMedia.Controllers
         public void DeleteFriend(int profileId)
         {
             // Find friend record by ID.
-            Friend friend = friendRepo.Friends.First(f => f.ToId == profileId || f.FromId == profileId); // XXX need to confirm user ownership of relationship
+            Friend friend = friendRepo.Friends.First(f =>
+                (f.ToId == profileId         || f.FromId == profileId) &&
+                (f.ToId == currentProfile.id || f.FromId == currentProfile.id));
 
             // Delete friend record.
             friendRepo.DeleteFriend(friend);
@@ -185,7 +190,10 @@ namespace SocialMedia.Controllers
         [HttpPost("unblockprofile/{profileid}")]
         public void UnblockProfile(int profileId)
         {
-            Friend friend = friendRepo.Friends.First(f => f.FromId == profileId || f.ToId == profileId);
+            Friend friend = friendRepo.Friends.First(f => 
+                (f.FromId == profileId         || f.ToId == profileId) && 
+                (f.FromId == currentProfile.id || f.ToId == currentProfile.id));
+
             friendRepo.DeleteFriend(friend);
         }
 

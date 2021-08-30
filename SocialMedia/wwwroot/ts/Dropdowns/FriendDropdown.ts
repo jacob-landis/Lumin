@@ -73,7 +73,7 @@ class FriendDropdown extends Dropdown {
         this.requestFriends();
         this.txtSearch.value = "";
 
-        Ajax.getHasFriendRequest(User.profileId, (hasFriendRequest: string) => {
+        Ajax.getHasFriendRequest((hasFriendRequest: string) => {
             if (hasFriendRequest == '1') {
                 this.btnFriendRequests.classList.add("hasFriendRequests");
             }

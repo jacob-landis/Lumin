@@ -19,11 +19,19 @@ namespace SocialMedia.Controllers
     public class ApiLikeController : Controller
     {
         private ILikeRepository likeRepo;
+        private IPostRepository postRepo;
+        private IFriendRepository friendRepo;
         private CurrentProfile currentProfile;
 
-        public ApiLikeController(ILikeRepository likeRepo, CurrentProfile currentProfile)
+        public ApiLikeController(
+            ILikeRepository likeRepo,
+            IPostRepository postRepo,
+            IFriendRepository friendRepo,
+            CurrentProfile currentProfile)
         {
             this.likeRepo = likeRepo;
+            this.postRepo = postRepo;
+            this.friendRepo = friendRepo;
             this.currentProfile = currentProfile;
         }
 
@@ -34,6 +42,15 @@ namespace SocialMedia.Controllers
         [HttpGet("likes/{contentType}/{contentId}")]
         public LikeModel GetContentLikes(int contentType, int contentId)
         {
+            // If like is for a post.
+            if (contentType == 0)
+            {
+                Post post = postRepo.ById(contentId);
+
+                // If the current user does not have access to the post, return null.
+                if (post.PrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, post.ProfileId)) return null;
+            }
+
             LikeModel likeModel = new LikeModel
             {
                 ContentId = contentId,
@@ -65,7 +82,18 @@ namespace SocialMedia.Controllers
         [HttpPost("like/{contentType}/{contentId}")]
         public void Like(int contentType, int contentId)
         {
-            // XXX Confirm that user has not already liked!!!
+            // If the user has already liked this content, return.
+            if (!likeRepo.Likes.Any(l => l.ContentId == contentId && l.ContentType == contentType)) return;
+
+            // If like is for a post.
+            if (contentType == 0)
+            {
+                Post post = postRepo.ById(contentId);
+
+                // If the current user does not have access to the post, return.
+                if (post.PrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, post.ProfileId)) return;
+            }
+
             Like like = new Like
             {
                 DateTime = DateTime.UtcNow, // Current datetime.

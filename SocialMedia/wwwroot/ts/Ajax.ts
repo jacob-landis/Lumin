@@ -211,8 +211,8 @@
         this.call(`apifriend/unblockprofile/${profileId}`, "POST");
     }
 
-    public static getHasFriendRequest(profileId: number, onHasFriendRequests: (hasFriendRequest: string) => void): void {
-        this.call(`apifriend/gethasfriendrequest/${profileId}`, "GET", onHasFriendRequests);
+    public static getHasFriendRequest(onHasFriendRequests: (hasFriendRequest: string) => void): void {
+        this.call("apifriend/gethasfriendrequest", "GET", onHasFriendRequests);
     }
 
     //IMAGE

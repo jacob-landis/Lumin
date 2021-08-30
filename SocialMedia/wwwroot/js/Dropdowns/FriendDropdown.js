@@ -41,7 +41,7 @@ var FriendDropdown = (function (_super) {
         var _this = this;
         this.requestFriends();
         this.txtSearch.value = "";
-        Ajax.getHasFriendRequest(User.profileId, function (hasFriendRequest) {
+        Ajax.getHasFriendRequest(function (hasFriendRequest) {
             if (hasFriendRequest == '1') {
                 _this.btnFriendRequests.classList.add("hasFriendRequests");
             }
