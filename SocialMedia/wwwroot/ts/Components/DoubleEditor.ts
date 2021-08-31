@@ -1,9 +1,9 @@
 ﻿class DoubleEditor extends Editor {
 
-    public currentText2: string;
-    public textBox2: HTMLElement;
-    public lblCharacterCount2: HTMLElement;
-    public doubleCallback: (result1: string, result2: string) => void;
+    private currentText2: string;
+    private textBox2: HTMLElement;
+    private lblCharacterCount2: HTMLElement;
+    private doubleCallback: (result1: string, result2: string) => void;
 
     public constructor(
         btnStart: HTMLElement,
@@ -55,7 +55,7 @@
         super.start();
     }
 
-    public send(): void {
+    protected send(): void {
 
         let tooLong: boolean = !(this.textBox.innerText.length <= this.maxLength && this.textBox2.innerText.length <= this.maxLength)
         let isAlphabetic: boolean = /^[a-zA-Z]+$/.test(this.textBox.innerText) && /^[a-zA-Z]+$/.test(this.textBox2.innerText);
@@ -94,7 +94,7 @@
         }
     }
 
-    public end(): void {
+    protected end(): void {
 
         // Make text box 2 non-editable.
         this.textBox2.contentEditable = `${false}`;
@@ -107,7 +107,7 @@
         super.end();
     }
 
-    public revert(): void {
+    protected revert(): void {
 
         // Revert inner text.
         this.textBox2.innerText = this.currentText2;

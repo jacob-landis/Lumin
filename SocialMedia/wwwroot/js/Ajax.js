@@ -112,6 +112,12 @@ var Ajax = (function () {
     Ajax.getProfileImagesCount = function (profileId, onCountResults) {
         this.call("apiimage/profileimagescount/" + profileId, "GET", onCountResults);
     };
+    Ajax.getImageByIndex = function (imageId, index, size, imageClassList, tooltipMsg, onImageClick, onImageResults) {
+        this.call("apiimage/getimagebyindex/" + imageId + "/" + index + "/" + size, "GET", function (imageResults) {
+            if (imageResults != null)
+                onImageResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick));
+        });
+    };
     Ajax.getImage = function (imageId, size, imageClassList, tooltipMsg, onImageClick, onImageResults) {
         this.call("apiimage/" + imageId + "/" + size, "GET", function (imageResults) {
             if (imageResults != null)

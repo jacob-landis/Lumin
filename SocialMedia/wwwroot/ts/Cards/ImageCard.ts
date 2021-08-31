@@ -1,6 +1,6 @@
 ﻿class ImageCard extends Card {
     
-    public static imageCards: ImageCard[] = [];
+    private static imageCards: ImageCard[] = [];
 
     public static copy(
         imageCard: ImageCard,
@@ -113,7 +113,7 @@
         ImageCard.imageCards.push(this);
     }
 
-    public remove(): void {
+    private remove(): void {
         Ajax.deleteImage(this.image.imageId);
 
         PostCard.postCards.forEach((p: PostCard) => {

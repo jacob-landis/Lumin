@@ -7,9 +7,9 @@
     public static friendsPrivacyLevel: number;
     public static postsPrivacyLevel: number;
 
-    static set profileId(profileId: number) { User._id = profileId; }
-    static get profileId(): number { return User._id; }
+    public static set profileId(profileId: number) { User._id = profileId; }
+    public static get profileId(): number { return User._id; }
 
-    static set profilePictureId(profileId: number) { User._profilePictureId = profileId; }
-    static get profilePictureId(): number { return User._profilePictureId; }
+    public static set profilePictureId(profileId: number) { User._profilePictureId = profileId; }
+    public static get profilePictureId(): number { return User._profilePictureId; }
 }

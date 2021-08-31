@@ -1,18 +1,13 @@
 ﻿class LikeCard extends Card {
 
-    static likeCards: LikeCard[] = [];
-
-    static btnLikeCallback: (e: MouseEvent) => void; // XXX don't know where this is used. XXX
-
-    public static changeAllContentInstances(referenceLikesRecord: LikesRecord) {
+    private static likeCards: LikeCard[] = [];
+    
+    private static changeAllContentInstances(referenceLikesRecord: LikesRecord) {
         this.likeCards.forEach((likeCard: LikeCard) => {
             if (
                 likeCard.likesRecord.contentId == referenceLikesRecord.contentId
                 && likeCard.likesRecord.contentType == referenceLikesRecord.contentType
             ) {
-                //likeCard.likesRecord.count += likeCard.likesRecord.hasLiked ? -1 : 1;
-                //likeCard.countDisplayElm.innerText = `${likeCard.likesRecord.count}`;
-
                 likeCard.setLikeCount(likeCard.likesRecord.count + (likeCard.likesRecord.hasLiked ? -1 : 1));
 
                 likeCard.btnLike.classList.toggle('hasLiked');

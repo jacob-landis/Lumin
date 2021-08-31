@@ -146,7 +146,7 @@ class CreatePostModal extends Modal {
     /*
         Loads the image dropdown with a callback to return the selected image.
     */
-    public selectImage(): void {
+    private selectImage(): void {
         
         // Load the image dropdown.
         imageDropdown.load(
@@ -245,7 +245,7 @@ class CreatePostModal extends Modal {
         Outputs a warning to the user if there is a potential privacy leak.
         Removes old message if one exists and the potential risk is gone.
     */
-    public checkPrivacy(imageCard: ImageCard = null): void {
+    private checkPrivacy(imageCard: ImageCard = null): void {
 
         let imagePrivacy: number = 0;
 

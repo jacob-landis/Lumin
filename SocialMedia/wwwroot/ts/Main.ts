@@ -43,7 +43,6 @@ class Main {
         // CONFIRM MENU
         confirmPrompt = new ConfirmPrompt(
             document.getElementById('confirmPrompt'),
-            document.getElementById('confirmContent'),
             document.getElementById('promptMessage'),
             document.getElementById('btnConfirmYes'),
             document.getElementById('btnConfirmNo')

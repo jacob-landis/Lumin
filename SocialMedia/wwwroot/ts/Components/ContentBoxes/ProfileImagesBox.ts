@@ -9,7 +9,7 @@ class ProfileImagesBox extends ContentBox {
     // A global collection of ImageBox instances.
     public static profileImageBoxes: ProfileImagesBox[] = [];
 
-    public tooltipMsg: string;
+    private tooltipMsg: string;
 
     // The click action that gets imbedded in every image in this image box's content box.
     public clickCallback: (target: ImageBox) => void;
@@ -66,7 +66,7 @@ class ProfileImagesBox extends ContentBox {
         super.request(30);
     }
 
-    public addImages(imageBoxes: ImageBox[]): void {
+    private addImages(imageBoxes: ImageBox[]): void {
 
         super.add(this.prepareImage(imageBoxes));
         if (this.onLoadEnd != null) this.onLoadEnd();

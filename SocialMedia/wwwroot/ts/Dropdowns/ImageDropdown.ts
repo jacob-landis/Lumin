@@ -20,9 +20,6 @@ class ImageDropdown extends Dropdown {
     // Holds image cards.
     public imagesBox: ProfileImagesBox;
     
-    // Holds an onClick callback. Set when image onClicks are converted. Used for newly uploaded images so they can fit in.
-    private heldOnClick: (target: ImageCard) => void;
-
     private highLitImage: ImageCard = null;
 
     /*
@@ -35,7 +32,7 @@ class ImageDropdown extends Dropdown {
         contentElm: HTMLElement,
         imagesWrapper: HTMLElement,
         prompt: HTMLElement,
-        public btnOpenUploadImageModal: HTMLElement,
+        btnOpenUploadImageModal: HTMLElement,
         btnOpen: HTMLElement
     ) {
 
@@ -150,7 +147,7 @@ class ImageDropdown extends Dropdown {
 
         This is used if the image dropdown is already open and the user needs to select an image.
     */
-    public convert(tooltipMsg: string, callback: (imageCard: ImageBox) => void): void {
+    private convert(tooltipMsg: string, callback: (imageCard: ImageBox) => void): void {
 
         // Save callback in ProfileImagesBox for newly uploaded images that come in to get their callback from.
         this.imagesBox.clickCallback = (target: ImageBox) => callback(target); // XXX just assign callback XXX

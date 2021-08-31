@@ -1,6 +1,6 @@
 ﻿class ProfileCard extends Card {
 
-    public static profileCards: ProfileCard[] = [];
+    private static profileCards: ProfileCard[] = [];
 
     public static list(profiles: ProfileRecord[], includeRelationButton?: boolean): ProfileCard[] {
         if (profiles == null) return null;
@@ -67,15 +67,15 @@
     }
 
     private blockCase: { label: string, nextCase: string, action: (profileCard: ProfileCard) => void };
-    public blockOption: ContextOption;
-    public relationOption: ContextOption;
-    public contextOptions: ContextOption[] = [];
+    private blockOption: ContextOption;
+    private relationOption: ContextOption;
+    private contextOptions: ContextOption[] = [];
 
 
-    public relationCard: RelationCard;
+    private relationCard: RelationCard;
 
     private imageBox: ImageBox;
-    public txtName: HTMLElement;
+    private txtName: HTMLElement;
 
     /*
         Example:
@@ -86,7 +86,7 @@
             <span class="profileCardName">Jane Doe</span>
         </div>
     */
-    public constructor(public profile: ProfileRecord, public includeRelationButton?: boolean) {
+    public constructor(public profile: ProfileRecord, private includeRelationButton?: boolean) {
 
         super(ViewUtil.tag('div', { classList: 'profileCard' }));
         

@@ -6,7 +6,7 @@
 
     // A PostsBox for displaying a profile's posts.
     private postBoxes: ContentBox; 
-    public mainPostsBox: PostsBox;
+    private mainPostsBox: PostsBox;
     private likedPostsBox: PostsBox; 
     private commentedPostsBox: PostsBox; 
     
@@ -202,10 +202,6 @@
         this.postBoxes.rootElm.classList.remove('contentLoading');
         if (this.mainPostsBox.length == 0)
             this.mainPostsBox.messageElm.innerText = `No posts were retrieved.`;
-    }
-
-    public setMessage(message: string): void {
-        this.mainPostsBox.messageElm.innerText = message;
     }
 
     public clear(): void {

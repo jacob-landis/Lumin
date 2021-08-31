@@ -226,7 +226,7 @@
         });
     }
     
-    public remove(): void {
+    private remove(): void {
 
         Ajax.deletePost(this.post.postId);
 

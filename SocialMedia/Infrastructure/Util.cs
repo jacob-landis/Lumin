@@ -84,7 +84,7 @@ namespace SocialMedia.Infrastructure
         /*
              Returns image as byte array with ImageID and owner ProfileID attached to it.
         */
-        public static RawImage GetRawImage(Models.Image image, int size) =>
+        public static RawImage GetRawImage(Models.Image image, int size, bool excludeByteData = false) =>
 
             // Fill new RawImage with details from provided image record and have byte array of image retrieved.
             new RawImage
@@ -95,7 +95,7 @@ namespace SocialMedia.Infrastructure
                 PrivacyLevel = image.PrivacyLevel,
                 Height = image.Height,
                 Width = image.Width,
-                ImageAsByteArray = ImageToByte(image.Name, size)
+                ImageAsByteArray = excludeByteData ? null : ImageToByte(image.Name, size)
             };
 
         /*

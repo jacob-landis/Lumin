@@ -50,7 +50,6 @@
     <Content Remove="wwwroot\ts\Records\LikesRecord.ts" />
     <Content Remove="wwwroot\ts\Records\PostRecord.ts" />
     <Content Remove="wwwroot\ts\Records\ProfileRecord.ts" />
-    <Content Remove="wwwroot\ts\Repo.ts" />
     <Content Remove="wwwroot\ts\Cards\Card.ts" />
     <Content Remove="wwwroot\ts\Cards\CommentCard.ts" />
     <Content Remove="wwwroot\ts\Cards\ContextOption.ts" />
@@ -119,7 +118,6 @@
     <TypeScriptCompile Include="wwwroot\ts\Records\LikesRecord.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Records\PostRecord.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Records\ProfileRecord.ts" />
-    <TypeScriptCompile Include="wwwroot\ts\Repo.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cards\Card.ts" />
     <TypeScriptCompile Include="wwwroot\ts\Cards\CommentCard.ts" />
     <TypeScriptCompile Include="wwwroot\ts\ContextOption.ts" />

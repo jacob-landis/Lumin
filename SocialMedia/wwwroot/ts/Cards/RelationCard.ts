@@ -43,7 +43,7 @@
 
     public case: { label: string, icon: () => HTMLElement, nextCase: string, action: (profileId: number) => void };
 
-    public constructor(public profile: ProfileRecord) {
+    public constructor(private profile: ProfileRecord) {
         super(ViewUtil.tag("div", { classList: "relationCard" }));
 
         this.case = RelationCard.cases[this.profile.relationToUser];

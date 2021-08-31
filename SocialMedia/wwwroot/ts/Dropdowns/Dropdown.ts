@@ -55,13 +55,6 @@ class Dropdown implements IAppendable {
     }
 
     /*
-        Move any open dropdown to the background by lowering it's zIndex.
-    */
-    public static moveToBackground(): void {
-        if (this.openDropdown != null) this.openDropdown.rootElm.style.zIndex = `${Modal.highestZIndex - 1}`;
-    }
-
-    /*
         Close any open dropdown. 
     */
     public static closeAny(): void {

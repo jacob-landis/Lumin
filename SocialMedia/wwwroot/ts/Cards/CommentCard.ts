@@ -3,7 +3,7 @@
 */
 class CommentCard extends Card {
     
-    public static commentCards: CommentCard[] = [];
+    private static commentCards: CommentCard[] = [];
     
     /*
         Creates a new comment card with the data from the one provided.
@@ -30,10 +30,10 @@ class CommentCard extends Card {
     // Comment data.
     public comment: CommentRecord;
 
-    public commentEditor: Editor;
+    private commentEditor: Editor;
     private refreshMessageSection: HTMLElement;
 
-    public profileCard: ProfileCard;
+    private profileCard: ProfileCard;
     private likeCard: LikeCard;
 
     /*
@@ -184,7 +184,7 @@ class CommentCard extends Card {
         Remove any copies of this comment card.
         Reduce comment count by one on every copy of the comment's parent post card.
     */
-    public remove(): void {
+    private remove(): void {
 
         // Remove this comment's record from the host.
         Ajax.deleteComment(this.comment.commentId);

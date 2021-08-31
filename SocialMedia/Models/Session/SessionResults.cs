@@ -34,7 +34,16 @@ namespace SocialMedia.Models.Session
 
         public List<int?> GetResultsSegment(string resultsKey, int skip, int take)
         {
-            return resultSets[resultsKey].Skip(skip).Take(take).ToList();
+            try
+            {
+                return resultSets[resultsKey].Skip(skip).Take(take).ToList();
+            }
+            catch (Exception e)
+            {
+                // Return an empty list so that these results can be used in a foreach
+                // loop without checking if they are null and it doesn't create a fault.
+                return new List<int?>();
+            }
         }
 
         public void AddResults(string resultsKey, List<int?> ids)

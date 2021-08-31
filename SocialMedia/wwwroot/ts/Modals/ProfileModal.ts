@@ -35,7 +35,7 @@ class ProfileModal extends Modal {
         Gets handles on all necessary components.
     */
     public constructor(
-        public contentElm: HTMLElement,             private profileNameWrapper: HTMLElement,
+        private contentElm: HTMLElement,            private profileNameWrapper: HTMLElement,
         private imageWrapper: HTMLElement,          private profileBioWrapper: HTMLElement,
         private imageScrollBox: HTMLElement,        private friendBoxElm: HTMLElement,
         private relationWrapper: HTMLElement,       imageBoxElm: HTMLElement,

@@ -27,7 +27,7 @@ var ImageGalleryModal = (function (_super) {
         _this.imageCount = imageCount;
         _this.imageDateTime = imageDateTime;
         _this.imageClassList = imageClassList;
-        _this.imageControls = [_this.imageCount, _this.imageOwnership, _this.imageDateTime, _this.btnNext, _this.btnPrev, Modal.btnClose];
+        _this.imageControls = [_this.imageCount, _this.imageOwnership, _this.imageDateTime, btnNext, btnPrev, Modal.btnClose];
         _this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', function (target) { return _this.toggleControls(); }, 3);
         _this.imageCon.onLoadEnd = function () {
             _this.imageDateTime.innerText = "Uploaded on " + Util.formatDateTime(_this.imageCon.imageCard.image.dateTime);
@@ -62,7 +62,7 @@ var ImageGalleryModal = (function (_super) {
     }
     ImageGalleryModal.prototype.loadSingle = function (imageId) {
         var _this = this;
-        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', function (target) { return _this.toggleSingularControls(); });
+        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', function (target) { return _this.toggleControls(); });
         this.hideControls();
         this.showSingularControls();
         this.openOverrided();
@@ -103,10 +103,7 @@ var ImageGalleryModal = (function (_super) {
         if (targetIndex >= 0 && targetIndex < this.profileImagesCount) {
             this.index = targetIndex;
             this.updateImageCount();
-            this.currentImageId = imageDropdown.imagesBox.content[this.index].heldImageId;
-            Ajax.getProfileImages(this.profileId, this.index, 1, '', null, function (target) { }, function (imageBoxes) {
-                _this.imageCon.load(imageBoxes[0].imageCard.image.imageId, null, 'Toggle controls', function (target) { return _this.toggleControls(); });
-            });
+            Ajax.getImageByIndex(this.profileId, this.index, 3, '', 'Toggle controls', function (target) { return _this.toggleControls(); }, function (imageCard) { return _this.imageCon.loadImage(imageCard); });
             imageDropdown.highlightAtIndex(this.index);
         }
     };
@@ -115,10 +112,9 @@ var ImageGalleryModal = (function (_super) {
         ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
     };
     ImageGalleryModal.prototype.showSingularControls = function () {
-        var _this = this;
         ViewUtil.show(Modal.btnClose);
-        ViewUtil.show(this.imageDateTime, 'inline', function () { return _this.imageDateTime.style.display = 'inline'; });
-        ViewUtil.show(this.imageOwnership, 'inline', function () { return _this.imageOwnership.style.display = 'inline'; });
+        ViewUtil.show(this.imageDateTime, 'inline');
+        ViewUtil.show(this.imageOwnership, 'inline');
         navBar.show();
     };
     ImageGalleryModal.prototype.hideSingularControls = function () {
@@ -127,7 +123,12 @@ var ImageGalleryModal = (function (_super) {
         ViewUtil.hide(this.imageOwnership);
         navBar.hide();
     };
-    ImageGalleryModal.prototype.toggleControls = function () { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); };
+    ImageGalleryModal.prototype.toggleControls = function () {
+        if (this.isSingular)
+            ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
+        else
+            ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls();
+    };
     ImageGalleryModal.prototype.showControls = function () {
         navBar.show();
         ViewUtil.show(imageDropdown.rootElm);

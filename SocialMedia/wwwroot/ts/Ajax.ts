@@ -11,11 +11,6 @@
         this.call(`apilike/like/${contentType}/${contentId}`, "POST");
     }
 
-    //public static getLikes(contentType: ContentType, contentId: number): void {
-    //    this.call(`apilike/likes/${contentType}/${contentId}`, "GET");
-    //} // NOT IN USE
-
-
     //COMMENT
     public static deleteComment(commentId: number): void {
         this.call(`apicomment/deletecomment/${commentId}`, "POST");
@@ -253,6 +248,25 @@
 
     public static getProfileImagesCount(profileId: number, onCountResults: (imageCount: string) => void): void {
         this.call(`apiimage/profileimagescount/${profileId}`, "GET", onCountResults);
+    }
+
+    public static getImageByIndex(
+        imageId: number,
+        index: number,
+        size: 0|1|2|3,
+        imageClassList: string,
+        tooltipMsg: string,
+        onImageClick: (target: ImageBox) => void,
+        onImageResults: (imageCard: ImageCard) => void
+    ): void {
+        this.call(
+            `apiimage/getimagebyindex/${imageId}/${index}/${size}`,
+            "GET",
+            (imageResults: string) => {
+                if (imageResults != null)
+                    onImageResults(new ImageCard(<ImageRecord><unknown>imageResults, imageClassList, tooltipMsg, onImageClick));
+            }
+        );
     }
 
     public static getImage(

@@ -14,12 +14,6 @@ var ImageBox = (function () {
         this.rootElm.classList.add('image-box');
         this.imageBoxes.push(this);
     }
-    ImageBox.copy = function (imageBox) {
-        var imageCard = ImageCard.copy(imageBox.imageCard);
-        var imageBoxCopy = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, imageBox.size);
-        imageBox.loadImage(imageCard);
-        return imageBoxCopy;
-    };
     ImageBox.list = function (imageCards) {
         if (imageCards == null)
             return null;
@@ -34,11 +28,6 @@ var ImageBox = (function () {
     Object.defineProperty(ImageBox.prototype, "height", {
         get: function () { return this.imageCard != null ? this.imageCard.image.height : 0; },
         set: function (height) { this.rootElm.style.height = "" + height; },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ImageBox.prototype, "width", {
-        get: function () { return this.imageCard != null ? this.imageCard.image.width : 0; },
         enumerable: true,
         configurable: true
     });

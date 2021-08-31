@@ -5,9 +5,8 @@
 class ContextMenu {
 
     // An enhanced container for storing the tags of context options.
-    public optionsBox: ContentBox;
+    private optionsBox: ContentBox;
     private backgroundElm: HTMLElement;
-    private contentElm: HTMLElement;
     
     /*
         Gets handles on all necessary components.
@@ -16,7 +15,6 @@ class ContextMenu {
     constructor(backgroundElm: HTMLElement, contentElm: HTMLElement) {
 
         this.backgroundElm = backgroundElm;
-        this.contentElm = contentElm;
 
         // Create a new content box using a modal HTML component and get a handle on it.
         this.optionsBox = new ContentBox(contentElm);

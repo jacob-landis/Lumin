@@ -187,6 +187,28 @@ namespace SocialMedia.Controllers
         }
 
         /*
+             Returns an image to the user by index number.
+        */
+        [HttpGet("getimagebyindex/{imageId}/{index}/{size}")] // size will be 0 to 3 (thumbnail, small, medium, full)
+        public RawImage GetImageByIndex(int imageId, int index, int size)
+        {
+            Models.Image image = imageRepo.RangeByProfileId(imageId, index, 1).First();
+            Profile profile = profileRepo.ById(image.ProfileId);
+            int relationshipTier = friendRepo.RelationshipTier(currentProfile.profile.ProfileId, profile.ProfileId);
+
+            bool imageIsInPost = postRepo.ByProfileId(image.ProfileId).Any((Post p) => p.ImageId == image.ImageId);
+
+            // If profile has direct or indirect access.
+            // If (hasAccess OR (imageIsProfilePicture AND hasProfilePictureAccess) OR (imageIsInPost AND hasPostAccess))
+            if (image.PrivacyLevel <= relationshipTier
+                || (profile.ProfilePicture == imageId && profile.ProfilePicturePrivacyLevel <= relationshipTier)
+                || (imageIsInPost && profile.ProfilePostsPrivacyLevel <= relationshipTier))
+                return Util.GetRawImage(image, size);
+
+            return Util.GetRawImage(new Models.Image(), size);
+        }
+
+        /*
              Returns an image to the user.
         */
         [HttpGet("{imageId}/{size}")] // size will be 0 to 3 (thumbnail, small, medium, full)

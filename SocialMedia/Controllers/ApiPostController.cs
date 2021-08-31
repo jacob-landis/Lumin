@@ -409,7 +409,7 @@ namespace SocialMedia.Controllers
                 if (post.ImageId == 0) postModel.Image = null;
 
                 // Else attach prepped image. XXX I think this is handled above.
-                else postModel.Image = Util.GetRawImage(imageRepo.ById(post.ImageId), 2);
+                else postModel.Image = Util.GetRawImage(imageRepo.ById(post.ImageId), 2, true);
 
                 // Return prepped post to caller.
                 return postModel;

@@ -29,9 +29,7 @@ class ImageGalleryModal extends Modal {
 
     // An integer that tracks the current index of the collection being displayed.
     private index: number;
-
-    private currentImageId: number;
-
+    
     // The total number of images in a collection.
     private profileImagesCount: number;
 
@@ -71,7 +69,7 @@ class ImageGalleryModal extends Modal {
         this.imageClassList = imageClassList;
 
         // Get a handle on a group of HTML elms.
-        this.imageControls = [this.imageCount, this.imageOwnership, this.imageDateTime, this.btnNext, this.btnPrev, Modal.btnClose];
+        this.imageControls = [this.imageCount, this.imageOwnership, this.imageDateTime, btnNext, btnPrev, Modal.btnClose];
 
         // Construct a image box for the fullsize image and get a handle on it.
         this.imageCon = new ImageBox(imageBoxElm, imageClassList, 'Toggle controls', (target: ImageBox) => this.toggleControls(), 3);
@@ -121,7 +119,7 @@ class ImageGalleryModal extends Modal {
     public loadSingle(imageId: number): void {
 
         // Load image into imageCon by ImageID.
-        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', (target: ImageBox) => this.toggleSingularControls());
+        this.imageCon.load(imageId, this.imageClassList, 'Toggle controls', (target: ImageBox) => this.toggleControls());
 
         // Hides all controls.
         this.hideControls();
@@ -222,19 +220,10 @@ class ImageGalleryModal extends Modal {
 
             // Update the image count elm.
             this.updateImageCount();
-
-            this.currentImageId = (<ImageBox>imageDropdown.imagesBox.content[this.index]).heldImageId;
-
-            // Request a list of images with a 1 long range. This is the only way to request by index.
-            Ajax.getProfileImages(this.profileId, this.index, 1, '', null, (target: ImageBox) => { },
-
-                // When the array of 1 image card arrives.
-                (imageBoxes: ImageBox[]) => {
-
-                    // Load that image card into the fullsize image container.
-                    this.imageCon.load(imageBoxes[0].imageCard.image.imageId, null, 'Toggle controls', (target: ImageBox) => this.toggleControls());
-                }
-            );
+            
+            Ajax.getImageByIndex(this.profileId, this.index, 3, '', 'Toggle controls',
+                (target: ImageBox) => this.toggleControls(),
+                (imageCard: ImageCard) => this.imageCon.loadImage(imageCard));
 
             imageDropdown.highlightAtIndex(this.index);
         }
@@ -242,16 +231,19 @@ class ImageGalleryModal extends Modal {
 
     // Update the image count tag's inner text value.
     private updateImageCount(): void { this.imageCount.innerText = `${this.index + 1} / ${this.profileImagesCount}`; }
-
-    // Toggle the visibility of the close button.
-    private toggleSingularControls(): void {
-        ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
+    
+    // Toggle the visibility of the control elms.
+    private toggleControls(): void {
+        if (this.isSingular)
+            ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
+        else
+            ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls();
     }
 
     private showSingularControls(): void {
         ViewUtil.show(Modal.btnClose);
-        ViewUtil.show(this.imageDateTime, 'inline', () => this.imageDateTime.style.display = 'inline');
-        ViewUtil.show(this.imageOwnership, 'inline', () => this.imageOwnership.style.display = 'inline');
+        ViewUtil.show(this.imageDateTime, 'inline');
+        ViewUtil.show(this.imageOwnership, 'inline');
         navBar.show();
     }
 
@@ -261,9 +253,6 @@ class ImageGalleryModal extends Modal {
         ViewUtil.hide(this.imageOwnership);
         navBar.hide();
     }
-
-    // Toggle the visibility of the control elms.
-    private toggleControls(): void { ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls(); }
 
     // Show the control elms.
     private showControls(): void {

@@ -24,8 +24,8 @@ class PostsBox extends ContentBox {
         profileId?: number,
         rootElm?: HTMLElement,
         scrollElm?: HTMLElement,
-        public feedType?: ('commentedPosts' | 'likedPosts' | 'mainPosts'),
-        public getFeedFilter?: () => ('recent' | 'likes' | 'comments'),
+        private feedType?: ('commentedPosts' | 'likedPosts' | 'mainPosts'),
+        private getFeedFilter?: () => ('recent' | 'likes' | 'comments'),
         private onPostsLoadEnd?: () => void
     ) {
         // Call base class constructor.

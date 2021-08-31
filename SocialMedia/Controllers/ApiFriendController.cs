@@ -45,8 +45,11 @@ namespace SocialMedia.Controllers
         [HttpPost("friends/{profileId}/{type}/{skip}/{take}")]
         public List<ProfileModel> GetFriends(int profileId, string type, int skip, int take, [FromBody] StringModel search)
         {
-            Profile profile = profileRepo.ById(profileId);
-            if (profile.ProfileFriendsPrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, profileId)) return null;
+            if (profileId != 0)
+            {
+                Profile profile = profileRepo.ById(profileId);
+                if (profile.ProfileFriendsPrivacyLevel > friendRepo.RelationshipTier(currentProfile.id, profileId)) return null;
+            }
 
             List<int?> profileIds = new List<int?>();
 

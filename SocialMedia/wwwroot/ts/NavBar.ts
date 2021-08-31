@@ -1,12 +1,12 @@
 ﻿class NavBar {
 
-    public navBarElm: HTMLElement;
-    public postsSectionElm: HTMLElement;
+    private navBarElm: HTMLElement;
+    private postsSectionElm: HTMLElement;
 
     public btnOpenUserProfileModalImageBox: ImageBox;
 
     // A benchmark used to distinguish a scroll event on a child element from a scroll event on a parent element.
-    public lastScrollTop: number = 0;
+    private lastScrollTop: number = 0;
     
     public constructor(navBarElm: HTMLElement, postsSectionElm: HTMLElement, btnOpenUserProfileModal: HTMLElement) {
         this.navBarElm = navBarElm;
@@ -49,7 +49,7 @@
         this.show();
     }
 
-    public updatePostsSection(): void {
+    private updatePostsSection(): void {
 
         // Update padding-top.
         this.postsSectionElm.style.paddingTop = `${this.navBarElm.clientHeight + 20}px`;
@@ -66,7 +66,7 @@
 
     }
 
-    public reduceHeight(scrollIntensity: number): void {
+    private reduceHeight(scrollIntensity: number): void {
 
         let reductionRate: number = 0.1;
 

@@ -8,23 +8,6 @@
 */
 class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot XXX rename comments in here too XXX look for and rename thumbNail to thumbnail XXX
     
-    public static copy(imageBox: ImageBox): ImageBox {
-
-        let imageCard: ImageCard = ImageCard.copy(imageBox.imageCard);
-
-        let imageBoxCopy = new ImageBox(
-            ViewUtil.tag("div"),
-            imageCard.rootElm.classList.value,
-            imageCard.rootElm.title,
-            imageCard.onImageClick,
-            imageBox.size
-        );
-
-        imageBox.loadImage(imageCard);
-
-        return imageBoxCopy;
-    }
-
     public static list(imageCards: ImageCard[]): ImageBox[] {
 
         if (imageCards == null) return null;
@@ -75,25 +58,22 @@ class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot
 
     // A shortcut to check if an image is currently loaded.
     public isLoaded: boolean = false;
-    public isLoading: boolean = false;
+    private isLoading: boolean = false;
     private loadingGif: HTMLImageElement = null;
 
     // Called at the end of reload().
     private _onLoadEnd: () => void;
     
-    // Shortcuts to get the height and width properties of this image box's HTML tag.
-    //get height(): number { return Util.getElmHeight(this.rootElm); }
-    //get width(): number { return Util.getElmWidth(this.rootElm); }
-    get height(): number { return this.imageCard != null ? this.imageCard.image.height : 0; }
-    get width(): number  { return this.imageCard != null ? this.imageCard.image.width  : 0; }
+    // Shortcuts to get the height property of this image box's HTML tag.
+    public get height(): number { return this.imageCard != null ? this.imageCard.image.height : 0; }
 
     // A shortcut to set the height properties of this image box's HTML tag.
     // Used to make comment container tag become scrollable at a specified height.
-    set height(height: number) { this.rootElm.style.height = `${height}`; }
+    public set height(height: number) { this.rootElm.style.height = `${height}`; }
 
     // Set callback that is invoked at the end of reload().
     // Used by PostCard to make adjustments.
-    set onLoadEnd(onLoadEnd: () => void) { this._onLoadEnd = onLoadEnd; }
+    public set onLoadEnd(onLoadEnd: () => void) { this._onLoadEnd = onLoadEnd; }
 
     /*
          PARAMETERS:

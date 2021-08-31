@@ -2,7 +2,6 @@ var ContextMenu = (function () {
     function ContextMenu(backgroundElm, contentElm) {
         var _this = this;
         this.backgroundElm = backgroundElm;
-        this.contentElm = contentElm;
         this.optionsBox = new ContentBox(contentElm);
         this.backgroundElm.onclick = function (e) {
             _this.close();

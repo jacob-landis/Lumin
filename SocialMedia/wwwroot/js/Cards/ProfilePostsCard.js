@@ -168,9 +168,6 @@ var ProfilePostsCard = (function (_super) {
         if (this.mainPostsBox.length == 0)
             this.mainPostsBox.messageElm.innerText = "No posts were retrieved.";
     };
-    ProfilePostsCard.prototype.setMessage = function (message) {
-        this.mainPostsBox.messageElm.innerText = message;
-    };
     ProfilePostsCard.prototype.clear = function () {
         this.hideMyPostActivity();
         this.mainPostsBox.clear();

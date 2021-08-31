@@ -17,11 +17,11 @@ class ContentBox implements IAppendable {
     // Defaults to this.rootElm if not specified in the constructor.
     public scrollElm: HTMLElement;
 
-    public loadThreshold: number;
+    private loadThreshold: number;
 
     // Whether or not a request is pending. XXX rename awaiting?
     // It is assumed that a new content box has not yet sent a request.
-    public loading: boolean = false;
+    private loading: boolean = false;
 
     private loadingGif: HTMLImageElement = null;
 
@@ -55,9 +55,7 @@ class ContentBox implements IAppendable {
     }
 
     public onLoadEnd: () => void = null;
-
-    public staged: StageFlag = new StageFlag();
-
+    
     /*
         <div>
         
@@ -293,6 +291,4 @@ class ContentBox implements IAppendable {
         this.loading = false;
         this.moreContent = true;
     }
-
-    public refresh(onRefreshEnd: () => void) { }
 }

@@ -6,7 +6,6 @@ class ConfirmPrompt {
     // The callback that the user's answer gets returned through.
     private onUserDecision: (answer: boolean) => void;
     private backgroundElm: HTMLElement;
-    private contentElm: HTMLElement;
 
     /*
         Gets handles on all necessary components.
@@ -14,7 +13,6 @@ class ConfirmPrompt {
     */
     public constructor(
         backgroundElm: HTMLElement,
-        contentElm: HTMLElement,           // Base parameter.
 
         // Used to show a message to the user (Ex. "Are you sure you want to delete this comment?")
         private lblPrompt: HTMLElement, // XXX consider using this technique in other places or remove this case of it. XXX
@@ -22,7 +20,6 @@ class ConfirmPrompt {
         btnNo: HTMLElement              // Invokes confirm with false.
     ) {
         this.backgroundElm = backgroundElm;
-        this.contentElm = contentElm;
 
         // Connect yes and no buttons to confirm(), but load a different value into each.
         btnYes.onclick = (e: MouseEvent) => this.respond(true)

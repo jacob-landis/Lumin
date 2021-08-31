@@ -70,13 +70,14 @@ namespace SocialMedia.Controllers
 
             int relationshipTier = friendRepo.RelationshipTier(currentProfile.id, profileId);
 
-            // If privacy level does not exceed relationship level
+            // If bio privacy level does not exceed relationship level
             if (profile.ProfileBioPrivacyLevel <= relationshipTier)
                 fullProfileModel.Bio = profile.Bio;
             else
                 fullProfileModel.Bio = "";
 
-            if (profile.ProfilePicturePrivacyLevel <= relationshipTier)
+            // If current user has access to profile picture and the image is not null.
+            if (profile.ProfilePicturePrivacyLevel <= relationshipTier && image.ImageId != 0)
                 fullProfileModel.ProfilePicture = Util.GetRawImage(image, 2);
             else
                 fullProfileModel.ProfilePicture = Util.GetRawImage(new Models.Image(), 2);

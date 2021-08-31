@@ -1,9 +1,8 @@
 var ConfirmPrompt = (function () {
-    function ConfirmPrompt(backgroundElm, contentElm, lblPrompt, btnYes, btnNo) {
+    function ConfirmPrompt(backgroundElm, lblPrompt, btnYes, btnNo) {
         var _this = this;
         this.lblPrompt = lblPrompt;
         this.backgroundElm = backgroundElm;
-        this.contentElm = contentElm;
         btnYes.onclick = function (e) { return _this.respond(true); };
         btnNo.onclick = function (e) { return _this.respond(false); };
     }

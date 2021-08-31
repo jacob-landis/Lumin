@@ -9,10 +9,10 @@
     private targetHeight: number;
     private rootElmMinHeight: number;
 
-    public commentBoxes: ContentBox;
+    private commentBoxes: ContentBox;
     public mainCommentsBox: CommentsBox;
-    public myCommentsBox: CommentsBox;
-    public likedCommentsBox: CommentsBox;
+    private myCommentsBox: CommentsBox;
+    private likedCommentsBox: CommentsBox;
 
     private commentInputWrapper: HTMLElement;
     private errorSlot: HTMLElement;

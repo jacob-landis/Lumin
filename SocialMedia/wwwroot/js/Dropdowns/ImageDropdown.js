@@ -15,7 +15,6 @@ var ImageDropdown = (function (_super) {
     __extends(ImageDropdown, _super);
     function ImageDropdown(rootElm, contentElm, imagesWrapper, prompt, btnOpenUploadImageModal, btnOpen) {
         var _this = _super.call(this, rootElm, contentElm, btnOpen) || this;
-        _this.btnOpenUploadImageModal = btnOpenUploadImageModal;
         _this.highLitImage = null;
         _this.imageWrapper = imagesWrapper;
         _this.prompt = prompt;

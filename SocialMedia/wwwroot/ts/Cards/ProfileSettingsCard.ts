@@ -3,7 +3,7 @@
     public btnToggleSettingsSection: ToggleButton;
     private profile: ProfileRecord;
 
-    public get selectElements(): HTMLSelectElement[] {
+    private get selectElements(): HTMLSelectElement[] {
         return [this.selectProfilePictureSetting, this.selectBioSetting, this.selectImagesSetting, this.selectFriendsSetting, this.selectPostsSetting]
     }
 
