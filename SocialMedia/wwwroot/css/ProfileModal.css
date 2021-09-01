@@ -75,7 +75,6 @@
 .profile-picture {
     width: 200px;
     height: 200px;
-    /*object-fit: cover;*/
     border-radius: 100%;
 }
 
@@ -130,7 +129,6 @@
     outline: none;
 }
 
-/*XXX Does not work. XXX*/
 #profileBio:focus #btnChangeBio {
     display: none;
 }
@@ -140,12 +138,6 @@
 #profileImagesWrapper {
     overflow-y: auto;
 }
-
-/*#profileImages {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-}*/
 
 #profileImages:hover {
     cursor: pointer;

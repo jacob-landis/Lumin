@@ -22,7 +22,7 @@ namespace SocialMedia.Models.ViewModels
         public int Height { get; set; }
         public int Width { get; set; }
 
-        // The image in byte array form so it can be sent to client. XXX rename to ByteArrImg
+        // The image in byte array form so it can be sent to client.
         public byte[] ImageAsByteArray { get; set; }
     }
 }

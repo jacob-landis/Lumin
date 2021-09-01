@@ -48,4 +48,19 @@
 .relationCard {
     display: inline;
     float: right;
+    border-radius: 100px;
+    background-color: white;
+}
+
+.relationCard:hover {
+    background-color: grey;
+}
+
+.relationCard > .icon {
+    padding: 8px;
+}
+
+.relationCard > .icon:hover {
+    border-radius: 100px;
+    background-color: grey;
 }

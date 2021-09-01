@@ -13,15 +13,16 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var PostCard = (function (_super) {
     __extends(PostCard, _super);
-    function PostCard(post) {
+    function PostCard(post, revertDependency) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'postCard' })) || this;
+        _this.revertDependency = revertDependency;
         _this.allStaged = new StageFlag();
         _this.imageStaged = new StageFlag();
         _this.post = post;
         if (_this.post.image)
             _this.hasImage = true;
         var postSection = ViewUtil.tag('div', { classList: 'postSection' });
-        _this.commentsSection = new CommentSectionCard(_this.post, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); }, function () {
+        _this.commentsSection = new CommentSectionCard(_this.post, revertDependency, function () { return (_this.postImageWrapper.height + _this.postHeading.clientHeight + _this.captionWrapper.clientHeight); }, function () {
             _this.commentsSection.mainCommentsBox.content.forEach(function (content) {
                 var commentCard = content;
                 commentCard.imageBoxes.forEach(function (imageBox) { return _this.imageBoxes.push(imageBox); });
@@ -43,7 +44,7 @@ var PostCard = (function (_super) {
         _this.postHeading = ViewUtil.tag('div', { classList: 'postHeading' });
         postSection.append(_this.postHeading, _this.captionWrapper, _this.postImageWrapper.rootElm);
         _this.editIcon = Icons.edit();
-        _this.captionEditor = new Editor(_this.editIcon, _this.post.caption, 'post-caption-editor', _this.hasImage, 1000, function (caption) {
+        _this.captionEditor = new Editor(_this.editIcon, _this.post.caption, 'post-caption-editor', _this.hasImage, 1000, revertDependency, function (caption) {
             Ajax.updatePost(_this.post.postId, caption);
             PostCard.postCards.forEach(function (p) {
                 if (p.post.postId == _this.post.postId)
@@ -100,16 +101,17 @@ var PostCard = (function (_super) {
         PostCard.postCards.push(_this);
         return _this;
     }
-    PostCard.list = function (posts) {
+    PostCard.list = function (posts, revertDependency) {
+        if (revertDependency === void 0) { revertDependency = null; }
         var postCards = [];
         if (posts) {
-            posts.forEach(function (p) { return postCards.push(new PostCard(p)); });
+            posts.forEach(function (p) { return postCards.push(new PostCard(p, revertDependency)); });
             return postCards;
         }
     };
     PostCard.prototype.refreshPostDetails = function () {
         var _this = this;
-        Ajax.getPost(this.post.postId, function (postCard) {
+        Ajax.getPost(this.post.postId, this.revertDependency, function (postCard) {
             if (postCard == null) {
                 _this.refreshPostDetailsMessage.innerText = 'This post could not be found.';
             }

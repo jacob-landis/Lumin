@@ -1,9 +1,9 @@
 ﻿class PostCard extends Card {
 
-    public static list(posts: PostRecord[]): PostCard[] {
+    public static list(posts: PostRecord[], revertDependency: object = null): PostCard[] {
         let postCards: PostCard[] = [];
         if (posts) {
-            posts.forEach((p: PostRecord) => postCards.push(new PostCard(p)));
+            posts.forEach((p: PostRecord) => postCards.push(new PostCard(p, revertDependency)));
             return postCards;
         }
     }
@@ -59,7 +59,7 @@
             <div class="commentSection"></div>
         </div>
     */
-    public constructor(post: PostRecord) {
+    public constructor(post: PostRecord, private revertDependency) {
 
         super(ViewUtil.tag('div', { classList: 'postCard' }));
 
@@ -74,6 +74,7 @@
 
         this.commentsSection = new CommentSectionCard(
             this.post,
+            revertDependency,
             () => (this.postImageWrapper.height + this.postHeading.clientHeight + this.captionWrapper.clientHeight),
             () => {
                 this.commentsSection.mainCommentsBox.content.forEach((content: IAppendable) => {
@@ -115,7 +116,7 @@
 
         // must have a handle on editIcon to exclude it from the window onclick event listener in Editor
         this.editIcon = Icons.edit();
-        this.captionEditor = new Editor(this.editIcon, this.post.caption, 'post-caption-editor', this.hasImage, 1000,
+        this.captionEditor = new Editor(this.editIcon, this.post.caption, 'post-caption-editor', this.hasImage, 1000, revertDependency,
             (caption: string) => {
 
                 Ajax.updatePost(this.post.postId, caption)
@@ -195,7 +196,7 @@
 
     private refreshPostDetails(): void {
         // Raise isLoading
-        Ajax.getPost(this.post.postId, (postCard: PostCard) => {
+        Ajax.getPost(this.post.postId, this.revertDependency, (postCard: PostCard) => {
 
             // If nothing was found.
             if (postCard == null) {
@@ -229,8 +230,7 @@
     private remove(): void {
 
         Ajax.deletePost(this.post.postId);
-
-        // XXX Instead of this, PostsBox should delete them so it can also splice it out of it's content array. XXX
+        
         PostCard.postCards.forEach((postCard: PostCard) => {
             if (postCard.post.postId == this.post.postId) {
                 ViewUtil.remove(postCard.rootElm);
@@ -239,8 +239,5 @@
         });
 
         Util.filterNulls(PostCard.postCards);
-
-        // XXX This is invalid code in TS. XXX
-        //delete this;
     }
 }

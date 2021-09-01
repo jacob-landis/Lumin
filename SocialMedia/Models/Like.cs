@@ -21,8 +21,8 @@ namespace SocialMedia.Models
 
         // Post or comment ID.
         public int? ContentId { get; set; }
-
-        // XXX not used anywhere. Remove or use.
+        
+        // NOT IN USE.
         public bool HasSeen { get; set; }
     }
 }

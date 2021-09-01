@@ -150,7 +150,7 @@ class ImageDropdown extends Dropdown {
     private convert(tooltipMsg: string, callback: (imageCard: ImageBox) => void): void {
 
         // Save callback in ProfileImagesBox for newly uploaded images that come in to get their callback from.
-        this.imagesBox.clickCallback = (target: ImageBox) => callback(target); // XXX just assign callback XXX
+        this.imagesBox.clickCallback = (target: ImageBox) => callback(target);
 
         // Loop through each image card in the image box and change it's callback to the one provided.
         this.imagesBox.content.forEach((imageBox: IAppendable) => {

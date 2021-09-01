@@ -214,18 +214,6 @@ namespace SocialMedia.Controllers
         */
         public List<int?> Search(string search) // terms.str
         {
-            // XXX XXX XXX check if search terms are alphabetic
-            // If no search string was provided, return list of AAAAALLLLLLLLLL profiles XD. XXX this cannot be!
-            if (search == "") // return null instead?
-            {
-                List<int?> defaultResults = new List<int?>();
-                foreach (Profile p in profileRepo.ExceptCurrentProfile)
-                {
-                    defaultResults.Add(p.ProfileId);
-                }
-                return defaultResults;
-            }
-
             // Prep list for matches. Each index contains a key value pair of <ProfileID, searchPoints>.
             List<KeyValuePair<int, int>> matches = new List<KeyValuePair<int, int>>();
 

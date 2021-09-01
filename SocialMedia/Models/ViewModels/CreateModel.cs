@@ -40,7 +40,7 @@ namespace SocialMedia.Models.ViewModels
         public string Email { get; set; }
 
         /*
-             Field must contain 1 - 100 characters. XXX test the whole XXX thing in here. If it works use it above.
+             Field must contain 1 - 100 characters.
         */
         [Required(ErrorMessage = "Please enter a password")]
         [StringLength(100, ErrorMessage = "Your password must be XXX characters or less in length")]

@@ -35,7 +35,7 @@ class ProfileModal extends Modal {
         Gets handles on all necessary components.
     */
     public constructor(
-        private contentElm: HTMLElement,            private profileNameWrapper: HTMLElement,
+        contentElm: HTMLElement,                    private profileNameWrapper: HTMLElement,
         private imageWrapper: HTMLElement,          private profileBioWrapper: HTMLElement,
         private imageScrollBox: HTMLElement,        private friendBoxElm: HTMLElement,
         private relationWrapper: HTMLElement,       imageBoxElm: HTMLElement,
@@ -54,19 +54,21 @@ class ProfileModal extends Modal {
         doubleEditorClassList: string
     ) {
         super(contentElm);
+        
+        this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
 
         this.profilePostsCard = new ProfilePostsCard(this.rootElm, profilePosts, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, 
-            btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
+            btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper, this);
 
-        this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
-        
         this.nameEditor = new DoubleEditor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' }), '', '', doubleEditorClassList, 30,
             (firstName: string, lastName: string) => {
                 ProfileCard.changeUserProfileName(firstName, lastName);
                 Ajax.updateName(JSON.stringify({ FirstName: firstName, LastName: lastName }));
-            });
+            },
+            this
+        );
         
-        this.bioEditor = new Editor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' }), '', editorClassList, true, 250,
+        this.bioEditor = new Editor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' }), '', editorClassList, true, 250, this,
             (bio: string) => Ajax.updateBio(bio));
 
         this.profileNameWrapper.append(this.nameEditor.rootElm);
@@ -314,18 +316,26 @@ class ProfileModal extends Modal {
                 confirmPrompt.load("Are you sure you want to revert all changes to your privacy settings?", (answer: boolean) => {
                     if (answer == true) {
                         this.profileSettingsCard.btnToggleSettingsSection.toggle();
-                        super.close();
+                        this.checkForActiveEditor();
                     }
                 });
             }
             // If nothing was changed, but the settings section needs to be closed.
             else {
                 this.profileSettingsCard.btnToggleSettingsSection.toggle();
-                super.close();
+                this.checkForActiveEditor();
             }
         }
         else {
-            super.close();
+            this.checkForActiveEditor();
         }
+    }
+
+    private checkForActiveEditor(): void {
+
+        if (Editor.activeEditor != null && Editor.activeEditor.revertDependency == this) {
+            Editor.activeEditor.revert(() => super.close());
+        }
+        else super.close();
     }
 }

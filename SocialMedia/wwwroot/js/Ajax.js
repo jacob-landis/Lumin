@@ -22,17 +22,17 @@ var Ajax = (function () {
     };
     Ajax.getComment = function (commentId, onCommentResult) {
         this.call("apicomment/" + commentId, "GET", function (commentResult) {
-            onCommentResult(new CommentCard(commentResult));
+            onCommentResult(new CommentCard(commentResult, null));
         });
     };
-    Ajax.getComments = function (postId, skip, take, feedFilter, feedType, onCommentResults) {
+    Ajax.getComments = function (postId, skip, take, feedFilter, feedType, revertDependency, onCommentResults) {
         this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take + "/" + feedFilter + "/" + feedType, "GET", function (commentResults) {
-            onCommentResults(CommentCard.list(commentResults));
+            onCommentResults(CommentCard.list(commentResults, revertDependency));
         });
     };
-    Ajax.searchComments = function (postId, skip, take, searchText, onCommentResults) {
+    Ajax.searchComments = function (postId, skip, take, searchText, revertDependency, onCommentResults) {
         this.call("apicomment/searchcomments/" + postId + "/" + skip + "/" + take, "POST", function (commentResults) {
-            onCommentResults(CommentCard.list(commentResults));
+            onCommentResults(CommentCard.list(commentResults, revertDependency));
         }, this.JSONstring(searchText));
     };
     Ajax.getCommentCount = function (postId, onCommentCountResults) {
@@ -136,18 +136,18 @@ var Ajax = (function () {
     Ajax.submitPost = function (postForm, onCopyResults) {
         this.call("apipost", "POST", function (copyResults) { return onCopyResults(copyResults); }, postForm);
     };
-    Ajax.getPost = function (postId, onPostResult) {
-        this.call("apipost/" + postId, "GET", function (postResult) { return onPostResult(new PostCard(postResult)); });
+    Ajax.getPost = function (postId, revertDependency, onPostResult) {
+        this.call("apipost/" + postId, "GET", function (postResult) { return onPostResult(new PostCard(postResult, revertDependency)); });
     };
     Ajax.getPublicPosts = function (skip, take, onPostResults) {
         this.call("apipost/publicposts/" + skip + "/" + take, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
     };
-    Ajax.getProfilePosts = function (profileId, skip, take, feedFilter, feedType, onPostResults) {
-        this.call("apipost/profileposts/" + profileId + "/" + skip + "/" + take + "/" + feedFilter + "/" + feedType, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
+    Ajax.getProfilePosts = function (profileId, skip, take, feedFilter, feedType, revertDependency, onPostResults) {
+        this.call("apipost/profileposts/" + profileId + "/" + skip + "/" + take + "/" + feedFilter + "/" + feedType, "GET", function (postResults) { return onPostResults(PostCard.list(postResults, revertDependency)); });
     };
     Ajax.searchPosts = function (profileId, skip, take, searchText, onPostResults) {
         this.call("apipost/searchposts/" + profileId + "/" + skip + "/" + take, "POST", function (postResults) {
-            onPostResults(PostCard.list(postResults));
+            onPostResults(PostCard.list(postResults, profileModal));
         }, this.JSONstring(searchText));
     };
     Ajax.call = function (path, method, onResults, data) {

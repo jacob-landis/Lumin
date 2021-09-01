@@ -6,7 +6,7 @@
     This is a component of lazy loading.
     Images are dumped from posts as the user scrolls away from them and reloaded when scrolled back to.
 */
-class ImageBox implements IAppendable, IUnloadable { // XXX rename to image slot XXX rename comments in here too XXX look for and rename thumbNail to thumbnail XXX
+class ImageBox implements IAppendable, IUnloadable {
     
     public static list(imageCards: ImageCard[]): ImageBox[] {
 

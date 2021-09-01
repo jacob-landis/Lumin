@@ -1,7 +1,7 @@
 ﻿class ProfilePostsCard extends Card {
 
     private profileId: number;
-
+    
     private feedFilter: 'recent' | 'likes' | 'comments' = 'recent';
 
     // A PostsBox for displaying a profile's posts.
@@ -29,11 +29,11 @@
         private txtSearchPosts: HTMLInputElement,
         commentedPostsBoxWrapper: HTMLElement,
         likedPostsBoxWrapper: HTMLElement,
-        mainPostsBoxWrapper: HTMLElement
+        mainPostsBoxWrapper: HTMLElement,
+        private revertDependency
     ) {
-
         super(rootElm);
-        
+
         new ToggleButton(null, btnToggleSearchBar, <HTMLElement>btnToggleSearchBar.childNodes[1], [
             new ToggleState('fa-search', 'Open search bar', () => this.showSearchBar()),
             new ToggleState('fa-times', 'Close search bar', () => this.hideSearchBar())
@@ -56,7 +56,7 @@
 
         this.postBoxes = new ContentBox(this.rootElm); 
         
-        this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, scrollElm, 'commentedPosts', () => this.feedFilter, () => { 
+        this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, scrollElm, this.revertDependency, 'commentedPosts', () => this.feedFilter, () => { 
             this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
             if (this.postBoxesStage != null) this.postBoxesStage.updateStaging(this.commentedPostsStaged);
 
@@ -67,12 +67,12 @@
             });
         });
 
-        this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, scrollElm, 'likedPosts', () => this.feedFilter, () => { 
+        this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, scrollElm, this.revertDependency, 'likedPosts', () => this.feedFilter, () => { 
             this.likedPostsBox.messageElm.innerText = 'Liked Posts';
             if (this.postBoxesStage != null) this.postBoxesStage.updateStaging(this.likedPostsStaged);
         });
 
-        this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, scrollElm, 'mainPosts', () => this.feedFilter, () => { 
+        this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, scrollElm, this.revertDependency, 'mainPosts', () => this.feedFilter, () => { 
             
             if (this.myActivityIsShowing)
                 this.mainPostsBox.messageElm.innerText = 'All Posts';
@@ -108,7 +108,7 @@
 
         this.mainPostsBox.clear();
         this.mainPostsBox.requestCallback = (skip: number, take: number) => {
-            Ajax.getProfilePosts(this.profileId, skip, take, this.feedFilter, 'mainPosts', (postCards: PostCard[]) => {
+            Ajax.getProfilePosts(this.profileId, skip, take, this.feedFilter, 'mainPosts', this.revertDependency, (postCards: PostCard[]) => {
 
                 if (postCards == null) return;
                 this.mainPostsBox.add(postCards);

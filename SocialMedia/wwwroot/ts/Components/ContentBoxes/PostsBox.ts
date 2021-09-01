@@ -24,6 +24,7 @@ class PostsBox extends ContentBox {
         profileId?: number,
         rootElm?: HTMLElement,
         scrollElm?: HTMLElement,
+        public revertDependency?: object,
         private feedType?: ('commentedPosts' | 'likedPosts' | 'mainPosts'),
         private getFeedFilter?: () => ('recent' | 'likes' | 'comments'),
         private onPostsLoadEnd?: () => void
@@ -39,7 +40,7 @@ class PostsBox extends ContentBox {
                 if (profileId != null)
 
                     // send a profilePosts request to the server,
-                    Ajax.getProfilePosts(this.profileId, skip, take, this.getFeedFilter(), this.feedType, 
+                    Ajax.getProfilePosts(this.profileId, skip, take, this.getFeedFilter(), this.feedType, this.revertDependency, 
 
                         // and when the posts return as post cards,
                         (postCards: PostCard[]) => {
@@ -114,7 +115,7 @@ class PostsBox extends ContentBox {
 
     public refreshPosts(onRefreshLoadEnd?: () => void): void {
         this.clear();
-        Ajax.getProfilePosts(this.profileId, 0, 5, this.getFeedFilter(), this.feedType, (postCards: PostCard[]) => {
+        Ajax.getProfilePosts(this.profileId, 0, 5, this.getFeedFilter(), this.feedType, this.revertDependency, (postCards: PostCard[]) => {
             this.addPost(postCards);
             if (onRefreshLoadEnd) onRefreshLoadEnd();
         });

@@ -8,11 +8,9 @@
 class FriendDropdown extends Dropdown {
     
     // Input elm for user to enter serach terms in.
-    // XXX If this dropdown is used to display someone elses friends the search bar will be hidden!!!
     private txtSearch: HTMLInputElement;
 
     // Button set to invoke a search.
-    // XXX If this dropdown is used to display someone elses friends the search btn will be hidden!!!
     private btnSearch: HTMLElement;
 
     private lblPrompt: HTMLElement;
@@ -97,7 +95,6 @@ class FriendDropdown extends Dropdown {
         this.requestCallback = (skip: number, take: number) => {
 
             // Request accepted friend requests to and from the current user's profile (friend) and add to friendsBox.
-            // XXX may need to use currentUser.id instead of profileId if this dropdown is not used to display other profiles' friends.
             Ajax.getFriends(User.profileId, "friendDropdown", skip, take, null, (profiles: ProfileCard[]) => this.friendsBox.add(profiles));
         }
         this.friendsBox.request(20);

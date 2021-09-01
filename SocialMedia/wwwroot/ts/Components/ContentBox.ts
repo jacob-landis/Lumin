@@ -19,7 +19,7 @@ class ContentBox implements IAppendable {
 
     private loadThreshold: number;
 
-    // Whether or not a request is pending. XXX rename awaiting?
+    // Whether or not a request is pending.
     // It is assumed that a new content box has not yet sent a request.
     private loading: boolean = false;
 
@@ -56,11 +56,6 @@ class ContentBox implements IAppendable {
 
     public onLoadEnd: () => void = null;
     
-    /*
-        <div>
-        
-        </div>
-    */
     public constructor(
         rootElm: HTMLElement,
         scrollElm?: HTMLElement,
@@ -114,7 +109,7 @@ class ContentBox implements IAppendable {
 
         let scrollTop: number = this.scrollElm.scrollTop;
 
-        this.content.forEach((c: IAppendable) => { // XXX Use ClientRect or DomRect XXX
+        this.content.forEach((c: IAppendable) => {
             
             let contentOffset: number = c.rootElm.offsetTop - scrollTop;
 

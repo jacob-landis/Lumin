@@ -4,7 +4,7 @@
 class UploadImageModal extends Modal {
     
     // An elm for the image preview.
-    private stagedUploadCon: HTMLElement; // XXX rename to imagePreviewCon XXX
+    private stagedUploadCon: HTMLElement;
 
     private stagedUploadClassList: string;
 
@@ -18,7 +18,7 @@ class UploadImageModal extends Modal {
     // A FileReader. Used to convert file data to string data.
     private reader: FileReader;
         
-    // Used to get the image that comes back after it is uploaded. XXX why not use the image already on the client? XXX
+    // Used to get the image that comes back after it is uploaded.
     private callback: (imageCard: ImageCard) => void;
         
     // Used to persist name from load() to stageUpload().
@@ -69,8 +69,8 @@ class UploadImageModal extends Modal {
             super.close();
         }
 
-        // Set onchange callback of selectDifferentImage (XXX basically a button XXX) to invoke load() with the file that was selected and this callback.
-        this.btnSelectDifferentImage.onchange = (e: Event) => this.load(e, this.callback) // XXX this.callback has not been initialized. Review this logic. XXX
+        // Set onchange callback of selectDifferentImage to invoke load() with the file that was selected and this callback.
+        this.btnSelectDifferentImage.onchange = (e: Event) => this.load(e, this.callback)
     }
 
     /*
@@ -94,7 +94,7 @@ class UploadImageModal extends Modal {
         // This step needs to take place in both scenarios.
         ViewUtil.empty(this.stagedUploadCon);
 
-        // Hide btnConfirm so it can be shown if the file is valid. XXX this only needs to happen for one scenario. Move this step. XXX
+        // Hide btnConfirm so it can be shown if the file is valid.
         ViewUtil.hide(this.btnConfirm);
 
         // Get a handle on the provided callback.
@@ -141,7 +141,7 @@ class UploadImageModal extends Modal {
     */
     private stageFile(): void {
 
-        // Show btnConfirm to allow user to finalize the upload. XXX move this line to end of method for readability and so user can't click. XXX
+        // Show btnConfirm to allow user to finalize the upload.
         ViewUtil.show(this.btnConfirm);
 
         // Cut off "data:image/jpeg;base64," from the result and get a handle on the rest.

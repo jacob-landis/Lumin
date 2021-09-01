@@ -14,13 +14,13 @@
                             newElement.classList.add(className)
                     }
                 )
-            if (propertySetting.name) newElement.setAttribute('name', propertySetting.name); // TEST
+            if (propertySetting.name) newElement.setAttribute('name', propertySetting.name); 
             if (propertySetting.color) newElement.style.color = propertySetting.color;
             if (propertySetting.innerHTML) newElement.innerHTML = propertySetting.innerHTML;
             if (propertySetting.innerText) newElement.innerText = propertySetting.innerText;
-            if (propertySetting.src) newElement.setAttribute('src', `data:image/png;base64,${propertySetting.src}`);  // TEST
+            if (propertySetting.src) newElement.setAttribute('src', `data:image/png;base64,${propertySetting.src}`);
             if (propertySetting.onclick) newElement.onclick = propertySetting.onclick;
-            if (propertySetting.type) newElement.setAttribute('type', propertySetting.type); // TEST
+            if (propertySetting.type) newElement.setAttribute('type', propertySetting.type);
             if (propertySetting.title) newElement.title = propertySetting.title;
             if (propertySetting.oncontextmenu) newElement.oncontextmenu = propertySetting.oncontextmenu;
         }

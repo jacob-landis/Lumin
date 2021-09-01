@@ -5,10 +5,11 @@
         private postId: number,
         private feedType: ('myComments' | 'likedComments' | 'mainComments'),
         private getFeedFilter: () => ('recent' | 'likes'),
+        private revertDependency: object,
         private onCommentsLoadEnd: (noChanges: boolean) => void
     ) {
         super(ViewUtil.tag('div', { classList: 'commentsBox' }), scrollElm, 400, 30, (skip: number, take: number) => {
-            Ajax.getComments(this.postId, skip, take, this.getFeedFilter(), this.feedType, (commentCards: CommentCard[]) => {
+            Ajax.getComments(this.postId, skip, take, this.getFeedFilter(), this.feedType, revertDependency, (commentCards: CommentCard[]) => {
 
                 this.add(commentCards);
 
@@ -37,7 +38,7 @@
                 this.clear();
 
                 if (refreshSummary.comments != null) {
-                    this.add(CommentCard.list(refreshSummary.comments));
+                    this.add(CommentCard.list(refreshSummary.comments, this.revertDependency));
                     this.content.forEach((content: IAppendable) => (<CommentCard>content).disputeHasSeen());
                 }
 

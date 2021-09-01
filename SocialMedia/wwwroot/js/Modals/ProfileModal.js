@@ -15,7 +15,6 @@ var ProfileModal = (function (_super) {
     __extends(ProfileModal, _super);
     function ProfileModal(contentElm, profileNameWrapper, imageWrapper, profileBioWrapper, imageScrollBox, friendBoxElm, relationWrapper, imageBoxElm, summaryWrapper, profilePosts, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper, profileSettingsCard, imageClassList, editorClassList, doubleEditorClassList) {
         var _this = _super.call(this, contentElm) || this;
-        _this.contentElm = contentElm;
         _this.profileNameWrapper = profileNameWrapper;
         _this.imageWrapper = imageWrapper;
         _this.profileBioWrapper = profileBioWrapper;
@@ -28,13 +27,13 @@ var ProfileModal = (function (_super) {
         _this.fullProfileStaged = new StageFlag();
         _this.imagesBoxStaged = new StageFlag();
         _this.friendsStaged = new StageFlag();
-        _this.profilePostsCard = new ProfilePostsCard(_this.rootElm, profilePosts, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper);
         _this.profilePictureBox = new ImageBox(imageBoxElm, imageClassList, null);
+        _this.profilePostsCard = new ProfilePostsCard(_this.rootElm, profilePosts, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper, _this);
         _this.nameEditor = new DoubleEditor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeName' }), '', '', doubleEditorClassList, 30, function (firstName, lastName) {
             ProfileCard.changeUserProfileName(firstName, lastName);
             Ajax.updateName(JSON.stringify({ FirstName: firstName, LastName: lastName }));
-        });
-        _this.bioEditor = new Editor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' }), '', editorClassList, true, 250, function (bio) { return Ajax.updateBio(bio); });
+        }, _this);
+        _this.bioEditor = new Editor(ViewUtil.tag('i', { classList: 'fa fa-edit', id: 'btnChangeBio' }), '', editorClassList, true, 250, _this, function (bio) { return Ajax.updateBio(bio); });
         _this.profileNameWrapper.append(_this.nameEditor.rootElm);
         _this.profileBioWrapper.append(_this.bioEditor.rootElm);
         _this.summaryStageContainers = [
@@ -175,18 +174,26 @@ var ProfileModal = (function (_super) {
                 confirmPrompt.load("Are you sure you want to revert all changes to your privacy settings?", function (answer) {
                     if (answer == true) {
                         _this.profileSettingsCard.btnToggleSettingsSection.toggle();
-                        _super.prototype.close.call(_this);
+                        _this.checkForActiveEditor();
                     }
                 });
             }
             else {
                 this.profileSettingsCard.btnToggleSettingsSection.toggle();
-                _super.prototype.close.call(this);
+                this.checkForActiveEditor();
             }
         }
         else {
-            _super.prototype.close.call(this);
+            this.checkForActiveEditor();
         }
+    };
+    ProfileModal.prototype.checkForActiveEditor = function () {
+        var _this = this;
+        if (Editor.activeEditor != null && Editor.activeEditor.revertDependency == this) {
+            Editor.activeEditor.revert(function () { return _super.prototype.close.call(_this); });
+        }
+        else
+            _super.prototype.close.call(this);
     };
     return ProfileModal;
 }(Modal));

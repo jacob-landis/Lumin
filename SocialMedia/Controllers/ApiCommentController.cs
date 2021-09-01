@@ -87,7 +87,7 @@ namespace SocialMedia.Controllers
             return refreshSummary;
         }
 
-        // Get comment count by PostId XXX shouldn't this go in ApiPostController??
+        // Get comment count by PostId.
         [HttpGet("commentcount/{postId}")]
         public int? CommentCount(int postId)
         {
@@ -97,11 +97,11 @@ namespace SocialMedia.Controllers
             return commentRepo.Comments.Where(c => c.PostId == postId).Count();
         }
 
-        // Delete comment by CommentId
+        // Delete comment by CommentId.
         [HttpPost("deletecomment/{commentId}")]
         public void DeleteComment(int commentId)
         {
-            Comment comment = commentRepo.ById(commentId); // get comment by CommentId
+            Comment comment = commentRepo.ById(commentId); // Get comment by CommentId
 
             if(comment.ProfileId == currentProfile.id) // validate user ownership of comment
             {
@@ -109,7 +109,6 @@ namespace SocialMedia.Controllers
 
                 // get likes belonging to this comment 
                 // (type 2 is comment likes)
-                // XXX use enumeration instead of magic numbers for type
                 foreach(Like l in likeRepo.ByTypeAndId(2, commentId)) { likes.Add(l); }
 
                 // after retrieve operation, delete each retrieved like

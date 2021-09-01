@@ -108,8 +108,11 @@ var ImageGalleryModal = (function (_super) {
         }
     };
     ImageGalleryModal.prototype.updateImageCount = function () { this.imageCount.innerText = this.index + 1 + " / " + this.profileImagesCount; };
-    ImageGalleryModal.prototype.toggleSingularControls = function () {
-        ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
+    ImageGalleryModal.prototype.toggleControls = function () {
+        if (this.isSingular)
+            ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
+        else
+            ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls();
     };
     ImageGalleryModal.prototype.showSingularControls = function () {
         ViewUtil.show(Modal.btnClose);
@@ -122,12 +125,6 @@ var ImageGalleryModal = (function (_super) {
         ViewUtil.hide(this.imageDateTime);
         ViewUtil.hide(this.imageOwnership);
         navBar.hide();
-    };
-    ImageGalleryModal.prototype.toggleControls = function () {
-        if (this.isSingular)
-            ViewUtil.isDisplayed(Modal.btnClose) ? this.hideSingularControls() : this.showSingularControls();
-        else
-            ViewUtil.isDisplayed(this.btnNext) ? this.hideControls() : this.showControls();
     };
     ImageGalleryModal.prototype.showControls = function () {
         navBar.show();

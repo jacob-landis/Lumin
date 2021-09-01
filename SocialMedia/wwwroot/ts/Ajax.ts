@@ -38,7 +38,7 @@
             `apicomment/${commentId}`,
             "GET",
             (commentResult: string) => {
-                onCommentResult(new CommentCard(<CommentRecord><unknown>commentResult));
+                onCommentResult(new CommentCard(<CommentRecord><unknown>commentResult, null));
             }
         );
     }
@@ -49,13 +49,14 @@
         take: number,
         feedFilter: 'recent' | 'likes',
         feedType: 'myComments' | 'likedComments' | 'mainComments',
+        revertDependency: object,
         onCommentResults: (commentCards: CommentCard[]) => void
     ): void {
         this.call(
             `apicomment/postcomments/${postId}/${skip}/${take}/${feedFilter}/${feedType}`,
             "GET",
             (commentResults: string) => {
-                onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults))
+                onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults, revertDependency))
             }
         );
     }
@@ -65,13 +66,14 @@
         skip: number,
         take: number,
         searchText: string,
+        revertDependency: object,
         onCommentResults: (commentCards: CommentCard[]) => void
     ): void {
         this.call(
             `apicomment/searchcomments/${postId}/${skip}/${take}`,
             "POST",
             (commentResults: string) => {
-                onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults))
+                onCommentResults(CommentCard.list(<CommentRecord[]><unknown>commentResults, revertDependency))
             },
             this.JSONstring(searchText)
         )
@@ -310,11 +312,11 @@
         );
     }
 
-    public static getPost(postId: number, onPostResult: (postCard: PostCard) => void) {
+    public static getPost(postId: number, revertDependency: object, onPostResult: (postCard: PostCard) => void) {
         this.call(
             `apipost/${postId}`,
             "GET",
-            (postResult: string) => onPostResult(new PostCard(<PostRecord><unknown>postResult))
+            (postResult: string) => onPostResult(new PostCard(<PostRecord><unknown>postResult, revertDependency))
         );
     }
 
@@ -332,12 +334,13 @@
         take: number,
         feedFilter: 'recent' | 'likes' | 'comments',
         feedType: 'commentedPosts' | 'likedPosts' | 'mainPosts',
+        revertDependency: object,
         onPostResults: (postCards: PostCard[]) => void
     ): void {
         this.call(
             `apipost/profileposts/${profileId}/${skip}/${take}/${feedFilter}/${feedType}`, 
             "GET",
-            (postResults: string) => onPostResults(PostCard.list(<PostRecord[]><unknown>postResults))
+            (postResults: string) => onPostResults(PostCard.list(<PostRecord[]><unknown>postResults, revertDependency))
         );
     }
 
@@ -352,7 +355,7 @@
             `apipost/searchposts/${profileId}/${skip}/${take}`,
             "POST",
             (postResults: string) => {
-                onPostResults(PostCard.list(<PostRecord[]><unknown>postResults))
+                onPostResults(PostCard.list(<PostRecord[]><unknown>postResults, profileModal))
             },
             this.JSONstring(searchText)
         )
@@ -364,7 +367,6 @@
 
         // check server for current user (redirect if session is expired)
         this.finalCall("apiprofile/confirmuser", "GET", (confirmed: string) => {
-            // XXX if (confirmed != "" || confirmed != null) XXX TRY THIS XXX
             if (confirmed) this.finalCall(path, method, onResults, data);
             else location.reload(true);
         });

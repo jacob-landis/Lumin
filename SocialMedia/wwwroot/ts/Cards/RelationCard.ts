@@ -5,10 +5,7 @@
             label: 'Unfriend',
             icon: () => Icons.removeFriend(),
             nextCase: 'unrelated',
-            action: (profileId: number) => {
-                confirmPrompt.load('Are you sure you want to unfriend this user?',
-                    (confirmation: boolean) => { if (confirmation) RelationCard.remove(profileId); });
-            }
+            action: (profileId: number) => RelationCard.remove(profileId)
         },
         'userRequested': {
             label: 'Cancel',

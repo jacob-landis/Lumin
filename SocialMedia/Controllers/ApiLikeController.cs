@@ -13,7 +13,6 @@ namespace SocialMedia.Controllers
         Post likes and comment likes are handled here.
         PostLike = 0
         CommentLike = 1
-        XXX use enumeration!
     */
     [Route("api/[controller]")]
     public class ApiLikeController : Controller
@@ -83,7 +82,7 @@ namespace SocialMedia.Controllers
         public void Like(int contentType, int contentId)
         {
             // If the user has already liked this content, return.
-            if (!likeRepo.Likes.Any(l => l.ContentId == contentId && l.ContentType == contentType)) return;
+            if (likeRepo.Likes.Any(l => l.ContentId == contentId && l.ContentType == contentType)) return;
 
             // If like is for a post.
             if (contentType == 0)

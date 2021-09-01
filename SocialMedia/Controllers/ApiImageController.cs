@@ -149,7 +149,7 @@ namespace SocialMedia.Controllers
              Returns a portion of a profile's images. Used for lazy loading.
         */
         [HttpGet("profileimages/{profileId}/{skip}/{take}")]
-        public List<RawImage> ProfilesImages(int profileId, int skip, int take) // (id, skip, take) XXX rename
+        public List<RawImage> ProfilesImages(int profileId, int skip, int take)
         {
             string resultsKey = $"{profileId}profileImages";
 
@@ -357,7 +357,7 @@ namespace SocialMedia.Controllers
                         // If successful, break out of the loop.
                         break;
                     }
-                    catch (IOException e) when (i <= 10000) // XXX try removing "(IOException e)" and try changing 10000 to 1000
+                    catch (IOException e) when (i <= 10000)
                     {
                         // If an error occured while trying to delete, wait before looping again.
                         Thread.Sleep(3);

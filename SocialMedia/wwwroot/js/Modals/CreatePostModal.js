@@ -95,7 +95,7 @@ var CreatePostModal = (function (_super) {
             Ajax.submitPost(post, function (post) {
                 PostsBox.postBoxes.forEach(function (p) {
                     if (p.profileId == User.profileId)
-                        p.addPost(new PostCard(post));
+                        p.addPost(new PostCard(post, p.revertDependency));
                 });
             });
             this.txtCaption.value = '';

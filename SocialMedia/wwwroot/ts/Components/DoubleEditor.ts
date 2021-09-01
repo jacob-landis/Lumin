@@ -3,7 +3,6 @@
     private currentText2: string;
     private textBox2: HTMLElement;
     private lblCharacterCount2: HTMLElement;
-    private doubleCallback: (result1: string, result2: string) => void;
 
     public constructor(
         btnStart: HTMLElement,
@@ -11,18 +10,15 @@
         text2: string,
         classList: string,
         maxLength: number,
-        doubleCallback: (result1: string, result2: string) => void
+        private doubleCallback: (result1: string, result2: string) => void,
+        revertDependency: object = null
     ) {
-
-        super(btnStart, text, classList, false, maxLength, null);
-
-        this.doubleCallback = doubleCallback;
+        super(btnStart, text, classList, false, maxLength, revertDependency, null);
 
         this.textBox2 = ViewUtil.tag('div', { classList: 'editable-text2', innerText: text2 });
         this.lblCharacterCount2 = ViewUtil.tag('div', { classList: 'lblEditorCharacterCount' });
 
         this.fillRootElm(this.textBox2, this.lblCharacterCount2);
-        this.targetHandles.push(this.textBox2, this.lblCharacterCount2);
     }
 
     public setText2(text: string, text2: string): void {
@@ -43,7 +39,7 @@
         this.lblCharacterCount2.innerText = ` - ${this.textBox2.innerText.length}/${this.maxLength}`;
 
         this.textBox2.onkeyup = (event: KeyboardEvent) => {
-            this.lblCharacterCount2.innerText = `${this.textBox2.innerText.length}/${this.maxLength}`;
+            this.lblCharacterCount2.innerText = ` - ${this.textBox2.innerText.length}/${this.maxLength}`;
 
             if (this.textBox2.innerText.length > this.maxLength || (!this.canBeEmpty && this.textBox2.innerText.length == 0))
                 this.lblCharacterCount2.classList.add('errorMsg');
@@ -68,32 +64,33 @@
 
             // and end the edit process.
             this.end();
-
-            return;
         }
+        else {
+            // Display error messages.
+            // Add new tag with error message in it to error box.
+            if (tooLong) {
+                this.errorBox.add({
+                    rootElm: ViewUtil.tag('div', {
+                        classList: 'errorMsg',
+                        innerText: `- Both fields must be less than ${this.maxLength} characters`
+                    })
+                });
+            }
 
-        // Display error messages.
-        // Add new tag with error message in it to error box.
-        // XXX make ErrorCard XXX
-        if (tooLong) {
-            this.errorBox.add({
-                rootElm: ViewUtil.tag('div', {
-                    classList: 'errorMsg',
-                    innerText: `- Both fields must be less than ${this.maxLength} characters`
-                })
-            });
-        }
-
-        if (!isAlphabetic) {
-            this.errorBox.add({
-                rootElm: ViewUtil.tag('div', {
-                    classList: 'errorMsg',
-                    innerText: `- Both fields can only contain letters and spaces`
-                })
-            });
+            if (!isAlphabetic) {
+                this.errorBox.add({
+                    rootElm: ViewUtil.tag('div', {
+                        classList: 'errorMsg',
+                        innerText: `- Both fields can only contain letters and spaces`
+                    })
+                });
+            }
         }
     }
 
+    /*
+        Stops the edit process. This is invoked after revert() or after send(). 
+    */
     protected end(): void {
 
         // Make text box 2 non-editable.
@@ -107,11 +104,30 @@
         super.end();
     }
 
-    protected revert(): void {
+    /*
+        Changes are undone and end() is invoked. 
+    */
+    public revert(onEditEnd: () => void = null): void {
 
-        // Revert inner text.
-        this.textBox2.innerText = this.currentText2;
+        confirmPrompt.load("Are you sure you want to revert changes?", (answer: boolean) => {
+            if (answer == true) {
+
+                this.undoChanges();
+                if (onEditEnd != null) onEditEnd();
+            }
+            else {
+                // Put cursor back in text box.
+                this.textBox.focus();
+            }
+        });
 
         super.revert();
+    }
+
+    public undoChanges() {
+        // Revert inner text.
+        this.textBox.innerText = this.currentText;
+        this.textBox2.innerText = this.currentText2;
+        this.end();
     }
 }

@@ -29,7 +29,7 @@ using SocialMedia.Infrastructure;
 #line default
 #line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"651768cfd1c90bdb2102b61d3d67becb4f720f2d", @"/Views/Account/Create.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"3b24c6a04e9704856ba2613c2e200831b7cdbca3", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"464effa848bac65848bf55b741459de633a410ee", @"/Views/_ViewImports.cshtml")]
     public class Views_Account_Create : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<CreateModel>
     {
         private static readonly global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute __tagHelperAttribute_0 = new global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute("href", new global::Microsoft.AspNetCore.Html.HtmlString("~/css/Form.css"), global::Microsoft.AspNetCore.Razor.TagHelpers.HtmlAttributeValueStyle.DoubleQuotes);

@@ -55,7 +55,6 @@
 
         function numSuffix(n: number): string {
             
-            // XXX replace with a switch case statement XXX
             if (n == 1 || n == 21 || n == 31) return n + 'st';
             if (n == 2 || n == 22) return n + 'nd';
             return n + 'th';

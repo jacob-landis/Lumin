@@ -32,7 +32,7 @@ namespace SocialMedia.Models
         */
         public Image ById(int? imageId)
         {
-            if (imageId == 0) return new Image(); // XXX check if other classes are doing null or "nully" checks.
+            if (imageId == 0) return new Image();
             return context.Images.First(i => i.ImageId == imageId);
         }
 
@@ -51,9 +51,7 @@ namespace SocialMedia.Models
             Caller can specify how many to skip, and how many to take.
         */
         public IEnumerable<Image> RangeByProfileId(int? profileId, int? skip, int? take) => 
-            //context.Images
-            //.Where(i => i.ProfileId == id)
-            ByProfileId(profileId) // replaces the above two XXX test this! XXX check if other repo classes do this
+            ByProfileId(profileId)
             .OrderByDescending(i => i.DateTime)
             .Skip((int)skip)
             .Take((int)take);

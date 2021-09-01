@@ -121,9 +121,6 @@ class CreatePostModal extends Modal {
     /*
         Clears selected image and loads the paper clip icon.
         The paper clip icon indicates that no image is attached.
-
-        XXX The image box may be manually unloaded and loaded because paperClip does not have a tag property
-        XXX I could instead wrap it in an object like: {tag: paperClip}
     */
     private loadPaperClip(): void {
 
@@ -179,13 +176,13 @@ class CreatePostModal extends Modal {
     private submit(): void {
         
         // Check if there is a caption and hold result.
-        let tooShort: boolean = this.txtCaption.value.length <= 0; // XXX Since this is not an error itself, noCaption would be a better name. XXX
+        let tooShort: boolean = this.txtCaption.value.length <= 0;
 
         // Check if the caption is too long and hold result.
         let tooLong: boolean = this.txtCaption.value.length > this.maxLength;
 
         // Check if there is some kind of content in the post.
-        let noContent: boolean = tooShort && !this.selectedImageBox.isLoaded; // XXX btnPost should be grayed out until there is content. XXX
+        let noContent: boolean = tooShort && !this.selectedImageBox.isLoaded;
 
         // Create 'too long' error tag.
         let tooLongError: IAppendable =
@@ -200,8 +197,7 @@ class CreatePostModal extends Modal {
 
             // clear the error box,
             this.errorBox.clear();
-
-            // XXX this should be an if-else-if statement. 'No content' cannot occure while there is too much content. XXX
+            
             if (tooLong) this.errorBox.add(tooLongError);
             if (noContent) this.errorBox.add(noContentError);
         }
@@ -215,9 +211,9 @@ class CreatePostModal extends Modal {
             let privacyLevel = this.selectPostPrivacy.selectedIndex;
 
             // Prep the caption and ImageID to be sent off.
-            let post: string = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId, PrivacyLevel: privacyLevel }); // XXX there is a method in Repo for this. XXX
+            let post: string = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId, PrivacyLevel: privacyLevel }); 
 
-            // Send post to host in a post request. XXX put post in a PostRecord XXX
+            // Send post to host in a post request.
             Ajax.submitPost(post,
 
                 // If and when the post was added and comes back, loop through all the active post boxes,
@@ -226,13 +222,13 @@ class CreatePostModal extends Modal {
 
                         // and add the returned post to the post boxes it belongs in.
                         if (p.profileId == User.profileId)
-                            p.addPost(new PostCard(post));
+                            p.addPost(new PostCard(post, p.revertDependency));
                     });
                 }
             );
 
             // Clear caption in form.
-            this.txtCaption.value = ''; // XXX this should be done every time this is opened. Maybe there should be a clear form method. XXX
+            this.txtCaption.value = '';
 
             // Close this modal.
             this.close();
@@ -295,7 +291,7 @@ class CreatePostModal extends Modal {
                     // then call close again.
                     // Doing so will cause this method to be called again,
                     // but now that the caption has been cleared, the IF of this if-else will run instead.
-                    super.close(); // XXX this could be less confusing. XXX
+                    super.close();
                 }
             );
         }

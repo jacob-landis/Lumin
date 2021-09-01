@@ -13,8 +13,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var CommentSectionCard = (function (_super) {
     __extends(CommentSectionCard, _super);
-    function CommentSectionCard(post, getContentHeight, onCommentLoadEnd) {
+    function CommentSectionCard(post, revertDependency, getContentHeight, onCommentLoadEnd) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'commentSection' })) || this;
+        _this.revertDependency = revertDependency;
         _this.commentCountText = null;
         _this.feedFilter = 'recent';
         _this.allStaged = new StageFlag();
@@ -52,21 +53,21 @@ var CommentSectionCard = (function (_super) {
         _this.btnConfirmCommentSearch.classList.add('btnConfirmCommentSearch', 'myBtnTextPair');
         _this.btnConfirmCommentSearch.title = 'Search';
         _this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
-        _this.myCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'myComments', function () { return _this.feedFilter; }, function (noChanges) {
+        _this.myCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'myComments', function () { return _this.feedFilter; }, revertDependency, function (noChanges) {
             if (noChanges)
                 _this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
             else
                 _this.myCommentsBox.messageElm.innerText = 'My Comments';
             _this.commentBoxesStage.updateStaging(_this.myCommentsStaged);
         });
-        _this.likedCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'likedComments', function () { return _this.feedFilter; }, function (noChanges) {
+        _this.likedCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'likedComments', function () { return _this.feedFilter; }, revertDependency, function (noChanges) {
             if (noChanges)
                 _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
             else
                 _this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
             _this.commentBoxesStage.updateStaging(_this.likedCommentsStaged);
         });
-        _this.mainCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'mainComments', function () { return _this.feedFilter; }, function () {
+        _this.mainCommentsBox = new CommentsBox(_this.commentBoxes.scrollElm, _this.post.postId, 'mainComments', function () { return _this.feedFilter; }, revertDependency, function () {
             if (_this.mainCommentsBox.length == 0) {
                 _this.mainCommentsBox.clear();
                 _this.commentBoxesStage.updateStaging(_this.mainCommentsStaged);
@@ -128,7 +129,7 @@ var CommentSectionCard = (function (_super) {
                         Ajax.postComment(JSON.stringify({ Content: txtComment.value, PostId: post.postId }), function (commentResults) {
                             PostCard.postCards.forEach(function (p) {
                                 if (p.post.postId == commentResults.postId) {
-                                    p.commentsSection.mainCommentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
+                                    p.commentsSection.mainCommentsBox.add(new CommentCard(CommentRecord.copy(commentResults), revertDependency), true);
                                     p.commentsSection.resizeCommentBox();
                                     p.commentsSection.setCommentCount(_this.totalCommentCount + 1);
                                 }
@@ -238,7 +239,7 @@ var CommentSectionCard = (function (_super) {
     };
     CommentSectionCard.prototype.searchComments = function () {
         var _this = this;
-        Ajax.searchComments(this.post.postId, 0, 30, this.txtSearchComments.value, function (commentCards) {
+        Ajax.searchComments(this.post.postId, 0, 30, this.txtSearchComments.value, this.revertDependency, function (commentCards) {
             _this.mainCommentsBox.clear();
             if (commentCards != null) {
                 _this.hideCommentActivity();

@@ -13,10 +13,11 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var ProfilePostsCard = (function (_super) {
     __extends(ProfilePostsCard, _super);
-    function ProfilePostsCard(scrollElm, rootElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper) {
+    function ProfilePostsCard(scrollElm, rootElm, btnToggleSearchBar, btnTogglePostFeedFilter, btnRefreshProfilePostFeed, btnMyPostActivity, btnSearchPosts, txtSearchPosts, commentedPostsBoxWrapper, likedPostsBoxWrapper, mainPostsBoxWrapper, revertDependency) {
         var _this = _super.call(this, rootElm) || this;
         _this.btnSearchPosts = btnSearchPosts;
         _this.txtSearchPosts = txtSearchPosts;
+        _this.revertDependency = revertDependency;
         _this.feedFilter = 'recent';
         _this.commentedPostsStaged = new StageFlag();
         _this.likedPostsStaged = new StageFlag();
@@ -40,7 +41,7 @@ var ProfilePostsCard = (function (_super) {
             _this.btnSearchPosts.click(); };
         btnRefreshProfilePostFeed.onclick = function (event) { return _this.refreshProfilePostFeed(); };
         _this.postBoxes = new ContentBox(_this.rootElm);
-        _this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, scrollElm, 'commentedPosts', function () { return _this.feedFilter; }, function () {
+        _this.commentedPostsBox = new PostsBox(0, commentedPostsBoxWrapper, scrollElm, _this.revertDependency, 'commentedPosts', function () { return _this.feedFilter; }, function () {
             _this.commentedPostsBox.messageElm.innerText = 'Comment Activity Posts';
             if (_this.postBoxesStage != null)
                 _this.postBoxesStage.updateStaging(_this.commentedPostsStaged);
@@ -49,12 +50,12 @@ var ProfilePostsCard = (function (_super) {
                 postCard.commentsSection.showCommentActivity(function () { return postCard.stage.updateStaging(postCard.commentsSection.allStaged); });
             });
         });
-        _this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, scrollElm, 'likedPosts', function () { return _this.feedFilter; }, function () {
+        _this.likedPostsBox = new PostsBox(0, likedPostsBoxWrapper, scrollElm, _this.revertDependency, 'likedPosts', function () { return _this.feedFilter; }, function () {
             _this.likedPostsBox.messageElm.innerText = 'Liked Posts';
             if (_this.postBoxesStage != null)
                 _this.postBoxesStage.updateStaging(_this.likedPostsStaged);
         });
-        _this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, scrollElm, 'mainPosts', function () { return _this.feedFilter; }, function () {
+        _this.mainPostsBox = new PostsBox(0, mainPostsBoxWrapper, scrollElm, _this.revertDependency, 'mainPosts', function () { return _this.feedFilter; }, function () {
             if (_this.myActivityIsShowing)
                 _this.mainPostsBox.messageElm.innerText = 'All Posts';
             else if (!_this.mainPostsBox.hasContent && _this.profileId == User.profileId)
@@ -87,7 +88,7 @@ var ProfilePostsCard = (function (_super) {
         this.feedFilter = feedFilter;
         this.mainPostsBox.clear();
         this.mainPostsBox.requestCallback = function (skip, take) {
-            Ajax.getProfilePosts(_this.profileId, skip, take, _this.feedFilter, 'mainPosts', function (postCards) {
+            Ajax.getProfilePosts(_this.profileId, skip, take, _this.feedFilter, 'mainPosts', _this.revertDependency, function (postCards) {
                 if (postCards == null)
                     return;
                 _this.mainPostsBox.add(postCards);

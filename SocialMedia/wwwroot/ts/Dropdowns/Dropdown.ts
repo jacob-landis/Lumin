@@ -30,13 +30,8 @@ class Dropdown implements IAppendable {
         dropdown must have a content property that is an HTML elm with a 'dropdown-content' class attribute,
         dropdown must have a load method that invokes open() at the end of it,
         and it must add invoke Dropdown.add() with itself as the parameter after it has initialized the required properties.
-        
-        XXX consider redoing this logic!!!!
-        
-        XXX the logic of open(), close(), toggle() and load() needs to be re-examined!!!
 
     */
-    // XXX --------------------------XXX
     public static openDropdown: Dropdown = null;
     private static frameTemplate: HTMLElement; // provided in initialize
     private static frameContainer: HTMLElement; // provided in initialize

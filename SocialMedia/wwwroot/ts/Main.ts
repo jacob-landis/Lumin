@@ -14,7 +14,6 @@ var friendDropdown : FriendDropdown;
 
 class Main {
     
-    // XXX Translate profile. XXX
     static initialize(profile) {
 
         User.profileId = profile.profileId;

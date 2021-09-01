@@ -42,10 +42,7 @@ var RelationCard = (function (_super) {
             label: 'Unfriend',
             icon: function () { return Icons.removeFriend(); },
             nextCase: 'unrelated',
-            action: function (profileId) {
-                confirmPrompt.load('Are you sure you want to unfriend this user?', function (confirmation) { if (confirmation)
-                    RelationCard.remove(profileId); });
-            }
+            action: function (profileId) { return RelationCard.remove(profileId); }
         },
         'userRequested': {
             label: 'Cancel',

@@ -13,13 +13,13 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var DoubleEditor = (function (_super) {
     __extends(DoubleEditor, _super);
-    function DoubleEditor(btnStart, text, text2, classList, maxLength, doubleCallback) {
-        var _this = _super.call(this, btnStart, text, classList, false, maxLength, null) || this;
+    function DoubleEditor(btnStart, text, text2, classList, maxLength, doubleCallback, revertDependency) {
+        if (revertDependency === void 0) { revertDependency = null; }
+        var _this = _super.call(this, btnStart, text, classList, false, maxLength, revertDependency, null) || this;
         _this.doubleCallback = doubleCallback;
         _this.textBox2 = ViewUtil.tag('div', { classList: 'editable-text2', innerText: text2 });
         _this.lblCharacterCount2 = ViewUtil.tag('div', { classList: 'lblEditorCharacterCount' });
         _this.fillRootElm(_this.textBox2, _this.lblCharacterCount2);
-        _this.targetHandles.push(_this.textBox2, _this.lblCharacterCount2);
         return _this;
     }
     DoubleEditor.prototype.setText2 = function (text, text2) {
@@ -33,7 +33,7 @@ var DoubleEditor = (function (_super) {
         ViewUtil.show(this.lblCharacterCount2);
         this.lblCharacterCount2.innerText = " - " + this.textBox2.innerText.length + "/" + this.maxLength;
         this.textBox2.onkeyup = function (event) {
-            _this.lblCharacterCount2.innerText = _this.textBox2.innerText.length + "/" + _this.maxLength;
+            _this.lblCharacterCount2.innerText = " - " + _this.textBox2.innerText.length + "/" + _this.maxLength;
             if (_this.textBox2.innerText.length > _this.maxLength || (!_this.canBeEmpty && _this.textBox2.innerText.length == 0))
                 _this.lblCharacterCount2.classList.add('errorMsg');
             else if (_this.lblCharacterCount2.classList.contains('errorMsg'))
@@ -47,23 +47,24 @@ var DoubleEditor = (function (_super) {
         if (!tooLong && isAlphabetic) {
             this.doubleCallback(this.textBox.innerText, this.textBox2.innerText);
             this.end();
-            return;
         }
-        if (tooLong) {
-            this.errorBox.add({
-                rootElm: ViewUtil.tag('div', {
-                    classList: 'errorMsg',
-                    innerText: "- Both fields must be less than " + this.maxLength + " characters"
-                })
-            });
-        }
-        if (!isAlphabetic) {
-            this.errorBox.add({
-                rootElm: ViewUtil.tag('div', {
-                    classList: 'errorMsg',
-                    innerText: "- Both fields can only contain letters and spaces"
-                })
-            });
+        else {
+            if (tooLong) {
+                this.errorBox.add({
+                    rootElm: ViewUtil.tag('div', {
+                        classList: 'errorMsg',
+                        innerText: "- Both fields must be less than " + this.maxLength + " characters"
+                    })
+                });
+            }
+            if (!isAlphabetic) {
+                this.errorBox.add({
+                    rootElm: ViewUtil.tag('div', {
+                        classList: 'errorMsg',
+                        innerText: "- Both fields can only contain letters and spaces"
+                    })
+                });
+            }
         }
     };
     DoubleEditor.prototype.end = function () {
@@ -73,9 +74,25 @@ var DoubleEditor = (function (_super) {
             this.lblCharacterCount2.classList.remove('errorMsg');
         _super.prototype.end.call(this);
     };
-    DoubleEditor.prototype.revert = function () {
-        this.textBox2.innerText = this.currentText2;
+    DoubleEditor.prototype.revert = function (onEditEnd) {
+        var _this = this;
+        if (onEditEnd === void 0) { onEditEnd = null; }
+        confirmPrompt.load("Are you sure you want to revert changes?", function (answer) {
+            if (answer == true) {
+                _this.undoChanges();
+                if (onEditEnd != null)
+                    onEditEnd();
+            }
+            else {
+                _this.textBox.focus();
+            }
+        });
         _super.prototype.revert.call(this);
+    };
+    DoubleEditor.prototype.undoChanges = function () {
+        this.textBox.innerText = this.currentText;
+        this.textBox2.innerText = this.currentText2;
+        this.end();
     };
     return DoubleEditor;
 }(Editor));

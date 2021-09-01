@@ -1,9 +1,10 @@
 var Editor = (function () {
-    function Editor(btnStart, text, classList, canBeEmpty, maxLength, callback) {
+    function Editor(btnStart, text, classList, canBeEmpty, maxLength, revertDependency, callback) {
+        if (revertDependency === void 0) { revertDependency = null; }
         var _this = this;
-        this.windowClickFunc = function (e) { };
         this.canBeEmpty = canBeEmpty;
         this.maxLength = maxLength;
+        this.revertDependency = revertDependency;
         this.callback = callback;
         this.rootElm = ViewUtil.tag('div', { classList: "editor " + classList });
         this.errorBox = new ContentBox(ViewUtil.tag('div', { classList: 'error-box' }));
@@ -19,13 +20,6 @@ var Editor = (function () {
         this.btnStart.onclick = function (e) { return _this.start(); };
         this.btnConfirm.onclick = function (e) { return _this.send(); };
         this.btnCancel.onclick = function (e) { return _this.revert(); };
-        this.targetHandles = [
-            this.rootElm, this.errorBox.rootElm,
-            this.btnSlot, this.btnConfirm,
-            this.btnCancel, this.textBox,
-            this.lblCharacterCount
-        ];
-        window.addEventListener('mouseup', function (e) { return _this.windowClickFunc(e); });
     }
     Editor.prototype.fillRootElm = function (textBox2, lblCharacterCount2) {
         if (textBox2 == null)
@@ -33,22 +27,23 @@ var Editor = (function () {
         else
             this.rootElm.append(this.textBox, textBox2, this.lblCharacterCount, lblCharacterCount2, this.errorBox.rootElm, this.btnSlot);
     };
-    Editor.prototype.turnOnWindowClickFunc = function () {
-        var _this = this;
-        this.windowClickFunc = function (event) {
-            var hit = false;
-            _this.targetHandles.forEach(function (targetHandle) {
-                if (event.target == targetHandle)
-                    hit = true;
-            });
-            if (!hit)
-                _this.revert();
-        };
-    };
     Editor.prototype.setText = function (text) {
         this.textBox.innerText = text;
     };
     Editor.prototype.start = function () {
+        var _this = this;
+        if (Editor.activeEditor != null) {
+            confirmPrompt.load("Another edit is already active. Would you like to revert those changes and start this edit?", function (answer) {
+                if (answer == true) {
+                    Editor.activeEditor.undoChanges();
+                    _this.activate();
+                }
+            });
+        }
+        else
+            this.activate();
+    };
+    Editor.prototype.activate = function () {
         var _this = this;
         this.currentText = this.textBox.innerText;
         this.btnSlot.classList.add('activeEditor');
@@ -65,7 +60,7 @@ var Editor = (function () {
             else if (_this.lblCharacterCount.classList.contains('errorMsg'))
                 _this.lblCharacterCount.classList.remove('errorMsg');
         };
-        this.turnOnWindowClickFunc();
+        Editor.activeEditor = this;
     };
     Editor.prototype.send = function () {
         var tooLong = this.textBox.innerText.length > this.maxLength;
@@ -102,21 +97,25 @@ var Editor = (function () {
             this.lblCharacterCount.classList.remove('errorMsg');
         this.errorBox.clear();
         this.textBox.contentEditable = "" + false;
-        this.windowClickFunc = function (e) { };
+        Editor.activeEditor = null;
     };
-    Editor.prototype.revert = function () {
+    Editor.prototype.revert = function (onEditEnd) {
         var _this = this;
-        this.windowClickFunc = function (e) { };
+        if (onEditEnd === void 0) { onEditEnd = null; }
         confirmPrompt.load("Are you sure you want to revert changes?", function (answer) {
             if (answer == true) {
-                _this.textBox.innerText = _this.currentText;
-                _this.end();
+                _this.undoChanges();
+                if (onEditEnd != null)
+                    onEditEnd();
             }
             else {
                 _this.textBox.focus();
-                _this.turnOnWindowClickFunc();
             }
         });
+    };
+    Editor.prototype.undoChanges = function () {
+        this.textBox.innerText = this.currentText;
+        this.end();
     };
     Editor.prototype.disableEditing = function () {
         ViewUtil.remove(this.btnStart);
@@ -125,6 +124,7 @@ var Editor = (function () {
         this.rootElm.append(this.btnStart);
         ViewUtil.show(this.btnStart);
     };
+    Editor.activeEditor = null;
     return Editor;
 }());
 //# sourceMappingURL=Editor.js.map

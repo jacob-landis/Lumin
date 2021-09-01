@@ -16,7 +16,7 @@ namespace SocialMedia.Models
         // The datetime that the comment was created.
         public DateTime DateTime { get; set; }
 
-        // XXX this is not used.
+        // Has the owner of the post that this comment belongs to seen the comment.
         public bool HasSeen { get; set; }
 
         // ASSOCIATIONS

@@ -84,7 +84,11 @@
         </div>
     */
 
-    public constructor(post: PostRecord, getContentHeight: () => number, onCommentLoadEnd: () => void) {
+    public constructor(
+        post: PostRecord,
+        private revertDependency: object,
+        getContentHeight: () => number,
+        onCommentLoadEnd: () => void) {
 
         super(ViewUtil.tag('div', { classList: 'commentSection' }));
 
@@ -128,46 +132,48 @@
 
         this.commentBoxes = new ContentBox(ViewUtil.tag('div', { classList: 'commentBoxes' }));
 
-        this.myCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'myComments', () => this.feedFilter, (noChanges: boolean) => {
+        this.myCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'myComments', () => this.feedFilter, revertDependency,
+            (noChanges: boolean) => {
 
-            if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
-            else this.myCommentsBox.messageElm.innerText = 'My Comments';
+                if (noChanges) this.myCommentsBox.messageElm.innerText = 'My Comments - No changes have been made';
+                else this.myCommentsBox.messageElm.innerText = 'My Comments';
             
-            this.commentBoxesStage.updateStaging(this.myCommentsStaged);
+                this.commentBoxesStage.updateStaging(this.myCommentsStaged);
         });
 
-        this.likedCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'likedComments', () => this.feedFilter, (noChanges: boolean) => {
+        this.likedCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'likedComments', () => this.feedFilter, revertDependency,
+            (noChanges: boolean) => {
 
-            if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
-            else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
+                if (noChanges) this.likedCommentsBox.messageElm.innerText = 'My Liked Comments - No changes have been made';
+                else this.likedCommentsBox.messageElm.innerText = 'My Liked Comments';
 
-            this.commentBoxesStage.updateStaging(this.likedCommentsStaged);
+                this.commentBoxesStage.updateStaging(this.likedCommentsStaged);
         });
         
-        this.mainCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'mainComments', () => this.feedFilter, () => {
-            
-            if (this.mainCommentsBox.length == 0) {
-                this.mainCommentsBox.clear();
+        this.mainCommentsBox = new CommentsBox(this.commentBoxes.scrollElm, this.post.postId, 'mainComments', () => this.feedFilter, revertDependency,
+            () => {
+                if (this.mainCommentsBox.length == 0) {
+                    this.mainCommentsBox.clear();
+                    this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
+                    return;
+                }
+
+                if (this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0) this.mainCommentsBox.messageElm.innerText = 'All Comments';
+
+                // If this post belongs to current user, indicate which comments have not been seen by the user.
+                if (this.post.profile.profileId == User.profileId)
+                    this.mainCommentsBox.content.forEach((comment: CommentCard) => comment.disputeHasSeen());
+
+                // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
+                if (this.isFirstCommentsBatch) {
+                    this.isFirstCommentsBatch = false;
+
+                    if (this.post.image == null) this.resizeCommentBox();
+                }
+
+                if (onCommentLoadEnd != null) onCommentLoadEnd();
+
                 this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
-                return;
-            }
-
-            if (this.myCommentsBox.length > 0 || this.likedCommentsBox.length > 0) this.mainCommentsBox.messageElm.innerText = 'All Comments';
-
-            // If this post belongs to current user, indicate which comments have not been seen by the user.
-            if (this.post.profile.profileId == User.profileId)
-                this.mainCommentsBox.content.forEach((comment: CommentCard) => comment.disputeHasSeen());
-
-            // If first batch (was just loaded) and this post does NOT have an image, resize the comments section (now that the elements have loaded).
-            if (this.isFirstCommentsBatch) {
-                this.isFirstCommentsBatch = false;
-
-                if (this.post.image == null) this.resizeCommentBox();
-            }
-
-            if (onCommentLoadEnd != null) onCommentLoadEnd();
-
-            this.commentBoxesStage.updateStaging(this.mainCommentsStaged);
         });
 
         this.commentBoxes.add([this.myCommentsBox, this.likedCommentsBox, this.mainCommentsBox]);
@@ -236,7 +242,7 @@
                                 PostCard.postCards.forEach((p: PostCard) => {
 
                                     if (p.post.postId == commentResults.postId) {
-                                        p.commentsSection.mainCommentsBox.add(new CommentCard(CommentRecord.copy(commentResults)), true);
+                                        p.commentsSection.mainCommentsBox.add(new CommentCard(CommentRecord.copy(commentResults), revertDependency), true);
                                         p.commentsSection.resizeCommentBox();
                                         p.commentsSection.setCommentCount(this.totalCommentCount + 1);
                                     }
@@ -369,7 +375,7 @@
 
     private searchComments(): void {
 
-        Ajax.searchComments(this.post.postId, 0, 30, this.txtSearchComments.value, (commentCards: CommentCard[]) => {
+        Ajax.searchComments(this.post.postId, 0, 30, this.txtSearchComments.value, this.revertDependency, (commentCards: CommentCard[]) => {
 
             this.mainCommentsBox.clear();
 
@@ -425,8 +431,7 @@
 
             sectionHeight = 600 * ratio;
         }
-
-        //this.setHeight(this.targetHeight, this.rootElm.offsetHeight);
+        
         this.setHeight(this.targetHeight, sectionHeight);
         this.rootElmMinHeight = this.rootElm.clientHeight; // clientHeight must be read after setHeight() call.
     }

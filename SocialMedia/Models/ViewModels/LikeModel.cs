@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace SocialMedia.Models.ViewModels
 {
     /*
-        Not a like itself, but a culmination of likes for a piece of content. XXX So more of a LikesModel? XXX
+        Not a like itself, but a culmination of likes for a piece of content.
     */
     public class LikeModel
     {

@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var CommentCard = (function (_super) {
     __extends(CommentCard, _super);
-    function CommentCard(comment) {
+    function CommentCard(comment, revertDependency) {
         var _this = _super.call(this, ViewUtil.tag('div', { classList: 'comment' })) || this;
         _this.comment = comment;
         var mainSection = ViewUtil.tag('div', { classList: 'commentMainSection' });
@@ -23,7 +23,7 @@ var CommentCard = (function (_super) {
         var btnOpts = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
         var btnRefresh = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-refresh', title: 'Refresh comment' });
         var editIcon = Icons.edit();
-        _this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', false, 125, function (content) {
+        _this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', false, 125, revertDependency, function (content) {
             Ajax.updateComment(_this.comment.commentId, content);
             CommentCard.commentCards.forEach(function (c) {
                 if (c.comment.commentId == _this.comment.commentId)
@@ -58,14 +58,11 @@ var CommentCard = (function (_super) {
         CommentCard.commentCards.push(_this);
         return _this;
     }
-    CommentCard.copy = function (commentCard) {
-        return new CommentCard(commentCard.comment);
-    };
-    CommentCard.list = function (comments) {
+    CommentCard.list = function (comments, revertDependency) {
         if (comments == null)
             return null;
         var commentCards = [];
-        comments.forEach(function (comment) { return commentCards.push(new CommentCard(comment)); });
+        comments.forEach(function (comment) { return commentCards.push(new CommentCard(comment, revertDependency)); });
         return commentCards;
     };
     CommentCard.prototype.refresh = function () {

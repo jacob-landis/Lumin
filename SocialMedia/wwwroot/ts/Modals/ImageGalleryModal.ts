@@ -58,7 +58,7 @@ class ImageGalleryModal extends Modal {
     ) {
         super(rootElm);
 
-        // Set background-click-to-close functionality. This element covers the real modal root element. XXX Should be called contentRootElm. XXX
+        // Set background-click-to-close functionality. This element covers the real modal root element.
         rootElm.onclick = (event: MouseEvent) => { if (event.target == rootElm) this.close(); }
         
         // Get handles on modal HTML elms.

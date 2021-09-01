@@ -6,20 +6,12 @@ class CommentCard extends Card {
     private static commentCards: CommentCard[] = [];
     
     /*
-        Creates a new comment card with the data from the one provided.
-        Used to put a comment in multiple places. 
-    */
-    public static copy(commentCard): CommentCard {
-        return new CommentCard(commentCard.comment);
-    }
-
-    /*
         Converts an array of comments into an array of comment cards.
     */
-    public static list(comments: CommentRecord[]): CommentCard[] {
+    public static list(comments: CommentRecord[], revertDependency: object): CommentCard[] {
         if (comments == null) return null;
         let commentCards: CommentCard[] = [];
-        comments.forEach(comment => commentCards.push(new CommentCard(comment)));
+        comments.forEach(comment => commentCards.push(new CommentCard(comment, revertDependency)));
         return commentCards;
     }
 
@@ -57,7 +49,7 @@ class CommentCard extends Card {
         </div>
 
     */
-    public constructor(comment: CommentRecord) {
+    public constructor(comment: CommentRecord, revertDependency: object) {
         
         super(ViewUtil.tag('div', { classList: 'comment' }));
 
@@ -74,7 +66,7 @@ class CommentCard extends Card {
         let editIcon: HTMLElement = Icons.edit();
 
         // Create an Editor for the comment text.
-        this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', false, 125, // XXX 'comment-editor' should be provided from main. XXX
+        this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', false, 125, revertDependency, // XXX 'comment-editor' should be provided from main. XXX
             (content: string) => {
 
                 // Send update request to server.
@@ -123,8 +115,6 @@ class CommentCard extends Card {
             ]);
         }
         else {
-
-            //let btnRefresh = Icons.refresh();
             optsSection.append(btnRefresh);
 
             btnRefresh.onclick = (event: MouseEvent) => this.refresh();
@@ -205,9 +195,6 @@ class CommentCard extends Card {
 
         // Clean up collection by filtering out nulls.
         Util.filterNulls(CommentCard.commentCards);
-
-        // Delete this comment data from memory. XXX do other copies get deleted from memory? XXX Do the next lines run correctly? XXX
-        //delete this;
 
         // For each post card in collection,
         PostCard.postCards.forEach((p: PostCard) => {

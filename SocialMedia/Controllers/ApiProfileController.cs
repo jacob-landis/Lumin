@@ -85,9 +85,6 @@ namespace SocialMedia.Controllers
             return fullProfileModel;
         }
 
-        /*
-            
-        */
         [HttpGet("{profileId}")]
         public ProfileModel Get(int profileId)
         {
@@ -115,7 +112,7 @@ namespace SocialMedia.Controllers
             // If the provided names do not exceed length limit, update names.
             if (profile.FirstName.Length <= 30 && profile.LastName.Length <= 30)
             {
-                // Get handle on current user's profile. XXX should use currentProfile.profile.ProfileId so it's the most recent version.
+                // Get handle on current user's profile.
                 Profile newProfile = currentProfile.profile;
 
                 // Set names to sanitized provided names.
@@ -184,7 +181,7 @@ namespace SocialMedia.Controllers
             // If the current user owns the image with the provided ImageID, set it as their profile picture.
             if (imageId == 0 || imageRepo.ById(imageId).ProfileId == currentProfile.id)
             {
-                // Get handle on current profile. XXX Get most recent version like above.
+                // Get handle on current profile.
                 Profile profile = currentProfile.profile;
 
                 // Change profile picture id.
@@ -193,7 +190,7 @@ namespace SocialMedia.Controllers
                 // Commit profile to database.
                 profileRepo.SaveProfile(profile);
 
-                // Return new profile picture to user. XXX they should be able to use the local version to swap out.
+                // Return the new profile picture to user.
                 return Util.GetRawImage(imageRepo.ById(imageId), 3);
             }
 

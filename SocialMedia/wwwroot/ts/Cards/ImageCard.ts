@@ -48,8 +48,7 @@
     private _onImageClick:         (target: ImageBox) => void;
     get onImageClick():            (target: ImageBox) => void  { return this._onImageClick; }
     set onImageClick(onImageClick: (target: ImageBox) => void) {
-
-        // XXX consider getting rid of _onImageClick. Instead, get the value of this.rootElm.onclick. XXX
+        
         // Set the value of the two properties to a function that send this instance back through the onImageClick callback.
         this._onImageClick = (target: ImageBox) => onImageClick(target);
         this.rootElm.onclick = (event: MouseEvent) => onImageClick(this.parentImageBox);
@@ -104,8 +103,6 @@
                             (confirmation: boolean) => {
                                 if (!confirmation) return;
                                 this.remove();
-
-                                //return answer == false? null : imageCard.remove(); // TEST THIS XXXXXXXXXXXXX
                             });
                     })
                 ]);
@@ -121,8 +118,7 @@
             if (p.post.image != null && p.post.image.imageId == this.image.imageId)
                 ViewUtil.remove(p.rootElm);
         });
-
-        // XXX this ought to go in a static method in ProfileImagesBox. Or even in ContentBox. XXX
+        
         ProfileImagesBox.profileImageBoxes.forEach((p: ProfileImagesBox) => {
             p.removeImageCard(this);
         });
@@ -138,11 +134,8 @@
             Ajax.getImage(0, 2, 'sqr', 'Change profile picture', (target: ImageBox) => { }, (imageCard: ImageCard) =>
                 profileModal.profilePictureBox.loadImage(imageCard));
         }
-
-        // XXX instead, fullsizeImage modal should change to the next or prev image (prev as default), and if singular THEN close.
-        imageGalleryModal.close();// temporary solution
         
-        //delete this; XXX
+        imageGalleryModal.close();// Temporary solution for not having a broken counter after the image is removed.
     }
 
 }

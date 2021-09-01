@@ -210,7 +210,7 @@ namespace SocialMedia.Controllers
             {
                 // Get list of ProfileIDs (the current user's friends), and the current user's ProfileID.
                 List<int?> profileIds = friendRepo.ProfileFriends(currentProfile.id);
-                profileIds.Add(currentProfile.id); // XXX redirect if id == 0
+                profileIds.Add(currentProfile.id);
 
                 // Prep list for prepped posts.
                 List<Post> posts = new List<Post>();
@@ -338,7 +338,7 @@ namespace SocialMedia.Controllers
             {
                 // Set up post information.
                 post.DateTime = DateTime.UtcNow;
-                post.ProfileId = currentProfile.id; // XXX redirect if id == 0
+                post.ProfileId = currentProfile.id;
                 post.Caption = Util.Sanitize(post.Caption);
 
                 // Commit the post to the database and return a prepped version of it to the user.
@@ -408,7 +408,7 @@ namespace SocialMedia.Controllers
                 // If the post does not have an image, set the image field to null.
                 if (post.ImageId == 0) postModel.Image = null;
 
-                // Else attach prepped image. XXX I think this is handled above.
+                // Else attach prepped image.
                 else postModel.Image = Util.GetRawImage(imageRepo.ById(post.ImageId), 2, true);
 
                 // Return prepped post to caller.
