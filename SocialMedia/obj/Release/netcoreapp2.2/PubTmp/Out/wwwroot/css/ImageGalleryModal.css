@@ -1,0 +1,98 @@
+﻿#imageGalleryModalContent {
+    background: none;
+    border: none;
+    box-shadow: none;
+
+    margin: 0 auto;
+    padding-top: 0;
+    padding-bottom: 0;
+
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    cursor: pointer;
+}
+
+#fullSizeImageBox {
+    margin: auto;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.galleryImage {
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.fullSizeImage:hover {
+    opacity: 1;
+}
+
+.imageGalleryBtn { 
+    color: white;
+    font-size: 30pt;
+    position: fixed;
+    padding: 20px;
+    border-radius: 100%;
+}
+.imageGalleryBtn:hover {
+    font-size: 31pt;
+    padding: 19px;
+    background-color: rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+#btnGalleryPrevious {
+    left: 22%;
+}
+
+#btnGalleryNext {
+    right: 22%;
+}
+
+#imageCount, #imageDateTime, #imageOwnership {
+    position: fixed;
+    color: white;
+    align-content: center;
+    background-color: rgba(64, 64, 64, 0.75);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+#imageCount {
+    font-size: 20px;
+    left: 48%;
+    top: 5%;
+}
+
+#imageDateTime {
+    font-size: 14px;
+    left: 45%;
+    top: 95%;
+}
+
+#imageOwnership {
+    font-size: 14px;
+    left: 45%;
+    top: 90%;
+}
+
+#imageOwnership > div {
+    display: inline;
+}
+
+#selectGalleryImagePrivacy {
+    color: black;
+}

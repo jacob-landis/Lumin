@@ -1,85 +1,69 @@
-﻿/*
-
-    USAGE:
-    - a class must add itself to this class through the "add" method
-
-    REQUIRED PROPERTIES:
-    - tag var named "modalCon"
-
-    OPTIONAL PROPERTIES:
-    - (advised) a tag with a classList of "modalBox" or "close"
-    - "onClose" and "onOpen" methods
-        - an "onClose" method must return a bool value to the callback
-
-    "INHERITED" PROPERTIES & METHODS:
-    - "open" method
-    - "close" method
-    - "isOpen" property
-
-*/
-
-class Modal {
-
-    static modalCons = [];
-    static modals = [];
-
-    static initialize() {
-
-        this.btnClose = document.getElementById('btnCloseModal');
-
-        this.btnClose.onclick =()=> this.closeHighestModal()
-
-        window.addEventListener('click', e => {
-            if (e.target.classList.contains("modalBox")) this.closeHighestModal();
+var Modal = (function () {
+    function Modal(contentElm) {
+        this.rootElm = ViewUtil.copy(Modal.frameTemplate);
+        this.rootElm.append(contentElm);
+        Modal.frameContainer.append(this.rootElm);
+    }
+    Object.defineProperty(Modal, "highestZIndex", {
+        get: function () {
+            return this.openModals.length == 0 ? 0 : +Modal.openModals[Modal.openModals.length - 1].rootElm.style.zIndex;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Modal.initialize = function (frameTemplate, frameContainer, btnClose) {
+        var _this = this;
+        this.frameTemplate = frameTemplate;
+        this.frameContainer = frameContainer;
+        this.btnClose = btnClose;
+        this.btnClose.onclick = function (e) { return _this.closeTopModal(); };
+        window.addEventListener('click', function (e) {
+            if (e.target.classList.contains("modalBox"))
+                _this.closeTopModal();
         });
-    }
-
-    static add(modal) {
-        modal.open =()=> this.open(modal)
-        modal.close =()=> this.close(modal)
-        modal.isOpen = false;
-
-        this.modals.push(modal);
-    }
-
-    static open(modal) {
-        if (modal.isOpen) modal.close();
-        if (modal.onOpen) modal.onOpen();
-        ViewUtil.show(this.btnClose, 'block');
-        ViewUtil.show(modal.modalCon, 'block');
-        modal.isOpen = true;
-        
-        modal.modalCon.style.zIndex = this.modalCons.push(modal.modalCon);
-
-        // every modal, except the context modal, locks main body scrolling when opened
-        if (!(modal.modalCon.id == 'contextModal' || modal.modalCon.id == 'confirmModal')) // XOR
-            document.getElementsByTagName("BODY")[0].classList = 'scrollLocked';
-    }
-
-    static closeHighestModal() {
-        let lastModalCon = this.modalCons[this.modalCons.length - 1];
-        this.modals.forEach(m => { if (m.modalCon == lastModalCon) m.close(); });
-    }
-
-    static close(modal) {
-        // waits for confirmation from the onClose method of a modal before closing
-        // if modal has an onClose method wait for confirmation, or else just close it
-        if (modal.onClose) modal.onClose(confirmation => { if (confirmation) confirmClose(); });
-        else confirmClose();
-
-        function confirmClose() {
-            modal.isOpen = false;
-            ViewUtil.hide(modal.modalCon);
-
-            // set the handle of the given modalCon in modalCons to null
-            Modal.modalCons[Modal.modalCons.indexOf(modal.modalCon)] = null;
-            Modal.modalCons = Util.filterNulls(Modal.modalCons);
-            
-            // if no modal is open
-            if (Modal.modalCons.length == 0) {
-                document.getElementsByTagName("BODY")[0].classList = '';
+    };
+    Modal.closeTopModal = function () {
+        this.openModals[this.openModals.length - 1].close();
+    };
+    Object.defineProperty(Modal.prototype, "hasFocus", {
+        get: function () {
+            return Modal.openModals[Modal.openModals.length - 1] == this && ViewUtil.isDisplayed(this.rootElm);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Modal.prototype.open = function () {
+        var _this = this;
+        contextMenu.close();
+        this.rootElm.style.zIndex = "" + (Modal.highestZIndex + 1);
+        if (!ViewUtil.isDisplayed(this.rootElm)) {
+            ViewUtil.show(this.rootElm, 'inline', function () {
+                _this.rootElm.style.opacity = '1';
+                ViewUtil.show(Modal.btnClose, 'block');
+                Modal.openModals.push(_this);
+                document.getElementsByTagName("BODY")[0].classList.add('scrollLocked');
+                Dropdown.moveToForeground();
+            });
+        }
+        else {
+            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            Modal.openModals.push(this);
+            Dropdown.moveToForeground();
+        }
+    };
+    Modal.prototype.close = function () {
+        contextMenu.close();
+        if (ViewUtil.isDisplayed(this.rootElm)) {
+            ViewUtil.hide(this.rootElm, 150);
+            this.rootElm.style.opacity = '0';
+            Modal.openModals.splice(Modal.openModals.indexOf(this), 1);
+            if (Modal.openModals.length == 0) {
+                document.getElementsByTagName("BODY")[0].classList.remove('scrollLocked');
                 ViewUtil.hide(Modal.btnClose);
             }
         }
-    }
-}
+    };
+    Modal.openModals = [];
+    return Modal;
+}());
+//# sourceMappingURL=Modal.js.map

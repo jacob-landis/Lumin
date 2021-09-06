@@ -1,65 +1,97 @@
-﻿class ImageBox {
-
-    static imageBoxes = [];
-
-    get height() { return Util.getDivHeight(this.tag); }
-    get width() { return Util.getDivWidth(this.tag); }
-
-    set height(height) { this.tag.style.height = height; }
-    set onLoadEnd(onLoadEnd) { this._onLoadEnd = ()=> onLoadEnd() }
-    
-    constructor(existingTag, boxClassList, imageClassList, click, getThumbNail) {
-
-        this.heldClassList = imageClassList;
-        this.heldClick = click ? click : ()=> {};
-        this.getThumbNail = getThumbNail;
-
-        // modify existing tag
-        if (existingTag) {
-            this.tag = existingTag;
-            this.tag.classList.add('image-box');
-        }
-        // create new tag
-        else this.tag = ViewUtil.tag('div', { classList: `${boxClassList} image-box` });
-
+var ImageBox = (function () {
+    function ImageBox(rootElm, imageClassList, tooltipMsg, click, size) {
+        this.imageBoxes = [];
+        this.heldTooltipMsg = null;
+        this.imageCard = null;
         this.isLoaded = false;
-        ImageBox.imageBoxes.push(this);
+        this.isLoading = false;
+        this.loadingGif = null;
+        this.size = size;
+        this.heldTooltipMsg = tooltipMsg;
+        this.heldImageClassList = imageClassList;
+        this.heldImageClick = click ? click : function (target) { };
+        this.rootElm = rootElm;
+        this.rootElm.classList.add('image-box');
+        this.imageBoxes.push(this);
     }
-
-    // give just an id to only update the raw image
-    load(imageId, classList, click) {
+    ImageBox.list = function (imageCards) {
+        if (imageCards == null)
+            return null;
+        var imageBoxes = [];
+        imageCards.forEach(function (imageCard) {
+            var imageBox = new ImageBox(ViewUtil.tag("div"), imageCard.rootElm.classList.value, imageCard.rootElm.title, imageCard.onImageClick, 1);
+            imageBox.loadImage(imageCard);
+            imageBoxes.push(imageBox);
+        });
+        return imageBoxes;
+    };
+    Object.defineProperty(ImageBox.prototype, "height", {
+        get: function () { return this.imageCard != null ? this.imageCard.image.height : 0; },
+        set: function (height) { this.rootElm.style.height = "" + height; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ImageBox.prototype, "onLoadEnd", {
+        set: function (onLoadEnd) { this._onLoadEnd = onLoadEnd; },
+        enumerable: true,
+        configurable: true
+    });
+    ImageBox.prototype.load = function (imageId, classList, toolTipMsg, click) {
         this.heldImageId = imageId;
-        this.heldClassList = classList ? classList : this.heldClassList;
-        this.heldClick = click ? click : this.heldClick;
-        this.unload();
+        this.heldImageClassList = classList ? classList : this.heldImageClassList;
+        this.heldTooltipMsg = toolTipMsg ? toolTipMsg : this.heldTooltipMsg;
+        this.heldImageClick = click ? click : this.heldImageClick;
+        this.isLoaded = false;
+        ViewUtil.empty(this.rootElm);
         this.reload();
-    }
-
-    loadImage(imageCard) {
-        ViewUtil.empty(this.tag);
-        if (this.heldClassList) imageCard.tag.classList = this.heldClassList;
-        if (this.heldClick) imageCard.click = this.heldClick;
-        this.tag.append(imageCard.tag);
-        this.isLoaded = true;
-    }
-
-    unload() {
-        if (this.isLoaded) {
-            ViewUtil.empty(this.tag);
+    };
+    ImageBox.prototype.loadImage = function (imageCard) {
+        this.setImageCard(imageCard);
+        if (this.heldImageClassList)
+            ViewUtil.addClassList(this.heldImageClassList, imageCard.rootElm);
+        if (this.heldTooltipMsg)
+            imageCard.tooltipMsg = this.heldTooltipMsg;
+        if (this.heldImageClick)
+            imageCard.onImageClick = this.heldImageClick;
+    };
+    ImageBox.prototype.unload = function () {
+        if (this.imageCard != null) {
+            this.rootElm.style.minHeight = "" + this.rootElm.clientHeight;
+            this.rootElm.style.minWidth = "" + this.rootElm.clientWidth;
             delete this.imageCard;
-            this.isLoaded = false;
         }
-    }
-
-    reload() {
-        if(!this.isLoaded)
-            Repo.image(this.heldImageId, this.heldClassList, this.heldClick, this.getThumbNail, imageCard => {
-                this.imageCard = imageCard;
-                ViewUtil.empty(this.tag);
-                this.tag.append(this.imageCard.tag);
-                this.isLoaded = true;
-                
-                if (this._onLoadEnd) this._onLoadEnd();
+        ViewUtil.empty(this.rootElm);
+        this.isLoaded = false;
+    };
+    ImageBox.prototype.reload = function () {
+        var _this = this;
+        if (!this.isLoaded && !this.isLoading) {
+            this.rootElm.classList.add('loadingImage');
+            if (this.loadingGif == null)
+                this.loadingGif = ViewUtil.tag("img", { classList: "loadingGif" });
+            if (!this.rootElm.contains(this.loadingGif)) {
+                this.loadingGif.src = "/ImgStatic/Loading.gif";
+                this.rootElm.append(this.loadingGif);
+            }
+            this.isLoading = true;
+            Ajax.getImage(this.heldImageId, this.size, this.heldImageClassList, this.heldTooltipMsg, this.heldImageClick, function (imageCard) {
+                _this.unload();
+                _this.setImageCard(imageCard);
+                _this.rootElm.classList.remove('loadingImage');
+                _this.isLoading = false;
             });
-    }
-}
+        }
+    };
+    ImageBox.prototype.setImageCard = function (imageCard) {
+        this.imageCard = imageCard;
+        this.heldImageId = this.imageCard.image.imageId;
+        this.imageCard.parentImageBox = this;
+        ViewUtil.empty(this.rootElm);
+        this.rootElm.append(this.imageCard.rootElm);
+        this.isLoaded = true;
+        if (this._onLoadEnd)
+            this._onLoadEnd();
+    };
+    return ImageBox;
+}());
+//# sourceMappingURL=ImageBox.js.map

@@ -1,20 +1,27 @@
-﻿#contextModal {
-    background: none;
+﻿#contextMenu {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0,0,0,0); /* Black w/ opacity */
 }
 
 #contextContent {
     background: rgb(34, 34, 34);
-    border-radius: 4px 4px 0 4px;
     position: fixed;
     font-size: 16pt;
     color: white;
-    text-align:center;
+    text-align: center;
 }
 
 .context-option {
     vertical-align: middle;
+    cursor: pointer;
 }
 
-.context-option > .icon:hover {
+.context-option > .icon:hover, .context-option:hover {
     background: rgb(121, 25, 139);
 }

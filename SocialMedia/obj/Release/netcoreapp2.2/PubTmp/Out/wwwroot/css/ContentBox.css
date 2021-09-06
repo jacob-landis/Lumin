@@ -1,11 +1,52 @@
 ﻿.content-box {
-    /*overflow: auto;*/
+    overflow: auto;
 }
 
-/*.content-box-horizontal {
-
+.contentContainer > .content-box {
+    overflow: visible;
 }
 
-.content-box-horizontal > div {
+.contentContainer > .image-box {
     display: inline;
-}*/
+}
+
+.contentContainer > .image-box > .loadingGif {
+    height: 20px;
+    width: 20px;
+}
+
+.contentContainer > .loadingGif {
+    height: 60px;
+    width: 60px;
+    position: sticky;
+    left: 50%;
+    top: 40px;
+    transform: translate(-50%);
+}
+
+.contentMessage {
+    background-color: lightgray;
+    text-align: center;
+    font-weight: bold;
+}
+
+.lblNoMoreContent {
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 16px;
+}
+
+/* Make child elements in a loading container invisible for staging. */
+.contentLoading > div {
+    opacity: 0;
+}
+
+/* Make an exception for the loading gif that is in the container. */
+.contentLoading > loadingGif {
+    opacity: 1;
+}
+
+.commentsBox > .contentMessage, .post-box > .contentMessage {
+    cursor: pointer;
+}

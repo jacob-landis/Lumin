@@ -1,55 +1,48 @@
-﻿class Util {
-
-    static getDivHeight(div) {
-        return Math.max(
-            div.scrollHeight,
-            div.offsetHeight,
-            div.clientHeight
-        );
+var Util = (function () {
+    function Util() {
     }
-
-    static getDivWidth(div) {
-        return Math.max(
-            div.scrollWidth,
-            div.offsetWidth,
-            div.clientWidth,
-        );
-    }
-
-    static getDocumentHeight() {
-        let d = document.documentElement;
-        let b = document.body;
-        return Math.max(
-            b.scrollHeight, d.scrollHeight,
-            b.offsetHeight, d.offsetHeight,
-            b.clientHeight, d.clientHeight
-        );
-    }
-
-    static formatDateTime(dateTime) {
-
-        let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-        let jsDateTime = new Date(Date.parse(dateTime)).toLocaleString();
-
-        let date = jsDateTime.substring(0, jsDateTime.indexOf(','));
-        let mdy = date.split('/');
-        date = `${months[mdy[0] - 1]} ${numSuffix(mdy[1])}, ${mdy[2]}`;
-
-        let time = jsDateTime.substring(jsDateTime.indexOf(' ') + 1);
-        let hm = time.split(':');
-        let meridiem = time.substring(time.indexOf(' ') + 1) == 'PM' ? 'pm' : 'am';
-        time = `${hm[0]}:${hm[1]} ${meridiem}`;
-
-        return `${date} at ${time}`;
-
-        function numSuffix(num) {
-            num = parseInt(num);
-            if (num == 1 || num == 21 || num == 31) return num + 'st';
-            if (num == 2 || num == 22) return num + 'nd';
-            return num + 'th';
+    Util.convertPrivacyLevel = function (level) {
+        switch (level) {
+            case 0: return 'All';
+            case 1: return 'Mutual friends';
+            case 2: return 'Friends';
+            case 3: return 'None';
         }
-    }
-
-    static filterNulls =array=> array.filter(i => i != null)
-}
+        return 'All';
+    };
+    Util.getElmHeight = function (elm) {
+        return Math.max(elm.scrollHeight, elm.offsetHeight, elm.clientHeight);
+    };
+    Util.getElmWidth = function (elm) {
+        return Math.max(elm.scrollWidth, elm.offsetWidth, elm.clientWidth);
+    };
+    Util.getDocumentHeight = function () {
+        var d = document.documentElement;
+        var b = document.body;
+        return Math.max(b.scrollHeight, d.scrollHeight, b.offsetHeight, d.offsetHeight, b.clientHeight, d.clientHeight);
+    };
+    Util.formatDateTime = function (dateTime) {
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var jsDateTime = new Date(Date.parse(dateTime)).toLocaleString();
+        var date = jsDateTime.substring(0, jsDateTime.indexOf(','));
+        var mdy = date.split('/');
+        date = months[Number(mdy[0]) - 1] + " " + numSuffix(Number(mdy[1])) + ", " + mdy[2];
+        var time = jsDateTime.substring(jsDateTime.indexOf(' ') + 1);
+        var hm = time.split(':');
+        var meridiem = time.substring(time.indexOf(' ') + 1) == 'PM' ? 'pm' : 'am';
+        time = hm[0] + ":" + hm[1] + " " + meridiem;
+        return date + " at " + time;
+        function numSuffix(n) {
+            if (n == 1 || n == 21 || n == 31)
+                return n + 'st';
+            if (n == 2 || n == 22)
+                return n + 'nd';
+            return n + 'th';
+        }
+    };
+    Util.filterNulls = function (array) {
+        array.filter(function (index) { return index != null; });
+    };
+    return Util;
+}());
+//# sourceMappingURL=Util.js.map

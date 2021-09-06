@@ -8,14 +8,14 @@ C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\ContextOption.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\ContextOption.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\IAppendable.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\IAppendable.js.map
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\IUnloadable.js
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\IUnloadable.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Main.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Main.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\NavBar.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\NavBar.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\PublicPosts.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\PublicPosts.js.map
-C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Repo.js
-C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Repo.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\User.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\User.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Cards\Card.js
@@ -56,10 +56,10 @@ C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Dropdowns\ImageDropdo
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Dropdowns\ImageDropdown.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\CreatePostModal.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\CreatePostModal.js.map
-C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\FullSizeImageModal.js
-C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\FullSizeImageModal.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\HelpModal.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\HelpModal.js.map
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\ImageGalleryModal.js
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\ImageGalleryModal.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\Modal.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\Modal.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\ProfileModal.js
@@ -68,6 +68,8 @@ C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\UploadImageMod
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Modals\UploadImageModal.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Records\CommentRecord.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Records\CommentRecord.js.map
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Records\CommentRefreshSummaryRecord.js
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Records\CommentRefreshSummaryRecord.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Records\FullProfileRecord.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Records\FullProfileRecord.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Records\ImageRecord.js
@@ -90,6 +92,8 @@ C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Util\ViewUtil.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Util\ViewUtil.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Components\ContentBoxes\CommentsBox.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Components\ContentBoxes\CommentsBox.js.map
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Components\ContentBoxes\FriendsBox.js
+C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Components\ContentBoxes\FriendsBox.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Components\ContentBoxes\PostsBox.js
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Components\ContentBoxes\PostsBox.js.map
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\wwwroot\js\Components\ContentBoxes\ProfileImagesBox.js

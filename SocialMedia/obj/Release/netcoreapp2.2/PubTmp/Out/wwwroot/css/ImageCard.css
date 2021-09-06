@@ -1,0 +1,9 @@
+﻿.imageCardHover {
+    cursor: pointer;
+    transition: border ease-out;
+    border: none;
+}
+
+.imageCardHover:hover {
+    border: 1px solid rgba(160, 160, 160, 0.1);
+}

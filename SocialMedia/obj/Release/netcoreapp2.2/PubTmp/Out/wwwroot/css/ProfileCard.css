@@ -1,5 +1,11 @@
 ﻿.profileCard {
     cursor: pointer;
+    padding: 4px;
+    border-radius: 100px;
+}
+
+.profileCard:hover {
+    background: lightgray;
 }
 
 .profileCardName {
@@ -18,20 +24,43 @@
     margin-right: 5px;
 }
 
-/*.relationCaseBtn {
+.profileCard > .image-box > .loadingGif {
+    display: none;
+}
+
+.profileCard > .icon {
     display: inline;
     float: right;
-    margin-left: 5px;
-    background: none;
-    border: none;
-    font-size: 9pt;
-    color: gray;
-    height: 25px;
-    width: 60px;
-    border-radius: 100px;
-}*/
+    background-color: lightgray;
+    padding: 5px;
+    margin: 4px 20px auto 0;
+    border-radius: 2px;
+}
 
-.relationCaseBtn:hover {
-    background: lightgray;
-    color: black;
+.profileCard:hover > .icon {
+    background-color: gray;
+}
+
+.profileCard > .icon:hover {
+    background-color: dimgray;
+}
+
+.relationCard {
+    display: inline;
+    float: right;
+    border-radius: 100px;
+    background-color: white;
+}
+
+.relationCard:hover {
+    background-color: grey;
+}
+
+.relationCard > .icon {
+    padding: 8px;
+}
+
+.relationCard > .icon:hover {
+    border-radius: 100px;
+    background-color: grey;
 }

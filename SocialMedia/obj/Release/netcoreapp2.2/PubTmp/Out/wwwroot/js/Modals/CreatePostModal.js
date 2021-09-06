@@ -1,102 +1,144 @@
-﻿class CreatePostModal {
-    
-    static initialize() {
-        Modal.add(this);
-        this.modalCon = document.getElementById('createPostModal'); 
-        this.txtCaption = document.getElementById('caption');
-        this.captionWrapper = document.getElementById('captionWrapper');
-        this.errorBox = new ContentBox('createPostErrorBox');
-        this.btnSelectImage = document.getElementById('btnSelectPostImage');
-        this.btnClearImage = document.getElementById('btnClearPostImage');
-        this.btnSubmit = document.getElementById('btnSubmit');
-
-        this.captionWrapper.append(this.errorBox.tag);
-
-        this.btnCancel = document.getElementById('btnCancel');
-        this.btnCancel.onclick = () => this.close();
-
-        this.selectedImageCon = new ImageBox(
-            document.getElementById('selectedImageCon'), '', 'selectedPostImage', () => ()=> this.selectImage());
-
-        this.btnSelectImage.onclick = () => this.selectImage();
-        this.btnClearImage.onclick = () => this.loadPaperClip();
-
-        this.btnSubmit.onclick = () => this.submit();
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-
-    static load(imageCard) {
-        this.loadPaperClip();
-        if (ImageDropdown.isOpen && !imageCard) this.convertImageDropdown();
-        if (imageCard) this.selectedImageCon.load(imageCard.rawImage.id);
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var CreatePostModal = (function (_super) {
+    __extends(CreatePostModal, _super);
+    function CreatePostModal(rootElm, txtCaption, captionWrapper, btnSubmit, btnClearAttachment, imageBoxElm, lblCaptionCharacterCount, selectPostPrivacy, imageClassList, contentBoxElmId) {
+        var _this = _super.call(this, rootElm) || this;
+        _this.lblCaptionCharacterCount = lblCaptionCharacterCount;
+        _this.selectPostPrivacy = selectPostPrivacy;
+        _this.maxLength = 1000;
+        _this.txtCaption = txtCaption;
+        _this.captionWrapper = captionWrapper;
+        _this.btnSubmit = btnSubmit;
+        _this.btnClearAttachment = btnClearAttachment;
+        _this.errorBox = new ContentBox(document.getElementById(contentBoxElmId));
+        _this.privacyWarning = {
+            rootElm: ViewUtil.tag('div', {
+                classList: 'errorMsg',
+                innerText: '- Warning: This image is more private than this post. The image will be visible in this post to anyone who can see this post.'
+            })
+        };
+        _this.captionWrapper.append(_this.errorBox.rootElm);
+        _this.selectedImageBox = new ImageBox(imageBoxElm, imageClassList, 'Attach an image', function (targetImage) { return _this.selectImage(); }, 2);
+        _this.selectPostPrivacy.onchange = function (e) { return _this.checkPrivacy(); };
+        _this.btnClearAttachment.onclick = function (e) { return _this.loadPaperClip(); };
+        _this.btnSubmit.onclick = function (e) { return _this.submit(); };
+        _this.lblCaptionCharacterCount.innerText = "0/" + _this.maxLength;
+        _this.txtCaption.onkeyup = function (event) {
+            _this.lblCaptionCharacterCount.innerText = _this.txtCaption.value.length + "/" + _this.maxLength;
+            if (_this.txtCaption.value.length > _this.maxLength || _this.txtCaption.value.length == 0)
+                _this.lblCaptionCharacterCount.classList.add('errorMsg');
+            else if (_this.lblCaptionCharacterCount.classList.contains('errorMsg'))
+                _this.lblCaptionCharacterCount.classList.remove('errorMsg');
+        };
+        _this.loadPaperClip();
+        return _this;
+    }
+    CreatePostModal.prototype.load = function (imageCard) {
+        var _this = this;
+        if (imageCard != null) {
+            Ajax.getImage(imageCard.image.imageId, 2, null, "Attach image", null, function (imageCard) {
+                _this.selectedImageBox.loadImage(imageCard);
+                ViewUtil.show(_this.btnClearAttachment, "inline");
+                _this.checkPrivacy();
+            });
+        }
+        this.selectPostPrivacy.value = "" + User.postsPrivacyLevel;
         this.open();
-    }
-
-    static loadPaperClip() {
-        ViewUtil.empty(this.selectedImageCon.tag);
-        this.selectedImageCon.isLoaded = false;
-        let paperClip = Icons.paperClip();
-        paperClip.onclick = () => this.selectImage();
-        this.selectedImageCon.tag.append(paperClip);
-    }
-
-    static selectImage() {
-        ImageDropdown.load(imageCard => {
-            ImageDropdown.close();
-            this.selectedImageCon.load(imageCard.rawImage.id);
+    };
+    CreatePostModal.prototype.loadPaperClip = function () {
+        var _this = this;
+        ViewUtil.hide(this.btnClearAttachment);
+        this.selectedImageBox.unload();
+        var paperClip = Icons.paperClip();
+        paperClip.onclick = function () { return _this.selectImage(); };
+        this.selectedImageBox.rootElm.append(paperClip);
+        this.errorBox.remove(this.privacyWarning);
+    };
+    CreatePostModal.prototype.selectImage = function () {
+        var _this = this;
+        imageDropdown.load(User.profileId, "Select an image", 'Attach image to post', function (imageBox) {
+            _this.selectedImageBox.load(imageBox.imageCard.image.imageId, null, 'Attach to post');
+            _this.checkPrivacy(imageBox.imageCard);
+            ViewUtil.show(_this.btnClearAttachment);
+            imageDropdown.close();
         });
-    }
-
-    static convertImageDropdown() {
-        ImageDropdown.convert(imageCard => ()=> {
-            this.selectedImageCon.load(imageCard.rawImage.id);
-            ImageDropdown.close();
-        });
-    }
-
-    static submit() {
-        let charLimit = 1000;
-
-        let tooShort = this.txtCaption.value.length <= 0;
-        let tooLong = this.txtCaption.value.length > charLimit;
-        let noContent = tooShort && !this.selectedImageCon.isLoaded;
-
-        let tooLongError = { tag: ViewUtil.tag('div', { classList: 'errorMsg', innerText: `- Must be less than ${charLimit} characters` }) };
-        let noContentError = { tag: ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Select an image or enter a caption' }) };
-
-        // display errors
+    };
+    CreatePostModal.prototype.submit = function () {
+        var tooShort = this.txtCaption.value.length <= 0;
+        var tooLong = this.txtCaption.value.length > this.maxLength;
+        var noContent = tooShort && !this.selectedImageBox.isLoaded;
+        var tooLongError = { rootElm: ViewUtil.tag('div', { classList: 'errorMsg', innerText: "- Must be less than " + this.maxLength + " characters" }) };
+        var noContentError = { rootElm: ViewUtil.tag('div', { classList: 'errorMsg', innerText: '- Select an image or enter a caption' }) };
         if (tooLong || noContent) {
             this.errorBox.clear();
-            if (tooLong) this.errorBox.add(tooLongError);
-            if (noContent) this.errorBox.add(noContentError);
+            if (tooLong)
+                this.errorBox.add(tooLongError);
+            if (noContent)
+                this.errorBox.add(noContentError);
         }
-        // submit
         else {
-            let imageId = this.selectedImageCon.isLoaded ? this.selectedImageCon.imageCard.rawImage.id : 0;
-            let post = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId });
-
-            Repo.postPost(post, postCard => PostsBox.postBoxes.forEach(p => {
-                if (p.profileId == User.id) p.addPost(new PostCard(postCard.post));
-            }));
-
+            var imageId = this.selectedImageBox.isLoaded ? this.selectedImageBox.imageCard.image.imageId : 0;
+            var privacyLevel = this.selectPostPrivacy.selectedIndex;
+            var post = JSON.stringify({ Caption: this.txtCaption.value, ImageId: imageId, PrivacyLevel: privacyLevel });
+            Ajax.submitPost(post, function (post) {
+                PostsBox.postBoxes.forEach(function (p) {
+                    if (p.profileId == User.profileId)
+                        p.addPost(new PostCard(post, p.revertDependency));
+                });
+            });
             this.txtCaption.value = '';
             this.close();
         }
-    }
-
-    static onClose(callback) {
+        this.checkPrivacy();
+    };
+    CreatePostModal.prototype.checkPrivacy = function (imageCard) {
+        if (imageCard === void 0) { imageCard = null; }
+        var imagePrivacy = 0;
+        if (imageCard != null)
+            imagePrivacy = imageCard.image.privacyLevel;
+        else if (this.selectedImageBox.imageCard != null)
+            imagePrivacy = this.selectedImageBox.imageCard.image.privacyLevel;
+        if (imagePrivacy > this.selectPostPrivacy.selectedIndex)
+            this.errorBox.add(this.privacyWarning);
+        else
+            this.errorBox.remove(this.privacyWarning);
+    };
+    CreatePostModal.prototype.close = function () {
+        var _this = this;
         if (this.txtCaption.value.length < 1) {
-            this.errorBox.clear();
-            this.txtCaption.value = '';
-            ImageDropdown.close();
-            ImageDropdown.dropdownCon.style.zIndex = 0;
-            callback(true);
+            this.clear();
+            _super.prototype.close.call(this);
         }
         else {
-            ConfirmModal.load('Are you sure you want to cancel?', confirmation => {
-                if (!confirmation) return;
-                this.txtCaption.value = '';
-                this.close();
+            confirmPrompt.load('Are you sure you want to cancel?', function (confirmation) {
+                if (!confirmation)
+                    return;
+                _this.clear();
+                _super.prototype.close.call(_this);
             });
         }
-    }
-}
+    };
+    CreatePostModal.prototype.clear = function () {
+        this.errorBox.clear();
+        this.txtCaption.value = '';
+        if (this.lblCaptionCharacterCount.classList.contains('errorMsg'))
+            this.lblCaptionCharacterCount.classList.remove('errorMsg');
+        this.loadPaperClip();
+        imageDropdown.close();
+        imageDropdown.rootElm.style.zIndex = '0';
+    };
+    return CreatePostModal;
+}(Modal));
+//# sourceMappingURL=CreatePostModal.js.map

@@ -13,20 +13,68 @@
 #profileSummary {
     background-color: rgb(58, 101, 178);
     display: grid;
-    grid-template-columns: 8fr 8fr 11fr 8fr 1fr;
+    grid-template-columns: 12fr 9fr 9fr;
     padding: 5px;
     margin: -21px;
     margin-bottom: 20px;
     border-radius: 5px 5px 0px 0px;
-    height: 300px;
+    height: 310px;
+}
+
+#profileModalPictureWrapper, #profileNameWrapper, #profileBioWrapper, #profileImagesWrapper, #profileFriends {
+    transition: opacity 0.25s;
+    opacity: 0;
+}
+
+#profileBioAndProfilePicture {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#profileSettings {
+    display: none;
+    grid-template-columns: 3fr 1fr 3fr;
+    margin-bottom: 20px;
+}
+
+.profileSetting {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.profileSetting > label {
+    width: 70%;
+    float: right;
+}
+
+#profileColorSection, #profilePrivacyOptions {
+    display: inline;
+}
+
+#profileColorPalette {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#profileColorPalette > div {
+    height: 50px;
+    width: 50px;
+    border-radius: 100%;
+}
+
+#btnToggleSearchBar, #btnTogglePostFeedFilter, #btnRefreshProfilePostFeed, #btnMyPostActivity {
+    display: inline;
+    padding: 4px;
+    margin-bottom: 5px;
+    border-radius: 2px;
+    font-size: 14pt;
+    color: gray;
 }
 
 /*________ PROFILE PICTURE */
-
 .profile-picture {
-    width: 220px;
-    height: 220px;
-    /*object-fit: cover;*/
+    width: 200px;
+    height: 200px;
     border-radius: 100%;
 }
 
@@ -45,30 +93,43 @@
     display: inline;
 }
 
-#btnChangeProfilePicture:hover {
+#btnChangeProfilePicture:hover, #btnChangeName:hover, #btnChangeBio:hover {
     cursor: pointer;
 }
 
-/*________ PROFILE BIO */
+/*________ PROFILE NAME */
 
+#profileNameWrapper {
+    padding-top: 20px;
+}
+
+.editor.name > .editable-text,
+.editor.name > .editable-text2 {
+    display: inline;
+    font-size: 16pt;
+    padding-left: 5px;
+}
+
+/*________ PROFILE BIO */
 #profileBio {
     outline: none;
     word-break: break-word;
 }
 
-#profileDetailSection:hover > #profileBioWrapper > #btnChangeBio {
-    display: block;
+#profileBioWrapper:hover > .editor > #btnChangeBio,
+#profileNameWrapper:hover > .editor > #btnChangeName {
+    opacity: 1;
 }
 
-#btnChangeBio {
-    display: none;
+#btnChangeBio, #btnChangeName {
+    opacity: 0;
     background: none;
     border: none;
     font-size: 20px;
     outline: none;
 }
 
-#profileBio:focus + #btnChangeBio {
+#profileBio:focus #btnChangeBio {
     display: none;
 }
 
@@ -77,12 +138,6 @@
 #profileImagesWrapper {
     overflow-y: auto;
 }
-
-/*#profileImages {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-}*/
 
 #profileImages:hover {
     cursor: pointer;

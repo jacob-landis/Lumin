@@ -1,0 +1,42 @@
+﻿.listImage:hover {
+    cursor: pointer;
+}
+
+#selectImages .listImage {
+    width: 105px;
+    height: 105px;
+}
+
+#imageDropdownDetails {
+    margin-bottom: 50px;
+}
+
+#selectImagePrompt {
+    display: inline;
+    font-size: 12pt;
+}
+
+#btnImageModalUploadImage {
+    float: right;
+    padding: 8px;
+    border-radius: 5px;
+    color: gray;
+}
+
+#btnImageModalUploadImage:hover {
+    cursor: pointer;
+    background: lightgray;
+    color: rgb(47, 47, 47);
+}
+
+#imageFileIcon {
+    font-size: 18pt;
+}
+
+.highlighted > img {
+    border: 2px solid cornflowerblue;
+}
+
+.highlighted > img:hover {
+    border: 2px solid cornflowerblue;
+}

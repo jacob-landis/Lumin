@@ -1,28 +1,47 @@
-﻿.selectedPostImage {
+﻿#createPostModal {
+    width: 35%;
+}
+
+.selectedPostImage {
     width: 100%;
-    max-height: 100%;
     object-fit: cover;
 }
 
-#selectedImageCon {
-    height: 500px;
+/* Paperclip Icon */
+#selectedImageCon > .icon:hover {
+    background-color: lightgray;
 }
 
-.fixedContent {
-    overflow: hidden;
+#selectedImageCon > .icon:hover > i {
+    color: darkgray;
 }
 
 #selectedImageCon > .icon > i {
-    font-size: 400pt;
-    color: rgb(240, 240, 240);
+    font-size: 300pt;
+    color: lightgray;
 }
 
 #selectedImageCon > .icon {
     text-align: center;
     margin: auto;
+    cursor: pointer;
 }
 
-#selectedImageCon > .icon:hover {
-    background: none;
-    cursor: pointer;
+#btnClearAttachment {
+    color: gray;
+    font-size: 15pt;
+    float: right;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+#btnClearAttachment:hover {
+    background-color: lightgray;
+    color: darkgray;
+    border-radius: 5px;
+}
+
+#caption {
+    resize: none;
+    height: 150px;
 }

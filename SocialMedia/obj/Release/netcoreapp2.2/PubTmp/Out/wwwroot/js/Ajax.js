@@ -1,88 +1,176 @@
-﻿class Ajax {
-
-
-    //LIKE
-    static unlike(type, id, func) { Ajax.call(`apilike/unlike/${type}/${id}`, "POST", func); }
-
-    static postLike(type, id, func) { Ajax.call(`apilike/like/${type}/${id}`, "POST", func); }
-
-    static getLikes(type, id, func) { Ajax.call(`apilike/likes/${type}/${id}`, "GET", func); } // NOT IN USE
-
-
-    //COMMENT
-    static deleteComment(id) { Ajax.call(`apicomment/deletecomment/${id}`, "POST"); }
-
-    static updateComment(id, data) { Ajax.call(`apicomment/updatecomment/${id}`, "POST", false, data); }
-
-    static postComment(func, data) { Ajax.call("apicomment", "POST", func, data); }
-
-    static getComments(id, commentCount, amount, func) { Ajax.call(`apicomment/postcomments/${id}/${commentCount}/${amount}`, "GET", func); }
-
-    static getCommentCount(id, func) { Ajax.call(`apicomment/commentcount/${id}`, "GET", func); }
-
-    //PROFILE
-    static updateBio(data) { Ajax.call("apiprofile/updatebio", "POST", false, data); }
-
-    static updateProfilePicture(id, func) { Ajax.call(`apiprofile/updateprofilepicture/${id}`, "POST", func); }
-
-    static getProfile(id, func) { Ajax.call(`apiprofile/${id}`, "GET", func); }
-
-    static getFullProfile(id, func) { Ajax.call(`apiprofile/fullprofile/${id}`, "POST", func); }
-
-    static getCurrentProfile(func) { Ajax.call("apiprofile/currentprofile", "GET", func); }
-
-
-    //FRIEND
-    static deleteFriend(id, func) { Ajax.call(`apifriend/deletefriend/${id}`, "POST", func); } // remove
-
-    static acceptFriendRequest(id, func) { Ajax.call(`apifriend/acceptrequest/${id}`, "POST", func); } // accept
-
-    static sendFriendRequest(id, func) { Ajax.call(`apifriend/createrequest/${id}`, "POST", func); } // request
-    
-    static getFriends(id, data, func) { Ajax.call(`apifriend/friends/${id}`, "POST", func, data); }
-
-
-    //IMAGE
-    static deleteImage(id) { Ajax.call(`apiimage/deleteimage/${id}`, "POST"); }
-
-    static postImage(data, func) { Ajax.call("apiimage", "POST", func, data); }
-
-    static getProfileImages(id, imageCount, amount, func) { Ajax.call(`apiimage/profileimages/${id}/${imageCount}/${amount}`, "GET", func); }
-
-    static getProfileImagesCount(id, func) { Ajax.call(`apiimage/profileimagescount/${id}`, "GET", func); }
-
-    static getImage(id, thumb, func) { Ajax.call(`apiimage/${id}/${thumb ? 1:0}`, "GET", func); }
-
-
-    //POST
-    static deletePost(id) { Ajax.call(`apipost/deletepost/${id}`, "POST"); }
-
-    static updatePost(id, data) { Ajax.call(`apipost/updatepost/${id}`, "POST", false, data); }
-
-    static submitPost(data, func) { Ajax.call("apipost", "POST", func, data); }
-
-    static getPublicPosts(postCount, amount, func) { Ajax.call(`apipost/publicposts/${postCount}/${amount}`, "GET", func); }
-
-    static getProfilePosts(id, postCount, amount, func) { Ajax.call(`apipost/profileposts/${id}/${postCount}/${amount}`, "GET", func); }
-
-
-    //CALL
-    static call(path, method, func, data) {
-
-        // check server for current user (redirect if session is expired)
-        Ajax.finalCall("apiprofile/confirmuser", "GET", confirmed => {
-            if (confirmed) Ajax.finalCall(path, method, func, data);
-            else location.reload(true);
-        });
+var Ajax = (function () {
+    function Ajax() {
     }
-
-    static finalCall(path, method, func, data) {
+    Ajax.JSONstring = function (string) { return JSON.stringify({ str: string }); };
+    Ajax.unlike = function (contentType, contentId) {
+        this.call("apilike/unlike/" + contentType + "/" + contentId, "POST");
+    };
+    Ajax.postLike = function (contentType, contentId) {
+        this.call("apilike/like/" + contentType + "/" + contentId, "POST");
+    };
+    Ajax.deleteComment = function (commentId) {
+        this.call("apicomment/deletecomment/" + commentId, "POST");
+    };
+    Ajax.updateComment = function (commentId, commentText) {
+        this.call("apicomment/updatecomment/" + commentId, "POST", null, this.JSONstring(commentText));
+    };
+    Ajax.updateCommentHasSeen = function (commentId) {
+        this.call("apicomment/updatecommenthasseen/" + commentId, "POST");
+    };
+    Ajax.postComment = function (commentForm, onCopyResults) {
+        this.call("apicomment", "POST", function (commentResults) { return onCopyResults(commentResults); }, commentForm);
+    };
+    Ajax.getComment = function (commentId, onCommentResult) {
+        this.call("apicomment/" + commentId, "GET", function (commentResult) {
+            onCommentResult(new CommentCard(commentResult, null));
+        });
+    };
+    Ajax.getComments = function (postId, skip, take, feedFilter, feedType, revertDependency, onCommentResults) {
+        this.call("apicomment/postcomments/" + postId + "/" + skip + "/" + take + "/" + feedFilter + "/" + feedType, "GET", function (commentResults) {
+            onCommentResults(CommentCard.list(commentResults, revertDependency));
+        });
+    };
+    Ajax.searchComments = function (postId, skip, take, searchText, revertDependency, onCommentResults) {
+        this.call("apicomment/searchcomments/" + postId + "/" + skip + "/" + take, "POST", function (commentResults) {
+            onCommentResults(CommentCard.list(commentResults, revertDependency));
+        }, this.JSONstring(searchText));
+    };
+    Ajax.getCommentCount = function (postId, onCommentCountResults) {
+        this.call("apicomment/commentcount/" + postId, "GET", onCommentCountResults);
+    };
+    Ajax.refreshComments = function (postId, commentIds, likeCounts, contents, take, feedFilter, feedType, onRefreshResults) {
+        this.call("apicomment/refreshcomments/" + postId + "/" + take + "/" + feedFilter + "/" + feedType, "POST", function (commentRefreshResults) {
+            onRefreshResults(commentRefreshResults == undefined ?
+                null : commentRefreshResults);
+        }, JSON.stringify({
+            commentIds: commentIds,
+            likeCounts: likeCounts,
+            contents: contents
+        }));
+    };
+    Ajax.updateName = function (namesJSON) {
+        this.call("apiprofile/updatename", "POST", null, namesJSON);
+    };
+    Ajax.updateBio = function (bioText) {
+        this.call("apiprofile/updatebio", "POST", null, this.JSONstring(bioText));
+    };
+    Ajax.updateProfilePicture = function (imageId, imageClassList, tooltipMsg, onImageClick, onCopyResults) {
+        this.call("apiprofile/updateprofilepicture/" + imageId, "POST", function (imageResults) { return onCopyResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick)); });
+    };
+    Ajax.updatePrivacySettings = function (settings) {
+        this.call("apiprofile/updateprivacysettings", "POST", null, JSON.stringify(settings));
+    };
+    Ajax.updateProfileColor = function (color) {
+        this.call("apiprofile/updateprofilecolor/" + color, "POST", null);
+    };
+    Ajax.getProfile = function (profileId, onProfileResults) {
+        this.call("apiprofile/" + profileId, "GET", function (profileResults) { return onProfileResults(new ProfileCard(profileResults)); });
+    };
+    Ajax.getFullProfile = function (profileId, onFullProfileResults) {
+        this.call("apiprofile/fullprofile/" + profileId, "POST", function (fullProfileResults) {
+            onFullProfileResults(fullProfileResults);
+        });
+    };
+    Ajax.getCurrentProfile = function (onCurrentProfileResults) {
+        this.call("apiprofile/currentprofile", "GET", onCurrentProfileResults);
+    };
+    Ajax.deleteFriend = function (profileId) {
+        this.call("apifriend/deletefriend/" + profileId, "POST");
+    };
+    Ajax.acceptFriendRequest = function (profileId) {
+        this.call("apifriend/acceptrequest/" + profileId, "POST");
+    };
+    Ajax.sendFriendRequest = function (profileId) {
+        this.call("apifriend/createrequest/" + profileId, "POST");
+    };
+    Ajax.getFriends = function (profileId, type, skip, take, searchText, onProfileResults) {
+        var newProfileId = profileId ? profileId : 0;
+        var newSearch = this.JSONstring(searchText ? searchText : "NULL");
+        this.call("apifriend/friends/" + newProfileId + "/" + type + "/" + skip + "/" + take, "POST", function (profileResults) { return onProfileResults(ProfileCard.list(profileResults, true)); }, newSearch);
+    };
+    Ajax.blockProfile = function (profileId) {
+        this.call("apifriend/blockprofile/" + profileId, "POST");
+    };
+    Ajax.unblockProfile = function (profileId) {
+        this.call("apifriend/unblockprofile/" + profileId, "POST");
+    };
+    Ajax.getHasFriendRequest = function (onHasFriendRequests) {
+        this.call("apifriend/gethasfriendrequest", "GET", onHasFriendRequests);
+    };
+    Ajax.deleteImage = function (imageId) {
+        this.call("apiimage/deleteimage/" + imageId, "POST");
+    };
+    Ajax.postImage = function (imageAsString, onCopyResults) {
+        this.call("apiimage", "POST", function (imageCopy) { return onCopyResults(new ImageCard(imageCopy)); }, imageAsString);
+    };
+    Ajax.updateImagePrivacy = function (imageId, privacyLevel) {
+        this.call("apiimage/updateimageprivacy/" + imageId + "/" + privacyLevel, "POST");
+    };
+    Ajax.getProfileImages = function (profileId, skip, take, imageClassList, tooltipMsg, onImageClick, onImageResults) {
+        this.call("apiimage/profileimages/" + profileId + "/" + skip + "/" + take, "GET", function (imageResults) { return onImageResults(ImageBox.list(ImageCard.list(imageResults, imageClassList, tooltipMsg, onImageClick))); });
+    };
+    Ajax.getProfileImagesCount = function (profileId, onCountResults) {
+        this.call("apiimage/profileimagescount/" + profileId, "GET", onCountResults);
+    };
+    Ajax.getImageByIndex = function (imageId, index, size, imageClassList, tooltipMsg, onImageClick, onImageResults) {
+        this.call("apiimage/getimagebyindex/" + imageId + "/" + index + "/" + size, "GET", function (imageResults) {
+            if (imageResults != null)
+                onImageResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick));
+        });
+    };
+    Ajax.getImage = function (imageId, size, imageClassList, tooltipMsg, onImageClick, onImageResults) {
+        this.call("apiimage/" + imageId + "/" + size, "GET", function (imageResults) {
+            if (imageResults != null)
+                onImageResults(new ImageCard(imageResults, imageClassList, tooltipMsg, onImageClick));
+        });
+    };
+    Ajax.deletePost = function (postId) {
+        this.call("apipost/deletepost/" + postId, "POST");
+    };
+    Ajax.updatePostPrivacy = function (postId, privacyLevel) {
+        this.call("apipost/updatepostprivacy/" + postId + "/" + privacyLevel, "POST");
+    };
+    Ajax.updatePost = function (postId, postCaptionText) {
+        this.call("apipost/updatepost/" + postId, "POST", null, this.JSONstring(postCaptionText));
+    };
+    Ajax.submitPost = function (postForm, onCopyResults) {
+        this.call("apipost", "POST", function (copyResults) { return onCopyResults(copyResults); }, postForm);
+    };
+    Ajax.getPost = function (postId, revertDependency, onPostResult) {
+        this.call("apipost/" + postId, "GET", function (postResult) { return onPostResult(new PostCard(postResult, revertDependency)); });
+    };
+    Ajax.getPublicPosts = function (skip, take, onPostResults) {
+        this.call("apipost/publicposts/" + skip + "/" + take, "GET", function (postResults) { return onPostResults(PostCard.list(postResults)); });
+    };
+    Ajax.getProfilePosts = function (profileId, skip, take, feedFilter, feedType, revertDependency, onPostResults) {
+        this.call("apipost/profileposts/" + profileId + "/" + skip + "/" + take + "/" + feedFilter + "/" + feedType, "GET", function (postResults) { return onPostResults(PostCard.list(postResults, revertDependency)); });
+    };
+    Ajax.searchPosts = function (profileId, skip, take, searchText, onPostResults) {
+        this.call("apipost/searchposts/" + profileId + "/" + skip + "/" + take, "POST", function (postResults) {
+            onPostResults(PostCard.list(postResults, profileModal));
+        }, this.JSONstring(searchText));
+    };
+    Ajax.call = function (path, method, onResults, data) {
+        var _this = this;
+        this.finalCall("apiprofile/confirmuser", "GET", function (confirmed) {
+            if (confirmed)
+                _this.finalCall(path, method, onResults, data);
+            else
+                location.reload(true);
+        });
+    };
+    Ajax.finalCall = function (path, method, onResults, data) {
         $.ajax({
             url: "/api/" + path,
             contentType: "application/json",
             method: method,
             data: data,
-            success: returnData => { if (func) func(returnData); }
+            success: function (results) {
+                if (onResults)
+                    onResults(results);
+            }
         });
-    }
-}
+    };
+    return Ajax;
+}());
+//# sourceMappingURL=Ajax.js.map

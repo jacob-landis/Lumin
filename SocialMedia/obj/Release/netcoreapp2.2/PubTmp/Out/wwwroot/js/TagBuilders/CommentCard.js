@@ -1,66 +1,80 @@
-﻿class CommentCard {
-
-    static copy(commentCard) {
-        return new CommentCard(commentCard.comment);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     }
-
-    static list(comments) {
-        let commentCards = [];
-        comments.forEach(c => commentCards.push(new CommentCard(c)));
-        return commentCards;
-    }
-
-    static commentCards = [];
-
-    constructor(comment) {
-        this.comment = comment;
-        //this.commentId = comment.commentId;
-        //this.postId = comment.postId;
-        this.tag = ViewUtil.tag('div', { classList: 'comment' });
-        let mainSection = ViewUtil.tag('div', { classList: 'commentMainSection' });
-        let optsSection = ViewUtil.tag('div', { classList: 'commentOptsSection' });
-        let contentSection = ViewUtil.tag('div', { classList: 'commentContentSection' });
-
-        this.btnOpts = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
-        this.editIcon = Icons.edit();
-        this.commentEditor = new Editor(this.editIcon, comment.content, 'comment-editor', 125,
-            content => Repo.updateComment(this.comment.commentId, content));
-
-        contentSection.append(this.commentEditor.tag);
-        mainSection.append(new ProfileCard(comment.profile).tag, contentSection, new LikeCard(comment.likes, 2, comment.dateTime))
-        this.tag.append(mainSection, optsSection);
-        
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var CommentCard = (function (_super) {
+    __extends(CommentCard, _super);
+    function CommentCard(comment) {
+        var _this = _super.call(this, ViewUtil.copy(CommentCard.commentCardTemplateElm)) || this;
+        _this = _super.call(this, ViewUtil.tag('div', { classList: 'comment' })) || this;
+        _this.comment = comment;
+        var mainSection = ViewUtil.tag('div', { classList: 'commentMainSection' });
+        var optsSection = ViewUtil.tag('div', { classList: 'commentOptsSection' });
+        var contentSection = ViewUtil.tag('div', { classList: 'commentContentSection' });
+        var btnOpts = ViewUtil.tag('i', { classList: 'commentOpts threeDots fa fa-ellipsis-v' });
+        var editIcon = Icons.edit();
+        _this.commentEditor = new Editor(editIcon, comment.content, 'comment-editor', 125, function (content) {
+            Ajax.updateComment(_this.comment.commentId, content);
+            CommentCard.commentCards.forEach(function (c) {
+                if (c.comment.commentId == _this.comment.commentId)
+                    c.commentEditor.setText(content);
+            });
+        });
+        contentSection.append(_this.commentEditor.rootElm);
+        mainSection.append(new ProfileCard(comment.profile).rootElm, contentSection, new LikeCard(LikesRecord.copy(comment.likes), comment.dateTime).rootElm);
+        _this.rootElm.append(mainSection, optsSection);
         if (comment.profile.relationToUser == 'me') {
-            optsSection.append(this.btnOpts);
-            
-            this.btnOpts.onclick = e => ContextModal.load(e, [
-                new ContextOption(this.editIcon, () => this.commentEditor.start()),
-                new ContextOption(Icons.deleteComment(),
-                    () => ConfirmModal.load('Are you sure you want to delete this comment?', confirmation => {
-                        if (!confirmation) return;
-                        this.remove();
-                }))
-            ]);
+            optsSection.append(btnOpts);
+            btnOpts.onclick = function (e) { return contextMenu.load(e, [
+                new ContextOption(editIcon, function (e) { return _this.commentEditor.start(); }),
+                new ContextOption(Icons.deleteComment(), function (e) { return confirmPrompt.load('Are you sure you want to delete this comment?', function (answer) {
+                    if (answer == false)
+                        return;
+                    else
+                        _this.remove();
+                }); })
+            ]); };
         }
-        CommentCard.commentCards.push(this);
+        CommentCard.commentCards.push(_this);
+        return _this;
     }
-
-    remove() {
-        Repo.removeComment(this.comment.commentId);
-        CommentCard.commentCards.forEach(c => {
-            if (c.comment.commentId == this.comment.commentId) {
-                ViewUtil.remove(c.tag);
-                c = null;
+    CommentCard.copy = function (commentCard) {
+        return new CommentCard(commentCard.comment);
+    };
+    CommentCard.list = function (comments) {
+        var commentCards = [];
+        comments.forEach(function (comment) { return commentCards.push(new CommentCard(comment)); });
+        return commentCards;
+    };
+    CommentCard.initialize = function (commentCardTemplateElm) {
+        this.commentCardTemplateElm = commentCardTemplateElm;
+    };
+    CommentCard.prototype.remove = function () {
+        var _this = this;
+        Ajax.deleteComment(this.comment.commentId);
+        CommentCard.commentCards.forEach(function (commentCard) {
+            if (commentCard.comment.commentId == _this.comment.commentId) {
+                ViewUtil.remove(commentCard.rootElm);
+                commentCard = null;
             }
         });
         Util.filterNulls(CommentCard.commentCards);
-        delete this;
-
-        PostCard.postCards.forEach(p => {
-            if (p.post.postId == this.comment.postId) {
+        PostCard.postCards.forEach(function (p) {
+            if (p.post.postId == _this.comment.postId) {
                 p.setCommentCount(p.totalCommentCount - 1);
-                p.loadedCommentCount--;
             }
         });
-    }
-}
+    };
+    CommentCard.commentCards = [];
+    return CommentCard;
+}(Card));
+//# sourceMappingURL=CommentCard.js.map

@@ -1,7 +1,18 @@
-﻿class User {
-    static set id(id) { User._id = id; }
-    static get id() { return User._id; }
-
-    static set profilePictureId(id) { User._profilePictureId = id; }
-    static get profilePictureId() { return User._profilePictureId; }
-}
+var User = (function () {
+    function User() {
+    }
+    Object.defineProperty(User, "profileId", {
+        get: function () { return User._id; },
+        set: function (profileId) { User._id = profileId; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(User, "profilePictureId", {
+        get: function () { return User._profilePictureId; },
+        set: function (profileId) { User._profilePictureId = profileId; },
+        enumerable: true,
+        configurable: true
+    });
+    return User;
+}());
+//# sourceMappingURL=User.js.map
