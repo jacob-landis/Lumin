@@ -15,7 +15,7 @@ class ConfirmPrompt {
         backgroundElm: HTMLElement,
 
         // Used to show a message to the user (Ex. "Are you sure you want to delete this comment?")
-        private lblPrompt: HTMLElement, // XXX consider using this technique in other places or remove this case of it. XXX
+        private lblPrompt: HTMLElement, 
         btnYes: HTMLElement,            // Invokes confirm with true.
         btnNo: HTMLElement              // Invokes confirm with false.
     ) {

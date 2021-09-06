@@ -1,7 +1,10 @@
 ﻿This document serves as a guide to the features of this project.
 
-Lumin is a mostly single page web application built using the ASP.Net Core MVC framework.
-Outside of the main page, there is only pages for login, account creation, and account deletion.
+This project is not meant to be downloaded and used by others, although you are welcome to.
+To use it, you will have to generate a database from a working migration and set the new connection string.
+
+Lumin is a mostly single page web application built using the ASP.NET Core MVC framework.
+Outside of the main page, there are only pages for login, account creation, and account deletion.
 Front end consists of TypeScript, CSS, and HTML.
 
 
@@ -29,17 +32,17 @@ CONTENT
 - Friends
 	- A friend record acts as a request and an accepted friend.
 	- A relationship is a ProfileID pair (to and from).
-	- A bool type field tracks whether the invitation has been accepted.
+	- HasAccepted field tracks whether the request has been accepted.
 	- Friend status is attached to the profile view model and full profile view model when sent to the client.
 		- Status: me
 			Description: This profile is the current user's profile.
 			Response: Do nothing.
 		- Status: userRequested
 			Description: The current user requested them.
-			Response: Attach a button labeled "Cancel" that sends delete request to server to remove friend.
+			Response: Attach a button labeled "Cancel" that sends a delete request to server to remove friend.
 		- Status: friend
 			Description: Either sent to or from the current user but either case was accepted.
-			Response: Attach a button labeled "Remove" that sends delete request to server to remove friend.
+			Response: Attach a button labeled "Remove" that sends a delete request to server to remove friend.
 		- Status: requestedUser
 			Description: They requested the current user.
 			Response: Attach a button labeled "Accept" that sends an update request to server to accept.
@@ -51,7 +54,7 @@ CONTENT
 
 - Images
 	- An image can be used as a profile picture and it can be attached to posts.
-	- Image files are stored in the server file system, seperate from their corresponding records in the database.
+	- Image files are stored in the server file system, separate from their corresponding records in the database.
 	- Four different versions of an image are stored and used.
 		- Full: The original image. Used in the image gallery modal.
 		- Medium: 600px wide and proportionately tall. Used in post cards.
@@ -79,11 +82,18 @@ PATTERNS
 	- For most tables, there is a shortcut method in the repository class for selecting a range.
 
 - Feed controls
-	- Feed controls are availble for comment sections, aw well as the post feed in profile modal.
+	- Feed controls are available for comment sections and the post feed in profile modal.
 	- Search: returns posts or comments based on the search terms.
 	- Refresh: list of current content is sent to host and compared to current query results. If there are changes, the results are returned.
 	- Feed filter
+		- Posts: recent, likes, comments
+		- Comments: recent, likes
+	- Feed type
+		- Posts: commentedPosts, likedPosts, mainPosts
+		- Comments: myComments, likedComments, mainComments
 	- My activity
+		- A feature that reveals two extra content boxes so that all three feed types are displayed for either comments or profile posts.
+		- In commentedPosts, an extra step is taken to display myComments at the top of each posts comment section.
 
 - Session result storage
 	- This backend functionality optimizes lazy loading.
@@ -101,7 +111,7 @@ PATTERNS
 
 - Modals (IAppendable)
 	- Float in the center of the screen.
-	- Layer on top of eachother.
+	- Layer on top of each other.
 		- Must close from the top, one at a time.
 	- Modal base class holds shared functionality.
 	- When any modal except the context menu is open, page scrolling is locked.
@@ -118,7 +128,7 @@ COMPONENTS
 	- Hidden by scrolling down, revealed by scrolling up or hovering over area with the mouse cursor.
 
 - Confirm prompt
-	- Asks the user for confimation and their yes/no answer is sent into a callback.
+	- Asks the user for confirmation and their yes/no answer is sent into a callback.
 
 - Context menu
 	- Used to gives right-click options to content.
@@ -132,9 +142,10 @@ COMPONENTS
 		- IUnloadable content is unloaded and reloaded by content box.
 	- Each content box has a header to title the content. The header is also used to indicate refresh results.
 	- Sub-classes
-		- Posts box
-		- Comments box
-		- Images box
+		- Posts box (Public post feed, profile post feed x3)
+		- Comments box (Comments feed x3)
+		- Images box (Images dropdown, profile modal images box)
+		- Friends box (Friend dropdown, profile modal friends box)
 
 - Editor (IAppendable)
 	- Used to edit name, bio, post and comment captions.
@@ -147,6 +158,9 @@ COMPONENTS
 		  they try to close the modal.
 		- Callback: used to decide what happens to the changed text after an edit is confirmed.
 	- Cancel and confirm buttons are provided by the editor.
+	- DoubleEditor sub-class.
+		- Handles special logic dealing with profile name. First and last name are separate text boxes and have separate length counters,
+		  but are treated as one edit operation.
 
 - Stage
 	- Used to wait for several different content items to be done loading so they can be displayed smoothly all at once.
