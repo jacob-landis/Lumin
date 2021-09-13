@@ -83,3 +83,32 @@ C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMe
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.dll
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.pdb
 C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.csproj.CopyComplete
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\bin\Debug\netcoreapp2.2\SocialMedia.deps.json
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\bin\Debug\netcoreapp2.2\SocialMedia.runtimeconfig.json
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\bin\Debug\netcoreapp2.2\SocialMedia.runtimeconfig.dev.json
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\bin\Debug\netcoreapp2.2\SocialMedia.dll
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\bin\Debug\netcoreapp2.2\SocialMedia.pdb
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\bin\Debug\netcoreapp2.2\SocialMedia.Views.dll
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\bin\Debug\netcoreapp2.2\SocialMedia.Views.pdb
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.csprojAssemblyReference.cache
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.csproj.CoreCompileInputs.cache
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.RazorAssemblyInfo.cache
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.RazorAssemblyInfo.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.AssemblyInfoInputs.cache
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.AssemblyInfo.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.TagHelpers.input.cache
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.TagHelpers.output.cache
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.RazorCoreGenerate.cache
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\Razor\Views\Account\Create.g.cshtml.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\Razor\Views\Account\Delete.g.cshtml.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\Razor\Views\Account\Login.g.cshtml.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\Razor\Views\Home\Index.g.cshtml.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\Razor\Views\Shared\_Layout.g.cshtml.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\Razor\Views\_ViewImports.g.cshtml.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\Razor\Views\_ViewStart.g.cshtml.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.RazorTargetAssemblyInfo.cache
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.RazorTargetAssemblyInfo.cs
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.Views.pdb
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.dll
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.pdb
+C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Debug\netcoreapp2.2\SocialMedia.csproj.CopyComplete

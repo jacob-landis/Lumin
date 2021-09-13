@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sitemanifest>
-  <IisApp path="C:\Users\jacob\Desktop\Coding\Lumin\SocialMedia\obj\Release\netcoreapp2.2\PubTmp\Out\" />
+  <IisApp path="C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Release\netcoreapp2.2\PubTmp\Out\" />
+  <dbfullsql path="C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Release\netcoreapp2.2\PubTmp\EFSQLScripts\SocialMedia.Models.AppIdentityDbContext.sql" />
+  <dbfullsql path="C:\Users\jacob\Desktop\Coding\Lumin Azure\Lumin\SocialMedia\obj\Release\netcoreapp2.2\PubTmp\EFSQLScripts\SocialMedia.Models.ApplicationDbContext.sql" />
 </sitemanifest>

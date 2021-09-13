@@ -1,12 +1,9 @@
-﻿This document serves as a guide to the features of this project.
-
-This project is not meant to be downloaded and used by others, although you are welcome to.
+﻿This project is not meant to be downloaded and used by others, although you are welcome to.
 To use it, you will have to generate a database from a working migration and set the new connection string.
 
 Lumin is a mostly single page web application built using the ASP.NET Core MVC framework.
 Outside of the main page, there are only pages for login, account creation, and account deletion.
 Front end consists of TypeScript, CSS, and HTML.
-
 
 CONTENT
 
